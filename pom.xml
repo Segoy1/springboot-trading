@@ -11,8 +11,13 @@
     <groupId>de.segoy</groupId>
     <artifactId>springboot-trading</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>springboot-trading</name>
     <description>springboot-trading</description>
+    <modules>
+        <module>springboot-trading-web</module>
+        <module>springboot-trading-data</module>
+    </modules>
     <properties>
         <java.version>17</java.version>
     </properties>

@@ -1,4 +1,4 @@
-package de.segoy.springboottrading;
+package de.segoy.springboottradingweb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
