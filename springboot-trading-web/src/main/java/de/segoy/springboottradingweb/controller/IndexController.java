@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.controller;
+package de.segoy.springboottradingweb.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

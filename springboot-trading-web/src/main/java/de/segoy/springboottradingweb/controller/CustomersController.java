@@ -1,10 +1,10 @@
-package com.spring.professional.exam.tutorial.module06.question01.controller;
+package de.segoy.springboottradingweb.controller;
 
-import com.spring.professional.exam.tutorial.module06.question01.dao.CustomersDao;
-import com.spring.professional.exam.tutorial.module06.question01.ds.Customer;
 import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersCreate;
 import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersDelete;
 import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersRead;
+import de.segoy.springboottradingdata.dao.CustomersDao;
+import de.segoy.springboottradingdata.ds.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class CustomersController {

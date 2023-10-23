@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.controller;
+package de.segoy.springboottradingweb.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

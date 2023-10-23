@@ -1,6 +1,6 @@
-package com.spring.professional.exam.tutorial.module06.question01.dao;
+package de.segoy.springboottradingdata.dao;
 
-import com.spring.professional.exam.tutorial.module06.question01.ds.Department;
+import de.segoy.springboottradingdata.ds.Department;
 import org.springframework.data.repository.CrudRepository;
 
 public interface DepartmentsDao extends CrudRepository<Department, Integer> {
