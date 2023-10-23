@@ -1,0 +1,25 @@
+<!doctype html>
+<html th:replace="~{layouts/main :: layout(~{::main})}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+
+<main role="main">
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h3 class="display-3">Account Information</h3>
+
+            <h4 class="mb-4">Logged user: <span sec:authentication="name"></span></h4>
+
+            <h4>Roles:</h4>
+            <ul class="list-group" th:each="role : ${#authentication.authorities}">
+                <li class="list-group-item" th:text="${role}"></li>
+            </ul>
+        </div>
+    </div>
+
+</main>
+
+
+</body>
+</html>
