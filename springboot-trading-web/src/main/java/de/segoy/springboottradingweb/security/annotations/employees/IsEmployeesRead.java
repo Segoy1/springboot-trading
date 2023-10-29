@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.security.annotations.employees;
+package de.segoy.springboottradingweb.security.annotations.employees;
 
 import org.springframework.security.access.annotation.Secured;
 
@@ -7,8 +7,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static com.spring.professional.exam.tutorial.module06.question01.security.SecurityRoles.EMPLOYEES_READ;
-import static com.spring.professional.exam.tutorial.module06.question01.security.SecurityRoles.ROLE_PREFIX;
+import static de.segoy.springboottradingweb.security.SecurityRoles.EMPLOYEES_READ;
+import static de.segoy.springboottradingweb.security.SecurityRoles.ROLE_PREFIX;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

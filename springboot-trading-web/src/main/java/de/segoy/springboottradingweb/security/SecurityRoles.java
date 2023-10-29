@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.security;
+package de.segoy.springboottradingweb.security;
 
 public interface SecurityRoles {
     String ROLE_PREFIX = "ROLE_";

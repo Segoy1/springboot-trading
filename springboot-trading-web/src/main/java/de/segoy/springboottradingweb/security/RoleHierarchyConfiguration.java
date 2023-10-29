@@ -1,12 +1,12 @@
-package com.spring.professional.exam.tutorial.module06.question01.security;
+package de.segoy.springboottradingweb.security;
 
-import com.spring.professional.exam.tutorial.module06.question01.security.utils.RolesHierarchyBuilder;
+import de.segoy.springboottradingweb.security.utils.RolesHierarchyBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 
-import static com.spring.professional.exam.tutorial.module06.question01.security.SecurityRoles.*;
+import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
 @Configuration
 public class RoleHierarchyConfiguration {

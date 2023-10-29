@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb.controller;
 
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.employees.IsEmployeesCreate;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.employees.IsEmployeesDelete;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.employees.IsEmployeesRead;
+import de.segoy.springboottradingweb.security.annotations.employees.IsEmployeesCreate;
+import de.segoy.springboottradingweb.security.annotations.employees.IsEmployeesDelete;
+import de.segoy.springboottradingweb.security.annotations.employees.IsEmployeesRead;
 import de.segoy.springboottradingdata.dao.EmployeesDao;
 import de.segoy.springboottradingdata.ds.Employee;
 import org.springframework.beans.factory.annotation.Autowired;

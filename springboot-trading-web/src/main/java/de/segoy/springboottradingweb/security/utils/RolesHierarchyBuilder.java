@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.security.utils;
+package de.segoy.springboottradingweb.security.utils;
 
 public class RolesHierarchyBuilder {
     private StringBuilder stringBuilder = new StringBuilder();

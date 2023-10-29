@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb.controller;
 
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersCreate;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersDelete;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.customers.IsCustomersRead;
+import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersCreate;
+import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersDelete;
+import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersRead;
 import de.segoy.springboottradingdata.dao.CustomersDao;
 import de.segoy.springboottradingdata.ds.Customer;
 import org.springframework.beans.factory.annotation.Autowired;

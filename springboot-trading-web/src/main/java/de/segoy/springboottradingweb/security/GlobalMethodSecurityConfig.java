@@ -1,4 +1,4 @@
-package com.spring.professional.exam.tutorial.module06.question01.security;
+package de.segoy.springboottradingweb.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

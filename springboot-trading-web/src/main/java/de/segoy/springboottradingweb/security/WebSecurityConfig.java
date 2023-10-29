@@ -1,36 +1,32 @@
-package com.spring.professional.exam.tutorial.module06.question01.security;
+package de.segoy.springboottradingweb.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
-import static com.spring.professional.exam.tutorial.module06.question01.security.SecurityRoles.*;
+import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
-    @Autowired
-    private RoleHierarchy roleHierarchy;
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .expressionHandler(expressionHandler())
-                .mvcMatchers("/", "/home").permitAll()
-                .mvcMatchers("/employees").hasRole(EMPLOYEES_PAG_VIEW)
-                .mvcMatchers("/departments").hasRole(DEPARTMENTS_PAG_VIEW)
-                .mvcMatchers("/customers").hasRole(CUSTOMERS_PAG_VIEW)
-                .anyRequest().authenticated()
-                .and()
+                .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/", "/home").permitAll()
+                .requestMatchers("/employees").hasRole(EMPLOYEES_PAG_VIEW)
+                .requestMatchers("/departments").hasRole(DEPARTMENTS_PAG_VIEW)
+                .requestMatchers("/customers").hasRole(CUSTOMERS_PAG_VIEW)
+                .anyRequest().authenticated())
                 .formLogin()
                 .loginPage("/login")
                 .failureUrl("/login-error")
@@ -40,9 +36,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
                 .permitAll();
+
+        return http.build();
     }
 
-    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -66,11 +63,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("tom")
                 .password(encoder.encode("tom"))
                 .roles();
-    }
-
-    private DefaultWebSecurityExpressionHandler expressionHandler() {
-        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy);
-        return expressionHandler;
     }
 }

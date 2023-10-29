@@ -1,10 +1,11 @@
-package com.spring.professional.exam.tutorial.module06.question01.controller;
+package de.segoy.springboottradingweb.controller;
 
-import com.spring.professional.exam.tutorial.module06.question01.dao.DepartmentsDao;
-import com.spring.professional.exam.tutorial.module06.question01.ds.Department;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.departments.IsDepartmentsCreate;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.departments.IsDepartmentsDelete;
-import com.spring.professional.exam.tutorial.module06.question01.security.annotations.departments.IsDepartmentsRead;
+
+import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsCreate;
+import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsDelete;
+import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsRead;
+import de.segoy.springboottradingdata.dao.DepartmentsDao;
+import de.segoy.springboottradingdata.ds.Department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
