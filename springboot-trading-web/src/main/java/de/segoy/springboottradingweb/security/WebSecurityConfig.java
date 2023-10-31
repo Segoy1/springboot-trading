@@ -10,22 +10,26 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 public class WebSecurityConfig {
 
     @Bean
-   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+   public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/path");
         http
                 .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/home").permitAll()
-                .requestMatchers("/employees").hasRole(EMPLOYEES_PAG_VIEW)
-                .requestMatchers("/departments").hasRole(DEPARTMENTS_PAG_VIEW)
-                .requestMatchers("/customers").hasRole(CUSTOMERS_PAG_VIEW)
+                .requestMatchers(mvc.pattern("/"),mvc.pattern("/home")).permitAll()
+                .requestMatchers(mvc.pattern("/employees")).hasRole(EMPLOYEES_PAG_VIEW)
+                .requestMatchers(mvc.pattern("/departments")).hasRole(DEPARTMENTS_PAG_VIEW)
+                .requestMatchers(mvc.pattern("/customers")).hasRole(CUSTOMERS_PAG_VIEW)
                 .anyRequest().authenticated())
                 .formLogin()
                 .loginPage("/login")
