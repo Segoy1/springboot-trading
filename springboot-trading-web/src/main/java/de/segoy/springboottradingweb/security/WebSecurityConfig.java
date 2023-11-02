@@ -3,16 +3,25 @@ package de.segoy.springboottradingweb.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import javax.sql.DataSource;
 
 import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
@@ -42,28 +51,31 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
+                .build();
+    }
+
+    @Bean
+    public UserDetailsManager users(DataSource dataSource) {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-        auth.inMemoryAuthentication()
-                .withUser("john")
+        UserDetails user = User.builder()
+                .username("john")
                 .password(encoder.encode("john"))
                 .roles(SUPER_ADMIN)
-                .and()
-                .withUser("emma")
+                .build();
+        UserDetails user2 = User.builder()
+                .username("emma")
                 .password(encoder.encode("emma"))
                 .roles(EMPLOYEES_ADMIN)
-                .and()
-                .withUser("william")
-                .password(encoder.encode("william"))
-                .roles(DEPARTMENTS_PAG_VIEW, DEPARTMENTS_READ, DEPARTMENTS_CREATE)
-                .and()
-                .withUser("lucas")
-                .password(encoder.encode("lucas"))
-                .roles(CUSTOMERS_PAG_VIEW, CUSTOMERS_READ)
-                .and()
-                .withUser("tom")
-                .password(encoder.encode("tom"))
-                .roles();
+                .build();
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        users.createUser(user);
+        users.createUser(user2);
+        return users;
     }
 }
