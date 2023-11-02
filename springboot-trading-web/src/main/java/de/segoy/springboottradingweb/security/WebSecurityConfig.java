@@ -18,12 +18,11 @@ import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
 @Configuration
 @EnableWebSecurity
-@EnableWebMvc
 public class WebSecurityConfig {
 
     @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/path");
+        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/");
         http
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers(mvc.pattern("/"),mvc.pattern("/home")).permitAll()
@@ -31,15 +30,14 @@ public class WebSecurityConfig {
                 .requestMatchers(mvc.pattern("/departments")).hasRole(DEPARTMENTS_PAG_VIEW)
                 .requestMatchers(mvc.pattern("/customers")).hasRole(CUSTOMERS_PAG_VIEW)
                 .anyRequest().authenticated())
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login-error")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .permitAll();
+                .formLogin(form  -> form
+                        .loginPage("/login")
+                        .failureUrl("/login-error")
+                        .permitAll())
+                .logout(form -> form
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .permitAll());
 
         return http.build();
     }
