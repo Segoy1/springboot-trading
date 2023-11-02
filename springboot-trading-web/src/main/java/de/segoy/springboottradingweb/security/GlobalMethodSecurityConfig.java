@@ -24,4 +24,46 @@ public class GlobalMethodSecurityConfig extends GlobalMethodSecurityConfiguratio
         );
         return affirmativeBased;
     }
+    /*
+    Class after RoleHierarchy is resolved to @EnableMethodSecurity
+    delete RoleHierarchyConfigurationClass After
+     */
+//    @EnableMethodSecurity(securedEnabled = true, prePostEnabled = false)
+//    public class GlobalMethodSecurityConfig {
+//
+//        @Bean
+//        static RoleHierarchy roleHierarchy() {
+//            RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//            roleHierarchy.setHierarchy(
+//                    new RolesHierarchyBuilder()
+//                            .append(SUPER_ADMIN, CUSTOMERS_ADMIN)
+//                            .append(CUSTOMERS_ADMIN, CUSTOMERS_CREATE)
+//                            .append(CUSTOMERS_ADMIN, CUSTOMERS_READ)
+//                            .append(CUSTOMERS_ADMIN, CUSTOMERS_DELETE)
+//                            .append(CUSTOMERS_ADMIN, CUSTOMERS_PAG_VIEW)
+//
+//                            .append(SUPER_ADMIN, EMPLOYEES_ADMIN)
+//                            .append(EMPLOYEES_ADMIN, EMPLOYEES_CREATE)
+//                            .append(EMPLOYEES_ADMIN, EMPLOYEES_READ)
+//                            .append(EMPLOYEES_ADMIN, EMPLOYEES_DELETE)
+//                            .append(EMPLOYEES_ADMIN, EMPLOYEES_PAG_VIEW)
+//
+//                            .append(SUPER_ADMIN, DEPARTMENTS_ADMIN)
+//                            .append(DEPARTMENTS_ADMIN, DEPARTMENTS_CREATE)
+//                            .append(DEPARTMENTS_ADMIN, DEPARTMENTS_READ)
+//                            .append(DEPARTMENTS_ADMIN, DEPARTMENTS_DELETE)
+//                            .append(DEPARTMENTS_ADMIN, DEPARTMENTS_PAG_VIEW)
+//
+//                            .build()
+//            );
+//
+//            return roleHierarchy;
+//        }
+//
+//        @Bean
+//        static MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+//            DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+//            expressionHandler.setRoleHierarchy(roleHierarchy);
+//            return expressionHandler;
+//        }
 }
