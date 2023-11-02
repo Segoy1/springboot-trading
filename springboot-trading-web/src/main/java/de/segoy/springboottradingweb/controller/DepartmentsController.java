@@ -1,12 +1,12 @@
 package de.segoy.springboottradingweb.controller;
 
 
+import de.segoy.springboottradingdata.dao.DepartmentsDao;
+import de.segoy.springboottradingdata.ds.Department;
 import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsCreate;
 import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsDelete;
 import de.segoy.springboottradingweb.security.annotations.departments.IsDepartmentsRead;
-import de.segoy.springboottradingdata.dao.DepartmentsDao;
-import de.segoy.springboottradingdata.ds.Department;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.validation.Valid;
-
 @Controller
 public class DepartmentsController {
 
-    @Autowired
-    private DepartmentsDao departmentsDao;
+    private final DepartmentsDao departmentsDao;
+
+    public DepartmentsController(DepartmentsDao departmentsDao) {
+        this.departmentsDao = departmentsDao;
+    }
 
     @IsDepartmentsRead
     @GetMapping("/departments")

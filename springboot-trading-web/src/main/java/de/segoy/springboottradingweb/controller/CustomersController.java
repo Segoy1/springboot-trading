@@ -1,11 +1,11 @@
 package de.segoy.springboottradingweb.controller;
 
+import de.segoy.springboottradingdata.dao.CustomersDao;
+import de.segoy.springboottradingdata.ds.Customer;
 import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersCreate;
 import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersDelete;
 import de.segoy.springboottradingweb.security.annotations.customers.IsCustomersRead;
-import de.segoy.springboottradingdata.dao.CustomersDao;
-import de.segoy.springboottradingdata.ds.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.validation.Valid;
-
 @Controller
 public class CustomersController {
 
-    @Autowired
-    private CustomersDao customersDao;
+    private final CustomersDao customersDao;
+
+    public CustomersController(CustomersDao customersDao) {
+        this.customersDao = customersDao;
+    }
 
     @IsCustomersRead
     @GetMapping("/customers")
