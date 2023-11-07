@@ -15,13 +15,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class ContractLookupService {
 
-    private final EClientSocket m_client;
-
-    public ContractLookupService(EClientSocket m_client) {
-        this.m_client = m_client;
-    }
-
-    public List<ContractDetails> lookupContract(Contract contract, Map<Integer, ContractDetailsCallback> callbackMap, Integer id) throws InterruptedException {
+    public List<ContractDetails> lookupContract(Contract contract, Map<Integer, ContractDetailsCallback> callbackMap, Integer id, EClientSocket m_client) throws InterruptedException {
         final CompletableFuture<List<ContractDetails>> future = new CompletableFuture<>();
 
         synchronized (callbackMap) {

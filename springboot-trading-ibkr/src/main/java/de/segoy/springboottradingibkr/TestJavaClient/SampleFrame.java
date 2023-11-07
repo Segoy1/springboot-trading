@@ -1146,6 +1146,8 @@ class SampleFrame extends JFrame implements EWrapper {
                 m_historicalNewsDlg.m_retEndDateTime, m_historicalNewsDlg.m_retTotalResults, m_historicalNewsOptions);
     }
 
+
+
     public void tickPrice( int tickerId, int field, double price, TickAttrib attribs) {
         // received price tick
     	String msg = EWrapperMsgGenerator.tickPrice( tickerId, field, price, attribs);

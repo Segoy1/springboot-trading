@@ -18,16 +18,15 @@ import java.util.*;
 import java.util.Map.Entry;
 
 @Component
-class IBKRConnection implements EWrapper {
+public class IBKRConnection implements EWrapper {
 
     private final EJavaSignal m_signal;
     private final EClientSocket m_client;
-    private final EReader m_reader;
+//    private final EReader m_reader;
     private final SynchronizedCallbackHanlder callbackHanlder;
     private final ErrorCodeHandler errorCodeHandler;
     private final FaDataTypeHandler faDataTypeHandler;
 
-    private OrderModel m_orderModel;
 
     private List<String> m_tickers = new ArrayList<>();
     private TextModel m_TWS = new TextModel();
@@ -37,19 +36,20 @@ class IBKRConnection implements EWrapper {
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
     private Map<Integer, MktDepthModel> m_mapRequestToMktDepthModel = new HashMap<>();
     private Map<Integer, MktDepthModel> m_mapRequestToSmartDepthModel = new HashMap<>();
-    private AccountModel m_accountModel;
 
     private boolean m_disconnectInProgress = false;
     private boolean faError;
     private Map<Integer, String> faMap = new HashMap<>();
+
+    private OrderModel m_orderModel;
+    private AccountModel m_accountModel;
     private GroupsModel m_groupsDlg;
     private NewsArticleModel m_newsArticleModel;
 
     @Autowired
-    public IBKRConnection(EJavaSignal m_signal, EClientSocket m_client, EReader m_reader, SynchronizedCallbackHanlder callbackHanlder, ErrorCodeHandler errorCodeHandler, FaDataTypeHandler faDataTypeHandler) {
+    public IBKRConnection(EJavaSignal m_signal, EReader m_reader, SynchronizedCallbackHanlder callbackHanlder, ErrorCodeHandler errorCodeHandler, FaDataTypeHandler faDataTypeHandler) {
         this.m_signal = m_signal;
-        this.m_client = m_client;
-        this.m_reader = m_reader;
+        this.m_client = new EClientSocket(this, this.m_signal);
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -309,7 +309,7 @@ class IBKRConnection implements EWrapper {
     @Override
     public void receiveFA(int faDataType, String xml) {
         displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError );
+        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError, m_client );
     }
 
     @Override
