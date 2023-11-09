@@ -1,2 +1,7 @@
-package de.segoy.springboottradingweb.controller;public class HomeController {
+package de.segoy.springboottradingweb.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class HomeController {
 }
