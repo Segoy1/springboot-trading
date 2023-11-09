@@ -314,7 +314,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void receiveFA(int faDataType, String xml) {
         displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError, m_client );
+        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError );
     }
 
     @Override
