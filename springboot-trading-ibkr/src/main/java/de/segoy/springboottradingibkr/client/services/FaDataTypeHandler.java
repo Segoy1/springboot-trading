@@ -9,7 +9,13 @@ import java.util.Map;
 @Service
 public class FaDataTypeHandler {
 
-    public void handleFaDataType(int faDataType, String xml, Map<Integer, String> faMap, boolean faError, EClientSocket m_client) {
+    private final EClientSocket m_client;
+
+    public FaDataTypeHandler(EClientSocket m_client) {
+        this.m_client = m_client;
+    }
+
+    public void handleFaDataType(int faDataType, String xml, Map<Integer, String> faMap, boolean faError) {
 
         if (faDataType == EClientSocket.GROUPS || faDataType == EClientSocket.PROFILES || faDataType == EClientSocket.ALIASES) {
             faMap.put(faDataType, xml);
