@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 public class IBKRConnection implements EWrapper {
 
     private final EJavaSignal m_signal;
-    private final EClientSocket m_client;
+    private EClientSocket m_client;
 //    private final EReader m_reader;
     private final SynchronizedCallbackHanlder callbackHanlder;
     private final ErrorCodeHandler errorCodeHandler;
@@ -46,10 +46,15 @@ public class IBKRConnection implements EWrapper {
     private GroupsModel m_groupsDlg;
     private NewsArticleModel m_newsArticleModel;
 
+    //Setter Injection for circular Dependency
+    @Autowired
+    private void setM_client(){
+        m_client = new EClientSocket(this, m_signal);
+    }
+
     @Autowired
     public IBKRConnection(EJavaSignal m_signal, EReader m_reader, SynchronizedCallbackHanlder callbackHanlder, ErrorCodeHandler errorCodeHandler, FaDataTypeHandler faDataTypeHandler) {
         this.m_signal = m_signal;
-        this.m_client = new EClientSocket(this, this.m_signal);
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
