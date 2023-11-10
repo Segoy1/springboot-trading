@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.services;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingibkr.model.FinancialAdvisorModel;
+import de.segoy.springboottradingdata.model.FinancialAdvisorModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

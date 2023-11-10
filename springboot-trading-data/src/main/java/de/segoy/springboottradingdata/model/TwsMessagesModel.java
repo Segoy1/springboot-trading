@@ -1,8 +1,8 @@
-package de.segoy.springboottradingibkr.model;
+package de.segoy.springboottradingdata.model;
 
 import java.util.Collection;
 
-public class TextModel {
+public class TwsMessagesModel {
 
     public void add(Collection<String> lines) {
         for (String line : lines) {

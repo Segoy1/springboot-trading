@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.services;
 
 import de.segoy.springboottradingibkr.client.FaErrorCode;
-import de.segoy.springboottradingibkr.model.MktDepthModel;
+import de.segoy.springboottradingdata.model.MktDepthModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.model;
+package de.segoy.springboottradingdata.model;
 
 public class GroupsModel {
     public void displayGroupList(int reqId, String groups) {

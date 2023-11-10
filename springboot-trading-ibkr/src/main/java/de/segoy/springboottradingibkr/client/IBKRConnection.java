@@ -4,11 +4,11 @@
 package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
+import de.segoy.springboottradingdata.model.*;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.services.SynchronizedCallbackHanlder;
-import de.segoy.springboottradingibkr.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class IBKRConnection implements EWrapper {
 
 
     private List<String> m_tickers = new ArrayList<>();
-    private TextModel m_TWS = new TextModel();
+    private TwsMessagesModel m_TWS = new TwsMessagesModel();
     private List<String> m_errors = new ArrayList<>();
 
 
@@ -114,7 +114,7 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
-    public void openOrder(int orderId, Contract contract, Order order, OrderState orderState) {
+    public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         // received open order
         m_TWS.add(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
     }
@@ -566,7 +566,7 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
-    public void completedOrder(Contract contract, Order order, OrderState orderState) {
+    public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
         m_TWS.add(EWrapperMsgGenerator.completedOrder(contract, order, orderState));
     }
 
