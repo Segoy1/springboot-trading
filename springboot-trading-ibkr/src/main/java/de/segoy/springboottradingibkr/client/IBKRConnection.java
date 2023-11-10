@@ -5,7 +5,12 @@ package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
 import de.segoy.springboottradingdata.model.*;
+import de.segoy.springboottradingdata.model.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
+import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
+import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
+import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
@@ -29,9 +34,9 @@ public class IBKRConnection implements EWrapper {
     private final FaDataTypeHandler faDataTypeHandler;
 
 
-    private List<String> m_tickers = new ArrayList<>();
-    private TwsMessage m_TWS = new TwsMessage();
-    private List<String> m_errors = new ArrayList<>();
+    private TickerMessageRepository m_tickers;
+    private TwsMessageRepository m_TWS;
+    private ErrorMessageRepository m_errors;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -54,122 +59,123 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Autowired
-    public IBKRConnection(EJavaSignal m_signal, EReader m_reader, SynchronizedCallbackHanlder callbackHanlder, ErrorCodeHandler errorCodeHandler, FaDataTypeHandler faDataTypeHandler) {
+    public IBKRConnection(EJavaSignal m_signal,
+                          EReader m_reader,
+                          SynchronizedCallbackHanlder callbackHanlder,
+                          ErrorCodeHandler errorCodeHandler,
+                          FaDataTypeHandler faDataTypeHandler,
+                          TwsMessageRepository m_Tws,
+                          TickerMessageRepository m_tickers,
+                          ErrorMessageRepository m_errors) {
         this.m_signal = m_signal;
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
+        this.m_TWS = m_Tws;
+        this.m_errors = m_errors;
+        this.m_tickers = m_tickers;
     }
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
-        String msg = EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib);
-        m_tickers.add(msg);
+     m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib)).build());
     }
 
     @Override
     public void tickSize(int tickerId, int field, Decimal size) {
         // received size tick
-        m_tickers.add(EWrapperMsgGenerator.tickSize(tickerId, field, size));
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSize(tickerId, field, size)).build());
     }
 
     @Override
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
         // received computation tick
-        m_tickers.add(EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
-                gamma, vega, theta, undPrice));
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
+                gamma, vega, theta, undPrice)).build());
     }
 
     @Override
     public void tickGeneric(int tickerId, int tickType, double value) {
         // received generic tick
-        m_tickers.add(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value)).build());
 
     }
 
     @Override
     public void tickString(int tickerId, int tickType, String value) {
         // received String tick
-        m_tickers.add(EWrapperMsgGenerator.tickString(tickerId, tickType, value));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickString(tickerId, tickType, value)).build());
     }
 
     @Override
     public void tickSnapshotEnd(int reqId) {
-        m_tickers.add(EWrapperMsgGenerator.tickSnapshotEnd(reqId));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSnapshotEnd(reqId)).build());
     }
 
     @Override
     public void tickEFP(int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture, int holdDays, String futureLastTradeDate, double dividendImpact, double dividendsToLastTradeDate) {
         // received EFP tick
-        m_tickers.add(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
-                impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
+                impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate)).build());
     }
 
     @Override
     public void orderStatus(int orderId, String status, Decimal filled, Decimal remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId, String whyHeld, double mktCapPrice) {
         // received order status
-        m_TWS.add(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
-                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
-
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
+                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)).build());
         m_orderData.setIdAtLeast(orderId + 1);
     }
 
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         // received open order
-        m_TWS.add(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
     }
 
     @Override
     public void openOrderEnd() {
         // received open order end
-        m_TWS.add(EWrapperMsgGenerator.openOrderEnd());
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.openOrderEnd()).build());
     }
 
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        String msg = EWrapperMsgGenerator.contractDetails(reqId, contractDetails);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.contractDetails(reqId, contractDetails)).build());
     }
 
     @Override
     public void contractDetailsEnd(int reqId) {
         callbackHanlder.contractDetailsEnd(reqId, m_callbackMap);
-        String msg = EWrapperMsgGenerator.contractDetailsEnd(reqId);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.contractDetailsEnd(reqId)).build());
     }
 
     @Override
     public void scannerData(int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark, String projection, String legsStr) {
-        String msg = EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
-                benchmark, projection, legsStr);
-        m_tickers.add(msg);
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
+               benchmark, projection, legsStr)).build());
     }
 
     @Override
     public void scannerDataEnd(int reqId) {
-        String msg = EWrapperMsgGenerator.scannerDataEnd(reqId);
-        m_tickers.add(msg);
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.scannerDataEnd(reqId)).build());
     }
 
     @Override
     public void bondContractDetails(int reqId, ContractDetails contractDetails) {
-        String msg = EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails)).build());
     }
 
 
     @Override
     public void execDetails(int reqId, Contract contract, Execution execution) {
-        String msg = EWrapperMsgGenerator.execDetails(reqId, contract, execution);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.execDetails(reqId, contract, execution)).build());
     }
 
     @Override
     public void execDetailsEnd(int reqId) {
-        String msg = EWrapperMsgGenerator.execDetailsEnd(reqId);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.execDetailsEnd(reqId)).build());
     }
 
     @Override
@@ -201,7 +207,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
-        m_TWS.add(EWrapperMsgGenerator.nextValidId(orderId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.nextValidId(orderId)).build());
         m_orderData.setIdAtLeast(orderId);
     }
 
@@ -216,7 +222,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void error(String str) {
-        m_errors.add(EWrapperMsgGenerator.error(str));
+        m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(str)).build());
     }
 
     @Override
@@ -224,8 +230,7 @@ public class IBKRConnection implements EWrapper {
         // received error
         callbackHanlder.contractDetailsError(id, errorCode, errorMsg, m_callbackMap);
 
-        String msg = EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson);
-        m_errors.add(msg);
+        m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson)).build());
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
     }
@@ -255,7 +260,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void accountDownloadEnd(String accountName) {
         m_account.accountDownloadEnd(accountName);
-        m_TWS.add(EWrapperMsgGenerator.accountDownloadEnd( accountName));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountDownloadEnd( accountName)).build());
     }
 
     @Override
@@ -268,23 +273,22 @@ public class IBKRConnection implements EWrapper {
     public void managedAccounts(String accountsList) {
         m_orderData.setFAAccount(true);
 //        m_FAAcctCodes = accountsList;
-        String msg = EWrapperMsgGenerator.managedAccounts(accountsList);
-        m_TWS.add( msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.managedAccounts(accountsList)).build());
     }
 
     @Override
     public void historicalData(int reqId, Bar bar) {
-        m_tickers.add(EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap()));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap())).build());
     }
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        m_tickers.add(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
     }
 
     @Override
     public void realtimeBar(int reqId, long time, double open, double high, double low, double close, Decimal volume, Decimal wap, int count) {
-        m_tickers.add(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count)).build());
     }
 
     @Override
@@ -294,22 +298,23 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void currentTime(long time) {
-        m_TWS.add(EWrapperMsgGenerator.currentTime(time));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.currentTime(time)).build());
     }
 
     @Override
     public void fundamentalData(int reqId, String data) {
-        m_tickers.add(EWrapperMsgGenerator.fundamentalData(reqId, data));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.fundamentalData(reqId, data)).build());
     }
 
     @Override
     public void deltaNeutralValidation(int reqId, DeltaNeutralContract deltaNeutralContract) {
-        m_TWS.add(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract)).build());
     }
 
     private void displayXML(String title, String xml) {
-        m_TWS.add(title);
-        m_TWS.addText(xml);
+        m_TWS.save(TwsMessage.builder().message(title + "\n" + xml).build());
+//        TODO display xml properly
+//        m_TWS.addText(xml);
     }
 
     @Override
@@ -320,52 +325,52 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void marketDataType(int reqId, int marketDataType) {
-        m_tickers.add(EWrapperMsgGenerator.marketDataType(reqId, marketDataType));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.marketDataType(reqId, marketDataType)).build());
     }
 
     @Override
     public void commissionReport(CommissionReport commissionReport) {
-        m_TWS.add(EWrapperMsgGenerator.commissionReport(commissionReport));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.commissionReport(commissionReport)).build());
     }
 
     @Override
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        m_TWS.add(EWrapperMsgGenerator.position(account, contract, pos, avgCost));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.position(account, contract, pos, avgCost)).build());
     }
 
     @Override
     public void positionEnd() {
-        m_TWS.add(EWrapperMsgGenerator.positionEnd());
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.positionEnd()).build());
     }
 
     @Override
     public void accountSummary(int reqId, String account, String tag, String value, String currency) {
-        m_TWS.add(EWrapperMsgGenerator.accountSummary(reqId, account, tag, value, currency));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountSummary(reqId, account, tag, value, currency)).build());
     }
 
     @Override
     public void accountSummaryEnd(int reqId) {
-        m_TWS.add(EWrapperMsgGenerator.accountSummaryEnd(reqId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
     }
 
     @Override
     public void positionMulti(int reqId, String account, String modelCode, Contract contract, Decimal pos, double avgCost) {
-        m_TWS.add(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost)).build());
     }
 
     @Override
     public void positionMultiEnd(int reqId) {
-        m_TWS.add(EWrapperMsgGenerator.positionMultiEnd(reqId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.positionMultiEnd(reqId)).build());
     }
 
     @Override
     public void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value, String currency) {
-        m_TWS.add(EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency)).build());
     }
 
     @Override
     public void accountUpdateMultiEnd(int reqId) {
-        m_TWS.add(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId)).build());
     }
 
     @Override
@@ -396,7 +401,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void securityDefinitionOptionalParameter(int reqId, String exchange, int underlyingConId, String tradingClass, String multiplier, Set<String> expirations, Set<Double> strikes) {
-        m_TWS.add(EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes)).build());
     }
 
     @Override
@@ -404,49 +409,48 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void softDollarTiers(int reqId, SoftDollarTier[] tiers) {
-        m_TWS.add(EWrapperMsgGenerator.softDollarTiers(tiers));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.softDollarTiers(tiers)).build());
     }
 
     @Override
     public void familyCodes(FamilyCode[] familyCodes) {
-        m_TWS.add(EWrapperMsgGenerator.familyCodes(familyCodes));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.familyCodes(familyCodes)).build());
     }
 
     @Override
     public void symbolSamples(int reqId, ContractDescription[] contractDescriptions) {
-        m_TWS.add(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions)).build());
     }
 
 
     @Override
     public void mktDepthExchanges(DepthMktDataDescription[] depthMktDataDescriptions) {
-        m_TWS.add(EWrapperMsgGenerator.mktDepthExchanges(depthMktDataDescriptions));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.mktDepthExchanges(depthMktDataDescriptions)).build());
     }
 
     @Override
     public void tickNews(int tickerId, long timeStamp, String providerCode, String articleId, String headline, String extraData) {
-        m_TWS.add(EWrapperMsgGenerator.tickNews(tickerId, timeStamp, providerCode, articleId, headline, extraData));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.tickNews(tickerId, timeStamp, providerCode, articleId, headline, extraData)).build());
     }
 
     @Override
     public void smartComponents(int reqId, Map<Integer, Entry<String, Character>> theMap) {
-        m_TWS.add(EWrapperMsgGenerator.smartComponents(reqId, theMap));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.smartComponents(reqId, theMap)).build());
     }
 
     @Override
     public void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions) {
-        m_tickers.add(EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions)).build());
     }
 
     @Override
     public void newsProviders(NewsProvider[] newsProviders) {
-        m_TWS.add(EWrapperMsgGenerator.newsProviders(newsProviders));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.newsProviders(newsProviders)).build());
     }
 
     @Override
     public void newsArticle(int requestId, int articleType, String articleText) {
-        String msg = EWrapperMsgGenerator.newsArticle(requestId, articleType, articleText);
-        m_TWS.add(msg);
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.newsArticle(requestId, articleType, articleText)).build());
         if (articleType == 1) {
             String path = m_newsArticle.m_retPath;
             try {
@@ -454,31 +458,31 @@ public class IBKRConnection implements EWrapper {
                 FileOutputStream fos = new FileOutputStream(path);
                 fos.write(bytes);
                 fos.close();
-                m_TWS.add("Binary/pdf article was saved to " + path);
+                m_TWS.save(TwsMessage.builder().message("Binary/pdf article was saved to " + path).build());
             } catch (IOException ex) {
-                m_TWS.add("Binary/pdf article was not saved to " + path + " due to error: " + ex.getMessage());
+                m_TWS.save(TwsMessage.builder().message("Binary/pdf article was not saved to " + path + " due to error: " + ex.getMessage()).build());
             }
         }
     }
 
     @Override
     public void historicalNews(int requestId, String time, String providerCode, String articleId, String headline) {
-        m_TWS.add(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline)).build());
     }
 
     @Override
     public void historicalNewsEnd(int requestId, boolean hasMore) {
-        m_TWS.add(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore)).build());
     }
 
     @Override
     public void headTimestamp(int reqId, String headTimestamp) {
-        m_TWS.add(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp)).build());
     }
 
     @Override
     public void histogramData(int reqId, List<HistogramEntry> items) {
-        m_TWS.add(EWrapperMsgGenerator.histogramData(reqId, items));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.histogramData(reqId, items)).build());
     }
 
     @Override
@@ -488,27 +492,27 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void rerouteMktDataReq(int reqId, int conId, String exchange) {
-        m_TWS.add(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange)).build());
     }
 
     @Override
     public void rerouteMktDepthReq(int reqId, int conId, String exchange) {
-        m_TWS.add(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange)).build());
     }
 
     @Override
     public void marketRule(int marketRuleId, PriceIncrement[] priceIncrements) {
-        m_TWS.add(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements)).build());
     }
 
     @Override
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
-        m_TWS.add(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override
     public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL, double value) {
-        m_TWS.add(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value)).build());
     }
 
     @Override
@@ -519,7 +523,7 @@ public class IBKRConnection implements EWrapper {
             msg.append(EWrapperMsgGenerator.historicalTick(reqId, tick.time(), tick.price(), tick.size()));
             msg.append("\n");
         }
-        m_TWS.add(msg.toString());
+        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
     }
 
     @Override
@@ -531,7 +535,7 @@ public class IBKRConnection implements EWrapper {
                     tick.sizeAsk()));
             msg.append("\n");
         }
-        m_TWS.add(msg.toString());
+        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
     }
 
     @Override
@@ -543,61 +547,61 @@ public class IBKRConnection implements EWrapper {
                     tick.specialConditions()));
             msg.append("\n");
         }
-        m_TWS.add(msg.toString());
+        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
     }
 
     @Override
     public void tickByTickAllLast(int reqId, int tickType, long time, double price, Decimal size, TickAttribLast tickAttribLast, String exchange, String specialConditions) {
-        m_tickers.add(EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions)).build());
     }
 
     @Override
     public void tickByTickBidAsk(int reqId, long time, double bidPrice, double askPrice, Decimal bidSize, Decimal askSize, TickAttribBidAsk tickAttribBidAsk) {
-        m_tickers.add(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk)).build());
     }
 
     @Override
     public void tickByTickMidPoint(int reqId, long time, double midPoint) {
-        m_tickers.add(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint));
+       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint)).build());
     }
 
     @Override
     public void orderBound(long orderId, int apiClientId, int apiOrderId) {
-        m_TWS.add(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId)).build());
     }
 
     @Override
     public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
-        m_TWS.add(EWrapperMsgGenerator.completedOrder(contract, order, orderState));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.completedOrder(contract, order, orderState)).build());
     }
 
     @Override
     public void completedOrdersEnd() {
-        m_TWS.add(EWrapperMsgGenerator.completedOrdersEnd());
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.completedOrdersEnd()).build());
     }
 
     @Override
     public void replaceFAEnd(int reqId, String text) {
-        m_TWS.add(EWrapperMsgGenerator.replaceFAEnd(reqId, text));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.replaceFAEnd(reqId, text)).build());
     }
 
     @Override
     public void wshMetaData(int reqId, String dataJson) {
-        m_TWS.add(EWrapperMsgGenerator.wshMetaData(reqId, dataJson));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.wshMetaData(reqId, dataJson)).build());
     }
 
     @Override
     public void wshEventData(int reqId, String dataJson) {
-        m_TWS.add(EWrapperMsgGenerator.wshEventData(reqId, dataJson));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.wshEventData(reqId, dataJson)).build());
     }
 
     @Override
     public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone, List<HistoricalSession> sessions) {
-        m_TWS.add(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions)).build());
     }
 
     @Override
     public void userInfo(int reqId, String whiteBrandingId) {
-        m_TWS.add(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId));
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId)).build());
     }
 }
