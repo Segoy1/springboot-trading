@@ -1,13 +1,11 @@
 package de.segoy.springboottradingdata.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConnectionData {
@@ -23,10 +21,18 @@ public class ConnectionData {
     private String  m_retOptCapts;
 
     //Port: 7496 for Live 7497 for Paper Trading
-    private int 	m_retPort;
+    private Integer 	m_retPort;
 
     //Client Id: default 0
-    private int 	m_retClientId;
+    @Column(name = "client_id")
+    private Integer m_retClientId;
+
+    //Field from SampleFrame aka. IBKRConnection
+    private Boolean m_bIsFAAccount;
+
+    //Field from SampleFrame aka. IBKRConnection
+    private Boolean m_disconnectInProgress;
+
 
 
 }

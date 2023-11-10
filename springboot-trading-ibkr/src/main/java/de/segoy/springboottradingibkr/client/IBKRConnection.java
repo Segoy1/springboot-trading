@@ -60,7 +60,6 @@ public class IBKRConnection implements EWrapper {
 
     @Autowired
     public IBKRConnection(EJavaSignal m_signal,
-                          EReader m_reader,
                           SynchronizedCallbackHanlder callbackHanlder,
                           ErrorCodeHandler errorCodeHandler,
                           FaDataTypeHandler faDataTypeHandler,
@@ -320,7 +319,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void receiveFA(int faDataType, String xml) {
         displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError );
+        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError, m_client );
     }
 
     @Override
