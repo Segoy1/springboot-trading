@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.model;
 
-public class FinancialAdvisorModel {
+public class FinancialAdvisor {
 
     private boolean m_rc = false;
     private String      groupsXML ;

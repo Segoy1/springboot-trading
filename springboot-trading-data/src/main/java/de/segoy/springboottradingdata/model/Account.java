@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.model;
 import com.ib.client.Contract;
 import com.ib.client.Decimal;
 
-public class AccountModel {
+public class Account {
     public void updateAccountValue(String key, String value, String currency, String accountName) {
         //TODO Implement
     }

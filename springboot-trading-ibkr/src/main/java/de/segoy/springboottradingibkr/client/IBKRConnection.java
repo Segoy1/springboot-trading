@@ -5,6 +5,7 @@ package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
 import de.segoy.springboottradingdata.model.*;
+import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
@@ -29,22 +30,22 @@ public class IBKRConnection implements EWrapper {
 
 
     private List<String> m_tickers = new ArrayList<>();
-    private TwsMessagesModel m_TWS = new TwsMessagesModel();
+    private TwsMessage m_TWS = new TwsMessage();
     private List<String> m_errors = new ArrayList<>();
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
-    private Map<Integer, MktDepthModel> m_mapRequestToMktDepthModel = new HashMap<>();
-    private Map<Integer, MktDepthModel> m_mapRequestToSmartDepthModel = new HashMap<>();
+    private Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
+    private Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
     private boolean m_disconnectInProgress = false;
     private boolean faError;
     private Map<Integer, String> faMap = new HashMap<>();
 
-    private OrderModel m_orderModel;
-    private AccountModel m_accountModel;
-    private GroupsModel m_groupsDlg;
-    private NewsArticleModel m_newsArticleModel;
+    private OrderData m_orderData;
+    private Account m_account;
+    private Groups m_groupsDlg;
+    private NewsArticle m_newsArticle;
 
     //Setter Injection for circular Dependency
     @Autowired
@@ -110,7 +111,7 @@ public class IBKRConnection implements EWrapper {
         m_TWS.add(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
 
-        m_orderModel.setIdAtLeast(orderId + 1);
+        m_orderData.setIdAtLeast(orderId + 1);
     }
 
     @Override
@@ -173,7 +174,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void updateMktDepth(int tickerId, int position, int operation, int side, double price, Decimal size) {
-        MktDepthModel depthModel = m_mapRequestToMktDepthModel.get(tickerId);
+        MktDepth depthModel = m_mapRequestToMktDepthModel.get(tickerId);
         if (depthModel != null) {
             depthModel.updateMktDepth(tickerId, position, "", operation, side, price, size);
         } else {
@@ -183,7 +184,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void updateMktDepthL2(int tickerId, int position, String marketMaker, int operation, int side, double price, Decimal size, boolean isSmartDepth) {
-        MktDepthModel depthModel;
+        MktDepth depthModel;
 
         if (isSmartDepth) {
             depthModel = m_mapRequestToSmartDepthModel.get(tickerId);
@@ -201,7 +202,7 @@ public class IBKRConnection implements EWrapper {
     public void nextValidId(int orderId) {
         // received next valid order id
         m_TWS.add(EWrapperMsgGenerator.nextValidId(orderId));
-        m_orderModel.setIdAtLeast(orderId);
+        m_orderData.setIdAtLeast(orderId);
     }
 
     @Override
@@ -237,23 +238,23 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void updateAccountValue(String key, String value, String currency, String accountName) {
-        m_accountModel.updateAccountValue(key, value, currency, accountName);
+        m_account.updateAccountValue(key, value, currency, accountName);
     }
 
     @Override
     public void updatePortfolio(Contract contract, Decimal position, double marketPrice, double marketValue, double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
-        m_accountModel.updatePortfolio(contract, position, marketPrice, marketValue,
+        m_account.updatePortfolio(contract, position, marketPrice, marketValue,
                 averageCost, unrealizedPNL, realizedPNL, accountName);
     }
 
     @Override
     public void updateAccountTime(String timeStamp) {
-        m_accountModel.updateAccountTime(timeStamp);
+        m_account.updateAccountTime(timeStamp);
     }
 
     @Override
     public void accountDownloadEnd(String accountName) {
-        m_accountModel.accountDownloadEnd(accountName);
+        m_account.accountDownloadEnd(accountName);
         m_TWS.add(EWrapperMsgGenerator.accountDownloadEnd( accountName));
     }
 
@@ -265,7 +266,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void managedAccounts(String accountsList) {
-        m_orderModel.setFAAccount(true);
+        m_orderData.setFAAccount(true);
 //        m_FAAcctCodes = accountsList;
         String msg = EWrapperMsgGenerator.managedAccounts(accountsList);
         m_TWS.add( msg);
@@ -447,7 +448,7 @@ public class IBKRConnection implements EWrapper {
         String msg = EWrapperMsgGenerator.newsArticle(requestId, articleType, articleText);
         m_TWS.add(msg);
         if (articleType == 1) {
-            String path = m_newsArticleModel.m_retPath;
+            String path = m_newsArticle.m_retPath;
             try {
                 byte[] bytes = Base64.getDecoder().decode(articleText);
                 FileOutputStream fos = new FileOutputStream(path);

@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.model;
 import com.ib.client.Decimal;
 import com.ib.client.EClient;
 
-public class MktDepthModel {
+public class MktDepth {
     private EClient 	m_client;
     private int			  	m_id;
 

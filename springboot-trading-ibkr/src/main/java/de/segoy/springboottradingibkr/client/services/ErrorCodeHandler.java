@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.services;
 
 import de.segoy.springboottradingibkr.client.FaErrorCode;
-import de.segoy.springboottradingdata.model.MktDepthModel;
+import de.segoy.springboottradingdata.model.MktDepth;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,10 +20,10 @@ public class ErrorCodeHandler {
         return faError;
     }
 
-    public void handleDataReset(int id, int errorCode, Map<Integer, MktDepthModel> m_mapRequestToMktDepthModel){
+    public void handleDataReset(int id, int errorCode, Map<Integer, MktDepth> m_mapRequestToMktDepthModel){
         if (errorCode == FaErrorCode.MKT_DEPTH_DATA_RESET.getCode()) {
 
-            MktDepthModel depthDialog = m_mapRequestToMktDepthModel.get(id);
+            MktDepth depthDialog = m_mapRequestToMktDepthModel.get(id);
             if ( depthDialog != null ) {
                 depthDialog.reset();
             } else {

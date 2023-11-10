@@ -1,5 +1,5 @@
 package de.segoy.springboottradingdata.model;
 
-public class NewsArticleModel {
+public class NewsArticle {
     public String m_retPath;
 }

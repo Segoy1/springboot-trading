@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.services;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.FinancialAdvisorModel;
+import de.segoy.springboottradingdata.model.FinancialAdvisor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ public class FaDataTypeHandler {
 
         if (!faError &&
                 !(faMap.get(EClientSocket.GROUPS) == null || faMap.get(EClientSocket.PROFILES) == null || faMap.get(EClientSocket.ALIASES) == null)) {
-            FinancialAdvisorModel model = new FinancialAdvisorModel();
+            FinancialAdvisor model = new FinancialAdvisor();
             model.receiveInitialXML(faMap.get(EClientSocket.GROUPS), faMap.get(EClientSocket.PROFILES), faMap.get(EClientSocket.ALIASES));
             model.setVisible(true);
 

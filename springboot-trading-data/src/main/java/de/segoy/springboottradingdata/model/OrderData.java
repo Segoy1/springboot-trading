@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.model;
 
-public class OrderModel {
+public class OrderData {
     private boolean isFAAccount;
 
 
