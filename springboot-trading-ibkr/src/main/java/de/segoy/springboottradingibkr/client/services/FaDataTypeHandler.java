@@ -2,6 +2,8 @@ package de.segoy.springboottradingibkr.client.services;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.FinancialAdvisor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -9,7 +11,16 @@ import java.util.Map;
 @Service
 public class FaDataTypeHandler {
 
-    public void handleFaDataType(int faDataType, String xml, Map<Integer, String> faMap, boolean faError,EClientSocket m_client) {
+    private EClientSocket m_client;
+
+    //Setter Injection for circular Dependency
+    @Autowired
+    @Lazy
+    private void setM_client(EClientSocket eClientSocket){
+        m_client = eClientSocket;
+    }
+
+    public void handleFaDataType(int faDataType, String xml, Map<Integer, String> faMap, boolean faError) {
 
         if (faDataType == EClientSocket.GROUPS || faDataType == EClientSocket.PROFILES || faDataType == EClientSocket.ALIASES) {
             faMap.put(faDataType, xml);

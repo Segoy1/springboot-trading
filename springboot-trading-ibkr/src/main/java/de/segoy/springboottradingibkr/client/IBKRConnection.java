@@ -8,6 +8,7 @@ import de.segoy.springboottradingdata.model.*;
 import de.segoy.springboottradingdata.model.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
+import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
@@ -26,9 +27,9 @@ import java.util.Map.Entry;
 @Component
 public class IBKRConnection implements EWrapper {
 
-    private final EJavaSignal m_signal;
-    private EClientSocket m_client;
-//    private final EReader m_reader;
+
+    private final int CONNECTION_ID = 1;
+    //    private final EReader m_reader;
     private final SynchronizedCallbackHanlder callbackHanlder;
     private final ErrorCodeHandler errorCodeHandler;
     private final FaDataTypeHandler faDataTypeHandler;
@@ -37,42 +38,37 @@ public class IBKRConnection implements EWrapper {
     private TickerMessageRepository m_tickers;
     private TwsMessageRepository m_TWS;
     private ErrorMessageRepository m_errors;
+    private ConnectionDataRepository connectionDataRepository;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
-    private Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
-    private Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
+    private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
+    private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
-    private boolean m_disconnectInProgress = false;
     private boolean faError;
-    private Map<Integer, String> faMap = new HashMap<>();
+    private final Map<Integer, String> faMap = new HashMap<>();
 
     private OrderData m_orderData;
     private Account m_account;
     private Groups m_groupsDlg;
     private NewsArticle m_newsArticle;
 
-    //Setter Injection for circular Dependency
     @Autowired
-    private void setM_client(){
-        m_client = new EClientSocket(this, m_signal);
-    }
-
-    @Autowired
-    public IBKRConnection(EJavaSignal m_signal,
+    public IBKRConnection(
                           SynchronizedCallbackHanlder callbackHanlder,
                           ErrorCodeHandler errorCodeHandler,
                           FaDataTypeHandler faDataTypeHandler,
                           TwsMessageRepository m_Tws,
                           TickerMessageRepository m_tickers,
-                          ErrorMessageRepository m_errors) {
-        this.m_signal = m_signal;
+                          ErrorMessageRepository m_errors,
+                          ConnectionDataRepository connectionDataRepository) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
         this.m_TWS = m_Tws;
         this.m_errors = m_errors;
         this.m_tickers = m_tickers;
+        this.connectionDataRepository = connectionDataRepository;
     }
 
     @Override
@@ -213,7 +209,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(Exception e) {
         // do not report exceptions if we initiated disconnect
-        if (!m_disconnectInProgress) {
+        if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getM_disconnectInProgress()) {
             String msg = EWrapperMsgGenerator.error(e);
             //TODO Main.inform(this, msg) put in get to spring
         }
@@ -270,7 +266,10 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void managedAccounts(String accountsList) {
-        m_orderData.setFAAccount(true);
+
+        ConnectionData connectionData = connectionDataRepository.findById(CONNECTION_ID).orElseThrow();
+        connectionData.setM_bIsFAAccount(true);
+        connectionDataRepository.save(connectionData);
 //        m_FAAcctCodes = accountsList;
         m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.managedAccounts(accountsList)).build());
     }
@@ -319,7 +318,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void receiveFA(int faDataType, String xml) {
         displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError, m_client );
+        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError);
     }
 
     @Override
@@ -393,8 +392,8 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void connectAck() {
-        if (m_client.isAsyncEConnect())
-            m_client.startAPI();
+//        if (m_client.isAsyncEConnect())
+//            m_client.startAPI();
     }
 
 
