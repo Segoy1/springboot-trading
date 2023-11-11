@@ -48,7 +48,6 @@ public class IBKRConnection implements EWrapper {
     private boolean faError;
     private final Map<Integer, String> faMap = new HashMap<>();
 
-    private OrderData m_orderData;
     private Account m_account;
     private Groups m_groupsDlg;
     private NewsArticle m_newsArticle;
@@ -119,7 +118,6 @@ public class IBKRConnection implements EWrapper {
         // received order status
         m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)).build());
-        m_orderData.setIdAtLeast(orderId + 1);
     }
 
     @Override
@@ -203,7 +201,6 @@ public class IBKRConnection implements EWrapper {
     public void nextValidId(int orderId) {
         // received next valid order id
         m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.nextValidId(orderId)).build());
-        m_orderData.setIdAtLeast(orderId);
     }
 
     @Override
