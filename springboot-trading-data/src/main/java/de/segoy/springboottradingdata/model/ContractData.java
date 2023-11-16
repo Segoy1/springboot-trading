@@ -1,7 +1,5 @@
 package de.segoy.springboottradingdata.model;
 
-import com.ib.client.ComboLeg;
-import com.ib.client.DeltaNeutralContract;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -42,9 +41,6 @@ public class ContractData {
     // COMBOS
     private String m_comboLegsDescrip; // received in open order version 14 and up for all combos
 
-    @Embedded
-    private DeltaNeutralContract m_deltaNeutralContract; //TODO Probably have to make embeddable extension of DeltaNeutralContract
-
-    @Embedded
-    private ComboLeg[] m_comboLegs; //TODO same as above
+    @OneToMany
+    private List<ComboLegData> m_comboLegs;
 }
