@@ -1,9 +1,7 @@
 package de.segoy.springboottradingdata.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import de.segoy.springboottradingdata.type.Action;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +20,8 @@ public class ComboLegData {
 
     private Integer contractId;
     private Integer ratio;
-    private String action; // BUY/SELL/SSHORT/SSHORTX
+
+    @Enumerated(EnumType.STRING)
+    private Action action; // BUY/SELL/SSHORT/SSHORTX
     private String exchange;
 }
