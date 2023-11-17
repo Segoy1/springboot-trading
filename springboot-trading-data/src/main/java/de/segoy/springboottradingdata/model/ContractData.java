@@ -1,5 +1,6 @@
 package de.segoy.springboottradingdata.model;
 
+import de.segoy.springboottradingdata.type.Currency;
 import de.segoy.springboottradingdata.type.Right;
 import de.segoy.springboottradingdata.type.SecurityType;
 import de.segoy.springboottradingdata.type.Symbol;
@@ -37,22 +38,22 @@ public class ContractData {
 
     private BigDecimal multiplier; // "100"
     private String exchange; // "SMART"
-    private String primaryExchange; //Not SMART //leave empty
+//    private String primaryExchange; //Not SMART //leave empty
 
     @Enumerated(EnumType.STRING)
-    private String currency; //USD
+    private Currency currency; //USD
     private String localSymbol; // can be used to define options Maybe best solution "P SPX  20231116 4100 W"
     private String tradingClass; //SPXW
-    private String securityIdType; // CUSIP;SEDOL;ISIN;RIC //Leave Empty
-    private String securityId;
-    private String description;
-    private String issuerId;
+//    private String securityIdType; // CUSIP;SEDOL;ISIN;RIC //Leave Empty
+//    private String securityId;
+//    private String description;
+//    private String issuerId;
 
 
-    private boolean m_includeExpired;  // can not be set to true for orders
+    private boolean includeExpired;  // can not be set to true for orders
     // COMBOS
-    private String m_comboLegsDescrip; // received in open order version 14 and up for all combos
+    private String comboLegsDescription; // received in open order version 14 and up for all combos
 
     @OneToMany
-    private List<ComboLegData> m_comboLegs;
+    private List<ComboLegData> comboLegs;
 }
