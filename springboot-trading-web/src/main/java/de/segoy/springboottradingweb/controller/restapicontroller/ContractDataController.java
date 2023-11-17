@@ -1,5 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
@@ -23,13 +24,13 @@ public class ContractDataController {
 
     @PutMapping("/single")
     public ResponseEntity<ContractData> singleLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
-                                                                        @RequestParam(defaultValue = "OPT", name = "securityType") SecurityType securityType,
+                                                                        @RequestParam(defaultValue = "OPT", name = "securityType") Types.SecType securityType,
                                                                         @RequestParam(defaultValue = "USD", name = "currency") Currency currency,
                                                                         @RequestParam(defaultValue = "SMART", name = "exchange") String exchange,
                                                                         @RequestParam(name = "date") String lastTradeDate,
                                                                         @RequestParam(name = "strike") String strike,
-                                                                        @RequestParam(name = "right") Right right,
-                                                                        @RequestParam(defaultValue = "100", name = "multiplier") int multiplier,
+                                                                        @RequestParam(name = "right") Types.Right right,
+                                                                        @RequestParam(defaultValue = "100", name = "multiplier") String multiplier,
                                                                         @RequestParam(defaultValue = "SPXW", name = "tradigClass") String tradingClass) {
         ContractData contract = ContractData.builder()
                 .symbol(symbol)
@@ -39,7 +40,7 @@ public class ContractDataController {
                 .lastTradeDateOrContractMonth(lastTradeDate)
                 .strike(new BigDecimal(strike))
                 .right(right)
-                .multiplier(new BigDecimal(multiplier))
+                .multiplier(multiplier)
                 .tradingClass(tradingClass)
                 .build();
 
@@ -49,16 +50,16 @@ public class ContractDataController {
 
     @PutMapping("/two_leg")
     public ResponseEntity<ContractData> twoLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
-                                                                     @RequestParam(defaultValue = "BAG", name = "securityType") SecurityType securityType,
+                                                                     @RequestParam(defaultValue = "BAG", name = "securityType") Types.SecType securityType,
                                                                      @RequestParam(defaultValue = "USD", name = "currency") Currency currency,
                                                                      @RequestParam(defaultValue = "SMART", name = "exchange") String exchange,
                                                                      @RequestParam(name = "leg1conid") int leg1ContractId,
                                                                      @RequestParam(defaultValue = "1", name = "leg1ratio") int leg1Ratio,
-                                                                     @RequestParam(defaultValue = "BUY", name = "leg1action") Action leg1Action,
+                                                                     @RequestParam(defaultValue = "BUY", name = "leg1action") Types.Action leg1Action,
                                                                      @RequestParam(defaultValue = "CBOE", name = "leg1exchange") String leg1Exchange,
                                                                      @RequestParam(name = "leg2conid") int leg2ContractId,
                                                                      @RequestParam(defaultValue = "1", name = "leg2ratio") int leg2Ratio,
-                                                                     @RequestParam(defaultValue = "SELL", name = "leg2action") Action leg2Action,
+                                                                     @RequestParam(defaultValue = "SELL", name = "leg2action") Types.Action leg2Action,
                                                                      @RequestParam(defaultValue = "CBOE", name = "leg2exchange") String leg2Exchange) {
         List<ComboLegData> legs = new ArrayList<>();
         ComboLegData leg1 = ComboLegData.builder()
@@ -91,24 +92,24 @@ public class ContractDataController {
 
     @PutMapping("/four_leg")
     public ResponseEntity<ContractData> fourLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
-                                                                      @RequestParam(defaultValue = "BAG", name = "securityType") SecurityType securityType,
+                                                                      @RequestParam(defaultValue = "BAG", name = "securityType") Types.SecType securityType,
                                                                       @RequestParam(defaultValue = "USD", name = "currency") Currency currency,
                                                                       @RequestParam(defaultValue = "SMART", name = "exchange") String exchange,
                                                                       @RequestParam(name = "leg1conid") int leg1ContractId,
                                                                       @RequestParam(defaultValue = "1", name = "leg1ratio") int leg1Ratio,
-                                                                      @RequestParam(defaultValue = "BUY", name = "leg1action") Action leg1Action,
+                                                                      @RequestParam(defaultValue = "BUY", name = "leg1action") Types.Action leg1Action,
                                                                       @RequestParam(defaultValue = "CBOE", name = "leg1exchange") String leg1Exchange,
                                                                       @RequestParam(name = "leg2conid") int leg2ContractId,
                                                                       @RequestParam(defaultValue = "1", name = "leg2ratio") int leg2Ratio,
-                                                                      @RequestParam(defaultValue = "SELL", name = "leg2action") Action leg2Action,
+                                                                      @RequestParam(defaultValue = "SELL", name = "leg2action") Types.Action leg2Action,
                                                                       @RequestParam(defaultValue = "CBOE", name = "leg2exchange") String leg2Exchange,
                                                                       @RequestParam(name = "leg3conid") int leg3ContractId,
                                                                       @RequestParam(defaultValue = "1", name = "leg3ratio") int leg3Ratio,
-                                                                      @RequestParam(defaultValue = "SELL", name = "leg3action") Action leg3Action,
+                                                                      @RequestParam(defaultValue = "SELL", name = "leg3action") Types.Action leg3Action,
                                                                       @RequestParam(defaultValue = "CBOE", name = "leg3exchange") String leg3Exchange,
                                                                       @RequestParam(name="leg4conid") int leg4ContractId,
                                                                       @RequestParam(defaultValue = "1", name="leg4ratio") int leg4Ratio,
-                                                                      @RequestParam(defaultValue = "BUY", name="leg4action") Action leg4Action,
+                                                                      @RequestParam(defaultValue = "BUY", name="leg4action") Types.Action leg4Action,
                                                                       @RequestParam(defaultValue = "CBOE", name = "leg4exchange") String leg4Exchange) {
         List<ComboLegData> legs = new ArrayList<>();
 
@@ -129,5 +130,13 @@ public class ContractDataController {
     public ResponseEntity<ContractData> setContractData(@RequestBody ContractData contract) {
         ContractData savedContract = contractDataRepository.save(contract);
         return ResponseEntity.ok(savedContract);
+    }
+
+    @GetMapping
+    public ResponseEntity<ContractData> getContractDataById(@RequestParam("id") int id){
+
+        return contractDataRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(()-> ResponseEntity.notFound().build());
     }
 }

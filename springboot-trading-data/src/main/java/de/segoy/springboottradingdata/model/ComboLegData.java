@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.model;
 
-import de.segoy.springboottradingdata.type.Action;
+import com.ib.client.Types;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +22,6 @@ public class ComboLegData {
     private Integer ratio;
 
     @Enumerated(EnumType.STRING)
-    private Action action; // BUY/SELL/SSHORT/SSHORTX
+    private Types.Action action; // BUY/SELL/SSHORT/SSHORTX
     private String exchange;
 }

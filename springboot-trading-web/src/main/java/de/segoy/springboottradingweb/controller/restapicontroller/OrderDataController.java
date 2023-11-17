@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
-import de.segoy.springboottradingdata.type.Action;
 import de.segoy.springboottradingdata.type.OrderType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class OrderDataController {
     }
 
     @PutMapping("/market_order")
-    public  ResponseEntity<OrderData> marketOrderData(@RequestParam(name = "action")Action action,
+    public  ResponseEntity<OrderData> marketOrderData(@RequestParam(name = "action")Types.Action action,
                                                       @RequestParam(name = "quantity")int quantity) {
         OrderData orderData = OrderData.builder()
                 .orderType(OrderType.MKT)
@@ -32,7 +32,7 @@ public class OrderDataController {
     }
 
     @PutMapping("/limit_order")
-    public  ResponseEntity<OrderData> limitOrderData(@RequestParam(name = "action")Action action,
+    public  ResponseEntity<OrderData> limitOrderData(@RequestParam(name = "action") Types.Action action,
                                                      @RequestParam(name = "quantity") int quantity,
                                                      @RequestParam(name = "limitPrice") String limitPrice){
 
@@ -51,5 +51,13 @@ public class OrderDataController {
     public ResponseEntity<OrderData> setOrderData(@RequestBody OrderData orderData){
         OrderData savedOrderData = orderDataRepository.save(orderData);
         return ResponseEntity.ok(savedOrderData);
+    }
+
+    @GetMapping
+    public ResponseEntity<OrderData> getContractDataById(@RequestParam("id") int id){
+
+        return orderDataRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(()-> ResponseEntity.notFound().build());
     }
 }

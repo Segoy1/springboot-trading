@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.model;
 
-import de.segoy.springboottradingdata.type.Action;
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.type.OrderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class OrderData {
     private Integer orderId;
 
     @Enumerated(EnumType.STRING)
-    private Action action;
+    private Types.Action action;
 
     private BigDecimal totalQuantity;
 
