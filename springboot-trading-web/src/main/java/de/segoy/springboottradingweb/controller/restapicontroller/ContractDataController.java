@@ -21,7 +21,7 @@ public class ContractDataController {
         this.contractDataRepository = contractDataRepository;
     }
 
-    @RequestMapping("/single")
+    @PutMapping("/single")
     public ResponseEntity<ContractData> singleLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
                                                                         @RequestParam(defaultValue = "OPT", name = "securityType") SecurityType securityType,
                                                                         @RequestParam(defaultValue = "USD", name = "currency") Currency currency,
@@ -47,7 +47,7 @@ public class ContractDataController {
         return ResponseEntity.ok(savedContract);
     }
 
-    @RequestMapping("/two_leg")
+    @PutMapping("/two_leg")
     public ResponseEntity<ContractData> twoLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
                                                                      @RequestParam(defaultValue = "BAG", name = "securityType") SecurityType securityType,
                                                                      @RequestParam(defaultValue = "USD", name = "currency") Currency currency,
@@ -89,7 +89,7 @@ public class ContractDataController {
         return ResponseEntity.ok(savedContract);
     }
 
-    @RequestMapping("/four_leg")
+    @PutMapping("/four_leg")
     public ResponseEntity<ContractData> fourLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") Symbol symbol,
                                                                       @RequestParam(defaultValue = "BAG", name = "securityType") SecurityType securityType,
                                                                       @RequestParam(defaultValue = "USD", name = "currency") Currency currency,

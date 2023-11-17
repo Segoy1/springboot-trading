@@ -1,8 +1,13 @@
 package de.segoy.springboottradingdata.type;
 
 public enum SecurityType {
+    BOND,
+    CFD,
+    CASH,
+    FUT,
+    FOP,
     OPT,
     STK,
-    BOND,
-    BAG
+    WAR,
+    BAG //Combo Legs
 }
