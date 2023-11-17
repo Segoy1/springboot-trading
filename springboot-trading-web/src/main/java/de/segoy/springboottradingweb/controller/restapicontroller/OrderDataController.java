@@ -18,7 +18,8 @@ public class OrderDataController {
     public OrderDataController(OrderDataRepository orderDataRepository) {
         this.orderDataRepository = orderDataRepository;
     }
-    @PutMapping("market_order")
+
+    @PutMapping("/market_order")
     public  ResponseEntity<OrderData> marketOrderData(@RequestParam(name = "action")Action action,
                                                       @RequestParam(name = "quantity")int quantity) {
         OrderData orderData = OrderData.builder()
@@ -30,7 +31,7 @@ public class OrderDataController {
         return ResponseEntity.ok(savedOrderData);
     }
 
-    @PutMapping("limit_order")
+    @PutMapping("/limit_order")
     public  ResponseEntity<OrderData> limitOrderData(@RequestParam(name = "action")Action action,
                                                      @RequestParam(name = "quantity") int quantity,
                                                      @RequestParam(name = "limitPrice") String limitPrice){
