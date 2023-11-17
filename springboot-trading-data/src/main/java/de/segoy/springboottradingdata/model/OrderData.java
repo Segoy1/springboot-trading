@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.model;
 
+import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.type.OrderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

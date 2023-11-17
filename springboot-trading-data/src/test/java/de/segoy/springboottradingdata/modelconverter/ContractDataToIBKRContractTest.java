@@ -54,7 +54,7 @@ class ContractDataToIBKRContractTest {
                 .tradingClass("SPXW")
                 .includeExpired(false)
                 .comboLegsDescription("description goes here")
-                .strike(new BigDecimal(72))
+                .strike(BigDecimal.valueOf(72))
                 .comboLeg(comboLegData).build();
 
         Contract contract = contractDataToIBKRContract.convertContractData(contractData);

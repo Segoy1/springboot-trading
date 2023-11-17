@@ -38,7 +38,7 @@ public class ContractDataController {
                 .currency(currency)
                 .exchange(exchange)
                 .lastTradeDateOrContractMonth(lastTradeDate)
-                .strike(new BigDecimal(strike))
+                .strike(BigDecimal.valueOf(strike))
                 .right(right)
                 .multiplier(multiplier)
                 .tradingClass(tradingClass)

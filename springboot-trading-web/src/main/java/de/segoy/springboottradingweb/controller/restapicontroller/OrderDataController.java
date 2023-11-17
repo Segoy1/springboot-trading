@@ -1,9 +1,9 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
+import com.ib.client.OrderType;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
-import de.segoy.springboottradingdata.type.OrderType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ public class OrderDataController {
                                                       @RequestParam(name = "quantity")int quantity) {
         OrderData orderData = OrderData.builder()
                 .orderType(OrderType.MKT)
-                .totalQuantity(new BigDecimal(quantity))
+                .totalQuantity(BigDecimal.valueOf(quantity))
                 .action(action).build();
 
         OrderData savedOrderData = orderDataRepository.save(orderData);
@@ -40,7 +40,7 @@ public class OrderDataController {
         OrderData orderData = OrderData.builder()
                 .orderType(OrderType.LMT)
                 .limitPrice(new BigDecimal(limitPrice))
-                .totalQuantity(new BigDecimal(quantity))
+                .totalQuantity(BigDecimal.valueOf(quantity))
                 .action(action).build();
 
         OrderData savedOrderData = orderDataRepository.save(orderData);
