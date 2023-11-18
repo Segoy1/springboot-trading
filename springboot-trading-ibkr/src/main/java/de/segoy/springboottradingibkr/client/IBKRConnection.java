@@ -9,11 +9,11 @@ import de.segoy.springboottradingdata.model.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
+import de.segoy.springboottradingibkr.client.services.ContractDetailsProvider;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.services.SynchronizedCallbackHanlder;
@@ -39,7 +39,7 @@ public class IBKRConnection implements EWrapper {
     private TwsMessageRepository m_TWS;
     private ErrorMessageRepository m_errors;
     private ConnectionDataRepository connectionDataRepository;
-    private ContractDataRepository contractDataRepository;
+    private ContractDetailsProvider contractDetailsProvider;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -62,7 +62,7 @@ public class IBKRConnection implements EWrapper {
                           TickerMessageRepository m_tickers,
                           ErrorMessageRepository m_errors,
                           ConnectionDataRepository connectionDataRepository,
-                          ContractDataRepository contractDataRepository) {
+                          ContractDetailsProvider contractDetailsProvider) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -70,7 +70,7 @@ public class IBKRConnection implements EWrapper {
         this.m_errors = m_errors;
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
-        this.contractDataRepository = contractDataRepository;
+        this.contractDetailsProvider = contractDetailsProvider;
     }
 
     @Override
@@ -138,9 +138,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-
-        //TODO
-        contractDataRepository.findById(reqId);
+        contractDetailsProvider.addContractDetailsFromAPI(reqId, contractDetails.contract());
     }
 
     @Override

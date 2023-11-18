@@ -4,6 +4,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingibkr.client.services.ContractDataApiCaller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +17,11 @@ import java.util.List;
 public class ContractDataController {
 
     private final ContractDataRepository contractDataRepository;
+    private final ContractDataApiCaller contractDataApiCaller;
 
-    public ContractDataController(ContractDataRepository contractDataRepository) {
+    public ContractDataController(ContractDataRepository contractDataRepository, ContractDataApiCaller contractDataApiCaller) {
         this.contractDataRepository = contractDataRepository;
+        this.contractDataApiCaller = contractDataApiCaller;
     }
 
     @RequestMapping("/single")
@@ -39,7 +42,7 @@ public class ContractDataController {
                 .right(right)
                 .build();
         ContractData savedContract = contractDataRepository.save(contract);
-
+        contractDataApiCaller.callContractDetailsFromAPI(savedContract);
         return ResponseEntity.ok(savedContract);
     }
 
@@ -117,6 +120,7 @@ public class ContractDataController {
                 .build();
 
         ContractData savedContract = contractDataRepository.save(contract);
+
         return ResponseEntity.ok(savedContract);
     }
 
