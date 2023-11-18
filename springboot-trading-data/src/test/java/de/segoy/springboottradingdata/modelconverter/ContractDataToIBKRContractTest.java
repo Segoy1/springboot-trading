@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ContractDataToIBKRContractTest {
 
@@ -20,9 +21,9 @@ class ContractDataToIBKRContractTest {
     void testConvertDataMinimumData(){
         ContractData contractData = ContractData.builder()
                 .right(Types.Right.Call)
-                .symbol(Symbol.SPX)
+                .symbol(Symbol.SPX.toString())
                 .securityType(Types.SecType.STK)
-                .currency(Currency.USD)
+                .currency(Currency.USD.toString())
                 .exchange("SMART").build();
 
         Contract contract = contractDataToIBKRContract.convertContractData(contractData);
@@ -44,9 +45,9 @@ class ContractDataToIBKRContractTest {
 
         ContractData contractData = ContractData.builder()
                 .right(Types.Right.Call)
-                .symbol(Symbol.SPX)
+                .symbol(Symbol.SPX.toString())
                 .securityType(Types.SecType.STK)
-                .currency(Currency.USD)
+                .currency(Currency.USD.toString())
                 .exchange("SMART")
                 .lastTradeDateOrContractMonth("20231117")
                 .multiplier("100")

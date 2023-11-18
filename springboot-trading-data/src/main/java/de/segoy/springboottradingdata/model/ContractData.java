@@ -1,10 +1,8 @@
 package de.segoy.springboottradingdata.model;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.type.Currency;
-import de.segoy.springboottradingdata.type.Symbol;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,21 +17,21 @@ public class ContractData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer contractId;
+    private Integer id;
+
+    private Integer contractId; //ContractId From Call to IBKR Api
+
+    @NotNull
+    private String symbol; //SPX
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
-    private Symbol symbol; //SPX
-
-    @Enumerated(EnumType.STRING)
-    @NotBlank
+    @NotNull
     private Types.SecType securityType; //OPT
 
-    @Enumerated(EnumType.STRING)
-    @NotBlank
-    private Currency currency; //USD
+    @NotNull
+    private String currency; //USD
 
-    @NotBlank
+    @NotNull
     private String exchange; // "SMART"
 
     private String lastTradeDateOrContractMonth; //format 20231116

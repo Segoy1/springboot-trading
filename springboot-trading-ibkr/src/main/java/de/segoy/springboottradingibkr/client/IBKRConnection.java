@@ -9,6 +9,7 @@ import de.segoy.springboottradingdata.model.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
@@ -38,6 +39,7 @@ public class IBKRConnection implements EWrapper {
     private TwsMessageRepository m_TWS;
     private ErrorMessageRepository m_errors;
     private ConnectionDataRepository connectionDataRepository;
+    private ContractDataRepository contractDataRepository;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -59,7 +61,8 @@ public class IBKRConnection implements EWrapper {
                           TwsMessageRepository m_Tws,
                           TickerMessageRepository m_tickers,
                           ErrorMessageRepository m_errors,
-                          ConnectionDataRepository connectionDataRepository) {
+                          ConnectionDataRepository connectionDataRepository,
+                          ContractDataRepository contractDataRepository) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -67,6 +70,7 @@ public class IBKRConnection implements EWrapper {
         this.m_errors = m_errors;
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
+        this.contractDataRepository = contractDataRepository;
     }
 
     @Override
@@ -115,14 +119,14 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void orderStatus(int orderId, String status, Decimal filled, Decimal remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId, String whyHeld, double mktCapPrice) {
         // received order status
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
+        m_TWS.save(TwsMessage.builder().id(orderId).message(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)).build());
     }
 
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         // received open order
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
+        m_TWS.save(TwsMessage.builder().id(orderId).message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
     }
 
     @Override
@@ -134,13 +138,15 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.contractDetails(reqId, contractDetails)).build());
+
+        //TODO
+        contractDataRepository.findById(reqId);
     }
 
     @Override
     public void contractDetailsEnd(int reqId) {
         callbackHanlder.contractDetailsEnd(reqId, m_callbackMap);
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.contractDetailsEnd(reqId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.contractDetailsEnd(reqId)).build());
     }
 
     @Override
@@ -156,18 +162,18 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void bondContractDetails(int reqId, ContractDetails contractDetails) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails)).build());
     }
 
 
     @Override
     public void execDetails(int reqId, Contract contract, Execution execution) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.execDetails(reqId, contract, execution)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.execDetails(reqId, contract, execution)).build());
     }
 
     @Override
     public void execDetailsEnd(int reqId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.execDetailsEnd(reqId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.execDetailsEnd(reqId)).build());
     }
 
     @Override
@@ -199,7 +205,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.nextValidId(orderId)).build());
+        m_TWS.save(TwsMessage.builder().id(orderId).message(EWrapperMsgGenerator.nextValidId(orderId)).build());
     }
 
     @Override
@@ -302,7 +308,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void deltaNeutralValidation(int reqId, DeltaNeutralContract deltaNeutralContract) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract)).build());
     }
 
     private void displayXML(String title, String xml) {
@@ -339,32 +345,32 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void accountSummary(int reqId, String account, String tag, String value, String currency) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountSummary(reqId, account, tag, value, currency)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.accountSummary(reqId, account, tag, value, currency)).build());
     }
 
     @Override
     public void accountSummaryEnd(int reqId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
     }
 
     @Override
     public void positionMulti(int reqId, String account, String modelCode, Contract contract, Decimal pos, double avgCost) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost)).build());
     }
 
     @Override
     public void positionMultiEnd(int reqId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.positionMultiEnd(reqId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.positionMultiEnd(reqId)).build());
     }
 
     @Override
     public void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value, String currency) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency)).build());
     }
 
     @Override
     public void accountUpdateMultiEnd(int reqId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId)).build());
     }
 
     @Override
@@ -395,7 +401,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void securityDefinitionOptionalParameter(int reqId, String exchange, int underlyingConId, String tradingClass, String multiplier, Set<String> expirations, Set<Double> strikes) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes)).build());
     }
 
     @Override
@@ -403,7 +409,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void softDollarTiers(int reqId, SoftDollarTier[] tiers) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.softDollarTiers(tiers)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.softDollarTiers(tiers)).build());
     }
 
     @Override
@@ -413,7 +419,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void symbolSamples(int reqId, ContractDescription[] contractDescriptions) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions)).build());
     }
 
 
@@ -429,7 +435,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void smartComponents(int reqId, Map<Integer, Entry<String, Character>> theMap) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.smartComponents(reqId, theMap)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.smartComponents(reqId, theMap)).build());
     }
 
     @Override
@@ -461,22 +467,22 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalNews(int requestId, String time, String providerCode, String articleId, String headline) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline)).build());
+        m_TWS.save(TwsMessage.builder().id(requestId).message(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline)).build());
     }
 
     @Override
     public void historicalNewsEnd(int requestId, boolean hasMore) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore)).build());
+        m_TWS.save(TwsMessage.builder().id(requestId).message(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore)).build());
     }
 
     @Override
     public void headTimestamp(int reqId, String headTimestamp) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp)).build());
     }
 
     @Override
     public void histogramData(int reqId, List<HistogramEntry> items) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.histogramData(reqId, items)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.histogramData(reqId, items)).build());
     }
 
     @Override
@@ -486,27 +492,27 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void rerouteMktDataReq(int reqId, int conId, String exchange) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange)).build());
     }
 
     @Override
     public void rerouteMktDepthReq(int reqId, int conId, String exchange) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange)).build());
     }
 
     @Override
     public void marketRule(int marketRuleId, PriceIncrement[] priceIncrements) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements)).build());
+        m_TWS.save(TwsMessage.builder().id(marketRuleId).message(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements)).build());
     }
 
     @Override
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override
     public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL, double value) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value)).build());
     }
 
     @Override
@@ -517,7 +523,7 @@ public class IBKRConnection implements EWrapper {
             msg.append(EWrapperMsgGenerator.historicalTick(reqId, tick.time(), tick.price(), tick.size()));
             msg.append("\n");
         }
-        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(msg.toString()).build());
     }
 
     @Override
@@ -529,7 +535,7 @@ public class IBKRConnection implements EWrapper {
                     tick.sizeAsk()));
             msg.append("\n");
         }
-        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(msg.toString()).build());
     }
 
     @Override
@@ -541,7 +547,7 @@ public class IBKRConnection implements EWrapper {
                     tick.specialConditions()));
             msg.append("\n");
         }
-        m_TWS.save(TwsMessage.builder().message(msg.toString()).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(msg.toString()).build());
     }
 
     @Override
@@ -561,7 +567,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void orderBound(long orderId, int apiClientId, int apiOrderId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId)).build());
+        m_TWS.save(TwsMessage.builder().id(apiClientId).message(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId)).build());
     }
 
     @Override
@@ -576,26 +582,26 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void replaceFAEnd(int reqId, String text) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.replaceFAEnd(reqId, text)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.replaceFAEnd(reqId, text)).build());
     }
 
     @Override
     public void wshMetaData(int reqId, String dataJson) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.wshMetaData(reqId, dataJson)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.wshMetaData(reqId, dataJson)).build());
     }
 
     @Override
     public void wshEventData(int reqId, String dataJson) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.wshEventData(reqId, dataJson)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.wshEventData(reqId, dataJson)).build());
     }
 
     @Override
     public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone, List<HistoricalSession> sessions) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions)).build());
     }
 
     @Override
     public void userInfo(int reqId, String whiteBrandingId) {
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId)).build());
+        m_TWS.save(TwsMessage.builder().id(reqId).message(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId)).build());
     }
 }
