@@ -15,10 +15,11 @@ public class EReaderThreadHolder {
     public EReaderThreadHolder(EJavaSignal signal, EClientSocket client) {
         this.signal = signal;
         this.client = client;
-        this.reader = new EReader(client,signal);
+//        this.reader = new EReader(client,signal);
     }
 
     public void startReader(){
+        reader = new EReader(client,signal);
         reader.start();
 
         new Thread(() -> {

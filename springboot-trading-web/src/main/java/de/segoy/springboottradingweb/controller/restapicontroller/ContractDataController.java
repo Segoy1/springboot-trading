@@ -42,8 +42,8 @@ public class ContractDataController {
                 .right(right)
                 .build();
         ContractData savedContract = contractDataRepository.save(contract);
-        contractDataApiCaller.callContractDetailsFromAPI(savedContract);
-        return ResponseEntity.ok(savedContract);
+        ContractData updatedContract = contractDataApiCaller.callContractDetailsFromAPI(savedContract);
+        return ResponseEntity.ok(updatedContract);
     }
 
     @PutMapping("/two_leg")
