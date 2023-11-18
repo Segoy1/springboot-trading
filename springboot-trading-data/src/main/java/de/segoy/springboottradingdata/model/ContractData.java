@@ -19,7 +19,7 @@ public class ContractData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer contractId;
 
     @Enumerated(EnumType.STRING)
     @NotBlank
@@ -40,6 +40,7 @@ public class ContractData {
     private BigDecimal strike; // 4100
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "trade_right")
     private Types.Right right; // "C" "P"
 
     private String multiplier; // "100"
@@ -60,5 +61,6 @@ public class ContractData {
 
     @OneToMany
     @Singular
+    @Column(name = "combo_legs")
     private List<ComboLegData> comboLegs;
 }

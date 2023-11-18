@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingibkr.client.services.OrderExecutionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,12 +14,14 @@ public class OrderController {
 
     private final OrderDataController orderDataController;
     private final ContractDataController contractDataController;
-    private final EClientSocket client;
+    private final OrderExecutionService orderExecutionService;
 
-    public OrderController(OrderDataController orderDataController, ContractDataController contractDataController, EClientSocket client) {
+    public OrderController(OrderDataController orderDataController,
+                           ContractDataController contractDataController,
+                           OrderExecutionService orderExecutionService) {
         this.orderDataController = orderDataController;
         this.contractDataController = contractDataController;
-        this.client = client;
+        this.orderExecutionService = orderExecutionService;
     }
 
     public ResponseEntity orderWithExitingContractAndOrder(@RequestParam("ContractDataId") int contractDataId,
@@ -37,6 +39,7 @@ public class OrderController {
     }
 
     private ResponseEntity executeOrder(ContractData contractData, OrderData orderData){
-        return null;
+        orderExecutionService.executeOrder(contractData,orderData);
+        return ResponseEntity.ok().build();
     }
 }
