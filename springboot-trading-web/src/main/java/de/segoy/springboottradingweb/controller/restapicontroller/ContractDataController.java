@@ -127,7 +127,7 @@ public class ContractDataController {
 
 
     @PutMapping("/data_object")
-    public ResponseEntity<ContractData> setContractData(@RequestBody ContractData contract) {
+    public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contract) {
         ContractData savedContract = contractDataRepository.save(contract);
         return ResponseEntity.ok(savedContract);
     }

@@ -48,7 +48,7 @@ public class OrderDataController {
     }
 
     @PutMapping("/data_object")
-    public ResponseEntity<OrderData> setOrderData(@RequestBody OrderData orderData){
+    public ResponseEntity<OrderData> saveOrderData(@RequestBody OrderData orderData){
         OrderData savedOrderData = orderDataRepository.save(orderData);
         return ResponseEntity.ok(savedOrderData);
     }
