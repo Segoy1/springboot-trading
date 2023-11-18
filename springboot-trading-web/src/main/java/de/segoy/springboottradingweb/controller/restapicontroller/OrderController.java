@@ -48,7 +48,7 @@ public class OrderController {
 
         ResponseEntity<ContractData> contractResponse = contractDataController.saveContractData(contractData);
         ResponseEntity<OrderData> orderResponse = orderDataController.saveOrderData(orderData);
-        
+
         if(contractResponse.getStatusCode().is2xxSuccessful() && orderResponse.getStatusCode().is2xxSuccessful()){
         orderExecutionService.executeOrder(contractData,orderData);
         return ResponseEntity.ok(contractData);

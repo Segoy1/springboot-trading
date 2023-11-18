@@ -29,7 +29,6 @@ public class IBKRConnection implements EWrapper {
 
 
     private final int CONNECTION_ID = 1;
-    //    private final EReader m_reader;
     private final SynchronizedCallbackHanlder callbackHanlder;
     private final ErrorCodeHandler errorCodeHandler;
     private final FaDataTypeHandler faDataTypeHandler;
