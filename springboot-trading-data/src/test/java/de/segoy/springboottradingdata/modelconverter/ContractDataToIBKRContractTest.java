@@ -44,6 +44,7 @@ class ContractDataToIBKRContractTest {
                 .build();
 
         ContractData contractData = ContractData.builder()
+                .contractId(123)
                 .right(Types.Right.Call)
                 .symbol(Symbol.SPX.toString())
                 .securityType(Types.SecType.STK)
@@ -74,6 +75,7 @@ class ContractDataToIBKRContractTest {
         assertEquals(contract.comboLegs().get(0).ratio(),1);
         assertEquals(contract.comboLegs().get(0).action().toString(),"BUY");
         assertEquals(contract.comboLegs().get(0).exchange(),"SMART");
+        assertEquals(contract.conid(), 123);
     }
 
 }

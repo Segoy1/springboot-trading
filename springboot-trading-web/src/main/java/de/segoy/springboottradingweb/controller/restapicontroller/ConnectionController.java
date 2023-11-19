@@ -61,9 +61,10 @@ public class ConnectionController {
                             client.getTwsConnectionTime()).build();
             System.out.println(msg.getMessage());
             tws_messages.save(msg);
+            ConnectionData savedConnectionData = connectionDataRepository.save(connectionData);
             eReaderThreadHolder.startReader();
 
-        return ResponseEntity.ok(connectionDataRepository.save(connectionData));
+        return ResponseEntity.ok(savedConnectionData);
         }
         return ResponseEntity.badRequest().build();
     }

@@ -22,13 +22,22 @@ public class ContractDataToIBKRContract {
         contract.exchange(contractData.getExchange());
 
 
-        contract.right(contractData.getRight().toString());
-        contract.lastTradeDateOrContractMonth(contractData.getLastTradeDateOrContractMonth());
-        contract.multiplier(contractData.getMultiplier());
-        contract.localSymbol(contractData.getLocalSymbol());
-        contract.tradingClass(contractData.getTradingClass());
         contract.includeExpired(contractData.isIncludeExpired());
+        contract.conid(contractData.getContractId()==null?0:contractData.getContractId());
+
+        //Null Values translating to emptyString making things nullsafe
         contract.comboLegsDescrip(contractData.getComboLegsDescription());
+        contract.right(contractData.getRight()==null?"":contractData.getRight().toString());
+        contract.lastTradeDateOrContractMonth(contractData.getLastTradeDateOrContractMonth()==null?"":contractData.getLastTradeDateOrContractMonth());
+        contract.multiplier(contractData.getMultiplier()==null?"":contractData.getMultiplier());
+        contract.localSymbol(contractData.getLocalSymbol()==null?"":contractData.getLocalSymbol());
+        contract.tradingClass(contractData.getTradingClass()==null?"":contractData.getTradingClass());
+
+        contract.secIdType("");
+        contract.secId("");
+        contract.issuerId("");
+        contract.primaryExch("");
+
 
         List<ComboLeg> comboLegs = new ArrayList<>();
         if (!contractData.getComboLegs().isEmpty()) {

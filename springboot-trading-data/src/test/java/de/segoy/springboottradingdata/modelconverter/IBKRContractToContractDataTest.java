@@ -48,6 +48,7 @@ class IBKRContractToContractDataTest {
         legs.add(comboLeg);
 
         Contract contract = new Contract();
+        contract.conid(123);
         contract.right(Types.Right.Call);
         contract.symbol(Symbol.SPX.toString());
         contract.secType(Types.SecType.STK);
@@ -78,6 +79,7 @@ class IBKRContractToContractDataTest {
         assertEquals(contractData.getComboLegs().get(0).getRatio(), 1);
         assertEquals(contractData.getComboLegs().get(0).getAction().toString(), "BUY");
         assertEquals(contractData.getComboLegs().get(0).getExchange(), "SMART");
+        assertEquals(contractData.getContractId(), 123);
     }
 
 }

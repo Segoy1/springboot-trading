@@ -14,6 +14,7 @@ public class IBKRContractToContractData {
 
     public ContractData covertIBKRContract(Contract contract) {
         ContractData contractData = ContractData.builder()
+                .contractId(contract.conid())
                 .symbol(contract.symbol())
                 .securityType(contract.secType())
                 .currency(contract.currency())
