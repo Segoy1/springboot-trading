@@ -26,12 +26,12 @@ public class ContractDataController {
 
     @RequestMapping("/single")
     public ResponseEntity<ContractData> singleLegContractDataWithMinimalParams(@RequestParam(defaultValue = "SPX", name = "symbol", required = false) String symbol,
-                                                                        @RequestParam(defaultValue = "OPT", name = "securityType", required = false) Types.SecType securityType,
-                                                                        @RequestParam(defaultValue = "USD", name = "currency", required = false) String currency,
-                                                                        @RequestParam(defaultValue = "SMART", name = "exchange", required = false) String exchange,
-                                                                        @RequestParam(name = "date") String lastTradeDate,
-                                                                        @RequestParam(name = "strike") String strike,
-                                                                        @RequestParam(name = "right") Types.Right right) {
+                                                                                              @RequestParam(defaultValue = "OPT", name = "securityType", required = false) Types.SecType securityType,
+                                                                                              @RequestParam(defaultValue = "USD", name = "currency", required = false) String currency,
+                                                                                              @RequestParam(defaultValue = "SMART", name = "exchange", required = false) String exchange,
+                                                                                              @RequestParam(name = "date") String lastTradeDate,
+                                                                                              @RequestParam(name = "strike") String strike,
+                                                                                              @RequestParam(name = "right") Types.Right right) {
         ContractData contract = ContractData.builder()
                 .symbol(symbol)
                 .securityType(securityType)
@@ -43,8 +43,11 @@ public class ContractDataController {
                 .build();
         ContractData savedContract = contractDataRepository.save(contract);
         ContractData updatedContract = contractDataApiCaller.callContractDetailsFromAPI(savedContract);
+        System.out.println("ContractData is Set");
         return ResponseEntity.ok(updatedContract);
     }
+
+
 
     @PutMapping("/two_leg")
     public ResponseEntity<ContractData> twoLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") String symbol,

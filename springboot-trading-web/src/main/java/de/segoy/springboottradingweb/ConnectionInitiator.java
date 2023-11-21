@@ -6,6 +6,7 @@ import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.services.EReaderHolder;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,6 +56,7 @@ public class ConnectionInitiator {
         }
     }
 
+    @PreDestroy
     public ConnectionData disconnect(){
         //TODO cleaner implementation for closing connection
         ConnectionData connectionData = connectionDataRepository.findById(1).orElse(ConnectionData.builder().build());

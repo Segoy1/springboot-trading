@@ -138,7 +138,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        contractDetailsProvider.addContractDetailsFromAPI(reqId, contractDetails.contract());
+        contractDetailsProvider.addContractDetailsFromAPIToContractData(reqId, contractDetails.contract());
+        System.out.println("Added Contract Details to DB");
     }
 
     @Override

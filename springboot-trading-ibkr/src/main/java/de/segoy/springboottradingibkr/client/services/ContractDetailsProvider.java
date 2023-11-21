@@ -17,14 +17,11 @@ public class ContractDetailsProvider {
         this.contractDataRepository = contractDataRepository;
     }
 
-    public void addContractDetailsFromAPI(int id, Contract contract) {
+    public synchronized void addContractDetailsFromAPIToContractData(int id, Contract contract) {
         ContractData contractData = ibkrContractToContractData.covertIBKRContract(contract);
         contractData.setId(id);
 
-        if(contractDataRepository.findById(id).isPresent()){
-            contractDataRepository.save(contractData);
-        }else{
-            System.out.println("Something went Wrong with Contract Data id: " + id);
-        }
+        contractDataRepository.save(contractData);
+        System.out.println("contractDataId to update: " + id);
     }
 }
