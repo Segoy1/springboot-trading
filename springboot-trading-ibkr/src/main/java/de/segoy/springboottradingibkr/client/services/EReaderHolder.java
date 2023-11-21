@@ -3,6 +3,7 @@ package de.segoy.springboottradingibkr.client.services;
 import com.ib.client.EClientSocket;
 import com.ib.client.EJavaSignal;
 import com.ib.client.EReader;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
@@ -21,16 +22,11 @@ public class EReaderThreadHolder {
         this.taskExecutor = taskExecutor;
     }
 
+    @PostConstruct
     public void startReader() {
         //Dont't know why but reader hast to be initialized here and not in Constructor...
         this.reader = new EReader(client,signal);
         reader.start();
-
-        taskExecutor.execute(() -> {
-            processMessages();
-            int i = 0;
-            System.out.println(i);
-        });
     }
 
     protected void processMessages() {
