@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.model.ConnectionData;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
-import de.segoy.springboottradingibkr.client.services.EReaderThreadHolder;
+import de.segoy.springboottradingibkr.client.services.EReaderHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,14 +16,14 @@ public class ConnectionInitiator {
     private final EClientSocket client;
     private final ConnectionDataRepository connectionDataRepository;
     private final TwsMessageRepository tws_messages;
-    private final EReaderThreadHolder eReaderThreadHolder;
+    private final EReaderHolder eReaderHolder;
 
 
-    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, TwsMessageRepository tws, EReaderThreadHolder eReaderThreadHolder) {
+    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, TwsMessageRepository tws, EReaderHolder eReaderHolder) {
         this.client = m_client;
         this.connectionDataRepository = connectionDataRepository;
         this.tws_messages = tws;
-        this.eReaderThreadHolder = eReaderThreadHolder;
+        this.eReaderHolder = eReaderHolder;
     }
 
     public void connect(int port) {
@@ -51,7 +51,7 @@ public class ConnectionInitiator {
             System.out.println(msg.getMessage());
             tws_messages.save(msg);
             ConnectionData savedConnectionData = connectionDataRepository.save(connectionData);
-            eReaderThreadHolder.startReader();
+            eReaderHolder.startReader();
         }
     }
 
