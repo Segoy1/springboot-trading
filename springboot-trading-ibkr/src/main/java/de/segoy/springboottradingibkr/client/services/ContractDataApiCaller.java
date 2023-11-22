@@ -23,11 +23,22 @@ public class ContractDataApiCaller {
         this.repositoryRefreshService = repositoryRefreshService;
     }
 
-    public synchronized ContractData callContractDetailsFromAPI(ContractData contractData) {
+    public ContractData callContractDetailsFromAPI(ContractData contractData) {
         Contract ibkrContract = contractDataToIBKRContract.convertContractData(contractData);
         client.reqContractDetails(contractData.getId(), ibkrContract);
-        repositoryRefreshService.clearCacheAndWait();
-        return contractDataRepository.findById(contractData.getId()).orElse(contractData);
+        return getUpdatedContractData(contractData.getId());
+    }
+
+    private ContractData getUpdatedContractData(Integer id) {
+        ContractData savedContactData;
+        int i = 0;
+        do {
+            i++;
+        repositoryRefreshService.clearCacheAndWait(contractDataRepository);
+        savedContactData = contractDataRepository.findById(id).orElseThrow();
+        System.out.print(i +",");
+        }while(!savedContactData.isTouchedByApi());
+        return savedContactData;
     }
 
 

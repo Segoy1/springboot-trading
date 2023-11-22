@@ -1,6 +1,7 @@
 package de.segoy.springboottradingdata.service;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -15,19 +16,18 @@ public class RepositoryRefreshService {
         this.entityManager = entityManager;
     }
 
-    public void clearCacheAndWait(){
-        timeStopToWaitForAPI();
+    public void clearCacheAndWait(CrudRepository repository){
+        timeOutToWaitForRefresh();
+        entityManager.getEntityManagerFactory().getCache().evict(repository.getClass());
         entityManager.clear();
     }
 
-    //TODO find cleaner solution to wait for API
-    private void timeStopToWaitForAPI() {
+    private void timeOutToWaitForRefresh() {
         try {
-            System.out.println("Time Stop waiting for API");
-            TimeUnit.MILLISECONDS.sleep(50);
-
+            //10ms Time Out before refreshing Cache
+            TimeUnit.MILLISECONDS.sleep(10L);
         } catch (InterruptedException e) {
-            System.out.println("Wow this is ugly and needs a proper Fix");
+            System.err.println(e.getMessage());
         }
     }
 }

@@ -17,9 +17,10 @@ public class ContractDetailsProvider {
         this.contractDataRepository = contractDataRepository;
     }
 
-    public synchronized void addContractDetailsFromAPIToContractData(int id, Contract contract) {
+    public void addContractDetailsFromAPIToContractData(int id, Contract contract) {
         ContractData contractData = ibkrContractToContractData.covertIBKRContract(contract);
         contractData.setId(id);
+        contractData.setTouchedByApi(true);
 
         contractDataRepository.save(contractData);
         System.out.println("contractDataId to update: " + id);

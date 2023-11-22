@@ -61,4 +61,6 @@ public class ContractData {
     @Singular
     @Column(name = "combo_legs")
     private List<ComboLegData> comboLegs;
+
+    private boolean touchedByApi;
 }
