@@ -50,7 +50,7 @@ class ContractDataToIBKRContractTest {
                 .securityType(Types.SecType.STK)
                 .currency(Currency.USD.toString())
                 .exchange("SMART")
-                .lastTradeDateOrContractMonth("20231117")
+                .lastTradeDate("20231117")
                 .multiplier("100")
                 .localSymbol("P BMW  20221216 72 M")
                 .tradingClass("SPXW")

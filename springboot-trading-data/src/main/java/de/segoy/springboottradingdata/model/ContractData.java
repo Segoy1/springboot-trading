@@ -34,7 +34,7 @@ public class ContractData {
     @NotNull
     private String exchange; // "SMART"
 
-    private String lastTradeDateOrContractMonth; //format 20231116
+    private String lastTradeDate; //format 20231116
     private BigDecimal strike; // 4100
 
     @Enumerated(EnumType.STRING)

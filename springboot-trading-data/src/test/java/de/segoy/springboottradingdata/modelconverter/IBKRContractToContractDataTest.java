@@ -69,7 +69,7 @@ class IBKRContractToContractDataTest {
         assertEquals("SPX", contractData.getSymbol());
         assertEquals("USD", contractData.getCurrency());
         assertEquals("SMART", contractData.getExchange());
-        assertEquals("20231117", contractData.getLastTradeDateOrContractMonth());
+        assertEquals("20231117", contractData.getLastTradeDate());
         assertEquals("100", contractData.getMultiplier());
         assertEquals("P BMW  20221216 72 M", contractData.getLocalSymbol());
         assertEquals("SPXW", contractData.getTradingClass());

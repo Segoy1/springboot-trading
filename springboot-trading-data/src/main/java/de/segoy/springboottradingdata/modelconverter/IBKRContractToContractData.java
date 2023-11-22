@@ -22,7 +22,7 @@ public class IBKRContractToContractData {
 
                 .right(contract.right())
                 .strike(BigDecimal.valueOf(contract.strike()))
-                .lastTradeDateOrContractMonth(contract.lastTradeDateOrContractMonth())
+                .lastTradeDate(contract.lastTradeDateOrContractMonth())
                 .multiplier(contract.multiplier())
                 .localSymbol(contract.localSymbol())
                 .tradingClass(contract.tradingClass())

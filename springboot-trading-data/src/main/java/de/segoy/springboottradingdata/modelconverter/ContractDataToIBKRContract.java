@@ -28,7 +28,7 @@ public class ContractDataToIBKRContract {
         //Null Values translating to emptyString making things nullsafe
         contract.comboLegsDescrip(contractData.getComboLegsDescription());
         contract.right(contractData.getRight()==null?"":contractData.getRight().toString());
-        contract.lastTradeDateOrContractMonth(contractData.getLastTradeDateOrContractMonth()==null?"":contractData.getLastTradeDateOrContractMonth());
+        contract.lastTradeDateOrContractMonth(contractData.getLastTradeDate()==null?"":contractData.getLastTradeDate());
         contract.multiplier(contractData.getMultiplier()==null?"":contractData.getMultiplier());
         contract.localSymbol(contractData.getLocalSymbol()==null?"":contractData.getLocalSymbol());
         contract.tradingClass(contractData.getTradingClass()==null?"":contractData.getTradingClass());
