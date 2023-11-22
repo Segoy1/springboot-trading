@@ -24,8 +24,8 @@ public class UniqueContractDataProvider {
     }
 
     private ContractData getComboLegOptionData(ContractData contractData) {
-        //TODO implementation for ComboLeg
-        return contractData;
+        //TODO add Method in repo to check if exists
+        return contractDataApiCaller.callContractDetailsFromAPI(contractDataRepository.save(contractData));
     }
 
     private ContractData getStockOptionData(ContractData contractData) {

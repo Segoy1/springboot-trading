@@ -18,11 +18,14 @@ public class ContractDetailsProvider {
     }
 
     public void addContractDetailsFromAPIToContractData(int id, Contract contract) {
-        ContractData contractData = ibkrContractToContractData.covertIBKRContract(contract);
-        contractData.setId(id);
-        contractData.setTouchedByApi(true);
-
-        contractDataRepository.save(contractData);
-        System.out.println("contractDataId to update: " + id);
+        if (contractDataRepository.findAllByContractId(contract.conid()).isEmpty()) {
+            ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
+            contractData.setId(id);
+            contractData.setTouchedByApi(true);
+            contractDataRepository.save(contractData);
+            System.out.println("contractDataId to update: " + id);
+        } else {
+            System.out.println("Contract with Contract Id: " + contract.conid() + " already exists in DB");
+        }
     }
 }

@@ -29,7 +29,7 @@ class IBKRContractToContractDataTest {
         contract.currency(Currency.USD.toString());
         contract.exchange("SMART");
 
-        ContractData contractData = ibkrContractToContractData.covertIBKRContract(contract);
+        ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
         assertEquals(contract.right(), Types.Right.Call);
         assertEquals(contract.secType(), Types.SecType.STK);
         assertEquals("SPX", contract.symbol());
@@ -63,7 +63,7 @@ class IBKRContractToContractDataTest {
         contract.strike(72);
         contract.comboLegs(legs);
 
-        ContractData contractData = ibkrContractToContractData.covertIBKRContract(contract);
+        ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
         assertEquals(contractData.getRight(), Types.Right.Call);
         assertEquals(contractData.getSecurityType(), Types.SecType.STK);
         assertEquals("SPX", contractData.getSymbol());

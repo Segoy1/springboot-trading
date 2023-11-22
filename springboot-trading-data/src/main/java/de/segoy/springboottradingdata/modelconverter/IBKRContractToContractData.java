@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class IBKRContractToContractData {
 
-    public ContractData covertIBKRContract(Contract contract) {
+    public ContractData convertIBKRContract(Contract contract) {
         ContractData contractData = ContractData.builder()
                 .contractId(contract.conid())
                 .symbol(contract.symbol())

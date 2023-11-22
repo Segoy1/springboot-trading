@@ -32,6 +32,7 @@ public class ContractDataApiCaller {
     private ContractData getUpdatedContractData(Integer id) {
         ContractData savedContactData;
         do {
+            //TODO Do Something against infinite Loop
         repositoryRefreshService.clearCacheAndWait(contractDataRepository);
         savedContactData = contractDataRepository.findById(id).orElseThrow();
         }while(!savedContactData.isTouchedByApi());
