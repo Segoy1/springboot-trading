@@ -31,12 +31,9 @@ public class ContractDataApiCaller {
 
     private ContractData getUpdatedContractData(Integer id) {
         ContractData savedContactData;
-        int i = 0;
         do {
-            i++;
         repositoryRefreshService.clearCacheAndWait(contractDataRepository);
         savedContactData = contractDataRepository.findById(id).orElseThrow();
-        System.out.print(i +",");
         }while(!savedContactData.isTouchedByApi());
         return savedContactData;
     }

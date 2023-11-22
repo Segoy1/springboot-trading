@@ -23,7 +23,7 @@ public class ReaderAspect {
             try {
                 reader.processMsgs();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
 
         }
