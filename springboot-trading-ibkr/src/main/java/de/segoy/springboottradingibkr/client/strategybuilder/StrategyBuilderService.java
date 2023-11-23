@@ -32,23 +32,18 @@ public class IronCondorService {
     private List<ComboLegData> legListBuilder(ContractData contractData, Map<Leg, Double> legMap) {
         List<ComboLegData> legs = new ArrayList<>();
 
-        ContractData contractDataBuyPut = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, legMap.get(Leg.BUY_PUT), Types.Right.Put));
-        legs.add(buildComboLegData(contractDataBuyPut, Types.Action.BUY));
-        ContractData contractDataSellPut = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, legMap.get(Leg.SELL_PUT), Types.Right.Put));
-        legs.add(buildComboLegData(contractDataSellPut, Types.Action.SELL));
-        ContractData contractDataBuyCall = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, legMap.get(Leg.BUY_CALL), Types.Right.Call));
-        legs.add(buildComboLegData(contractDataBuyCall, Types.Action.BUY));
-        ContractData contractDataSellCall = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, legMap.get(Leg.SELL_CALL), Types.Right.Call));
-        legs.add(buildComboLegData(contractDataSellCall, Types.Action.SELL));
-
+        legMap.forEach((leg, strike) -> {
+            ContractData legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, strike, leg.getRight()));
+            legs.add(buildComboLegData(legContract, leg.getAction(), leg.getRatio()));
+        });
         return legs;
     }
 
-    private ComboLegData buildComboLegData(ContractData contractDataBuyPut, Types.Action action) {
+    private ComboLegData buildComboLegData(ContractData contractDataBuyPut, Types.Action action, int ratio) {
         return comboLegDataRepository.save(ComboLegData.builder()
                 .contractId(contractDataBuyPut.getContractId())
-                .ratio(1)
-                .action(Types.Action.BUY)
+                .ratio(ratio)
+                .action(action)
                 .exchange(contractDataBuyPut.getExchange())
                 .build());
     }
