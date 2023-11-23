@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class IronCondorService {
+public class StrategyBuilderService {
 
     private final UniqueContractDataProvider uniqueContractDataProvider;
     private final ComboLegDataRepository comboLegDataRepository;
 
-    public IronCondorService(UniqueContractDataProvider uniqueContractDataProvider, ComboLegDataRepository comboLegDataRepository) {
+    public StrategyBuilderService(UniqueContractDataProvider uniqueContractDataProvider, ComboLegDataRepository comboLegDataRepository) {
         this.uniqueContractDataProvider = uniqueContractDataProvider;
         this.comboLegDataRepository = comboLegDataRepository;
     }
 
-    public ContractData getIronCondorContractData(ContractData contractData, Map<Leg, Double> legMap) {
+    public ContractData getComboLegContractData(ContractData contractData, Map<Leg, Double> legMap) {
         contractData.setComboLegs(legListBuilder(contractData, legMap));
         return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
     }

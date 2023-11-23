@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.services.UniqueContractDataProvider;
-import de.segoy.springboottradingibkr.client.strategybuilder.IronCondorService;
+import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingibkr.client.strategybuilder.type.Leg;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +22,14 @@ public class ContractDataController {
 
     private final ContractDataRepository contractDataRepository;
     private final UniqueContractDataProvider uniqueContractDataProvider;
-    private final IronCondorService ironCondorService;
+    private final StrategyBuilderService strategyBuilderService;
 
     public ContractDataController(ContractDataRepository contractDataRepository,
                                   UniqueContractDataProvider uniqueContractDataProvider,
-                                  IronCondorService ironCondorService) {
+                                  StrategyBuilderService strategyBuilderService) {
         this.contractDataRepository = contractDataRepository;
         this.uniqueContractDataProvider = uniqueContractDataProvider;
-        this.ironCondorService = ironCondorService;
+        this.strategyBuilderService = strategyBuilderService;
     }
 
     @RequestMapping("/single")
@@ -110,10 +110,10 @@ public class ContractDataController {
                                                                       ) {
 
         Map<Leg, Double> legs = new HashMap<>();
-        legs.put(Leg.BUY_PUT, buyPutStrike);
-        legs.put(Leg.SELL_PUT, sellPutStrike);
-        legs.put(Leg.BUY_CALL, buyCallStrike);
-        legs.put(Leg.SELL_CALL,sellCallStrike);
+        legs.put(Leg.BUY_PUT_ONE, buyPutStrike);
+        legs.put(Leg.SELL_PUT_ONE, sellPutStrike);
+        legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
+        legs.put(Leg.SELL_CALL_ONE,sellCallStrike);
 
         ContractData contract = ContractData.builder()
                 .symbol(symbol)
@@ -123,7 +123,7 @@ public class ContractDataController {
                 .lastTradeDate(lastTradeDate)
                 .build();
 
-        ContractData savedContract = ironCondorService.getIronCondorContractData(contract, legs);
+        ContractData savedContract = strategyBuilderService.getComboLegContractData(contract, legs);
 
         return ResponseEntity.ok(savedContract);
     }
