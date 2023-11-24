@@ -7,9 +7,11 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.services.EReaderHolder;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class ConnectionInitiator {
 
 
@@ -49,7 +51,7 @@ public class ConnectionInitiator {
                     .message("Connected to Tws server version " +
                             client.serverVersion() + " at " +
                             client.getTwsConnectionTime()).build();
-            System.out.println(msg.getMessage());
+            log.info(msg.getMessage());
             tws_messages.save(msg);
             ConnectionData savedConnectionData = connectionDataRepository.save(connectionData);
             eReaderHolder.startReader();

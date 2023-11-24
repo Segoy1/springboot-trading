@@ -2,7 +2,10 @@ package de.segoy.springboottradingdata.model;
 
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +21,6 @@ import java.math.BigDecimal;
 public class OrderData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
     @Enumerated(EnumType.STRING)

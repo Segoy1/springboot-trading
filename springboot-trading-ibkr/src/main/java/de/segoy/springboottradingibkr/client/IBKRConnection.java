@@ -17,7 +17,10 @@ import de.segoy.springboottradingibkr.client.services.ContractDetailsProvider;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.services.SynchronizedCallbackHanlder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
@@ -26,8 +29,11 @@ import java.util.*;
 import java.util.Map.Entry;
 
 @Component
+@Slf4j
 public class IBKRConnection implements EWrapper {
 
+    @Value("${app.ibkr.nextValidOrderId}")
+    private Integer nextValidOrderId;
 
     private final int CONNECTION_ID = 1;
     private final SynchronizedCallbackHanlder callbackHanlder;
@@ -55,14 +61,15 @@ public class IBKRConnection implements EWrapper {
 
     @Autowired
     public IBKRConnection(
-                          SynchronizedCallbackHanlder callbackHanlder,
-                          ErrorCodeHandler errorCodeHandler,
-                          FaDataTypeHandler faDataTypeHandler,
-                          TwsMessageRepository m_Tws,
-                          TickerMessageRepository m_tickers,
-                          ErrorMessageRepository m_errors,
-                          ConnectionDataRepository connectionDataRepository,
-                          ContractDetailsProvider contractDetailsProvider) {
+            SynchronizedCallbackHanlder callbackHanlder,
+            ErrorCodeHandler errorCodeHandler,
+            FaDataTypeHandler faDataTypeHandler,
+            TwsMessageRepository m_Tws,
+            TickerMessageRepository m_tickers,
+            ErrorMessageRepository m_errors,
+            ConnectionDataRepository connectionDataRepository,
+            ContractDetailsProvider contractDetailsProvider,
+            Environment environment) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -75,7 +82,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
-     m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib)).build());
     }
 
     @Override
@@ -94,25 +101,25 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickGeneric(int tickerId, int tickType, double value) {
         // received generic tick
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value)).build());
 
     }
 
     @Override
     public void tickString(int tickerId, int tickType, String value) {
         // received String tick
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickString(tickerId, tickType, value)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickString(tickerId, tickType, value)).build());
     }
 
     @Override
     public void tickSnapshotEnd(int reqId) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSnapshotEnd(reqId)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSnapshotEnd(reqId)).build());
     }
 
     @Override
     public void tickEFP(int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture, int holdDays, String futureLastTradeDate, double dividendImpact, double dividendsToLastTradeDate) {
         // received EFP tick
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
                 impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate)).build());
     }
 
@@ -151,7 +158,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void scannerData(int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark, String projection, String legsStr) {
         m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
-               benchmark, projection, legsStr)).build());
+                benchmark, projection, legsStr)).build());
     }
 
     @Override
@@ -204,6 +211,9 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
+        synchronized (nextValidOrderId){
+        nextValidOrderId = orderId;
+        }
         m_TWS.save(TwsMessage.builder().id(orderId).message(EWrapperMsgGenerator.nextValidId(orderId)).build());
     }
 
@@ -256,7 +266,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void accountDownloadEnd(String accountName) {
         m_account.accountDownloadEnd(accountName);
-        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountDownloadEnd( accountName)).build());
+        m_TWS.save(TwsMessage.builder().message(EWrapperMsgGenerator.accountDownloadEnd(accountName)).build());
     }
 
     @Override
@@ -277,22 +287,22 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalData(int reqId, Bar bar) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap())).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap())).build());
     }
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
     }
 
     @Override
     public void realtimeBar(int reqId, long time, double open, double high, double low, double close, Decimal volume, Decimal wap, int count) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count)).build());
     }
 
     @Override
     public void scannerParameters(String xml) {
-      displayXML(EWrapperMsgGenerator.SCANNER_PARAMETERS, xml);
+        displayXML(EWrapperMsgGenerator.SCANNER_PARAMETERS, xml);
     }
 
     @Override
@@ -302,7 +312,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void fundamentalData(int reqId, String data) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.fundamentalData(reqId, data)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.fundamentalData(reqId, data)).build());
     }
 
     @Override
@@ -324,7 +334,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void marketDataType(int reqId, int marketDataType) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.marketDataType(reqId, marketDataType)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.marketDataType(reqId, marketDataType)).build());
     }
 
     @Override
@@ -374,10 +384,13 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void verifyMessageAPI(String apiData) { /* Empty */ }
+
     @Override
     public void verifyCompleted(boolean isSuccessful, String errorText) {  /* Empty */ }
+
     @Override
     public void verifyAndAuthMessageAPI(String apiData, String xyzChallenge) {  /* Empty */ }
+
     @Override
     public void verifyAndAuthCompleted(boolean isSuccessful, String errorText) {  /* Empty */ }
 
@@ -439,7 +452,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions)).build());
     }
 
     @Override
@@ -551,17 +564,17 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickByTickAllLast(int reqId, int tickType, long time, double price, Decimal size, TickAttribLast tickAttribLast, String exchange, String specialConditions) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions)).build());
     }
 
     @Override
     public void tickByTickBidAsk(int reqId, long time, double bidPrice, double askPrice, Decimal bidSize, Decimal askSize, TickAttribBidAsk tickAttribBidAsk) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk)).build());
     }
 
     @Override
     public void tickByTickMidPoint(int reqId, long time, double midPoint) {
-       m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint)).build());
+        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint)).build());
     }
 
     @Override
