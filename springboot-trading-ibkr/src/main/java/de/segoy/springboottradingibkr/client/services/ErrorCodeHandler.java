@@ -29,7 +29,7 @@ public class ErrorCodeHandler {
             if ( depthDialog != null ) {
                 depthDialog.reset();
             } else {
-                log.error("cannot find dialog that corresponds to request id ["+id+"]");
+                log.warn("cannot find dialog that corresponds to request id ["+id+"]");
             }
         }
 

@@ -139,13 +139,13 @@ public class IBKRConnection implements EWrapper {
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
         contractDetailsProvider.addContractDetailsFromAPIToContractData(reqId, contractDetails.contract());
-        log.debug("Added Contract Details to DB");
+        log.debug("Added Contract Details: Id = " + reqId );
     }
 
     @Override
     public void contractDetailsEnd(int reqId) {
         callbackHanlder.contractDetailsEnd(reqId, m_callbackMap);
-        log.info(EWrapperMsgGenerator.contractDetailsEnd(reqId));
+        log.debug(EWrapperMsgGenerator.contractDetailsEnd(reqId));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class IBKRConnection implements EWrapper {
         if (depthModel != null) {
             depthModel.updateMktDepth(tickerId, position, "", operation, side, price, size);
         } else {
-            log.error("cannot find dialog that corresponds to request id [" + tickerId + "]");
+            log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
         }
     }
 
@@ -197,7 +197,7 @@ public class IBKRConnection implements EWrapper {
         if (depthModel != null) {
             depthModel.updateMktDepth(tickerId, position, marketMaker, operation, side, price, size);
         } else {
-            log.error("cannot find dialog that corresponds to request id [" + tickerId + "]");
+            log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
         }
     }
 
@@ -215,14 +215,14 @@ public class IBKRConnection implements EWrapper {
         // do not report exceptions if we initiated disconnect
         if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getM_disconnectInProgress()) {
             String msg = EWrapperMsgGenerator.error(e);
-            log.error(msg);
+            log.warn(msg);
             //TODO Main.inform(this, msg) put in get to spring
         }
     }
 
     @Override
     public void error(String str) {
-        log.error(EWrapperMsgGenerator.error(str));
+        log.warn(EWrapperMsgGenerator.error(str));
         m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(str)).build());
     }
 
@@ -231,7 +231,7 @@ public class IBKRConnection implements EWrapper {
         // received error
         callbackHanlder.contractDetailsError(id, errorCode, errorMsg, m_callbackMap);
 
-        log.error(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
+        log.warn(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
         m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson)).build());
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
