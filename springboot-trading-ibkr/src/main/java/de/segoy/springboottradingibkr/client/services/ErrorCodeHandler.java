@@ -2,11 +2,13 @@ package de.segoy.springboottradingibkr.client.services;
 
 import de.segoy.springboottradingibkr.client.FaErrorCode;
 import de.segoy.springboottradingdata.model.MktDepth;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ErrorCodeHandler {
 
     public boolean isFaError(int errorCode) {
@@ -27,7 +29,7 @@ public class ErrorCodeHandler {
             if ( depthDialog != null ) {
                 depthDialog.reset();
             } else {
-                System.err.println("cannot find dialog that corresponds to request id ["+id+"]");
+                log.error("cannot find dialog that corresponds to request id ["+id+"]");
             }
         }
 

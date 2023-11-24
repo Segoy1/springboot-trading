@@ -33,8 +33,6 @@ public class ConnectionInitiator {
         if (client.isConnected()) {
             return;
         }
-
-        client.optionalCapabilities("");
         client.eConnect("", port, 0);
 
         if (client.isConnected()) {
@@ -60,7 +58,6 @@ public class ConnectionInitiator {
 
     @PreDestroy
     public ConnectionData disconnect(){
-        //TODO cleaner implementation for closing connection
         ConnectionData connectionData = connectionDataRepository.findById(1).orElse(ConnectionData.builder().build());
         connectionData.setM_disconnectInProgress(true);
         connectionDataRepository.save(connectionData);
