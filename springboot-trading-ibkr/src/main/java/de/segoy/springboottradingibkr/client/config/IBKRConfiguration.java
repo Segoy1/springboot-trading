@@ -20,5 +20,4 @@ public class IBKRConfiguration {
     public EClientSocket eClientSocket(EJavaSignal eJavaSignal, IBKRConnection ibkrConnection) {
         return new EClientSocket(ibkrConnection,eJavaSignal);
     }
-
 }
