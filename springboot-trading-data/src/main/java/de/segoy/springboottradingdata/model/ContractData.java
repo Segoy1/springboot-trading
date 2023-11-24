@@ -16,7 +16,8 @@ import java.util.List;
 public class ContractData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(initialValue = 9000000, allocationSize = 1, name = "contract_id_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contract_id_sequence")
     private Integer id;
 
     private Integer contractId; //ContractId From Call to IBKR Api
@@ -42,7 +43,6 @@ public class ContractData {
     private Types.Right right; // "C" "P"
 
     private String multiplier; // "100"
-
 //    private String primaryExchange; //Not SMART //leave empty
 
     private String localSymbol; // can be used to define options Maybe best solution "P SPX  20231116 4100 W"
@@ -54,13 +54,10 @@ public class ContractData {
 
 
     private boolean includeExpired;  // can not be set to true for orders
-    // COMBOS
     private String comboLegsDescription; // received in open order version 14 and up for all combos
 
     @OneToMany
     @Singular
-    @Column(name = "combo_legs")
     private List<ComboLegData> comboLegs;
-
     private boolean touchedByApi;
 }

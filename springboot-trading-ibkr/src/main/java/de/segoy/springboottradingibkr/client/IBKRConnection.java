@@ -216,8 +216,7 @@ public class IBKRConnection implements EWrapper {
         // do not report exceptions if we initiated disconnect
         if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getM_disconnectInProgress()) {
             String msg = EWrapperMsgGenerator.error(e);
-            log.warn(msg);
-            //TODO Main.inform(this, msg) put in get to spring
+            log.error(msg);
         }
     }
 
@@ -233,7 +232,7 @@ public class IBKRConnection implements EWrapper {
         callbackHanlder.contractDetailsError(id, errorCode, errorMsg, m_callbackMap);
 
         log.warn(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
-        m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson)).build());
+        m_errors.save(ErrorMessage.builder().id(id).message(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson)).build());
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
     }

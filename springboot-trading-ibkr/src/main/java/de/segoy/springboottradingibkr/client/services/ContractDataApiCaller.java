@@ -6,6 +6,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +17,18 @@ public class ContractDataApiCaller {
     private final ContractDataToIBKRContract contractDataToIBKRContract;
     private final ContractDataRepository contractDataRepository;
     private final RepositoryRefreshService repositoryRefreshService;
+    private final ErrorMessageRepository errorMessageRepository;
 
     public ContractDataApiCaller(EClientSocket client,
                                  ContractDataToIBKRContract contractDataToIBKRContract,
                                  ContractDataRepository contractDataRepository,
-                                 RepositoryRefreshService repositoryRefreshService) {
+                                 RepositoryRefreshService repositoryRefreshService,
+                                 ErrorMessageRepository errorMessageRepository) {
         this.client = client;
         this.contractDataToIBKRContract = contractDataToIBKRContract;
         this.contractDataRepository = contractDataRepository;
         this.repositoryRefreshService = repositoryRefreshService;
+        this.errorMessageRepository = errorMessageRepository;
     }
 
     public ContractData callContractDetailsFromAPI(ContractData contractData) {
@@ -35,14 +39,12 @@ public class ContractDataApiCaller {
 
     private ContractData getUpdatedContractData(Integer id) {
         ContractData savedContactData;
-        int i = 0;
-            do {
-                repositoryRefreshService.clearCacheAndWait(contractDataRepository);
-                savedContactData = contractDataRepository.findById(id).orElseThrow();
-                i++;
-            }while(!savedContactData.isTouchedByApi()
-                    && !savedContactData.getSecurityType().equals(Types.SecType.BAG)
-                    && i < 10);
+        do {
+            repositoryRefreshService.clearCacheAndWait(contractDataRepository);
+            savedContactData = contractDataRepository.findById(id).orElseThrow();
+        } while (!savedContactData.isTouchedByApi()
+                && !savedContactData.getSecurityType().equals(Types.SecType.BAG)
+                && !errorMessageRepository.existsById(id));
 
         return savedContactData;
     }
