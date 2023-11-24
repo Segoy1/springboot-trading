@@ -11,13 +11,13 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
+import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.services.ContractDetailsProvider;
 import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.services.SynchronizedCallbackHanlder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
@@ -29,8 +29,6 @@ import java.util.Map.Entry;
 @Slf4j
 public class IBKRConnection implements EWrapper {
 
-    @Value("${app.ibkr.nextValidOrderId}")
-    private Integer nextValidOrderId;
 
     private final int CONNECTION_ID = 1;
     private final SynchronizedCallbackHanlder callbackHanlder;
@@ -38,10 +36,11 @@ public class IBKRConnection implements EWrapper {
     private final FaDataTypeHandler faDataTypeHandler;
 
 
-    private TickerMessageRepository m_tickers;
-    private ErrorMessageRepository m_errors;
-    private ConnectionDataRepository connectionDataRepository;
-    private ContractDetailsProvider contractDetailsProvider;
+    private final TickerMessageRepository m_tickers;
+    private final ErrorMessageRepository m_errors;
+    private final ConnectionDataRepository connectionDataRepository;
+    private final ContractDetailsProvider contractDetailsProvider;
+    private final PropertiesConfig propertiesConfig;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -63,7 +62,8 @@ public class IBKRConnection implements EWrapper {
             TickerMessageRepository m_tickers,
             ErrorMessageRepository m_errors,
             ConnectionDataRepository connectionDataRepository,
-            ContractDetailsProvider contractDetailsProvider) {
+            ContractDetailsProvider contractDetailsProvider,
+            PropertiesConfig propertiesConfig) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -71,6 +71,7 @@ public class IBKRConnection implements EWrapper {
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
         this.contractDetailsProvider = contractDetailsProvider;
+        this.propertiesConfig = propertiesConfig;
     }
 
     @Override
@@ -204,8 +205,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
-        synchronized (nextValidOrderId) {
-            nextValidOrderId = orderId;
+        synchronized (propertiesConfig.getNextValidOrderId()) {
+            propertiesConfig.setNextValidOrderId(orderId);
         }
         log.info(EWrapperMsgGenerator.nextValidId(orderId));
     }

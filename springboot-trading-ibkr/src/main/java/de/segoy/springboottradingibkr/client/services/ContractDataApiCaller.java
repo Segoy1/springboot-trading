@@ -17,7 +17,10 @@ public class ContractDataApiCaller {
     private final ContractDataRepository contractDataRepository;
     private final RepositoryRefreshService repositoryRefreshService;
 
-    public ContractDataApiCaller(EClientSocket client, ContractDataToIBKRContract contractDataToIBKRContract, ContractDataRepository contractDataRepository, RepositoryRefreshService repositoryRefreshService) {
+    public ContractDataApiCaller(EClientSocket client,
+                                 ContractDataToIBKRContract contractDataToIBKRContract,
+                                 ContractDataRepository contractDataRepository,
+                                 RepositoryRefreshService repositoryRefreshService) {
         this.client = client;
         this.contractDataToIBKRContract = contractDataToIBKRContract;
         this.contractDataRepository = contractDataRepository;

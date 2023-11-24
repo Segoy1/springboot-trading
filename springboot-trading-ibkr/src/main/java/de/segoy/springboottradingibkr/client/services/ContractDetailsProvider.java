@@ -14,7 +14,8 @@ public class ContractDetailsProvider {
     private final IBKRContractToContractData ibkrContractToContractData;
     private final ContractDataRepository contractDataRepository;
 
-    public ContractDetailsProvider(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository) {
+    public ContractDetailsProvider(IBKRContractToContractData ibkrContractToContractData,
+                                   ContractDataRepository contractDataRepository) {
         this.ibkrContractToContractData = ibkrContractToContractData;
         this.contractDataRepository = contractDataRepository;
     }
@@ -27,6 +28,7 @@ public class ContractDetailsProvider {
             contractDataRepository.save(contractData);
         } else {
             log.debug("Contract with Contract Id: " + contract.conid() + " already exists in DB");
+            log.warn("Method should never be called in a Way this Code is executed!");
         }
     }
 }
