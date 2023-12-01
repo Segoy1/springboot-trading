@@ -1,59 +1,47 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingibkr.client.services.OrderExecutionService;
+import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingibkr.client.services.OrderPlacementService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
-    private final OrderDataController orderDataController;
+    private final OrderDataRepository orderDataRepository;
     private final ContractDataController contractDataController;
-    private final OrderExecutionService orderExecutionService;
+    private final OrderPlacementService orderPlacementService;
 
-    public OrderController(OrderDataController orderDataController,
+    public OrderController(OrderDataRepository orderDataRepository,
                            ContractDataController contractDataController,
-                           OrderExecutionService orderExecutionService) {
-        this.orderDataController = orderDataController;
+                           OrderPlacementService orderPlacementService) {
+        this.orderDataRepository = orderDataRepository;
         this.contractDataController = contractDataController;
-        this.orderExecutionService = orderExecutionService;
+        this.orderPlacementService = orderPlacementService;
     }
 
-    @PutMapping
-    public ResponseEntity<ContractData> orderWithExitingContractAndOrder(@RequestParam("contractDataId") int contractDataId,
-                                                           @RequestParam("orderDataId")int orderDataId){
+    @PutMapping("/placeExistingOrder")
+    public ResponseEntity<OrderData> orderWithExistingId(@RequestParam("orderDataId") int orderDataId) {
 
-        ResponseEntity<ContractData> contractDataEntity = contractDataController.getContractDataById(contractDataId);
-        ResponseEntity<OrderData> orderDataEntity = orderDataController.getContractDataById(orderDataId);
-
-        if(contractDataEntity.getStatusCode().is2xxSuccessful()&& orderDataEntity.getStatusCode().is2xxSuccessful()){
-            return executeOrder(contractDataEntity.getBody(), orderDataEntity.getBody());
-
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+        Optional<OrderData> orderDataOptional = orderDataRepository.findById(orderDataId);
+        return orderDataOptional.map(this::executeOrder).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<ContractData> orderWithContractAndOrderObject(ContractData contractData, OrderData orderData){
-        return executeOrder(contractData, orderData);
+    @PutMapping("/placeOrder")
+    public ResponseEntity<OrderData> orderWithOrderObject(@Valid @RequestBody OrderData orderData) {
+        OrderData savedOrder = orderDataRepository.save(orderData);
+        return executeOrder(savedOrder);
     }
 
-    private ResponseEntity<ContractData> executeOrder(ContractData contractData, OrderData orderData){
-
-        ResponseEntity<ContractData> contractResponse = contractDataController.saveContractData(contractData);
-        ResponseEntity<OrderData> orderResponse = orderDataController.saveOrderData(orderData);
-
-        if(contractResponse.getStatusCode().is2xxSuccessful() && orderResponse.getStatusCode().is2xxSuccessful()){
-        orderExecutionService.executeOrder(contractData,orderData);
-        return ResponseEntity.ok(contractData);
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+    private ResponseEntity<OrderData> executeOrder(OrderData orderData) {
+            orderPlacementService.placeOrder(orderData);
+            orderData.setPlaced(true);
+            OrderData savedAndPlacedOrder = orderDataRepository.save(orderData);
+            return ResponseEntity.ok(savedAndPlacedOrder);
     }
 }

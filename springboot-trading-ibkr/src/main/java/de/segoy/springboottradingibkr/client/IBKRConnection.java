@@ -8,6 +8,7 @@ import de.segoy.springboottradingdata.model.*;
 import de.segoy.springboottradingdata.model.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
@@ -39,6 +40,7 @@ public class IBKRConnection implements EWrapper {
     private final TickerMessageRepository m_tickers;
     private final ErrorMessageRepository m_errors;
     private final ConnectionDataRepository connectionDataRepository;
+    private final OrderDataRepository orderDataRepository;
     private final ContractDetailsProvider contractDetailsProvider;
     private final PropertiesConfig propertiesConfig;
 
@@ -63,6 +65,7 @@ public class IBKRConnection implements EWrapper {
             ErrorMessageRepository m_errors,
             ConnectionDataRepository connectionDataRepository,
             ContractDetailsProvider contractDetailsProvider,
+            OrderDataRepository orderDataRepository,
             PropertiesConfig propertiesConfig) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
@@ -71,7 +74,9 @@ public class IBKRConnection implements EWrapper {
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
         this.contractDetailsProvider = contractDetailsProvider;
+        this.orderDataRepository = orderDataRepository;
         this.propertiesConfig = propertiesConfig;
+
     }
 
     @Override
@@ -168,6 +173,8 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void execDetails(int reqId, Contract contract, Execution execution) {
+        //TODO see if this Code should be put into a new Service
+        orderDataRepository.findById(reqId).orElseThrow().setExecuted(true);
         log.info(EWrapperMsgGenerator.execDetails(reqId, contract, execution));
     }
 

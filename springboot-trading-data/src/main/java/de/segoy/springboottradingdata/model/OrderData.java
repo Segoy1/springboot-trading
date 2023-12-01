@@ -2,10 +2,8 @@ package de.segoy.springboottradingdata.model;
 
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,4 +34,11 @@ public class OrderData {
     // native cash quantity
     private BigDecimal cashQuantity;
     private Boolean usePriceManagementAlgorithm;
+
+    @OneToOne
+    @NotNull
+    private ContractData contractData;
+
+    private boolean placed;
+    private boolean executed;
 }
