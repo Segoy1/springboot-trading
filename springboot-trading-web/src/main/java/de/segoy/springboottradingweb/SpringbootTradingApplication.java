@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy
 public class SpringbootTradingApplication {
 
-	private static final Integer LIVE_TRADING_PORT = 7496;
-	private static final Integer PAPER_TRADING_PORT = 7497;
+	public static final Integer LIVE_TRADING_PORT = 7496;
+	public static final Integer PAPER_TRADING_PORT = 7497;
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
