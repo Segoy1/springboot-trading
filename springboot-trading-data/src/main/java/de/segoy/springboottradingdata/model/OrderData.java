@@ -4,7 +4,6 @@ import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,13 +12,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderData extends IBKRDataTypeEntity{
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="id", insertable=true, updatable=true, unique=true, nullable=false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
@@ -31,13 +28,13 @@ public class OrderData extends IBKRDataTypeEntity{
     private OrderType orderType;
     private BigDecimal limitPrice;
     private BigDecimal auctionPrice;
-    private String timeInForce; // "Time in Force" - DAY, GTC, etc.
+    @Enumerated(EnumType.STRING)
+    private Types.TimeInForce timeInForce; // "Time in Force" - DAY, GTC, etc.
     // native cash quantity
     private BigDecimal cashQuantity;
     private Boolean usePriceManagementAlgorithm;
 
-    @OneToOne
-    @NotNull
+    @ManyToOne
     private ContractData contractData;
 
     @Enumerated(EnumType.STRING)

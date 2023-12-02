@@ -1,0 +1,27 @@
+package de.segoy.springboottradingdata.modelconverter;
+
+import com.ib.client.Order;
+import de.segoy.springboottradingdata.model.OrderData;
+
+import java.math.BigDecimal;
+
+public class IBKROrderToOrderData {
+
+    public OrderData convertOrder(Order order) {
+        OrderData orderData = OrderData.builder()
+                .id(order.orderId())
+                .action(order.action())
+                .totalQuantity(order.totalQuantity().value())
+                .orderType(order.orderType())
+                .timeInForce(order.tif())
+                .limitPrice(BigDecimal.valueOf(order.lmtPrice()))
+                .auctionPrice(BigDecimal.valueOf(order.auxPrice()))
+                .cashQuantity(BigDecimal.valueOf(order.cashQty()))
+                .usePriceManagementAlgorithm(order.usePriceMgmtAlgo())
+                .build();
+
+        //Builder from Super Class not inherited
+        orderData.setTouchedByApi(true);
+        return orderData;
+    }
+}

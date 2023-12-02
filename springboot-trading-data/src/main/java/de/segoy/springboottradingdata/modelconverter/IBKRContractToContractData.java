@@ -42,6 +42,8 @@ public class IBKRContractToContractData {
         });
 
         contractData.setComboLegs(legs);
+        //Builder from Super Class not inherited
+        contractData.setTouchedByApi(true);
 
         return contractData;
     }

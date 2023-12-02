@@ -13,7 +13,7 @@ public class ApiResponseInEntityChecker {
         this.repositoryRefreshService = repositoryRefreshService;
     }
 
-    public <T extends IBKRDataTypeEntity>T checkForApiResponse(IBKRDataTypeRepository<T> repository, Integer id) {
+    public <T extends IBKRDataTypeEntity>T checkForApiResponseAndUpdate(IBKRDataTypeRepository<T> repository, Integer id) {
         T entity;
         do {
             repositoryRefreshService.clearCacheAndWait(repository);

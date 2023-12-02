@@ -9,6 +9,7 @@ import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
+import de.segoy.springboottradingdata.service.OnStartDbPopulator;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.services.*;
@@ -39,6 +40,7 @@ public class IBKRConnection implements EWrapper {
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final ContractDetailsProvider contractDetailsProvider;
     private final PropertiesConfig propertiesConfig;
+    private final OnStartDbPopulator onStartDbPopulator;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -62,7 +64,7 @@ public class IBKRConnection implements EWrapper {
             ConnectionDataRepository connectionDataRepository,
             ContractDetailsProvider contractDetailsProvider,
             OrderStatusUpdateService orderStatusUpdateService,
-            PropertiesConfig propertiesConfig) {
+            PropertiesConfig propertiesConfig, OnStartDbPopulator onStartDbPopulator) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -73,6 +75,7 @@ public class IBKRConnection implements EWrapper {
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.propertiesConfig = propertiesConfig;
 
+        this.onStartDbPopulator = onStartDbPopulator;
     }
 
     @Override
@@ -127,6 +130,8 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
+        //this should only be necessary when in Memory DB is used!
+        onStartDbPopulator.saveToDB(order, contract);
         // received open order
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, orderState.getStatus());
         log.debug("DB OrderData Id is: " + orderData.getId());

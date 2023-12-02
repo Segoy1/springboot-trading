@@ -15,7 +15,6 @@ public class OrderDataToIBKROrder {
         order.action(orderData.getAction());
         order.totalQuantity(Decimal.get(orderData.getTotalQuantity()));
         order.orderType(orderData.getOrderType().toString());
-
         if(orderData.getTimeInForce() != null){
         order.tif(orderData.getTimeInForce());
         }
