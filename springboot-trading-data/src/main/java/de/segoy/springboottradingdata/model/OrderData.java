@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 public class OrderData extends BaseEntity{
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="id", insertable=true, updatable=true, unique=true, nullable=false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)

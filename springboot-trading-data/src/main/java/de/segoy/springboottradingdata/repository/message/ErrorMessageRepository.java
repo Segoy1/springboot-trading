@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.repository.message;
 
 import de.segoy.springboottradingdata.model.message.ErrorMessage;
-import org.springframework.data.repository.CrudRepository;
+import de.segoy.springboottradingdata.repository.BaseRepository;
 
-public interface ErrorMessageRepository extends CrudRepository<ErrorMessage, Integer> {
+public interface ErrorMessageRepository extends BaseRepository<ErrorMessage> {
 }

@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.service;
 
+import de.segoy.springboottradingdata.repository.BaseRepository;
 import jakarta.persistence.EntityManager;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ public class RepositoryRefreshService {
         this.entityManager = entityManager;
     }
 
-    public void clearCacheAndWait(CrudRepository repository){
+    public void clearCacheAndWait(BaseRepository<?> repository){
         timeOutToWaitForRefresh();
         entityManager.getEntityManagerFactory().getCache().evict(repository.getClass());
         entityManager.clear();
