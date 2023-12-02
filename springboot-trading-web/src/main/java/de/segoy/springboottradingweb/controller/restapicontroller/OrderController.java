@@ -40,7 +40,6 @@ public class OrderController {
 
     private ResponseEntity<OrderData> executeOrder(OrderData orderData) {
             orderPlacementService.placeOrder(orderData);
-            orderData.setPlaced(true);
             OrderData savedAndPlacedOrder = orderDataRepository.save(orderData);
             return ResponseEntity.ok(savedAndPlacedOrder);
     }

@@ -8,18 +8,15 @@ import de.segoy.springboottradingdata.model.*;
 import de.segoy.springboottradingdata.model.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
-import de.segoy.springboottradingibkr.client.services.ContractDetailsProvider;
-import de.segoy.springboottradingibkr.client.services.ErrorCodeHandler;
-import de.segoy.springboottradingibkr.client.services.FaDataTypeHandler;
-import de.segoy.springboottradingibkr.client.services.SynchronizedCallbackHanlder;
+import de.segoy.springboottradingibkr.client.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +37,7 @@ public class IBKRConnection implements EWrapper {
     private final TickerMessageRepository m_tickers;
     private final ErrorMessageRepository m_errors;
     private final ConnectionDataRepository connectionDataRepository;
-    private final OrderDataRepository orderDataRepository;
+    private final OrderStatusUpdateService orderStatusUpdateService;
     private final ContractDetailsProvider contractDetailsProvider;
     private final PropertiesConfig propertiesConfig;
 
@@ -65,7 +62,7 @@ public class IBKRConnection implements EWrapper {
             ErrorMessageRepository m_errors,
             ConnectionDataRepository connectionDataRepository,
             ContractDetailsProvider contractDetailsProvider,
-            OrderDataRepository orderDataRepository,
+            OrderStatusUpdateService orderStatusUpdateService,
             PropertiesConfig propertiesConfig) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
@@ -74,7 +71,7 @@ public class IBKRConnection implements EWrapper {
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
         this.contractDetailsProvider = contractDetailsProvider;
-        this.orderDataRepository = orderDataRepository;
+        this.orderStatusUpdateService = orderStatusUpdateService;
         this.propertiesConfig = propertiesConfig;
 
     }
@@ -132,6 +129,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         // received open order
+        OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, orderState.getStatus());
+        log.debug("DB OrderData Id is: " + orderData.getId());
         log.info(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
     }
 
@@ -173,8 +172,6 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void execDetails(int reqId, Contract contract, Execution execution) {
-        //TODO see if this Code should be put into a new Service
-        orderDataRepository.findById(reqId).orElseThrow().setExecuted(true);
         log.info(EWrapperMsgGenerator.execDetails(reqId, contract, execution));
     }
 
@@ -245,9 +242,12 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
+    @Transactional
     public void connectionClosed() {
+        connectionDataRepository.setConnectFalseById(1);
+
         String msg = EWrapperMsgGenerator.connectionClosed();
-//        TODO Main.inform( this, msg); to Spring
+        log.error(msg);
     }
 
     @Override
@@ -591,6 +591,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
+        orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
         log.info(EWrapperMsgGenerator.completedOrder(contract, order, orderState));
     }
 

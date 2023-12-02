@@ -2,11 +2,13 @@ package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.repository.BaseRepository;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class RepositoryRefreshService {
 
 
@@ -27,7 +29,7 @@ public class RepositoryRefreshService {
             //10ms Time Out before refreshing Cache
             TimeUnit.MILLISECONDS.sleep(10L);
         } catch (InterruptedException e) {
-            System.err.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }

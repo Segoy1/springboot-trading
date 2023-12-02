@@ -34,6 +34,8 @@ public class ConnectionData extends BaseEntity{
     //Field from SampleFrame aka. IBKRConnection
     private Boolean m_disconnectInProgress;
 
+    private Boolean connected;
+
 
 
 }

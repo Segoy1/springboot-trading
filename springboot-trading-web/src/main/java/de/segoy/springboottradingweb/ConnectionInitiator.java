@@ -43,6 +43,7 @@ public class ConnectionInitiator {
                     .m_retOptCapts("")
                     .m_bIsFAAccount(false)
                     .m_disconnectInProgress(false)
+                    .connected(true)
                     .build();
 
             TwsMessage msg = TwsMessage.builder()
