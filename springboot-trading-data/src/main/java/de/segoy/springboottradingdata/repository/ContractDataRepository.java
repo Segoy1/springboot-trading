@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-public interface ContractDataRepository  extends BaseRepository<ContractData> {
+public interface ContractDataRepository  extends IBKRDataTypeRepository<ContractData> {
 
     public List<ContractData> findAllByContractId(Integer id);
 

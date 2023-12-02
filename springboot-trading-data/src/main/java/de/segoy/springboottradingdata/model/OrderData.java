@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderData extends BaseEntity{
+public class OrderData extends IBKRDataTypeEntity{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

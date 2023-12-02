@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractData extends BaseEntity{
+public class ContractData extends IBKRDataTypeEntity {
 
     @Id
     @SequenceGenerator(initialValue = 9000000, allocationSize = 1, name = "contract_id_sequence")
@@ -60,5 +60,4 @@ public class ContractData extends BaseEntity{
     @OneToMany
     @Singular
     private List<ComboLegData> comboLegs;
-    private boolean touchedByApi;
 }
