@@ -1,25 +1,24 @@
 package de.segoy.springboottradingdata.model;
 
+import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderData {
+public class OrderData extends BaseEntity{
 
     @Id
-    private Integer orderId;
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
     private Types.Action action;
@@ -39,6 +38,6 @@ public class OrderData {
     @NotNull
     private ContractData contractData;
 
-    private boolean placed;
-    private boolean executed;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 }

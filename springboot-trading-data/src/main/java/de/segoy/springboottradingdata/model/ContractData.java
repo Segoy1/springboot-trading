@@ -9,11 +9,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractData {
+public class ContractData extends BaseEntity{
 
     @Id
     @SequenceGenerator(initialValue = 9000000, allocationSize = 1, name = "contract_id_sequence")
