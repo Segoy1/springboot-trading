@@ -12,8 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IBKRContractToContractDataTest {
 
@@ -32,9 +31,10 @@ class IBKRContractToContractDataTest {
         ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
         assertEquals(contract.right(), Types.Right.Call);
         assertEquals(contract.secType(), Types.SecType.STK);
-        assertEquals("SPX", contract.symbol());
-        assertEquals("USD", contract.currency());
-        assertEquals("SMART", contract.exchange());
+        assertEquals("SPX", contractData.getSymbol());
+        assertEquals("USD", contractData.getCurrency());
+        assertEquals("SMART", contractData.getExchange());
+        assertTrue(contractData.isTouchedByApi());
     }
 
     @Test

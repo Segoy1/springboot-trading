@@ -6,10 +6,11 @@ package de.segoy.springboottradingibkr.client;
 import com.ib.client.*;
 import de.segoy.springboottradingdata.model.*;
 import de.segoy.springboottradingdata.model.message.TickerMessage;
+import de.segoy.springboottradingdata.modelconverter.DatabaseSyncIBKRContractAndContractData;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
-import de.segoy.springboottradingdata.service.OnStartDbPopulator;
+import de.segoy.springboottradingdata.service.ApiDataDbPopulator;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.services.*;
@@ -38,9 +39,9 @@ public class IBKRConnection implements EWrapper {
     private final ErrorMessageHandler errorsMessageHandler;
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
-    private final ContractDetailsProvider contractDetailsProvider;
+    private final DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData;
     private final PropertiesConfig propertiesConfig;
-    private final OnStartDbPopulator onStartDbPopulator;
+    private final ApiDataDbPopulator apiDataDbPopulator;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -62,20 +63,19 @@ public class IBKRConnection implements EWrapper {
             TickerMessageRepository m_tickers,
             ErrorMessageHandler errorMessageHandler,
             ConnectionDataRepository connectionDataRepository,
-            ContractDetailsProvider contractDetailsProvider,
             OrderStatusUpdateService orderStatusUpdateService,
-            PropertiesConfig propertiesConfig, OnStartDbPopulator onStartDbPopulator) {
+            DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, PropertiesConfig propertiesConfig, ApiDataDbPopulator apiDataDbPopulator) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
         this.errorsMessageHandler = errorMessageHandler;
         this.m_tickers = m_tickers;
         this.connectionDataRepository = connectionDataRepository;
-        this.contractDetailsProvider = contractDetailsProvider;
         this.orderStatusUpdateService = orderStatusUpdateService;
+        this.databaseSyncIBKRContractAndContractData = databaseSyncIBKRContractAndContractData;
         this.propertiesConfig = propertiesConfig;
 
-        this.onStartDbPopulator = onStartDbPopulator;
+        this.apiDataDbPopulator = apiDataDbPopulator;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         //this should only be necessary when in Memory DB is used!
-        onStartDbPopulator.saveToDB(order, contract);
+        apiDataDbPopulator.saveFullOrderDataToDbIfNotExistent(order, contract);
         // received open order
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, orderState.getStatus());
         log.debug("DB OrderData Id is: " + orderData.getId());
@@ -147,7 +147,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        contractDetailsProvider.addContractDetailsFromAPIToContractData(reqId, contractDetails.contract());
+        databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(reqId), contractDetails.contract());
         log.debug("Added Contract Details: Id = " + reqId );
     }
 

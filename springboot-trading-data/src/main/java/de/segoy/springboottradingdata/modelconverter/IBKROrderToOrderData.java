@@ -2,9 +2,11 @@ package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Order;
 import de.segoy.springboottradingdata.model.OrderData;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class IBKROrderToOrderData {
 
     public OrderData convertOrder(Order order) {
