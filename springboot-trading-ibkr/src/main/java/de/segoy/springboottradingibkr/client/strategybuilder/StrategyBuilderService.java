@@ -9,10 +9,7 @@ import de.segoy.springboottradingibkr.client.strategybuilder.type.Leg;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StrategyBuilderService {
@@ -26,8 +23,12 @@ public class StrategyBuilderService {
     }
 
     public Optional<ContractData> getComboLegContractData(ContractData contractData, Map<Leg, Double> legMap) {
-        contractData.setComboLegs(legListBuilder(contractData, legMap));
-        return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
+        try {
+            contractData.setComboLegs(legListBuilder(contractData, legMap));
+            return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
+        } catch (NoSuchElementException e) {
+            return Optional.empty();
+        }
     }
 
     private List<ComboLegData> legListBuilder(ContractData contractData, Map<Leg, Double> legMap) {

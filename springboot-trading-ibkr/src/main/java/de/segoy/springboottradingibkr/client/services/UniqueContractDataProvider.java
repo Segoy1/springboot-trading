@@ -30,6 +30,10 @@ public class UniqueContractDataProvider {
     }
 
     private Optional<ContractData> getComboLegOptionData(ContractData contractData) {
+        if (contractData.getId() != null
+                && contractDataRepository.findById(contractData.getId()).isPresent()) {
+            return contractDataRepository.findById(contractData.getId());
+        }
         return Optional.of(contractDataRepository.save(contractData));
     }
 

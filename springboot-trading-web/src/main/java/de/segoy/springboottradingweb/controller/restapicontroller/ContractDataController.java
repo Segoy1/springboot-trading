@@ -64,8 +64,8 @@ public class ContractDataController {
 
 
     @PutMapping()
-    public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contract) {
-        Optional<ContractData> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(contract);
+    public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contractData) {
+        Optional<ContractData> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
         return savedContract.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
