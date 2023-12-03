@@ -126,6 +126,9 @@ public class IBKRConnection implements EWrapper {
         // received order status
         log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
+        synchronized (propertiesConfig.getNextValidOrderId()) {
+            propertiesConfig.setNextValidOrderId(orderId + 1);
+        }
     }
 
     @Override

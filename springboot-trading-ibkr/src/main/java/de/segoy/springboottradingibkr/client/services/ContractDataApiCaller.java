@@ -31,14 +31,17 @@ public class ContractDataApiCaller {
     public Optional<ContractData> callContractDetailsFromAPI(ContractData contractData) {
         Contract ibkrContract = contractDataToIBKRContract.convertContractData(contractData);
         //ugly: having to increment by 2 because I am too stupid to do it properly
-        int nextId = contractData.getId()!=null?contractData.getId():contractDataRepository.nextValidId() + 1;
+        int nextId = getNextId(contractData);
         client.reqContractDetails(nextId, ibkrContract);
         return getUpdatedContractData(nextId);
     }
 
+    private int getNextId(ContractData contractData) {
+        return contractData.getId() != null ? contractData.getId() : contractDataRepository.nextValidId() + 1;
+    }
 
 
-      private Optional<ContractData> getUpdatedContractData(Integer id) {
+    private Optional<ContractData> getUpdatedContractData(Integer id) {
         return this.apiResponseInEntityChecker.checkForApiResponseAndUpdate(contractDataRepository, id);
     }
 

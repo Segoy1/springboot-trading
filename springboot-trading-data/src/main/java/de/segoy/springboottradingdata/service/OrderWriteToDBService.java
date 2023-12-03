@@ -26,7 +26,6 @@ public class OrderWriteToDBService {
 
     public void saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
         ContractData contractData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.empty(), contract);
-
         OrderData orderData = ibkrOrderToOrderData.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
 

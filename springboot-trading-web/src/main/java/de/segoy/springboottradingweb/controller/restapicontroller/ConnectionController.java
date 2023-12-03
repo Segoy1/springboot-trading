@@ -28,7 +28,7 @@ public class ConnectionController {
     }
 
     @GetMapping("connect")
-    public void connect(@RequestParam String stage){
+    public void connect(@RequestParam(defaultValue = "paper") String stage){
         int port = stage.equals("live")? SpringbootTradingApplication.LIVE_TRADING_PORT:SpringbootTradingApplication.PAPER_TRADING_PORT;
         connectionInitiator.connect(port);
     }

@@ -7,7 +7,6 @@ import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.service.ApiResponseInEntityChecker;
 import de.segoy.springboottradingibkr.client.services.OrderPlacementService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +35,12 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<OrderData>test(){
         OrderData orderData = OrderData.builder()
+                .id(nextAvailableOrderIdController.getNextAvailableOrderId())
                 .action(Types.Action.BUY)
                 .orderType(OrderType.LMT)
                 .totalQuantity(new BigDecimal(1))
                 .limitPrice(new BigDecimal(10))
-                .contractData(contractDataRepository.findById(9000004).orElseThrow())
+                .contractData(contractDataRepository.findById(9000000).get())
                 .build();
 
         orderPlacementService.placeOrder(orderData);
@@ -56,9 +56,9 @@ public class OrderController {
     }
 
     @PutMapping("/place-order")
-    public ResponseEntity<OrderData> orderWithOrderObject(@Valid OrderData orderData) {
-        OrderData savedOrder = orderDataRepository.save(orderData);
-        return executeOrder(savedOrder);
+    public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
+        orderData.setId(nextAvailableOrderIdController.getNextAvailableOrderId());
+        return executeOrder(orderData);
     }
 
     private ResponseEntity<OrderData> executeOrder(OrderData orderData) {
