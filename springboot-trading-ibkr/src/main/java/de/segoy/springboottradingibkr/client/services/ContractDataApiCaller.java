@@ -8,6 +8,8 @@ import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ApiResponseInEntityChecker;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class ContractDataApiCaller {
 
@@ -26,14 +28,18 @@ public class ContractDataApiCaller {
         this.apiResponseInEntityChecker = apiResponseInEntityChecker;
     }
 
-    public ContractData callContractDetailsFromAPI(ContractData contractData) {
+    public Optional<ContractData> callContractDetailsFromAPI(ContractData contractData) {
         Contract ibkrContract = contractDataToIBKRContract.convertContractData(contractData);
-        client.reqContractDetails(contractData.getId(), ibkrContract);
-        return getUpdatedContractData(contractData.getId());
+        //ugly: having to increment by 2 because I am too stupid to do it properly
+        int nextId = contractData.getId()!=null?contractData.getId():contractDataRepository.nextValidId() + 1;
+        client.reqContractDetails(nextId, ibkrContract);
+        return getUpdatedContractData(nextId);
     }
 
-    private ContractData getUpdatedContractData(Integer id) {
-        return this.apiResponseInEntityChecker.checkForApiResponseAndUpdate(contractDataRepository,id);
+
+
+      private Optional<ContractData> getUpdatedContractData(Integer id) {
+        return this.apiResponseInEntityChecker.checkForApiResponseAndUpdate(contractDataRepository, id);
     }
 
 

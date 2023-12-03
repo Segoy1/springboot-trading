@@ -8,6 +8,4 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class IBKRDataTypeEntity extends BaseEntity{
-
-    private boolean touchedByApi;
 }

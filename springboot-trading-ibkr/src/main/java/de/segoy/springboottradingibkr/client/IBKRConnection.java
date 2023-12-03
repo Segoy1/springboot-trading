@@ -10,7 +10,7 @@ import de.segoy.springboottradingdata.modelconverter.DatabaseSyncIBKRContractAnd
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
-import de.segoy.springboottradingdata.service.ApiDataDbPopulator;
+import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.services.*;
@@ -41,7 +41,7 @@ public class IBKRConnection implements EWrapper {
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData;
     private final PropertiesConfig propertiesConfig;
-    private final ApiDataDbPopulator apiDataDbPopulator;
+    private final OrderWriteToDBService orderWriteToDBService;
 
 
     private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
@@ -64,7 +64,7 @@ public class IBKRConnection implements EWrapper {
             ErrorMessageHandler errorMessageHandler,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
-            DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, PropertiesConfig propertiesConfig, ApiDataDbPopulator apiDataDbPopulator) {
+            DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -75,7 +75,7 @@ public class IBKRConnection implements EWrapper {
         this.databaseSyncIBKRContractAndContractData = databaseSyncIBKRContractAndContractData;
         this.propertiesConfig = propertiesConfig;
 
-        this.apiDataDbPopulator = apiDataDbPopulator;
+        this.orderWriteToDBService = orderWriteToDBService;
     }
 
     @Override
@@ -130,11 +130,9 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
-        //this should only be necessary when in Memory DB is used!
-        apiDataDbPopulator.saveFullOrderDataToDbIfNotExistent(order, contract);
+        //populates DB On init and first Time Order is saved to DB when opened
+        orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
         // received open order
-        OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, orderState.getStatus());
-        log.debug("DB OrderData Id is: " + orderData.getId());
         log.info(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
     }
 
@@ -145,6 +143,7 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
+    @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
         databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(reqId), contractDetails.contract());

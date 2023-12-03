@@ -42,21 +42,21 @@ class ContractDataApiCallerTest {
     void testcallContractDetailsFromAPIWithValidCall() {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.OPT);
-        contractData.setTouchedByApi(true);
+//        contractData.setTouchedByApi(true);
 
         when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
 
-        ContractData testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
 
-        assertEquals(123, testData.getContractId());
+        assertEquals(123, testData.get().getContractId());
     }
     @Test
     void testcallContractDetailsFromAPIWithInvalidCall() {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.BAG);
         when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
-        ContractData testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
-        assertEquals(123, testData.getContractId());
+        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        assertEquals(123, testData.get().getContractId());
     }
     @Test
     void testcallContractDetailsFromAPIWithErrorCall() {
@@ -65,8 +65,8 @@ class ContractDataApiCallerTest {
 
         when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
         when(errorMessageRepository.existsById(9000000)).thenReturn(true);
-        ContractData testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
-        assertEquals(123, testData.getContractId());
+        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        assertEquals(123, testData.get().getContractId());
     }
 
     private ContractData buildBigContractData() {

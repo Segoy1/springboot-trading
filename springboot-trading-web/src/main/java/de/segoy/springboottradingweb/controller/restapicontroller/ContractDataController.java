@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/contract")
@@ -56,16 +57,16 @@ public class ContractDataController {
                 .lastTradeDate(lastTradeDate)
                 .build();
 
-        ContractData savedContract = strategyBuilderService.getComboLegContractData(contract, legs);
+        Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contract, legs);
 
-        return ResponseEntity.ok(savedContract);
+        return savedContract.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 
     @PutMapping()
     public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contract) {
-        ContractData savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(contract);
-        return ResponseEntity.ok(savedContract);
+        Optional<ContractData> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(contract);
+        return savedContract.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping
@@ -73,6 +74,6 @@ public class ContractDataController {
 
         return contractDataRepository.findById(id)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

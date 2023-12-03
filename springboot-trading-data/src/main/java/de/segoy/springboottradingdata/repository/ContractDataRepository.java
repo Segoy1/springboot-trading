@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.repository;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
+import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -9,8 +10,14 @@ import java.util.Optional;
 
 public interface ContractDataRepository  extends IBKRDataTypeRepository<ContractData> {
 
-    public List<ContractData> findAllByContractId(Integer id);
-    public Optional<ContractData> findFirstByContractId(Integer id);
+    List<ContractData> findAllByContractId(Integer id);
+    Optional<ContractData> findFirstByContractId(Integer id);
 
-    public Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, String symbol, BigDecimal strike, Types.Right right);
+    Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, String symbol, BigDecimal strike, Types.Right right);
+
+    List<ContractData> findAllBySecurityType(Types.SecType type);
+
+    //Todo: find cleaner solution wich does not increment the sequence
+    @Query(value="select nextval('contract_id_sequence')", nativeQuery = true)
+    int nextValidId();
 }

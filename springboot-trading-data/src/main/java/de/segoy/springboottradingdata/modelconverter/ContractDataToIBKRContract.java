@@ -16,9 +16,9 @@ public class ContractDataToIBKRContract {
 
 
         //NotBlankFields
-        contract.symbol(contractData.getSymbol().toString());
+        contract.symbol(contractData.getSymbol());
         contract.secType(contractData.getSecurityType().toString());
-        contract.currency(contractData.getCurrency().toString());
+        contract.currency(contractData.getCurrency());
         contract.exchange(contractData.getExchange());
 
 

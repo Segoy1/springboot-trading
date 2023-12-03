@@ -36,7 +36,6 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<OrderData>test(){
         OrderData orderData = OrderData.builder()
-                .id(nextAvailableOrderIdController.getNextAvailableOrderId())
                 .action(Types.Action.BUY)
                 .orderType(OrderType.LMT)
                 .totalQuantity(new BigDecimal(1))
@@ -44,9 +43,9 @@ public class OrderController {
                 .contractData(contractDataRepository.findById(9000004).orElseThrow())
                 .build();
 
-        orderPlacementService.placeOrder(orderDataRepository.save(orderData));
-        OrderData savedAndPlacedOrder = apiResponseInEntityChecker.checkForApiResponseAndUpdate(orderDataRepository,orderData.getId());
-        return ResponseEntity.ok(savedAndPlacedOrder);
+        orderPlacementService.placeOrder(orderData);
+        Optional<OrderData> savedAndPlacedOrder = apiResponseInEntityChecker.checkForApiResponseAndUpdate(orderDataRepository,orderData.getId());
+        return savedAndPlacedOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/place-existing-order")
@@ -64,7 +63,7 @@ public class OrderController {
 
     private ResponseEntity<OrderData> executeOrder(OrderData orderData) {
             orderPlacementService.placeOrder(orderData);
-            OrderData savedAndPlacedOrder = apiResponseInEntityChecker.checkForApiResponseAndUpdate(orderDataRepository,orderData.getId());
-            return ResponseEntity.ok(savedAndPlacedOrder);
+            Optional<OrderData> savedAndPlacedOrder = apiResponseInEntityChecker.checkForApiResponseAndUpdate(orderDataRepository,orderData.getId());
+            return savedAndPlacedOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

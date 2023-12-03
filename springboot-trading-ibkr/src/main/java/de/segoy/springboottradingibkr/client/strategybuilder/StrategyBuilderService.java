@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class StrategyBuilderService {
@@ -24,7 +25,7 @@ public class StrategyBuilderService {
         this.comboLegDataRepository = comboLegDataRepository;
     }
 
-    public ContractData getComboLegContractData(ContractData contractData, Map<Leg, Double> legMap) {
+    public Optional<ContractData> getComboLegContractData(ContractData contractData, Map<Leg, Double> legMap) {
         contractData.setComboLegs(legListBuilder(contractData, legMap));
         return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
     }
@@ -33,7 +34,7 @@ public class StrategyBuilderService {
         List<ComboLegData> legs = new ArrayList<>();
 
         legMap.forEach((leg, strike) -> {
-            ContractData legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, strike, leg.getRight()));
+            ContractData legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, strike, leg.getRight())).orElseThrow();
             legs.add(buildComboLegData(legContract, leg.getAction(), leg.getRatio()));
         });
         return legs;

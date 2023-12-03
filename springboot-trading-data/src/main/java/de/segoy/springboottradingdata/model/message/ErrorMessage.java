@@ -4,6 +4,9 @@ import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -16,7 +19,12 @@ public class ErrorMessage extends IBKRDataTypeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private Integer errorId;
+
     @NotBlank
     @Lob
     private String message;
+
+    @CreationTimestamp
+    private Timestamp createDate;
 }
