@@ -29,6 +29,32 @@ public class ContractDataController {
         this.strategyBuilderService = strategyBuilderService;
     }
 
+    @PutMapping
+    public ResponseEntity<ContractData> ComboLegContractData(@RequestBody ContractData contractData,
+                                                             @RequestParam(defaultValue = "0", name = "buyPutStrike") double buyPutStrike,
+                                                             @RequestParam(defaultValue = "0", name = "sellPutStrike") double sellPutStrike,
+                                                             @RequestParam(defaultValue = "0", name = "buyCallStrike") double buyCallStrike,
+                                                             @RequestParam(defaultValue = "0", name = "sellCallStrike") double sellCallStrike,
+                                                             @RequestParam(defaultValue = "0", name = "buyPutStrikeTwo") double buyPutStrikeTwo,
+                                                             @RequestParam(defaultValue = "0", name = "sellPutStrikeTwo") double sellPutStrikeTwo,
+                                                             @RequestParam(defaultValue = "0", name = "buyCallStrikeTwo") double buyCallStrikeTwo,
+                                                             @RequestParam(defaultValue = "0", name = "sellCallStrikeTwo") double sellCallStrikeTwo) {
+
+        Map<Leg, Double> legMap = populateLegMap(buyPutStrike,
+                sellPutStrike,
+                buyCallStrike,
+                sellCallStrike,
+                buyPutStrikeTwo,
+                sellPutStrikeTwo,
+                buyCallStrikeTwo,
+                sellCallStrikeTwo);
+
+        Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contractData, legMap);
+
+        return savedContract.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+
     //Test Code
     @GetMapping("/iron_condor")
     public ResponseEntity<ContractData> fourLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") String symbol,
@@ -41,13 +67,13 @@ public class ContractDataController {
                                                                       @RequestParam(required = true, name = "sellPutStrike") double sellPutStrike,
                                                                       @RequestParam(required = true, name = "buyCallStrike") double buyCallStrike,
                                                                       @RequestParam(required = true, name = "sellCallStrike") double sellCallStrike
-                                                                      ) {
+    ) {
 
         Map<Leg, Double> legs = new HashMap<>();
         legs.put(Leg.BUY_PUT_ONE, buyPutStrike);
         legs.put(Leg.SELL_PUT_ONE, sellPutStrike);
         legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
-        legs.put(Leg.SELL_CALL_ONE,sellCallStrike);
+        legs.put(Leg.SELL_CALL_ONE, sellCallStrike);
 
         ContractData contractData = ContractData.builder()
                 .symbol(symbol)
@@ -75,5 +101,34 @@ public class ContractDataController {
         return contractDataRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    private Map<Leg, Double> populateLegMap(double buyPutStrike, double sellPutStrike, double buyCallStrike, double sellCallStrike, double buyPutStrikeTwo, double sellPutStrikeTwo, double buyCallStrikeTwo, double sellCallStrikeTwo) {
+        Map<Leg, Double> legs = new HashMap<>();
+        if (buyPutStrike != 0) {
+            legs.put(Leg.BUY_PUT_ONE, buyPutStrike);
+        }
+        if (sellPutStrike != 0) {
+            legs.put(Leg.SELL_PUT_ONE, sellPutStrike);
+        }
+        if (buyCallStrike != 0) {
+            legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
+        }
+        if (sellCallStrike != 0) {
+            legs.put(Leg.SELL_CALL_ONE, sellCallStrike);
+        }
+        if (buyPutStrikeTwo != 0) {
+            legs.put(Leg.BUY_PUT_TWO, buyPutStrikeTwo);
+        }
+        if (sellPutStrikeTwo != 0) {
+            legs.put(Leg.SELL_PUT_TWO, sellPutStrikeTwo);
+        }
+        if (buyCallStrikeTwo != 0) {
+            legs.put(Leg.BUY_CALL_TWO, buyCallStrikeTwo);
+        }
+        if (sellCallStrikeTwo != 0) {
+            legs.put(Leg.SELL_CALL_TWO, sellCallStrikeTwo);
+        }
+        return legs;
     }
 }
