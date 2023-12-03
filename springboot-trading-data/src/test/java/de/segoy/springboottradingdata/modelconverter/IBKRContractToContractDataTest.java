@@ -5,14 +5,14 @@ import com.ib.client.Contract;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.type.Currency;
-import de.segoy.springboottradingdata.type.Symbol;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class IBKRContractToContractDataTest {
 
@@ -23,7 +23,7 @@ class IBKRContractToContractDataTest {
     void testConvertDataMinimumData() {
         Contract contract = new Contract();
         contract.right(Types.Right.Call);
-        contract.symbol(Symbol.SPX.toString());
+        contract.symbol("SPX");
         contract.secType(Types.SecType.STK);
         contract.currency(Currency.USD.toString());
         contract.exchange("SMART");
@@ -50,7 +50,7 @@ class IBKRContractToContractDataTest {
         Contract contract = new Contract();
         contract.conid(123);
         contract.right(Types.Right.Call);
-        contract.symbol(Symbol.SPX.toString());
+        contract.symbol("SPX");
         contract.secType(Types.SecType.STK);
         contract.currency(Currency.USD.toString());
         contract.exchange("SMART");

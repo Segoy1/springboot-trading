@@ -9,7 +9,6 @@ import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingdata.type.Currency;
-import de.segoy.springboottradingdata.type.Symbol;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -81,7 +80,7 @@ class ContractDataApiCallerTest {
                 .id(9000000)
                 .contractId(123)
                 .right(Types.Right.Call)
-                .symbol(Symbol.SPX.toString())
+                .symbol("SPX")
                 .currency(Currency.USD.toString())
                 .exchange("SMART")
                 .lastTradeDate("20231117")

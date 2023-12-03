@@ -49,7 +49,7 @@ public class ContractDataController {
         legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
         legs.put(Leg.SELL_CALL_ONE,sellCallStrike);
 
-        ContractData contract = ContractData.builder()
+        ContractData contractData = ContractData.builder()
                 .symbol(symbol)
                 .securityType(securityType)
                 .currency(currency)
@@ -57,7 +57,7 @@ public class ContractDataController {
                 .lastTradeDate(lastTradeDate)
                 .build();
 
-        Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contract, legs);
+        Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contractData, legs);
 
         return savedContract.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }

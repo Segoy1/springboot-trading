@@ -1,4 +1,4 @@
-package de.segoy.springboottradingweb.aspect;
+package de.segoy.springboottradingibkr.client.aspect;
 
 import com.ib.client.EReader;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
