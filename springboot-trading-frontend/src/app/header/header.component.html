@@ -1,20 +1,29 @@
-<div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
+        <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
+      </button>
+      <a href="#" class="navbar-brand">IBKR API</a>
+    </div>
+    <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
 
-  <div class="navbar-default">
-    <ul class="nav navbar-nav">
-      <li><a href="#" (click)="onHeaderClick('orders')">Orders</a> </li>
-      <li><a href="#" (click)="onHeaderClick('portfolio')">Portfolio</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown" appDropdown>
-        <a href="#" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Save Data</a></li>
-          <li><a href="#">Fetch Data</a></li>
+      <div class="navbar-default">
+        <ul class="nav navbar-nav">
+          <li><a href="#" (click)="onHeaderClick('orders')">Orders</a></li>
+          <li><a href="#" (click)="onHeaderClick('portfolio')">Portfolio</a></li>
+          <li><a href="#" (click)="onHeaderClick('marketData')">Market Data</a></li>
         </ul>
-      </li>
-    </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown" appDropdown>
+            <a href="#" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Save Data</a></li>
+              <li><a href="#">Fetch Data</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-</div>
-</div>
 </nav>

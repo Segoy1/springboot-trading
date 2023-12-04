@@ -7,7 +7,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class HeaderComponent {
   @Output() headerSelectEvent: EventEmitter<string> = new EventEmitter<string>();
-  collapsed: boolean = true;
+  collapsed: boolean = false;
 
   onHeaderClick(category:string){
     this.headerSelectEvent.emit(category)
