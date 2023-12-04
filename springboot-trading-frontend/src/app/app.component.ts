@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'springboot-trading-frontend';
+  isOrders: boolean = false;
+  isMarketData: boolean = false ;
+  isPortfolio: boolean = false;
+
+  activeCategory(category: string){
+    this.isMarketData = category === "marketData";
+    this.isOrders = category === "orders";
+    this.isPortfolio = category === "portfolio";
+  }
 }
