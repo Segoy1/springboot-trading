@@ -8,6 +8,7 @@ import { OrdersComponent } from './header/orders/orders.component';
 import { PortfolioComponent } from './header/portfolio/portfolio.component';
 import { MarketDataComponent } from './header/market-data/market-data.component';
 import {DropdownDirective} from "./header/shared/dropdown.directive";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {DropdownDirective} from "./header/shared/dropdown.directive";
     DropdownDirective
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

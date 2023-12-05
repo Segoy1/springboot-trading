@@ -18,8 +18,8 @@
           <li class="dropdown" appDropdown>
             <a href="#" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
             <ul class="dropdown-menu">
-              <li><a href="#">Save Data</a></li>
-              <li><a href="#">Fetch Data</a></li>
+              <li><a href="http://localhost:8080/connect" [ngClass]="{'disabled': isConnected}" (click)="isConnected=true">Connect</a></li>
+              <li><a href="http://localhost:8080/disconnect" [ngClass]="{'disabled': !isConnected}" (click)="isConnected=false">Disconnect</a></li>
             </ul>
           </li>
         </ul>

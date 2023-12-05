@@ -29,9 +29,9 @@ public class ConnectionInitiator {
         this.eReaderHolder = eReaderHolder;
     }
 
-    public void connect(int port) {
+    public boolean connect(int port) {
         if (client.isConnected()) {
-            return;
+            return true;
         }
         client.eConnect("", port, 0);
 
@@ -54,7 +54,9 @@ public class ConnectionInitiator {
             tws_messages.save(msg);
             ConnectionData savedConnectionData = connectionDataRepository.save(connectionData);
             eReaderHolder.startReader();
+            return true;
         }
+        return false;
     }
 
     @PreDestroy

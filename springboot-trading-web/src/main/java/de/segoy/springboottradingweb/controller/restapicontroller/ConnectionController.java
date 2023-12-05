@@ -4,6 +4,7 @@ import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingweb.ConnectionInitiator;
 import de.segoy.springboottradingweb.SpringbootTradingApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +29,8 @@ public class ConnectionController {
     }
 
     @GetMapping("connect")
-    public void connect(@RequestParam(defaultValue = "paper") String stage){
+    public ResponseEntity<Boolean> connect(@RequestParam(defaultValue = "paper", name = "stage") String stage){
         int port = stage.equals("live")? SpringbootTradingApplication.LIVE_TRADING_PORT:SpringbootTradingApplication.PAPER_TRADING_PORT;
-        connectionInitiator.connect(port);
+        return ResponseEntity.ok(connectionInitiator.connect(port));
     }
 }
