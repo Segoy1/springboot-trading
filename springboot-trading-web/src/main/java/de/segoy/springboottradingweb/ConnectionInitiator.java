@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.model.ConnectionData;
 import de.segoy.springboottradingdata.model.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
-import de.segoy.springboottradingibkr.client.services.EReaderHolder;
+import de.segoy.springboottradingibkr.client.service.EReaderHolder;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

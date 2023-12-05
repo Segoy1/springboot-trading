@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.services;
+package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.FinancialAdvisor;

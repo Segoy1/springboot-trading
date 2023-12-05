@@ -14,7 +14,7 @@ public class NextAvailableOrderIdController {
     }
 
     @GetMapping("/get-next-order-id")
-    public synchronized Integer getNextAvailableOrderId(){
+    public Integer getNextAvailableOrderId(){
         return propertiesConfig.getNextValidOrderId();
         }
     }

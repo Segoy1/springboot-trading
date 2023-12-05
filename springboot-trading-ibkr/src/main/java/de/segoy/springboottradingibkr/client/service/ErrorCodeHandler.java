@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.services;
+package de.segoy.springboottradingibkr.client.service;
 
 import de.segoy.springboottradingibkr.client.FaErrorCode;
 import de.segoy.springboottradingdata.model.MktDepth;

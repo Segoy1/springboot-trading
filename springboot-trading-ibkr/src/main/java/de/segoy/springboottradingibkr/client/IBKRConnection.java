@@ -13,7 +13,7 @@ import de.segoy.springboottradingdata.service.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
-import de.segoy.springboottradingibkr.client.services.*;
+import de.segoy.springboottradingibkr.client.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -126,9 +126,8 @@ public class IBKRConnection implements EWrapper {
         // received order status
         log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
-        synchronized (propertiesConfig.getNextValidOrderId()) {
-            propertiesConfig.setNextValidOrderId(orderId + 1);
-        }
+        propertiesConfig.setNextValidOrderId(orderId + 1);
+
     }
 
     @Override
@@ -150,7 +149,7 @@ public class IBKRConnection implements EWrapper {
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
         databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(reqId), contractDetails.contract());
-        log.debug("Added Contract Details: Id = " + reqId );
+        log.debug("Added Contract Details: Id = " + reqId);
     }
 
     @Override
@@ -215,9 +214,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
-        synchronized (propertiesConfig.getNextValidOrderId()) {
-            propertiesConfig.setNextValidOrderId(orderId);
-        }
+        propertiesConfig.setNextValidOrderId(orderId);
         log.info(EWrapperMsgGenerator.nextValidId(orderId));
     }
 
