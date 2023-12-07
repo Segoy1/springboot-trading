@@ -5,15 +5,16 @@ package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
 import de.segoy.springboottradingdata.model.*;
-import de.segoy.springboottradingdata.model.message.TickerMessage;
 import de.segoy.springboottradingdata.modelconverter.DatabaseSyncIBKRContractAndContractData;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.repository.message.TickerMessageRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
-import de.segoy.springboottradingibkr.client.service.*;
+import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
+import de.segoy.springboottradingibkr.client.service.FaDataTypeHandler;
+import de.segoy.springboottradingibkr.client.service.OrderStatusUpdateService;
+import de.segoy.springboottradingibkr.client.service.SynchronizedCallbackHanlder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -36,9 +37,8 @@ public class IBKRConnection implements EWrapper {
     private final FaDataTypeHandler faDataTypeHandler;
 
 
-    private final TickerMessageRepository m_tickers;
     private final ErrorMessageHandler errorsMessageHandler;
-    private final KafkaTemplate<String, String> tickerKTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
@@ -63,17 +63,15 @@ public class IBKRConnection implements EWrapper {
             SynchronizedCallbackHanlder callbackHanlder,
             ErrorCodeHandler errorCodeHandler,
             FaDataTypeHandler faDataTypeHandler,
-            TickerMessageRepository m_tickers,
             ErrorMessageHandler errorMessageHandler,
-            KafkaTemplate tickerKTemplate, ConnectionDataRepository connectionDataRepository,
+            KafkaTemplate<String,String> kafkaTemplate, ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
         this.errorsMessageHandler = errorMessageHandler;
-        this.m_tickers = m_tickers;
-        this.tickerKTemplate = tickerKTemplate;
+        this.kafkaTemplate = kafkaTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.databaseSyncIBKRContractAndContractData = databaseSyncIBKRContractAndContractData;
@@ -84,49 +82,46 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
-        //TODO Option Price comes here
-        String message = EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib);
-        tickerKTemplate.send("ticksPrice", message);
-        m_tickers.save(TickerMessage.builder().message(message).build());
+        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib));
     }
 
     @Override
     public void tickSize(int tickerId, int field, Decimal size) {
         // received size tick
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSize(tickerId, field, size)).build());
+        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickSize(tickerId, field, size));
     }
 
     @Override
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
         // received computation tick
         //TODO Option Greeks come here
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
-                gamma, vega, theta, undPrice)).build());
+       kafkaTemplate.send("tick",EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
+                gamma, vega, theta, undPrice));
     }
 
     @Override
     public void tickGeneric(int tickerId, int tickType, double value) {
         // received generic tick
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
 
     }
 
     @Override
     public void tickString(int tickerId, int tickType, String value) {
         // received String tick
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickString(tickerId, tickType, value)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickString(tickerId, tickType, value));
     }
 
     @Override
     public void tickSnapshotEnd(int reqId) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickSnapshotEnd(reqId)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickSnapshotEnd(reqId));
     }
 
     @Override
     public void tickEFP(int tickerId, int tickType, double basisPoints, String formattedBasisPoints, double impliedFuture, int holdDays, String futureLastTradeDate, double dividendImpact, double dividendsToLastTradeDate) {
         // received EFP tick
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
-                impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
+                impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate));
     }
 
     @Override
@@ -168,13 +163,13 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void scannerData(int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark, String projection, String legsStr) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
-                benchmark, projection, legsStr)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
+                benchmark, projection, legsStr));
     }
 
     @Override
     public void scannerDataEnd(int reqId) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.scannerDataEnd(reqId)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.scannerDataEnd(reqId));
     }
 
     @Override
@@ -300,19 +295,19 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalData(int reqId, Bar bar) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap())).build());
+        kafkaTemplate.send("tickHistorical",EWrapperMsgGenerator.historicalData(reqId, bar.time(), bar.open(), bar.high(), bar.low(), bar.close(), bar.volume(), bar.count(), bar.wap()));
     }
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
+        kafkaTemplate.send("tickHistorical",EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
     }
 
     @Override
     public void realtimeBar(int reqId, long time, double open, double high, double low, double close, Decimal volume, Decimal wap, int count) {
         //TODO: Index Ticker comes here
         //MessageFormat: id=25 time = 1701887635 open=4565,62 high=4565,73 low=4565,62 close=4565,66 volume=0 count=0 WAP=0
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count)).build());
+        kafkaTemplate.send("tickLifeBar",EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count));
     }
 
     @Override
@@ -327,7 +322,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void fundamentalData(int reqId, String data) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.fundamentalData(reqId, data)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.fundamentalData(reqId, data));
     }
 
     @Override
@@ -349,7 +344,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void marketDataType(int reqId, int marketDataType) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.marketDataType(reqId, marketDataType)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.marketDataType(reqId, marketDataType));
     }
 
     @Override
@@ -469,7 +464,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions));
     }
 
     @Override
@@ -583,17 +578,17 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickByTickAllLast(int reqId, int tickType, long time, double price, Decimal size, TickAttribLast tickAttribLast, String exchange, String specialConditions) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions));
     }
 
     @Override
     public void tickByTickBidAsk(int reqId, long time, double bidPrice, double askPrice, Decimal bidSize, Decimal askSize, TickAttribBidAsk tickAttribBidAsk) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk));
     }
 
     @Override
     public void tickByTickMidPoint(int reqId, long time, double midPoint) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint)).build());
+        kafkaTemplate.send("tick",EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint));
     }
 
     @Override

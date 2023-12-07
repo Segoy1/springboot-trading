@@ -23,8 +23,9 @@ public class UniqueContractDataProvider {
         //TODO extend for new Types that need to be used
         return switch (contractData.getSecurityType()) {
             case OPT -> getOptionContractData(contractData);
-            case STK -> getStockOptionData(contractData);
+            case STK -> getStockData(contractData);
             case BAG -> getComboLegOptionData(contractData);
+            case IND -> getIndexData(contractData);
             default -> Optional.empty();
         };
     }
@@ -37,8 +38,11 @@ public class UniqueContractDataProvider {
         return Optional.of(contractDataRepository.save(contractData));
     }
 
-    private Optional<ContractData> getStockOptionData(ContractData contractData) {
+    private Optional<ContractData> getStockData(ContractData contractData) {
         //TODO implementation for Stock
+        return contractDataApiCaller.callContractDetailsFromAPI(contractData);
+    }
+    private  Optional<ContractData> getIndexData(ContractData contractData) {
         return contractDataApiCaller.callContractDetailsFromAPI(contractData);
     }
 
