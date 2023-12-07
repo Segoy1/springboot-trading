@@ -17,11 +17,6 @@
             <artifactId>springboot-trading-ibkr</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>de.segoy</groupId>
-            <artifactId>springboot-trading-data</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

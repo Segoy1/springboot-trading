@@ -16,6 +16,7 @@ import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,8 @@ public class IBKRConnection implements EWrapper {
 
     private final TickerMessageRepository m_tickers;
     private final ErrorMessageHandler errorsMessageHandler;
+    private final KafkaTemplate<String, String> tickerKTemplate;
+
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData;
@@ -62,7 +65,7 @@ public class IBKRConnection implements EWrapper {
             FaDataTypeHandler faDataTypeHandler,
             TickerMessageRepository m_tickers,
             ErrorMessageHandler errorMessageHandler,
-            ConnectionDataRepository connectionDataRepository,
+            KafkaTemplate tickerKTemplate, ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
         this.callbackHanlder = callbackHanlder;
@@ -70,6 +73,7 @@ public class IBKRConnection implements EWrapper {
         this.faDataTypeHandler = faDataTypeHandler;
         this.errorsMessageHandler = errorMessageHandler;
         this.m_tickers = m_tickers;
+        this.tickerKTemplate = tickerKTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.databaseSyncIBKRContractAndContractData = databaseSyncIBKRContractAndContractData;
@@ -80,7 +84,10 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
-        m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib)).build());
+        //TODO Option Price comes here
+        String message = EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib);
+        tickerKTemplate.send("ticksPrice", message);
+        m_tickers.save(TickerMessage.builder().message(message).build());
     }
 
     @Override
@@ -92,6 +99,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
         // received computation tick
+        //TODO Option Greeks come here
         m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
                 gamma, vega, theta, undPrice)).build());
     }
@@ -302,6 +310,8 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void realtimeBar(int reqId, long time, double open, double high, double low, double close, Decimal volume, Decimal wap, int count) {
+        //TODO: Index Ticker comes here
+        //MessageFormat: id=25 time = 1701887635 open=4565,62 high=4565,73 low=4565,62 close=4565,66 volume=0 count=0 WAP=0
         m_tickers.save(TickerMessage.builder().message(EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count)).build());
     }
 
