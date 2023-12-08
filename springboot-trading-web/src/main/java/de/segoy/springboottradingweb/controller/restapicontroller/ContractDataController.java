@@ -73,11 +73,11 @@ public class ContractDataController {
                                                                       @RequestParam(required = true, name = "sellCallStrike") double sellCallStrike
     ) {
 
-        Map<Leg, Double> legs = new HashMap<>();
-        legs.put(Leg.BUY_PUT_ONE, buyPutStrike);
-        legs.put(Leg.SELL_PUT_ONE, sellPutStrike);
-        legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
-        legs.put(Leg.SELL_CALL_ONE, sellCallStrike);
+        List<Leg> legs = new ArrayList<>();
+        legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Put).strike(buyPutStrike).ratio(1).build());
+        legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Put).strike(sellPutStrike).ratio(1).build());
+        legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Call).strike(buyCallStrike).ratio(1).build());
+        legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Call).strike(sellCallStrike).ratio(1).build());
 
         ContractData contractData = ContractData.builder()
                 .symbol(symbol)

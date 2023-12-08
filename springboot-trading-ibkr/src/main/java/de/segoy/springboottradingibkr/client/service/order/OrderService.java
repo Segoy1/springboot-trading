@@ -1,8 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
-import de.segoy.springboottradingdata.service.ApiResponseInEntityChecker;
+import de.segoy.springboottradingdata.service.apiresponsecheck.OrderDataApiResonseChecker;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.contract.ContractDataValidator;
 import org.springframework.stereotype.Service;
@@ -12,17 +11,15 @@ import java.util.Optional;
 @Service
 public class OrderService {
 
-    private final OrderDataRepository orderDataRepository;
     private final ContractDataValidator contractDataValidator;
     private final OrderPlacementService orderPlacementService;
-    private final ApiResponseInEntityChecker apiResponseInEntityChecker;
+    private final OrderDataApiResonseChecker orderDataApiResonseChecker;
     private final PropertiesConfig propertiesConfig;
 
-    public OrderService(OrderDataRepository orderDataRepository, ContractDataValidator contractDataValidator, OrderPlacementService orderPlacementService, ApiResponseInEntityChecker apiResponseInEntityChecker, PropertiesConfig propertiesConfig) {
-        this.orderDataRepository = orderDataRepository;
+    public OrderService( ContractDataValidator contractDataValidator, OrderPlacementService orderPlacementService, PropertiesConfig propertiesConfig, OrderDataApiResonseChecker orderDataApiResonseChecker) {
         this.contractDataValidator = contractDataValidator;
         this.orderPlacementService = orderPlacementService;
-        this.apiResponseInEntityChecker = apiResponseInEntityChecker;
+        this.orderDataApiResonseChecker = orderDataApiResonseChecker;
         this.propertiesConfig = propertiesConfig;
     }
 
@@ -33,7 +30,7 @@ public class OrderService {
         }
         if (contractDataValidator.validate(orderData)) {
             orderPlacementService.placeOrder(orderData);
-            return apiResponseInEntityChecker.checkForApiResponseAndUpdate(orderDataRepository, orderData.getId());
+            return orderDataApiResonseChecker.checkForApiResponseAndUpdate(orderData.getId());
         }
         return Optional.empty();
     }

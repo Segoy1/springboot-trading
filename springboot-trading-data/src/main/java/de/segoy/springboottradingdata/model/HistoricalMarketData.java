@@ -21,7 +21,7 @@ public class HistoricalMarketData extends IBKRDataTypeEntity{
     //Maybe Have to refactor to long
     private Integer id;
 
-    private Integer groupId;
+    private Integer contractDataId;
 
     private Timestamp time;
     private double open;

@@ -1,7 +1,6 @@
 package de.segoy.springboottradingibkr.client.datamodel;
 
 import com.ib.client.TagValue;
-import de.segoy.springboottradingibkr.client.datamodel.subtype.Duration;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
 import lombok.*;
 
@@ -24,7 +23,7 @@ public class HistoricalDataSettings {
 
     private Timestamp backfillEndTime;
 
-    private Duration backfillDuration;
+    private String backfillDuration;
 
     // valid: 1/5/10/15/30 secs
     // 1/2/3/5/10/15/20/30 mins
@@ -35,6 +34,7 @@ public class HistoricalDataSettings {
     private WhatToShowType whatToShow;
 
     //default Values unlikely to be changed
+
 
     private boolean regularTradingHours = true; //for client: 1=true 0=false
     private int dateFormatStyle = 1;
