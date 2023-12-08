@@ -21,7 +21,7 @@ class OrderDatatoIBKROrderTest {
 
         Order order = orderDatatoIBKROrder.convertOrderData(
                 OrderData.builder()
-                        .id(1)
+                        .id(1L)
                         .totalQuantity(BigDecimal.valueOf(1))
                         .limitPrice(BigDecimal.valueOf(12))
                         .orderType(OrderType.LMT)

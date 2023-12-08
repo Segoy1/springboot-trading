@@ -13,10 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -47,11 +44,11 @@ class DatabaseSyncIBKRContractAndContractDataTest {
         when(contractDataRepository.save(data)).thenReturn(data);
 
 
-        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(1), contract);
+        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
         verify(contractDataRepository, times(1)).save(data);
         verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(0));
         verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(1));
-        assertEquals(1, returnData.getId());
+        assertEquals(1L, returnData.getId());
     }
 
     @Test
@@ -62,9 +59,9 @@ class DatabaseSyncIBKRContractAndContractDataTest {
 
         when(contractDataRepository.findFirstByContractId(123)).thenReturn(Optional.of(data));
 
-        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(1), contract);
+        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
         verify(contractDataRepository, times(0)).save(data);
-        assertNotEquals(1, returnData.getId());
+        assertNotEquals(1L, returnData.getId());
         assertEquals(123, returnData.getContractId());
         assertEquals("20251111", returnData.getLastTradeDate());
     }
@@ -81,11 +78,11 @@ class DatabaseSyncIBKRContractAndContractDataTest {
         when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(2, Types.Action.SELL,2,"SMART")).thenReturn(Optional.of(data.getComboLegs().get(1)));
         when(contractDataRepository.save(data)).thenReturn(data);
 
-        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.empty(), contract);
+        ContractData returnData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
         verify(contractDataRepository, times(1)).save(data);
         verify(comboLegDataRepository, times(0)).save(data.getComboLegs().get(0));
         verify(comboLegDataRepository, times(0)).save(data.getComboLegs().get(1));
-        assertNotEquals(1,returnData.getId());
+        assertNotEquals(1L,returnData.getId());
     }
 
     private ContractData buildContract() {
