@@ -26,13 +26,13 @@ class OrderStatusUpdateServiceTest {
 
     @Test
     void testStatusUpdateWithExistingOrderAndInvalidStatus(){
-        int id = 1;
+        Long id = 1L;
         String status = "default";
         OrderData orderData = OrderData.builder().id(id).status(OrderStatus.get(status)).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
 
-        orderStatusUpdateService.updateOrderStatus(id, status);
+        orderStatusUpdateService.updateOrderStatus(id.intValue(), status);
 
         assertEquals(1, orderData.getId());
         assertEquals("Unknown", orderData.getStatus().name());
@@ -40,27 +40,27 @@ class OrderStatusUpdateServiceTest {
 
     @Test
     void testStatusUpdateWithExistingOrderAndValidStatus(){
-        int id = 1;
+        Long id = 1L;
         String status = "PreSubmitted";
         OrderData orderData = OrderData.builder().id(id).status(OrderStatus.get(status)).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
 
-        orderStatusUpdateService.updateOrderStatus(id, status);
+        orderStatusUpdateService.updateOrderStatus(id.intValue(), status);
 
         assertEquals(1, orderData.getId());
         assertEquals("PreSubmitted", orderData.getStatus().name());
     }
     @Test
     void testStatusUpdateWithNotOrder(){
-        int id = 1;
+        Long id = 1L;
         String status = "unknown";
         OrderData orderData = OrderData.builder().id(id).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.empty());
 
         Exception e = assertThrows(NoSuchElementException.class, () -> {
-            orderStatusUpdateService.updateOrderStatus(id, status);
+            orderStatusUpdateService.updateOrderStatus(id.intValue(), status);
         });
         String expected = "No value present";
 

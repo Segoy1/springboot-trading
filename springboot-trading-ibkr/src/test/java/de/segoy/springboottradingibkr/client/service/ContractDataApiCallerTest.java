@@ -44,7 +44,7 @@ class ContractDataApiCallerTest {
         contractData.setSecurityType(Types.SecType.OPT);
 //        contractData.setTouchedByApi(true);
 
-        when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
+        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
 
         Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
 
@@ -54,7 +54,7 @@ class ContractDataApiCallerTest {
     void testcallContractDetailsFromAPIWithInvalidCall() {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.BAG);
-        when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
+        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
         Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
@@ -63,8 +63,8 @@ class ContractDataApiCallerTest {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.OPT);
 
-        when(contractDataRepository.findById(9000000)).thenReturn(Optional.of(contractData));
-        when(errorMessageRepository.existsById(9000000)).thenReturn(true);
+        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
+        when(errorMessageRepository.existsById(9000000L)).thenReturn(true);
         Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
@@ -78,7 +78,7 @@ class ContractDataApiCallerTest {
                 .build();
 
         return ContractData.builder()
-                .id(9000000)
+                .id(9000000L)
                 .contractId(123)
                 .right(Types.Right.Call)
                 .symbol("SPX")

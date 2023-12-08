@@ -27,7 +27,7 @@ class ContractDataValidatorTest {
 
     @Test
     void testAbsent(){
-        ContractData contractData = ContractData.builder().id(1).build();
+        ContractData contractData = ContractData.builder().id(1L).build();
         OrderData orderData = OrderData.builder().contractData(contractData).build();
         when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.empty());
 
@@ -40,7 +40,7 @@ class ContractDataValidatorTest {
     void testValid(){
         ContractData contractData = ContractData.builder().right(Types.Right.Call).build();
         OrderData orderData = OrderData.builder().contractData(contractData).build();
-        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.of(ContractData.builder().id(2).build()));
+        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.of(ContractData.builder().id(2L).build()));
 
         boolean valid = contractDataValidator.validate(orderData);
 
