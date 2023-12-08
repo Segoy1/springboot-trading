@@ -1,7 +1,6 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +10,10 @@ import java.util.Optional;
 public class UniqueContractDataProvider {
     private final ContractDataRepository contractDataRepository;
     private final ContractDataApiCaller contractDataApiCaller;
-    private final ComboLegDataRepository comboLegDataRepository;
 
-    public UniqueContractDataProvider(ContractDataRepository contractDataRepository, ContractDataApiCaller contractDataApiCaller, ComboLegDataRepository comboLegDataRepository) {
+    public UniqueContractDataProvider(ContractDataRepository contractDataRepository, ContractDataApiCaller contractDataApiCaller) {
         this.contractDataRepository = contractDataRepository;
         this.contractDataApiCaller = contractDataApiCaller;
-        this.comboLegDataRepository = comboLegDataRepository;
     }
 
     public Optional<ContractData> getExistingContractDataOrCallApi(ContractData contractData) {
