@@ -14,7 +14,7 @@ public class NextAvailableOrderIdController {
     }
 
     @GetMapping("/get-next-order-id")
-    public Integer getNextAvailableOrderId(){
+    public Long getNextAvailableOrderId(){
         return propertiesConfig.getNextValidOrderId();
         }
     }

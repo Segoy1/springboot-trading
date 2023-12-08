@@ -102,7 +102,7 @@ public class ContractDataController {
     }
 
     @GetMapping
-    public ResponseEntity<ContractData> getContractDataById(@RequestParam("id") int id) {
+    public ResponseEntity<ContractData> getContractDataById(@RequestParam("id") long id) {
 
         return responseMapper.mapResponse(contractDataRepository.findById(id));
     }

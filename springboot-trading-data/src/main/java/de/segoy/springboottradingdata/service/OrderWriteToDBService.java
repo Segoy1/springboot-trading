@@ -10,7 +10,7 @@ import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 @Service
 public class OrderWriteToDBService {
@@ -25,7 +25,7 @@ public class OrderWriteToDBService {
     }
 
     public void saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
-        ContractData contractData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.empty(), contract);
+        ContractData contractData = databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
         OrderData orderData = ibkrOrderToOrderData.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
 

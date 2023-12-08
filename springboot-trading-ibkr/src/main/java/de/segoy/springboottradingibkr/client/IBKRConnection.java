@@ -129,7 +129,7 @@ public class IBKRConnection implements EWrapper {
         // received order status
         log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
-        propertiesConfig.setNextValidOrderId(orderId + 1);
+        propertiesConfig.setNextValidOrderId((long)orderId + 1);
 
     }
 
@@ -151,7 +151,7 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalInt.of(reqId), contractDetails.contract());
+        databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId), contractDetails.contract());
         log.debug("Added Contract Details: Id = " + reqId);
     }
 
@@ -217,14 +217,14 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void nextValidId(int orderId) {
         // received next valid order id
-        propertiesConfig.setNextValidOrderId(orderId);
+        propertiesConfig.setNextValidOrderId((long)orderId);
         log.info(EWrapperMsgGenerator.nextValidId(orderId));
     }
 
     @Override
     public void error(Exception e) {
         // do not report exceptions if we initiated disconnect
-        if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getM_disconnectInProgress()) {
+        if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getDisconnectInProgress()) {
             String msg = EWrapperMsgGenerator.error(e);
             log.error(msg);
         }
@@ -287,7 +287,7 @@ public class IBKRConnection implements EWrapper {
     public void managedAccounts(String accountsList) {
 
         ConnectionData connectionData = connectionDataRepository.findById(CONNECTION_ID).orElseThrow();
-        connectionData.setM_bIsFAAccount(true);
+        connectionData.setIsFAAccount(true);
         connectionDataRepository.save(connectionData);
 //        m_FAAcctCodes = accountsList;
         log.info(EWrapperMsgGenerator.managedAccounts(accountsList));

@@ -24,6 +24,6 @@ public class OrderPlacementService {
     public void placeOrder(OrderData orderData){
         Contract contract = contractDataToIBKRContract.convertContractData(orderData.getContractData());
         Order order = orderDatatoIBKROrder.convertOrderData(orderData);
-        client.placeOrder(orderData.getId(), contract, order);//Todo some kind of Feedback.
+        client.placeOrder(orderData.getId().intValue(), contract, order);//Todo some kind of Feedback.
     }
 }

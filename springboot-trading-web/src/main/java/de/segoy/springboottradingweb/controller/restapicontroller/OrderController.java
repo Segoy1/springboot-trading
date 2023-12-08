@@ -1,6 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.OrderService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order")
 public class OrderController {
 
-    private final NextAvailableOrderIdController nextAvailableOrderIdController;
+    private final PropertiesConfig propertiesConfig;
     private final OrderService orderService;
     private final ResponseMapper responseMapper;
 
 
-    public OrderController(NextAvailableOrderIdController nextAvailableOrderIdController, OrderService orderService, ResponseMapper responseMapper) {
-        this.nextAvailableOrderIdController = nextAvailableOrderIdController;
+    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper) {
+        this.propertiesConfig = propertiesConfig;
         this.orderService = orderService;
         this.responseMapper = responseMapper;
     }
@@ -33,7 +34,7 @@ public class OrderController {
     //    curl -i -X POST 'http://localhost:8080/login' --data 'username=john&password=john'
     @PutMapping("/place-order")
     public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
-        orderData.setId(nextAvailableOrderIdController.getNextAvailableOrderId());
+        orderData.setId(propertiesConfig.getNextValidOrderId());
         return responseMapper.mapResponse(orderService.validateAndPlaceOrder(orderData));
     }
 }

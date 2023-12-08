@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class TwsMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotBlank
     @Lob

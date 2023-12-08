@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.dataobject;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 
-public class ContractDataObjects {
+public class ContractDataTemplates {
 
     public static ContractData SpxData(){
         return ContractData.builder()

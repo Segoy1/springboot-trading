@@ -11,7 +11,7 @@ public class OrderDataToIBKROrder {
     public Order convertOrderData(OrderData orderData) {
         Order order = new Order();
 
-        order.orderId(orderData.getId());
+        order.orderId(orderData.getId().intValue());
         order.action(orderData.getAction());
         order.totalQuantity(Decimal.get(orderData.getTotalQuantity()));
         order.orderType(orderData.getOrderType().toString());

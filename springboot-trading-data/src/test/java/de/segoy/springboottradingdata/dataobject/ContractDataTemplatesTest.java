@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ContractDataObjectsTest {
+class ContractDataTemplatesTest {
 
     @Test
     void testSpxData(){
-        ContractData contractData = ContractDataObjects.SpxData();
+        ContractData contractData = ContractDataTemplates.SpxData();
 
         assertEquals("IND",contractData.getSecurityType().getApiString());
         assertEquals("SPX",contractData.getSymbol());
@@ -19,7 +19,7 @@ class ContractDataObjectsTest {
 
     @Test
     void testSpxOptionData(){
-        ContractData contractData = ContractDataObjects.SpxOptionData();
+        ContractData contractData = ContractDataTemplates.SpxOptionData();
 
         assertEquals("IND",contractData.getSecurityType().getApiString());
         assertEquals("SPX",contractData.getSymbol());

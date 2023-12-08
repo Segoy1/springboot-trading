@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 public class OrderData extends IBKRDataTypeEntity{
 
     @Id
-    private Integer id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Types.Action action;

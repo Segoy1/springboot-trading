@@ -13,26 +13,26 @@ public class ConnectionData extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     //blank for localhost
-    private String 	m_retIpAddress;
+    private String ipAddress;
 
     //Optional Capabilities
-    private String  m_retOptCapts;
+    private String optCapts;
 
     //Port: 7496 for Live 7497 for Paper Trading
-    private Integer 	m_retPort;
+    private Integer port;
 
     //Client Id: default 0
     @Column(name = "client_id")
-    private Integer m_retClientId;
+    private Integer clientId;
 
     //Field from SampleFrame aka. IBKRConnection
-    private Boolean m_bIsFAAccount;
+    private Boolean isFAAccount;
 
     //Field from SampleFrame aka. IBKRConnection
-    private Boolean m_disconnectInProgress;
+    private Boolean disconnectInProgress;
 
     private Boolean connected;
 

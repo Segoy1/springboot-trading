@@ -37,12 +37,12 @@ public class ConnectionInitiator {
 
         if (client.isConnected()) {
             ConnectionData connectionData = ConnectionData.builder()
-                    .m_retIpAddress("")
-                    .m_retPort(port)
-                    .m_retClientId(0)
-                    .m_retOptCapts("")
-                    .m_bIsFAAccount(false)
-                    .m_disconnectInProgress(false)
+                    .ipAddress("")
+                    .port(port)
+                    .clientId(0)
+                    .optCapts("")
+                    .isFAAccount(false)
+                    .disconnectInProgress(false)
                     .connected(true)
                     .build();
 
@@ -62,7 +62,7 @@ public class ConnectionInitiator {
     @PreDestroy
     public ConnectionData disconnect(){
         ConnectionData connectionData = connectionDataRepository.findById(1).orElse(ConnectionData.builder().build());
-        connectionData.setM_disconnectInProgress(true);
+        connectionData.setDisconnectInProgress(true);
         connectionDataRepository.save(connectionData);
 
         client.eDisconnect();

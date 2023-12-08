@@ -15,15 +15,15 @@ public class PropertiesConfig {
     private boolean isReaderStarted;
 
     @Value("${app.ibkr.nextValidOrderId}")
-    private Integer nextValidOrderId;
+    private Long nextValidOrderId;
 
     @Synchronized
-    public Integer getNextValidOrderId(){
+    public Long getNextValidOrderId(){
         return nextValidOrderId;
     }
 
     @Synchronized
-    public void setNextValidOrderId(Integer nextValidOrderId) {
+    public void setNextValidOrderId(Long nextValidOrderId) {
         this.nextValidOrderId = nextValidOrderId;
     }
 }

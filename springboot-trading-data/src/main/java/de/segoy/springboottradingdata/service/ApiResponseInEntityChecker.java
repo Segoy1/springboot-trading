@@ -18,10 +18,10 @@ public class ApiResponseInEntityChecker {
         this.errorMessageRepository = errorMessageRepository;
     }
 
-    public <T extends IBKRDataTypeEntity> Optional<T> checkForApiResponseAndUpdate(IBKRDataTypeRepository<T> repository, Integer id) {
+    public <T extends IBKRDataTypeEntity> Optional<T> checkForApiResponseAndUpdate(IBKRDataTypeRepository<T> repository, Long id) {
         do {
             repositoryRefreshService.clearCacheAndWait(repository);
-        } while (repository.findById(id).isEmpty() && errorMessageRepository.findAllByErrorId(id).isEmpty());
+        } while (repository.findById(id).isEmpty() && errorMessageRepository.findAllByErrorId(id.intValue()).isEmpty());
         //TODO: If the error Id gets ambiguous for whatever reason: include check by timestamp older than x
         return repository.findById(id);
     }

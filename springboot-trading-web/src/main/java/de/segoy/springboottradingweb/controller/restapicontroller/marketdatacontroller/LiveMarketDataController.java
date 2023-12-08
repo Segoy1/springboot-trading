@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
-import com.ib.client.Types;
+import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingibkr.client.service.MarketDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
@@ -25,8 +25,8 @@ public class LiveMarketDataController {
     //TestCode to be deleted later on
     @GetMapping("/test")
     public ResponseEntity<ContractData> handleRealTimeDataTest(){
-        ContractData contractData = ContractData.builder().securityType(Types.SecType.CASH).symbol("EUR").exchange("IDEALPRO").currency("GBP").build();
-        return responseMapper.mapResponse(marketDataService.requestLiveMarketDataForContractData(contractData));
+
+        return responseMapper.mapResponse(marketDataService.requestLiveMarketDataForContractData(ContractDataTemplates.SpxData()));
 
     }
     @GetMapping

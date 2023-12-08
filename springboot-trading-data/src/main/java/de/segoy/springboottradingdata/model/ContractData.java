@@ -19,7 +19,7 @@ public class ContractData extends IBKRDataTypeEntity {
     @Id
     @SequenceGenerator(initialValue = 9000000, allocationSize = 1, name = "contract_id_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contract_id_sequence")
-    private Integer id;
+    private Long id;
 
     private Integer contractId; //ContractId From Call to IBKR Api
 

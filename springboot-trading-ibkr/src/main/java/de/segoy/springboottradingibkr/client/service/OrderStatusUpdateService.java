@@ -15,7 +15,7 @@ public class OrderStatusUpdateService {
     }
 
     public OrderData updateOrderStatus(int orderId, String status) {
-        OrderData orderData = orderDataRepository.findById(orderId).orElseThrow();
+        OrderData orderData = orderDataRepository.findById((long)orderId).orElseThrow();
         orderData.setStatus(OrderStatus.get(status));
         return orderDataRepository.save(orderData);
     }

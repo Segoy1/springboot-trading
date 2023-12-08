@@ -11,7 +11,7 @@ public class IBKROrderToOrderData {
 
     public OrderData convertOrder(Order order) {
         OrderData orderData = OrderData.builder()
-                .id(order.orderId())
+                .id((long) order.orderId())
                 .action(order.action())
                 .totalQuantity(order.totalQuantity().value())
                 .orderType(order.orderType())
