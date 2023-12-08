@@ -1,39 +1,41 @@
 package de.segoy.springboottradingibkr.client.service;
 
-import de.segoy.springboottradingibkr.client.strategybuilder.type.Leg;
+import com.ib.client.Types;
+import de.segoy.springboottradingibkr.client.datamodel.Leg;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LegMapService {
 
-    public Map<Leg, Double> mapLegs(double buyPutStrike, double sellPutStrike, double buyCallStrike, double sellCallStrike, double buyPutStrikeTwo, double sellPutStrikeTwo, double buyCallStrikeTwo, double sellCallStrikeTwo) {
-        Map<Leg, Double> legs = new HashMap<>();
+
+    public List<Leg> mapLegs(double buyPutStrike, double sellPutStrike, double buyCallStrike, double sellCallStrike, double buyPutStrikeTwo, double sellPutStrikeTwo, double buyCallStrikeTwo, double sellCallStrikeTwo) {
+        List<Leg> legs = new ArrayList<>();
         if (buyPutStrike != 0) {
-            legs.put(Leg.BUY_PUT_ONE, buyPutStrike);
+            legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Put).strike(buyPutStrike).ratio(1).build());
         }
         if (sellPutStrike != 0) {
-            legs.put(Leg.SELL_PUT_ONE, sellPutStrike);
+            legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Put).strike(sellPutStrike).ratio(1).build());
         }
         if (buyCallStrike != 0) {
-            legs.put(Leg.BUY_CALL_ONE, buyCallStrike);
+            legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Call).strike(buyCallStrike).ratio(1).build());
         }
         if (sellCallStrike != 0) {
-            legs.put(Leg.SELL_CALL_ONE, sellCallStrike);
+            legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Call).strike(sellCallStrike).ratio(1).build());
         }
-        if (buyPutStrikeTwo != 0) {
-            legs.put(Leg.BUY_PUT_TWO, buyPutStrikeTwo);
+        if (buyPutStrike != 0) {
+            legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Put).strike(buyPutStrikeTwo).ratio(2).build());
         }
-        if (sellPutStrikeTwo != 0) {
-            legs.put(Leg.SELL_PUT_TWO, sellPutStrikeTwo);
+        if (sellPutStrike != 0) {
+            legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Put).strike(sellPutStrikeTwo).ratio(2).build());
         }
-        if (buyCallStrikeTwo != 0) {
-            legs.put(Leg.BUY_CALL_TWO, buyCallStrikeTwo);
+        if (buyCallStrike != 0) {
+            legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Call).strike(buyCallStrikeTwo).ratio(2).build());
         }
-        if (sellCallStrikeTwo != 0) {
-            legs.put(Leg.SELL_CALL_TWO, sellCallStrikeTwo);
+        if (sellCallStrike != 0) {
+            legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Call).strike(sellCallStrikeTwo).ratio(2).build());
         }
         return legs;
     }

@@ -1,9 +1,10 @@
-package de.segoy.springboottradingibkr.client.service;
+package de.segoy.springboottradingibkr.client.service.order;
 
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.service.ApiResponseInEntityChecker;
 import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
+import de.segoy.springboottradingibkr.client.service.contract.ContractDataValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model;
+package de.segoy.springboottradingdata.model.adopted;
 
 import com.ib.client.Contract;
 import com.ib.client.Decimal;

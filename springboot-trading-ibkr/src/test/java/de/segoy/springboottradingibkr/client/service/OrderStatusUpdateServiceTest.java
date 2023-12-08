@@ -3,6 +3,7 @@ package de.segoy.springboottradingibkr.client.service;
 import com.ib.client.OrderStatus;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

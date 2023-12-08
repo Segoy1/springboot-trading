@@ -3,6 +3,7 @@ package de.segoy.springboottradingibkr.client.service;
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
+import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

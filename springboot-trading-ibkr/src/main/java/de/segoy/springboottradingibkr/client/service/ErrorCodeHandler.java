@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import de.segoy.springboottradingibkr.client.FaErrorCode;
-import de.segoy.springboottradingdata.model.MktDepth;
+import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

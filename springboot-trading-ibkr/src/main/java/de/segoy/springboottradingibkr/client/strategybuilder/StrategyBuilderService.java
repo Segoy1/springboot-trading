@@ -4,8 +4,8 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
-import de.segoy.springboottradingibkr.client.service.UniqueContractDataProvider;
-import de.segoy.springboottradingibkr.client.strategybuilder.type.Leg;
+import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
+import de.segoy.springboottradingibkr.client.datamodel.Leg;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,43 +22,43 @@ public class StrategyBuilderService {
         this.comboLegDataRepository = comboLegDataRepository;
     }
 
-    public Optional<ContractData> getComboLegContractData(ContractData contractData, Map<Leg, Double> legMap) {
+    public Optional<ContractData> getComboLegContractData(ContractData contractData, List<Leg> legs) {
         try {
-            contractData.setComboLegs(legListBuilder(contractData, legMap));
+            contractData.setComboLegs(legListBuilder(contractData, legs));
             return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
     }
 
-    private List<ComboLegData> legListBuilder(ContractData contractData, Map<Leg, Double> legMap) {
-        List<ComboLegData> legs = new ArrayList<>();
+    private List<ComboLegData> legListBuilder(ContractData contractData, List<Leg> legs) {
+        List<ComboLegData> legData = new ArrayList<>();
 
-        legMap.forEach((leg, strike) -> {
-            ContractData legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, strike, leg.getRight())).orElseThrow();
-            legs.add(buildComboLegData(legContract, leg.getAction(), leg.getRatio()));
+        legs.forEach((leg) -> {
+            ContractData legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(contractData, leg)).orElseThrow();
+            legData.add(buildComboLegData(legContract, leg));
         });
-        return legs;
+        return legData;
     }
 
-    private ComboLegData buildComboLegData(ContractData contractDataBuyPut, Types.Action action, int ratio) {
+    private ComboLegData buildComboLegData(ContractData contractDataBuyPut, Leg leg) {
         return comboLegDataRepository.save(ComboLegData.builder()
                 .contractId(contractDataBuyPut.getContractId())
-                .ratio(ratio)
-                .action(action)
+                .ratio(leg.getRatio())
+                .action(leg.getAction())
                 .exchange(contractDataBuyPut.getExchange())
                 .build());
     }
 
-    private ContractData singleLegBuilder(ContractData contractData, Double strike, Types.Right right) {
+    private ContractData singleLegBuilder(ContractData contractData, Leg leg) {
         return ContractData.builder()
                 .symbol(contractData.getSymbol())
                 .securityType(Types.SecType.OPT)
                 .currency(contractData.getCurrency())
                 .exchange(contractData.getExchange())
                 .tradingClass(contractData.getTradingClass())
-                .strike(BigDecimal.valueOf(strike))
-                .right(right)
+                .strike(BigDecimal.valueOf(leg.getStrike()))
+                .right(leg.getRight())
                 .lastTradeDate(contractData.getLastTradeDate())
                 .build();
     }

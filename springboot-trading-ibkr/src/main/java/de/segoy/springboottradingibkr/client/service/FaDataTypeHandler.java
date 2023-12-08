@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.FinancialAdvisor;
+import de.segoy.springboottradingdata.model.adopted.FinancialAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;

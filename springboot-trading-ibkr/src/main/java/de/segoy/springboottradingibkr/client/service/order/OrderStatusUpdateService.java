@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service;
+package de.segoy.springboottradingibkr.client.service.order;
 
 import com.ib.client.OrderStatus;
 import de.segoy.springboottradingdata.model.OrderData;
