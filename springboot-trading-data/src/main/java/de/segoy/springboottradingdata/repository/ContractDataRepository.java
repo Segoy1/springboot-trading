@@ -13,6 +13,8 @@ public interface ContractDataRepository  extends IBKRDataTypeRepository<Contract
     List<ContractData> findAllByContractId(Integer id);
     Optional<ContractData> findFirstByContractId(Integer id);
 
+    Optional<ContractData> findFirstBySymbolAndSecurityTypeAndExchange(String symbol, Types.SecType secType, String exchange);
+
     Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, String symbol, BigDecimal strike, Types.Right right);
 
     List<ContractData> findAllBySecurityType(Types.SecType type);

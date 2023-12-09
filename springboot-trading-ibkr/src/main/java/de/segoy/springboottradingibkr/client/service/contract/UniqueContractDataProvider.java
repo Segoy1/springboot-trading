@@ -36,11 +36,17 @@ public class UniqueContractDataProvider {
     }
 
     private Optional<ContractData> getStockData(ContractData contractData) {
-        //TODO implementation for Stock
-        return contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        Optional<ContractData> contractOpt = contractDataRepository.findFirstBySymbolAndSecurityTypeAndExchange(contractData.getSymbol(),
+                contractData.getSecurityType(),
+                contractData.getExchange());
+        return contractOpt.isPresent()?contractOpt:contractDataApiCaller.callContractDetailsFromAPI(contractData);
     }
-    private  Optional<ContractData> getIndexData(ContractData contractData) {
-        return contractDataApiCaller.callContractDetailsFromAPI(contractData);
+
+    private Optional<ContractData> getIndexData(ContractData contractData) {
+        Optional<ContractData> contractOpt = contractDataRepository.findFirstBySymbolAndSecurityTypeAndExchange(contractData.getSymbol(),
+                contractData.getSecurityType(),
+                contractData.getExchange());
+        return contractOpt.isPresent()?contractOpt:contractDataApiCaller.callContractDetailsFromAPI(contractData);
     }
 
     private Optional<ContractData> getOptionContractData(ContractData contractData) {

@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -19,16 +20,16 @@ public class HistoricalMarketData extends IBKRDataTypeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //Maybe Have to refactor to long
-    private Integer id;
+    private Long id;
 
-    private Integer contractDataId;
+    private Integer contractId;
 
     private Timestamp time;
     private double open;
     private double high;
     private double low;
     private double close;
-    private double volume;
+    private BigDecimal volume;
     private Integer count;
-    private double wap;
+    private BigDecimal wap;
 }

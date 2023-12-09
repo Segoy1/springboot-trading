@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 

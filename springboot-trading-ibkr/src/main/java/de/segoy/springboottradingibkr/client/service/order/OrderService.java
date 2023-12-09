@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingdata.service.apiresponsecheck.OrderDataApiResonseChecker;
-import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
+import de.segoy.springboottradingdata.service.apiresponsecheck.OrderDataApiResponseChecker;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.contract.ContractDataValidator;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +13,10 @@ public class OrderService {
 
     private final ContractDataValidator contractDataValidator;
     private final OrderPlacementService orderPlacementService;
-    private final OrderDataApiResonseChecker orderDataApiResonseChecker;
+    private final OrderDataApiResponseChecker orderDataApiResonseChecker;
     private final PropertiesConfig propertiesConfig;
 
-    public OrderService( ContractDataValidator contractDataValidator, OrderPlacementService orderPlacementService, PropertiesConfig propertiesConfig, OrderDataApiResonseChecker orderDataApiResonseChecker) {
+    public OrderService( ContractDataValidator contractDataValidator, OrderPlacementService orderPlacementService, PropertiesConfig propertiesConfig, OrderDataApiResponseChecker orderDataApiResonseChecker) {
         this.contractDataValidator = contractDataValidator;
         this.orderPlacementService = orderPlacementService;
         this.orderDataApiResonseChecker = orderDataApiResonseChecker;

@@ -10,8 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * ContractDataApiCaller
+ * Calls IBKR API directly with given Contract Data
+ * Package private because it is not meant to be used on its own,
+ * for there are no check if contract Data exists already
+ */
 @Component
-public class ContractDataApiCaller {
+class ContractDataApiCaller {
 
     private final EClientSocket client;
     private final ContractDataToIBKRContract contractDataToIBKRContract;

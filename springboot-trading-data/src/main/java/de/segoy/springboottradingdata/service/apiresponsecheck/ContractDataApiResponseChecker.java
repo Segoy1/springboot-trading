@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service;
 public class ContractDataApiResponseChecker extends AbstractApiResponseChecker<ContractData> {
 
     public ContractDataApiResponseChecker(IBKRDataTypeRepository<ContractData> repository, RepositoryRefreshService repositoryRefreshService, ErrorMessageRepository errorMessageRepository) {
-        super(repository, repositoryRefreshService, errorMessageRepository);
+        super(repository,repositoryRefreshService, errorMessageRepository);
     }
 }

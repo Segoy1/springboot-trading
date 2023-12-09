@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingibkr.client.config.PropertiesConfig;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;

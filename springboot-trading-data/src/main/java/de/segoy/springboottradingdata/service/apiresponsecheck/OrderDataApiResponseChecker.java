@@ -7,9 +7,9 @@ import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderDataApiResonseChecker extends AbstractApiResponseChecker<OrderData> {
+public class OrderDataApiResponseChecker extends AbstractApiResponseChecker<OrderData> {
 
-    public OrderDataApiResonseChecker(IBKRDataTypeRepository<OrderData> repository, RepositoryRefreshService repositoryRefreshService, ErrorMessageRepository errorMessageRepository) {
+    public OrderDataApiResponseChecker(IBKRDataTypeRepository<OrderData> repository, RepositoryRefreshService repositoryRefreshService, ErrorMessageRepository errorMessageRepository) {
         super(repository, repositoryRefreshService, errorMessageRepository);
     }
 }

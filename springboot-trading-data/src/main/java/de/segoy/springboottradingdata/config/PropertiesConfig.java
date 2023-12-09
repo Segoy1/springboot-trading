@@ -1,7 +1,6 @@
-package de.segoy.springboottradingibkr.client.config;
+package de.segoy.springboottradingdata.config;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -9,13 +8,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PropertiesConfig {
 
-    @Getter
-    @Setter
-    @Value("${app.ibkr.isReaderStarted}")
-    private boolean isReaderStarted;
+
 
     @Value("${app.ibkr.nextValidOrderId}")
     private Long nextValidOrderId;
+
+    @Getter
+    @Value("${app.ibkr.dateTimeFormat}")
+    private String dateTimeFormat;
+
+    @Getter
+    @Value("${app.ibkr.dateFormat}")
+    private String dateFormat;
 
     @Synchronized
     public Long getNextValidOrderId(){
