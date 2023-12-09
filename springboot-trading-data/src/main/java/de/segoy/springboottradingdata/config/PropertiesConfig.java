@@ -5,6 +5,7 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -24,7 +25,7 @@ public class PropertiesConfig {
     private String dateFormat;
 
 
-    private List<Long> activeApiCalls;
+    private final List<Long> activeApiCalls = new ArrayList<>();
 
     @Synchronized
     public Long getNextValidOrderId(){
