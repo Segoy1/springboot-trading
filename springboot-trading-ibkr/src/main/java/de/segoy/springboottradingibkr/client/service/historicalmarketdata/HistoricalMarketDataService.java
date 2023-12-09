@@ -3,7 +3,7 @@ package de.segoy.springboottradingibkr.client.service.historicalmarketdata;
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.HistoricalMarketData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import de.segoy.springboottradingdata.service.apiresponsecheck.HistoricalMarketDataApiResponseChecker;
@@ -26,8 +26,8 @@ public class HistoricalMarketDataService {
         this.historicalResponseListService = historicalResponseListService;
     }
 
-    public List<IBKRDataTypeEntity> requestHistoricalData(ContractData contractData, HistoricalDataSettings settings) {
-        List<IBKRDataTypeEntity> historicalDataTicks = new ArrayList<>();
+    public List<HistoricalMarketData> requestHistoricalData(ContractData contractData, HistoricalDataSettings settings) {
+        List<HistoricalMarketData> historicalDataTicks = new ArrayList<>();
         Optional<ContractData> contractDataOptional = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
         contractDataOptional.ifPresent((savedContractData) -> {
            historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, savedContractData));

@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.HistoricalMarketData;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
 import de.segoy.springboottradingibkr.client.service.historicalmarketdata.HistoricalMarketDataService;
@@ -27,7 +27,7 @@ public class HistoricalMarketDataController {
     }
 
     @GetMapping("/Test")
-    public ResponseEntity<List<IBKRDataTypeEntity>> testHistoricalData() {
+    public ResponseEntity<List<HistoricalMarketData>> testHistoricalData() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
                 .barSizeSetting("1 day")
                 .backfillDuration("1 Y")
@@ -37,7 +37,7 @@ public class HistoricalMarketDataController {
                 .dateFormatStyle(1)
                 .keepUpToDate(false)
                 .build();
-        List<IBKRDataTypeEntity> historicalData = historicalMarketDataService.requestHistoricalData(ContractDataTemplates.SpxData(), settings);
+        List<HistoricalMarketData> historicalData = historicalMarketDataService.requestHistoricalData(ContractDataTemplates.SpxData(), settings);
         return responseMapper.mapResponse(historicalData);
     }
 }
