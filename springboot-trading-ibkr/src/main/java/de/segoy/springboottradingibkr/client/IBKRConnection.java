@@ -9,7 +9,7 @@ import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
-import de.segoy.springboottradingdata.modelconverter.DatabaseSyncIBKRContractAndContractData;
+import de.segoy.springboottradingdata.modelconverter.ContractDataDatabasseSynchronizer;
 import de.segoy.springboottradingdata.modelconverter.HistoricalMarketDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
@@ -47,7 +47,7 @@ public class IBKRConnection implements EWrapper {
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
-    private final DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData;
+    private final ContractDataDatabasseSynchronizer contractDataDatabasseSynchronizer;
     private final HistoricalMarketDataDatabaseSynchronizer historicalMarketDataDatabaseSynchronizer;
     private final PropertiesConfig propertiesConfig;
     private final OrderWriteToDBService orderWriteToDBService;
@@ -72,7 +72,7 @@ public class IBKRConnection implements EWrapper {
             ErrorMessageHandler errorMessageHandler,
             KafkaTemplate<String,String> kafkaTemplate, ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
-            DatabaseSyncIBKRContractAndContractData databaseSyncIBKRContractAndContractData, HistoricalMarketDataDatabaseSynchronizer historicalMarketDataDatabaseSynchronizer, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
+            ContractDataDatabasseSynchronizer contractDataDatabasseSynchronizer, HistoricalMarketDataDatabaseSynchronizer historicalMarketDataDatabaseSynchronizer, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
         this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
@@ -80,7 +80,7 @@ public class IBKRConnection implements EWrapper {
         this.kafkaTemplate = kafkaTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
-        this.databaseSyncIBKRContractAndContractData = databaseSyncIBKRContractAndContractData;
+        this.contractDataDatabasseSynchronizer = contractDataDatabasseSynchronizer;
         this.historicalMarketDataDatabaseSynchronizer = historicalMarketDataDatabaseSynchronizer;
         this.propertiesConfig = propertiesConfig;
 
@@ -158,7 +158,7 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
-        databaseSyncIBKRContractAndContractData.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId), contractDetails.contract());
+        contractDataDatabasseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId), contractDetails.contract());
         log.debug("Added Contract Details: Id = " + reqId);
     }
 

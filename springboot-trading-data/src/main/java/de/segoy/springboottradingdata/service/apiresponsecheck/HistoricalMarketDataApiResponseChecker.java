@@ -1,5 +1,6 @@
 package de.segoy.springboottradingdata.service.apiresponsecheck;
 
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.repository.HistoricalMarketDataRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
@@ -15,28 +16,23 @@ public class HistoricalMarketDataApiResponseChecker {
     private final HistoricalMarketDataRepository repository;
     private final ErrorMessageRepository errorMessageRepository;
     private final RepositoryRefreshService repositoryRefreshService;
+    private final PropertiesConfig propertiesConfig;
 
-    public HistoricalMarketDataApiResponseChecker(HistoricalMarketDataRepository repository, RepositoryRefreshService repositoryRefreshService, ErrorMessageRepository errorMessageRepository) {
+    public HistoricalMarketDataApiResponseChecker(HistoricalMarketDataRepository repository, RepositoryRefreshService repositoryRefreshService, ErrorMessageRepository errorMessageRepository, PropertiesConfig propertiesConfig) {
         this.repositoryRefreshService = repositoryRefreshService;
         this.errorMessageRepository = errorMessageRepository;
         this.repository = repository;
+        this.propertiesConfig = propertiesConfig;
     }
 
 
     public List<IBKRDataTypeEntity> checkForApiResponseAndUpdate(Integer id) {
-        List<IBKRDataTypeEntity> dataList = new ArrayList<>();
         do {
             repositoryRefreshService.clearCacheAndWait(repository);
-        } while (fetchResponses(id, dataList).isEmpty());
-        return dataList;
-    }
-
-    private List<IBKRDataTypeEntity> fetchResponses(Integer id, List<IBKRDataTypeEntity> dataList) {
-        if (!repository.findAllByContractId(id).isEmpty()) {
-            dataList.addAll(repository.findAllByContractId(id));
-        } else if (!errorMessageRepository.findAllByErrorId(id).isEmpty()) {
-            dataList.addAll(errorMessageRepository.findAllByErrorId(id));
-        }
+        } while (propertiesConfig.getActiveApiCalls().contains((long)id));
+        List<IBKRDataTypeEntity> dataList = new ArrayList<>();
+        dataList.addAll(errorMessageRepository.findAllByErrorId(id));
+        dataList.addAll(repository.findAllByContractId(id));
         return dataList;
     }
 }

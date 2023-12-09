@@ -25,6 +25,7 @@ public class IBKRTimeStampFormatter {
     }
 
     public String formatTimestampToDate(Timestamp timestamp) {
+        //TODO: see if this is actually needed
         return new SimpleDateFormat(propertiesConfig.getDateFormat()).format(timestamp);
     }
 

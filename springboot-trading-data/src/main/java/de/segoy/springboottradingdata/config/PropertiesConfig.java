@@ -5,6 +5,8 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class PropertiesConfig {
 
@@ -21,6 +23,9 @@ public class PropertiesConfig {
     @Value("${app.ibkr.dateFormat}")
     private String dateFormat;
 
+
+    private List<Long> activeApiCalls;
+
     @Synchronized
     public Long getNextValidOrderId(){
         return nextValidOrderId;
@@ -29,5 +34,18 @@ public class PropertiesConfig {
     @Synchronized
     public void setNextValidOrderId(Long nextValidOrderId) {
         this.nextValidOrderId = nextValidOrderId;
+    }
+
+    @Synchronized
+    public void addToActiveApiCalls(Long id){
+        activeApiCalls.add(id);
+    }
+    @Synchronized
+    public List<Long> getActiveApiCalls(){
+        return activeApiCalls;
+    }
+    @Synchronized
+    public void removeFromActiveApiCalls(Long id){
+        activeApiCalls.remove(id);
     }
 }

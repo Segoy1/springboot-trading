@@ -35,7 +35,4 @@ public class ConnectionData extends BaseEntity{
     private Boolean disconnectInProgress;
 
     private Boolean connected;
-
-
-
 }

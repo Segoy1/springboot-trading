@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import java.util.OptionalLong;
 
 @Component
-public class DatabaseSyncIBKRContractAndContractData {
+public class ContractDataDatabasseSynchronizer {
 
     private final IBKRContractToContractData ibkrContractToContractData;
     private final ContractDataRepository contractDataRepository;
     private final ComboLegDataRepository comboLegDataRepository;
 
-    public DatabaseSyncIBKRContractAndContractData(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository, ComboLegDataRepository comboLegDataRepository) {
+    public ContractDataDatabasseSynchronizer(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository, ComboLegDataRepository comboLegDataRepository) {
         this.ibkrContractToContractData = ibkrContractToContractData;
         this.contractDataRepository = contractDataRepository;
         this.comboLegDataRepository = comboLegDataRepository;

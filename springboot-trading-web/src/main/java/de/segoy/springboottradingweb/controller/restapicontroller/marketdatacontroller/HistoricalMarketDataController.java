@@ -4,7 +4,7 @@ import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
-import de.segoy.springboottradingibkr.client.service.HistoricalMarketDataService;
+import de.segoy.springboottradingibkr.client.service.historicalmarketdata.HistoricalMarketDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
