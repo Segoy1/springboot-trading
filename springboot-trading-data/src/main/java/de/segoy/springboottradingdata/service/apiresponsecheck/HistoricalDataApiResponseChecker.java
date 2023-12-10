@@ -27,6 +27,8 @@ class HistoricalDataApiResponseChecker implements ApiResponseCheckerForList<Hist
         do {
             repositoryRefreshService.clearCacheAndWait(repository);
         } while (propertiesConfig.getActiveApiCalls().contains(id));
-        return repository.findAllByContractId(id);
+        //implementaion with 2 seconds ago is not very clean, but response on this call is not very important
+        //Main functionality here is to write api response to DB, longest call took less than 2 seconds anyway
+        return repository.findAllByContractIdAndCreateDateAfter(id, propertiesConfig.getTwoSecondsAgo());
     }
 }

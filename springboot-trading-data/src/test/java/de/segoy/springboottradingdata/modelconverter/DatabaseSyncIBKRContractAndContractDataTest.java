@@ -29,7 +29,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
     @Mock
     private ComboLegDataRepository comboLegDataRepository;
     @InjectMocks
-    private ContractDataDatabasseSynchronizer contractDataDatabasseSynchronizer;
+    private ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
 
     @Test
     void testWithNotExistentContractIdAndParsedId() {
@@ -44,7 +44,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
         when(contractDataRepository.save(data)).thenReturn(data);
 
 
-        ContractData returnData = contractDataDatabasseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
+        ContractData returnData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
         verify(contractDataRepository, times(1)).save(data);
         verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(0));
         verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(1));
@@ -59,7 +59,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
 
         when(contractDataRepository.findFirstByContractId(123)).thenReturn(Optional.of(data));
 
-        ContractData returnData = contractDataDatabasseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
+        ContractData returnData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
         verify(contractDataRepository, times(0)).save(data);
         assertNotEquals(1L, returnData.getId());
         assertEquals(123, returnData.getContractId());
@@ -78,7 +78,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
         when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(2, Types.Action.SELL,2,"SMART")).thenReturn(Optional.of(data.getComboLegs().get(1)));
         when(contractDataRepository.save(data)).thenReturn(data);
 
-        ContractData returnData = contractDataDatabasseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
+        ContractData returnData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
         verify(contractDataRepository, times(1)).save(data);
         verify(comboLegDataRepository, times(0)).save(data.getComboLegs().get(0));
         verify(comboLegDataRepository, times(0)).save(data.getComboLegs().get(1));

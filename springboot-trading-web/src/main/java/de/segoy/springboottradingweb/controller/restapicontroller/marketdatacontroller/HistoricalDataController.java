@@ -27,15 +27,15 @@ public class HistoricalDataController {
     }
 
     @GetMapping("/Test")
-    public ResponseEntity<List<HistoricalData>> testHistoricalData() {
+    public ResponseEntity<List<HistoricalData>> testHistoricalData(@RequestParam(name = "barSize")String barSize, @RequestParam(name = "duration")String duration) {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
                 .contractData(ContractDataTemplates.SpxData())
-                .barSizeSetting(BarSizeSetting.get("1 day"))
-                .backfillDuration("1 Y")
+                .barSizeSetting(BarSizeSetting.get(barSize))
+                .backfillDuration(duration)
                 .backfillEndTime(Timestamp.valueOf("2023-12-08 09:00:00"))
                 .whatToShow(WhatToShowType.TRADES)
                 .regularTradingHours(true)
-                .dateFormatStyle(1)
+                .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
         List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);

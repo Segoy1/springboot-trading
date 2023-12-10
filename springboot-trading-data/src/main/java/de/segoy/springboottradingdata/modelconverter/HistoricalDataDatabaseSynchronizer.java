@@ -20,7 +20,7 @@ public class HistoricalDataDatabaseSynchronizer {
     }
 
     public HistoricalData findInDbOrSave(int id, Bar bar) {
-        return historicalDataRepository.findFirstByContractIdAndTime(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()))
+        return historicalDataRepository.findFirstByContractIdAndTimeAndCount(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()), bar.count())
                 .orElseGet(() -> {
                     HistoricalData newHistoricalData = barToHistoricalData.convert(bar);
                     newHistoricalData.setContractId(id);

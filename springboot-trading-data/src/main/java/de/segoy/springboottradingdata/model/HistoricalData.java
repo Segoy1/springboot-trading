@@ -1,12 +1,11 @@
 package de.segoy.springboottradingdata.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -32,4 +31,9 @@ public class HistoricalData extends IBKRDataTypeEntity{
     private BigDecimal volume;
     private Integer count;
     private BigDecimal wap;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 }

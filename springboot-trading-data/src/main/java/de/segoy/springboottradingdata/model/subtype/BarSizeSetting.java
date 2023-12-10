@@ -10,7 +10,7 @@ public enum BarSizeSetting {
     TEN_SECS("10 secs"),
     FIFTEEN_SECS("15 secs"),
     THIRTY_SECS("30 secs"),
-    ONE_MIN("1 mins"),
+    ONE_MIN("1 min"),
     TWO_MIN("2 mins"),
     THREE_MIN("3 mins"),
     FIVE_MINS("5 mins"),

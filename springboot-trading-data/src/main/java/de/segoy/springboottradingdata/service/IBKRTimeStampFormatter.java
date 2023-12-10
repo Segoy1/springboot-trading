@@ -24,11 +24,6 @@ public class IBKRTimeStampFormatter {
         return new SimpleDateFormat(propertiesConfig.getDateTimeFormat()).format(timestamp);
     }
 
-    public String formatTimestampToDate(Timestamp timestamp) {
-        //TODO: see if this is actually needed
-        return new SimpleDateFormat(propertiesConfig.getDateFormat()).format(timestamp);
-    }
-
     public Timestamp formatStringToTimeStamp(String timeString) {
         if (timeString.length() == 8) {
             String format = propertiesConfig.getDateFormat();
@@ -38,9 +33,12 @@ public class IBKRTimeStampFormatter {
                 log.error("Parsing Exception of Date: " + timeString + "! Only Parse Date with Format yyyyMMdd");
                 return null;
             }
-        } else {
+        } else if(timeString.length()== 16){
             String format = propertiesConfig.getDateTimeFormat();
             return Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(format).parse(timeString)));
+        } else{
+            //use unix Timestamp (HistoricalDataSettings.dateFormatStyle = 2, makes everything easier
+            return new Timestamp(Long.parseLong(timeString + propertiesConfig.addMillis()));
         }
     }
 }

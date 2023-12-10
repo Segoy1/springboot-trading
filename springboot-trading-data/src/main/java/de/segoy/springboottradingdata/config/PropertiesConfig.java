@@ -5,6 +5,8 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,5 +76,13 @@ public class PropertiesConfig {
     @Synchronized
     public void removeFromActiveMarketData(int id){
         activeMarketData.remove(id);
+    }
+
+    public String addMillis(){
+        return "000";
+    }
+
+    public Date getTwoSecondsAgo(){
+        return Date.from(Instant.now().minusSeconds(2L));
     }
 }
