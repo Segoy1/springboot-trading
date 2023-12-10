@@ -24,6 +24,11 @@ public class PropertiesConfig {
     @Value("${app.ibkr.dateFormat}")
     private String dateFormat;
 
+    @Getter
+    @Value("${app.ibkr.connectionId}")
+    private int connectionId;
+
+
 
     private final List<Long> activeApiCalls = new ArrayList<>();
 

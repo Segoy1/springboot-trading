@@ -4,6 +4,7 @@
 package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.ConnectionData;
 import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
@@ -15,10 +16,8 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
-import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.FaDataTypeHandler;
-import de.segoy.springboottradingibkr.client.service.SynchronizedCallbackHanlder;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,7 @@ import java.util.Map.Entry;
 public class IBKRConnection implements EWrapper {
 
 
-    private final int CONNECTION_ID = 1;
-    private final SynchronizedCallbackHanlder callbackHanlder;
+
     private final ErrorCodeHandler errorCodeHandler;
     private final FaDataTypeHandler faDataTypeHandler;
 
@@ -66,14 +64,12 @@ public class IBKRConnection implements EWrapper {
 
     @Autowired
     public IBKRConnection(
-            SynchronizedCallbackHanlder callbackHanlder,
             ErrorCodeHandler errorCodeHandler,
             FaDataTypeHandler faDataTypeHandler,
             ErrorMessageHandler errorMessageHandler,
             KafkaTemplate<String, String> kafkaTemplate, ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabasseSynchronizer contractDataDatabasseSynchronizer, HistoricalMarketDataDatabaseSynchronizer historicalMarketDataDatabaseSynchronizer, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
-        this.callbackHanlder = callbackHanlder;
         this.errorCodeHandler = errorCodeHandler;
         this.faDataTypeHandler = faDataTypeHandler;
         this.errorsMessageHandler = errorMessageHandler;
@@ -136,6 +132,7 @@ public class IBKRConnection implements EWrapper {
         // received order status
         log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
+        propertiesConfig.removeFromActiveApiCalls((long) orderId);
         propertiesConfig.setNextValidOrderId((long) orderId + 1);
 
     }
@@ -157,14 +154,13 @@ public class IBKRConnection implements EWrapper {
     @Override
     @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
-        callbackHanlder.contractDetails(reqId, contractDetails, m_callbackMap);
         contractDataDatabasseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId), contractDetails.contract());
         log.debug("Added Contract Details: Id = " + reqId);
     }
 
     @Override
     public void contractDetailsEnd(int reqId) {
-        callbackHanlder.contractDetailsEnd(reqId, m_callbackMap);
+        propertiesConfig.removeFromActiveApiCalls((long)reqId);
         log.debug(EWrapperMsgGenerator.contractDetailsEnd(reqId));
     }
 
@@ -231,7 +227,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(Exception e) {
         // do not report exceptions if we initiated disconnect
-        if (!connectionDataRepository.findById(CONNECTION_ID).orElseThrow().getDisconnectInProgress()) {
+        if (!connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElseThrow().getDisconnectInProgress()) {
             String msg = EWrapperMsgGenerator.error(e);
             log.error(msg);
         }
@@ -246,7 +242,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         // received error
-        callbackHanlder.contractDetailsError(id, errorCode, errorMsg, m_callbackMap);
+       propertiesConfig.removeFromActiveApiCalls((long)id);
 
         errorsMessageHandler.handleError(id, EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
         faError = errorCodeHandler.isFaError(errorCode);
@@ -293,7 +289,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void managedAccounts(String accountsList) {
 
-        ConnectionData connectionData = connectionDataRepository.findById(CONNECTION_ID).orElseThrow();
+        ConnectionData connectionData = connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElseThrow();
         connectionData.setIsFAAccount(true);
         connectionDataRepository.save(connectionData);
 //        m_FAAcctCodes = accountsList;

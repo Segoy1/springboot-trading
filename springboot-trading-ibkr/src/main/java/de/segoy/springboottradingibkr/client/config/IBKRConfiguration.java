@@ -14,6 +14,11 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("de.segoy.springboottradingibkr")
 public class IBKRConfiguration {
 
+    @Getter
+    @Setter
+    @Value("${app.ibkr.isReaderStarted}")
+    private boolean isReaderStarted;
+
     @Bean
     public EJavaSignal eJavaSignal(){
         return new EJavaSignal();
@@ -23,8 +28,4 @@ public class IBKRConfiguration {
     public EClientSocket eClientSocket(EJavaSignal eJavaSignal, IBKRConnection ibkrConnection) {
         return new EClientSocket(ibkrConnection,eJavaSignal);
     }
-    @Getter
-    @Setter
-    @Value("${app.ibkr.isReaderStarted}")
-    private boolean isReaderStarted;
 }
