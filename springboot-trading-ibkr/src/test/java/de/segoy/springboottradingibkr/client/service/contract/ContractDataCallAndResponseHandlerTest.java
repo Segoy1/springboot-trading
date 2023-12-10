@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ContractDataApiCallerTest {
+class ContractDataCallAndResponseHandlerTest {
 
     @Mock
     private ContractDataToIBKRContract contractDataToIBKRContract;
@@ -35,7 +35,7 @@ class ContractDataApiCallerTest {
     @Mock
     private ErrorMessageRepository errorMessageRepository;
     @InjectMocks
-    private ContractDataApiCaller contractDataApiCaller;
+    private ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
 
     @Test
     void testcallContractDetailsFromAPIWithValidCall() {
@@ -45,7 +45,7 @@ class ContractDataApiCallerTest {
 
         when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
 
-        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
 
         assertEquals(123, testData.get().getContractId());
     }
@@ -54,7 +54,7 @@ class ContractDataApiCallerTest {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.BAG);
         when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
-        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
     @Test
@@ -64,7 +64,7 @@ class ContractDataApiCallerTest {
 
         when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
         when(errorMessageRepository.existsById(9000000L)).thenReturn(true);
-        Optional<ContractData> testData = contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
 

@@ -9,11 +9,11 @@ import java.util.Optional;
 @Service
 public class UniqueContractDataProvider {
     private final ContractDataRepository contractDataRepository;
-    private final ContractDataApiCaller contractDataApiCaller;
+    private final ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
 
-    public UniqueContractDataProvider(ContractDataRepository contractDataRepository, ContractDataApiCaller contractDataApiCaller) {
+    public UniqueContractDataProvider(ContractDataRepository contractDataRepository, ContractDataCallAndResponseHandler contractDataCallAndResponseHandler) {
         this.contractDataRepository = contractDataRepository;
-        this.contractDataApiCaller = contractDataApiCaller;
+        this.contractDataCallAndResponseHandler = contractDataCallAndResponseHandler;
     }
 
     public Optional<ContractData> getExistingContractDataOrCallApi(ContractData contractData) {
@@ -39,14 +39,14 @@ public class UniqueContractDataProvider {
         Optional<ContractData> contractOpt = contractDataRepository.findFirstBySymbolAndSecurityTypeAndExchange(contractData.getSymbol(),
                 contractData.getSecurityType(),
                 contractData.getExchange());
-        return contractOpt.isPresent()?contractOpt:contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        return contractOpt.isPresent()?contractOpt: contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
     }
 
     private Optional<ContractData> getIndexData(ContractData contractData) {
         Optional<ContractData> contractOpt = contractDataRepository.findFirstBySymbolAndSecurityTypeAndExchange(contractData.getSymbol(),
                 contractData.getSecurityType(),
                 contractData.getExchange());
-        return contractOpt.isPresent()?contractOpt:contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        return contractOpt.isPresent()?contractOpt: contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
     }
 
     private Optional<ContractData> getOptionContractData(ContractData contractData) {
@@ -54,6 +54,6 @@ public class UniqueContractDataProvider {
                 contractData.getSymbol(),
                 contractData.getStrike(),
                 contractData.getRight());
-        return contractOpt.isPresent() ? contractOpt : contractDataApiCaller.callContractDetailsFromAPI(contractData);
+        return contractOpt.isPresent() ? contractOpt : contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
     }
 }

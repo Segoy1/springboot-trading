@@ -5,8 +5,8 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 public class PropertiesConfig {
@@ -30,7 +30,7 @@ public class PropertiesConfig {
 
 
 
-    private final List<Long> activeApiCalls = new ArrayList<>();
+    private final Set<Long> activeApiCalls = new HashSet<>();
 
     @Synchronized
     public Long getNextValidOrderId(){
@@ -47,7 +47,7 @@ public class PropertiesConfig {
         activeApiCalls.add(id);
     }
     @Synchronized
-    public List<Long> getActiveApiCalls(){
+    public Set<Long> getActiveApiCalls(){
         return activeApiCalls;
     }
     @Synchronized

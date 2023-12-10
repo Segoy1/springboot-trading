@@ -29,11 +29,16 @@ public class HistoricalMarketDataService {
     public List<HistoricalMarketData> requestHistoricalData(ContractData contractData, HistoricalDataSettings settings) {
         List<HistoricalMarketData> historicalDataTicks = new ArrayList<>();
         Optional<ContractData> contractDataOptional = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
-        contractDataOptional.ifPresent((savedContractData) -> {
-           historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, savedContractData));
-        });
+        return contractDataOptional.map((contractData1) -> {
+                historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, contractData1));
+                return historicalDataTicks;
+        }).orElseGet(() -> historicalDataTicks);
 
-        return historicalDataTicks;
+//        contractDataOptional.ifPresent((savedContractData) -> {
+//           historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, savedContractData));
+//        });
+//        return historicalDataTicks;
+
     }
 
 
