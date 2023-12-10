@@ -4,6 +4,7 @@ import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForOptional;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -14,7 +15,9 @@ public class OrderUpdateService {
     private final ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker;
     private final ApiCaller<OrderData> orderPlacementApiCaller;
 
-    public OrderUpdateService(OrderDataRepository orderDataRepository, ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker, ApiCaller<OrderData> orderPlacementApiCaller) {
+    public OrderUpdateService(OrderDataRepository orderDataRepository,
+                              ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker,
+                              @Qualifier("OrderPlacementApiCaller") ApiCaller<OrderData> orderPlacementApiCaller) {
         this.orderDataRepository = orderDataRepository;
         this.orderDataApiResponseChecker = orderDataApiResponseChecker;
         this.orderPlacementApiCaller = orderPlacementApiCaller;
