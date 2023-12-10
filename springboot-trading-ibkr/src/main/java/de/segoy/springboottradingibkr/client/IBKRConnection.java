@@ -97,7 +97,6 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta, double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {
         // received computation tick
-        //TODO Option Greeks come here
         kafkaTemplate.send("tick", EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice, pvDividend,
                 gamma, vega, theta, undPrice));
     }

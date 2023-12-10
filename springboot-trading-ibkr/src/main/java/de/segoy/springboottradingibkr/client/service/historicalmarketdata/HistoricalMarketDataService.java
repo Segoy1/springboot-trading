@@ -33,12 +33,6 @@ public class HistoricalMarketDataService {
                 historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, contractData1));
                 return historicalDataTicks;
         }).orElseGet(() -> historicalDataTicks);
-
-//        contractDataOptional.ifPresent((savedContractData) -> {
-//           historicalDataTicks.addAll(historicalResponseListService.getResponseList(settings, savedContractData));
-//        });
-//        return historicalDataTicks;
-
     }
 
 

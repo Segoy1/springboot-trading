@@ -1,6 +1,7 @@
 package de.segoy.springboottradingibkr.client.datamodel;
 
 import com.ib.client.TagValue;
+import de.segoy.springboottradingibkr.client.datamodel.subtype.BarSizeSetting;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
 import lombok.*;
 
@@ -25,20 +26,16 @@ public class HistoricalDataSettings {
 
     private String backfillDuration;
 
-    // valid: 1/5/10/15/30 secs
-    // 1/2/3/5/10/15/20/30 mins
-    // 1/2/3/4/8 hours
-    // 1 day 2 week 1 month
-    private String barSizeSetting;
+    private BarSizeSetting barSizeSetting;
 
     private WhatToShowType whatToShow;
 
     //default Values unlikely to be changed
 
 
-    private boolean regularTradingHours = true; //for client: 1=true 0=false
-    private int dateFormatStyle = 1;
-    private boolean keepUpToDate = false;
+    private boolean regularTradingHours; // default= true, for client: 1=true 0=false
+    private int dateFormatStyle;//default 1
+    private boolean keepUpToDate;//default false;
     private List<TagValue> chartOptions = new ArrayList<>();
 
 
