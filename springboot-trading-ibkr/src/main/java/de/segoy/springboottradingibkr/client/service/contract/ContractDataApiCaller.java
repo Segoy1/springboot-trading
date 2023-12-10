@@ -29,7 +29,7 @@ class ContractDataApiCaller {
      * @param nextId needs to be generated and parsed so DB Object can be identified
      * @param contractData DB object to be converted to ib.Contract to call API
      */
-    public void callApi(Long nextId, ContractData contractData) {
-        client.reqContractDetails(nextId.intValue(), contractDataToIBKRContract.convertContractData(contractData));
+    public void callApi(int nextId, ContractData contractData) {
+        client.reqContractDetails(nextId, contractDataToIBKRContract.convertContractData(contractData));
     }
 }

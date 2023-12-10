@@ -1,30 +1,30 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Bar;
-import de.segoy.springboottradingdata.model.HistoricalMarketData;
-import de.segoy.springboottradingdata.repository.HistoricalMarketDataRepository;
+import de.segoy.springboottradingdata.model.HistoricalData;
+import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HistoricalMarketDataDatabaseSynchronizer {
 
-    private final HistoricalMarketDataRepository historicalMarketDataRepository;
+    private final HistoricalDataRepository historicalDataRepository;
     private final BarToHistoricalMarketData barToHistoricalMarketData;
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
-    public HistoricalMarketDataDatabaseSynchronizer(HistoricalMarketDataRepository historicalMarketDataRepository, BarToHistoricalMarketData barToHistoricalMarketData, IBKRTimeStampFormatter ibkrTimeStampFormatter) {
-        this.historicalMarketDataRepository = historicalMarketDataRepository;
+    public HistoricalMarketDataDatabaseSynchronizer(HistoricalDataRepository historicalDataRepository, BarToHistoricalMarketData barToHistoricalMarketData, IBKRTimeStampFormatter ibkrTimeStampFormatter) {
+        this.historicalDataRepository = historicalDataRepository;
         this.barToHistoricalMarketData = barToHistoricalMarketData;
         this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
     }
 
-    public HistoricalMarketData findInDbOrSave(int id, Bar bar) {
-        return historicalMarketDataRepository.findFirstByContractIdAndTime(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()))
+    public HistoricalData findInDbOrSave(int id, Bar bar) {
+        return historicalDataRepository.findFirstByContractIdAndTime(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()))
                 .orElseGet(() -> {
-                    HistoricalMarketData newHistoricalMarketData = barToHistoricalMarketData.convert(bar);
-                    newHistoricalMarketData.setContractId(id);
-                    return historicalMarketDataRepository.save(newHistoricalMarketData);
+                    HistoricalData newHistoricalData = barToHistoricalMarketData.convert(bar);
+                    newHistoricalData.setContractId(id);
+                    return historicalDataRepository.save(newHistoricalData);
                 });
     }
 }

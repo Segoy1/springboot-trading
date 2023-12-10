@@ -28,9 +28,13 @@ public class PropertiesConfig {
     @Value("${app.ibkr.connectionId}")
     private int connectionId;
 
+    @Getter
+    @Value("${app.ibkr.generic.ticks}")
+    private String genericTicks;
 
 
-    private final Set<Long> activeApiCalls = new HashSet<>();
+
+    private final Set<Integer> activeApiCalls = new HashSet<>();
 
     @Synchronized
     public Long getNextValidOrderId(){
@@ -43,15 +47,15 @@ public class PropertiesConfig {
     }
 
     @Synchronized
-    public void addToActiveApiCalls(Long id){
+    public void addToActiveApiCalls(int id){
         activeApiCalls.add(id);
     }
     @Synchronized
-    public Set<Long> getActiveApiCalls(){
+    public Set<Integer> getActiveApiCalls(){
         return activeApiCalls;
     }
     @Synchronized
-    public void removeFromActiveApiCalls(Long id){
+    public void removeFromActiveApiCalls(int id){
         activeApiCalls.remove(id);
     }
 }

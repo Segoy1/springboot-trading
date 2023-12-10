@@ -24,7 +24,7 @@ public class HistoricalDataApiCaller {
                 contractDataToIBKRContract.convertContractData(settings.getContractData()),
                 ibkrTimeStampFormatter.formatTimestampToDateAndTime(settings.getBackfillEndTime()),
                 settings.getBackfillDuration(),
-                settings.getBarSizeSetting().toString(),
+                settings.getBarSizeSetting().getValue(),
                 settings.getWhatToShow().toString(),
                 settings.isRegularTradingHours() ? 1 : 0,
                 settings.getDateFormatStyle(),

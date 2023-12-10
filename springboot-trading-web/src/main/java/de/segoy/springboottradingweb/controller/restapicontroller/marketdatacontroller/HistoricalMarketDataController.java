@@ -1,16 +1,15 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.HistoricalMarketData;
+import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.BarSizeSetting;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
-import de.segoy.springboottradingibkr.client.service.historicalmarketdata.HistoricalMarketDataService;
+import de.segoy.springboottradingibkr.client.service.historicalmarketdata.HistoricalDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -19,16 +18,16 @@ import java.util.List;
 @RequestMapping("historical-market-data")
 public class HistoricalMarketDataController {
 
-    private final HistoricalMarketDataService historicalMarketDataService;
+    private final HistoricalDataService historicalDataService;
     private final ResponseMapper responseMapper;
 
-    public HistoricalMarketDataController(HistoricalMarketDataService historicalMarketDataService, ResponseMapper responseMapper) {
-        this.historicalMarketDataService = historicalMarketDataService;
+    public HistoricalMarketDataController(HistoricalDataService historicalDataService, ResponseMapper responseMapper) {
+        this.historicalDataService = historicalDataService;
         this.responseMapper = responseMapper;
     }
 
     @GetMapping("/Test")
-    public ResponseEntity<List<HistoricalMarketData>> testHistoricalData() {
+    public ResponseEntity<List<HistoricalData>> testHistoricalData() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
                 .contractData(ContractDataTemplates.SpxData())
                 .barSizeSetting(BarSizeSetting.get("1 day"))
@@ -39,7 +38,11 @@ public class HistoricalMarketDataController {
                 .dateFormatStyle(1)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalMarketData> historicalData = historicalMarketDataService.requestHistoricalData(settings);
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalData);
+    }
+    @PutMapping
+    public ResponseEntity<List<HistoricalData>> requestHistoricalMarketData(@Valid @RequestBody HistoricalDataSettings settings){
+        return responseMapper.mapResponse(historicalDataService.requestHistoricalData(settings));
     }
 }

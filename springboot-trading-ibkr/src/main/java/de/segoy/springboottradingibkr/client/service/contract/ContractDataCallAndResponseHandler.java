@@ -23,14 +23,14 @@ public class ContractDataCallAndResponseHandler {
 
     public Optional<ContractData> callContractDetailsFromAPI(ContractData contractData) {
         //ugly: having to increment by 2 because I am too stupid to do it properly
-        Long nextId = getNextId(contractData);
+        int nextId = getNextId(contractData);
         contractDataApiCaller.callApi(nextId, contractData);
         return contractDataApiResponseChecker.checkForApiResponseAndUpdate(nextId);
     }
 
 
 
-    private Long getNextId(ContractData contractData) {
-        return contractData.getId() != null ? contractData.getId() : (long) contractDataRepository.nextValidId() + 1;
+    private int getNextId(ContractData contractData) {
+        return contractData.getId() != null ? contractData.getId().intValue() : contractDataRepository.nextValidId() + 1;
     }
 }

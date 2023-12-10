@@ -35,7 +35,7 @@ public class OrderController {
                 .limitPrice(BigDecimal.valueOf(400))
                 .contractData(ContractDataTemplates.SpxData())
                 .build();
-        return responseMapper.mapResponse(orderService.validateAndPlaceOrder(orderData));
+        return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
     }
 
 //    valid Test Statements:
@@ -48,6 +48,6 @@ public class OrderController {
     @PutMapping("/place-order")
     public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
         orderData.setId(propertiesConfig.getNextValidOrderId());
-        return responseMapper.mapResponse(orderService.validateAndPlaceOrder(orderData));
+        return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
     }
 }

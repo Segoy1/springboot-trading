@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoricalMarketData extends IBKRDataTypeEntity{
+public class HistoricalData extends IBKRDataTypeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

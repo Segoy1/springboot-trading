@@ -15,7 +15,6 @@ import de.segoy.springboottradingdata.modelconverter.HistoricalMarketDataDatabas
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
-import de.segoy.springboottradingibkr.client.callback.ContractDetailsCallback;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
@@ -51,7 +50,6 @@ public class IBKRConnection implements EWrapper {
     private final OrderWriteToDBService orderWriteToDBService;
 
 
-    private final Map<Integer, ContractDetailsCallback> m_callbackMap = new HashMap<>();
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
     private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
@@ -131,7 +129,7 @@ public class IBKRConnection implements EWrapper {
         // received order status
         log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
-        propertiesConfig.removeFromActiveApiCalls((long) orderId);
+        propertiesConfig.removeFromActiveApiCalls(orderId);
         propertiesConfig.setNextValidOrderId((long) orderId + 1);
 
     }
@@ -159,7 +157,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void contractDetailsEnd(int reqId) {
-        propertiesConfig.removeFromActiveApiCalls((long)reqId);
+        propertiesConfig.removeFromActiveApiCalls(reqId);
         log.debug(EWrapperMsgGenerator.contractDetailsEnd(reqId));
     }
 
@@ -241,7 +239,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         // received error
-       propertiesConfig.removeFromActiveApiCalls((long)id);
+       propertiesConfig.removeFromActiveApiCalls(id);
 
         errorsMessageHandler.handleError(id, EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
         faError = errorCodeHandler.isFaError(errorCode);
@@ -303,7 +301,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        propertiesConfig.removeFromActiveApiCalls((long) reqId);
+        propertiesConfig.removeFromActiveApiCalls(reqId);
         log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
     }
 

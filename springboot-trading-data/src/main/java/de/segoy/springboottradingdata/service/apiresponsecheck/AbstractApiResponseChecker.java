@@ -20,11 +20,11 @@ public abstract class AbstractApiResponseChecker<T extends IBKRDataTypeEntity> {
     }
 
 
-    public Optional<T> checkForApiResponseAndUpdate(Long id) {
+    public Optional<T> checkForApiResponseAndUpdate(int id) {
         do {
             repositoryRefreshService.clearCacheAndWait(repository);
         } while (propertiesConfig.getActiveApiCalls().contains(id));
-        return repository.findById(id);
+        return repository.findById((long)id);
     }
 }
 
