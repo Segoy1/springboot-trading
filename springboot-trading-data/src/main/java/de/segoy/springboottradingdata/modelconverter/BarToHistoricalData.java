@@ -6,11 +6,11 @@ import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BarToHistoricalMarketData {
+public class BarToHistoricalData {
 
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
-    public BarToHistoricalMarketData(IBKRTimeStampFormatter ibkrTimeStampFormatter) {
+    public BarToHistoricalData(IBKRTimeStampFormatter ibkrTimeStampFormatter) {
         this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
     }
 

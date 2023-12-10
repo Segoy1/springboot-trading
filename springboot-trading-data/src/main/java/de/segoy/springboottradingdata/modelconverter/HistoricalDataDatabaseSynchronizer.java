@@ -7,22 +7,22 @@ import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HistoricalMarketDataDatabaseSynchronizer {
+public class HistoricalDataDatabaseSynchronizer {
 
     private final HistoricalDataRepository historicalDataRepository;
-    private final BarToHistoricalMarketData barToHistoricalMarketData;
+    private final BarToHistoricalData barToHistoricalData;
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
-    public HistoricalMarketDataDatabaseSynchronizer(HistoricalDataRepository historicalDataRepository, BarToHistoricalMarketData barToHistoricalMarketData, IBKRTimeStampFormatter ibkrTimeStampFormatter) {
+    public HistoricalDataDatabaseSynchronizer(HistoricalDataRepository historicalDataRepository, BarToHistoricalData barToHistoricalData, IBKRTimeStampFormatter ibkrTimeStampFormatter) {
         this.historicalDataRepository = historicalDataRepository;
-        this.barToHistoricalMarketData = barToHistoricalMarketData;
+        this.barToHistoricalData = barToHistoricalData;
         this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
     }
 
     public HistoricalData findInDbOrSave(int id, Bar bar) {
         return historicalDataRepository.findFirstByContractIdAndTime(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()))
                 .orElseGet(() -> {
-                    HistoricalData newHistoricalData = barToHistoricalMarketData.convert(bar);
+                    HistoricalData newHistoricalData = barToHistoricalData.convert(bar);
                     newHistoricalData.setContractId(id);
                     return historicalDataRepository.save(newHistoricalData);
                 });

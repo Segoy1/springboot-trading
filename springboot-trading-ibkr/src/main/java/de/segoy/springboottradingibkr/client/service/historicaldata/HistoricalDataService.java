@@ -1,11 +1,11 @@
-package de.segoy.springboottradingibkr.client.service.historicalmarketdata;
+package de.segoy.springboottradingibkr.client.service.historicaldata;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
-import de.segoy.springboottradingdata.service.apiresponsecheck.HistoricalMarketDataApiResponseChecker;
+import de.segoy.springboottradingdata.service.apiresponsecheck.HistoricalDataApiResponseChecker;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class HistoricalDataService {
     private final UniqueContractDataProvider uniqueContractDataProvider;
     private final HistoricalResponseListService historicalResponseListService;
 
-    public HistoricalDataService(UniqueContractDataProvider uniqueContractDataProvider, EClientSocket client, HistoricalMarketDataApiResponseChecker historicalMarketDataApiResponseChecker, ContractDataToIBKRContract contractDataToIBKRContract, IBKRTimeStampFormatter ibkrTimeStampFormatter, PropertiesConfig propertiesConfig, HistoricalResponseListService historicalResponseListService) {
+    public HistoricalDataService(UniqueContractDataProvider uniqueContractDataProvider, EClientSocket client, HistoricalDataApiResponseChecker historicalDataApiResponseChecker, ContractDataToIBKRContract contractDataToIBKRContract, IBKRTimeStampFormatter ibkrTimeStampFormatter, PropertiesConfig propertiesConfig, HistoricalResponseListService historicalResponseListService) {
         this.uniqueContractDataProvider = uniqueContractDataProvider;
         this.historicalResponseListService = historicalResponseListService;
     }

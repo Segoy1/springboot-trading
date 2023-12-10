@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.historicalmarketdata;
+package de.segoy.springboottradingibkr.client.service.historicaldata;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;

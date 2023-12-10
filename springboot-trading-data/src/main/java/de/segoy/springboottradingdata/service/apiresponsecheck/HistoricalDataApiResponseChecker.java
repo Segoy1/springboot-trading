@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class HistoricalMarketDataApiResponseChecker {
+public class HistoricalDataApiResponseChecker {
 
     private final HistoricalDataRepository repository;
     private final RepositoryRefreshService repositoryRefreshService;
     private final PropertiesConfig propertiesConfig;
 
-    public HistoricalMarketDataApiResponseChecker(HistoricalDataRepository repository, RepositoryRefreshService repositoryRefreshService, PropertiesConfig propertiesConfig) {
+    public HistoricalDataApiResponseChecker(HistoricalDataRepository repository, RepositoryRefreshService repositoryRefreshService, PropertiesConfig propertiesConfig) {
         this.repositoryRefreshService = repositoryRefreshService;
         this.repository = repository;
         this.propertiesConfig = propertiesConfig;

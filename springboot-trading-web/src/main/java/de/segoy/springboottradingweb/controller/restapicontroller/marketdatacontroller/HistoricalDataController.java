@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.BarSizeSetting;
 import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
-import de.segoy.springboottradingibkr.client.service.historicalmarketdata.HistoricalDataService;
+import de.segoy.springboottradingibkr.client.service.historicaldata.HistoricalDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
-@RequestMapping("historical-market-data")
-public class HistoricalMarketDataController {
+@RequestMapping("historical-data")
+public class HistoricalDataController {
 
     private final HistoricalDataService historicalDataService;
     private final ResponseMapper responseMapper;
 
-    public HistoricalMarketDataController(HistoricalDataService historicalDataService, ResponseMapper responseMapper) {
+    public HistoricalDataController(HistoricalDataService historicalDataService, ResponseMapper responseMapper) {
         this.historicalDataService = historicalDataService;
         this.responseMapper = responseMapper;
     }
@@ -42,7 +42,7 @@ public class HistoricalMarketDataController {
         return responseMapper.mapResponse(historicalData);
     }
     @PutMapping
-    public ResponseEntity<List<HistoricalData>> requestHistoricalMarketData(@Valid @RequestBody HistoricalDataSettings settings){
+    public ResponseEntity<List<HistoricalData>> requestHistoricalData(@Valid @RequestBody HistoricalDataSettings settings){
         return responseMapper.mapResponse(historicalDataService.requestHistoricalData(settings));
     }
 }

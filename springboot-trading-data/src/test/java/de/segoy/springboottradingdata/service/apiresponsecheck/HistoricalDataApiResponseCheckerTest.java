@@ -25,7 +25,7 @@ class HistoricalDataApiResponseCheckerTest {
     @Mock
     private PropertiesConfig propertiesConfig;
     @InjectMocks
-    private HistoricalMarketDataApiResponseChecker historicalMarketDataApiResponseChecker;
+    private HistoricalDataApiResponseChecker historicalDataApiResponseChecker;
 
     @Test
     void testOnFirstTry(){
@@ -43,7 +43,7 @@ class HistoricalDataApiResponseCheckerTest {
         when(propertiesConfig.getActiveApiCalls()).thenReturn(callSet);
 
 
-        List<HistoricalData> returnList = historicalMarketDataApiResponseChecker.checkForApiResponseAndUpdate(6);
+        List<HistoricalData> returnList = historicalDataApiResponseChecker.checkForApiResponseAndUpdate(6);
 
         verify(repositoryRefreshService, times(1)).clearCacheAndWait(repository);
         assertTrue(returnList.contains(historicalData));
