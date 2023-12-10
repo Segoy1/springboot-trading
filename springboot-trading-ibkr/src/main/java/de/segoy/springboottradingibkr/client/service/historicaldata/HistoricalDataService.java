@@ -6,7 +6,7 @@ import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import de.segoy.springboottradingdata.service.apiresponsecheck.HistoricalDataApiResponseChecker;
-import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;
 

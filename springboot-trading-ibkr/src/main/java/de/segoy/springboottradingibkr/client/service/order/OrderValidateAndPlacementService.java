@@ -25,7 +25,7 @@ public class OrderValidateAndPlacementService {
                         orderData.getContractData())
                 .map((contractData -> {
                     orderData.setContractData(contractData);
-                    orderPlacementService.placeOrder(orderData);
+                    orderPlacementService.callApi(orderData);
                     return orderDataApiResponseChecker.checkForApiResponseAndUpdate(orderData.getId().intValue());
                 })).orElseGet(Optional::empty);
 

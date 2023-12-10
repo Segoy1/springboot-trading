@@ -3,7 +3,7 @@ package de.segoy.springboottradingweb.controller.restapicontroller;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
-import de.segoy.springboottradingibkr.client.datamodel.Leg;
+import de.segoy.springboottradingdata.model.Leg;
 import de.segoy.springboottradingibkr.client.service.LegMapService;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;

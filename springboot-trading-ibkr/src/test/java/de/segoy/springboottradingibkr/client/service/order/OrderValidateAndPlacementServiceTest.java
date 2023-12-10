@@ -37,7 +37,7 @@ class OrderValidateAndPlacementServiceTest {
 
         Optional<OrderData> valid = orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
 
-        verify(orderPlacementService, times(0)).placeOrder(orderData);
+        verify(orderPlacementService, times(0)).callApi(orderData);
         assertFalse(valid.isPresent());
     }
 
@@ -51,7 +51,7 @@ class OrderValidateAndPlacementServiceTest {
 
         Optional<OrderData> valid = orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
 
-        verify(orderPlacementService, times(1)).placeOrder(orderData);
+        verify(orderPlacementService, times(1)).callApi(orderData);
         assertEquals(2, orderData.getContractData().getId());
         assertNotEquals(Types.Right.Call, orderData.getContractData().getRight());
         assertTrue(valid.isPresent());

@@ -2,9 +2,9 @@ package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacon
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.HistoricalData;
-import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
-import de.segoy.springboottradingibkr.client.datamodel.subtype.BarSizeSetting;
-import de.segoy.springboottradingibkr.client.datamodel.subtype.WhatToShowType;
+import de.segoy.springboottradingdata.model.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.subtype.BarSizeSetting;
+import de.segoy.springboottradingdata.model.subtype.WhatToShowType;
 import de.segoy.springboottradingibkr.client.service.historicaldata.HistoricalDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import jakarta.validation.Valid;

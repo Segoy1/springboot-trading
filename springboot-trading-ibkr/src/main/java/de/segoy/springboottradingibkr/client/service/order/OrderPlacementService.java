@@ -9,7 +9,7 @@ import de.segoy.springboottradingdata.modelconverter.OrderDataToIBKROrder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderPlacementService {
+class OrderPlacementService {
 
     private final ContractDataToIBKRContract contractDataToIBKRContract;
     private final OrderDataToIBKROrder orderDatatoIBKROrder;
@@ -21,7 +21,7 @@ public class OrderPlacementService {
         this.client = client;
     }
 
-    public void placeOrder(OrderData orderData) {
+    public void callApi(OrderData orderData) {
         Contract contract = contractDataToIBKRContract.convertContractData(orderData.getContractData());
         Order order = orderDatatoIBKROrder.convertOrderData(orderData);
 

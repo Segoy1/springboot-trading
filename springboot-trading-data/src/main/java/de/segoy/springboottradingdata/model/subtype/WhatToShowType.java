@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.datamodel.subtype;
+package de.segoy.springboottradingdata.model.subtype;
 
 public enum WhatToShowType {
     TRADES,

@@ -7,7 +7,7 @@ import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StartMarketDataApiCaller {
+class StartMarketDataApiCaller {
 
     private final EClientSocket client;
     private final ContractDataToIBKRContract contractDataToIBKRContract;
@@ -20,7 +20,6 @@ public class StartMarketDataApiCaller {
     }
 
     public void callApi(ContractData savedContract) {
-        propertiesConfig.addToActiveMarketData(savedContract.getContractId());
         client.reqMktData(savedContract.getContractId(),
                 contractDataToIBKRContract.convertContractData(savedContract),
                 propertiesConfig.getGenericTicks(),

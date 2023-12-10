@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.service.historicaldata;
 
 import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingdata.service.apiresponsecheck.HistoricalDataApiResponseChecker;
-import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.HistoricalDataSettings;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

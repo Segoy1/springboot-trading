@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.datamodel;
+package de.segoy.springboottradingdata.model;
 
 import com.ib.client.Types;
 import lombok.*;

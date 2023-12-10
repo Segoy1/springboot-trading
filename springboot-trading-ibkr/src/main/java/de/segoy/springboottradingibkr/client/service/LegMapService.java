@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingibkr.client.datamodel.Leg;
+import de.segoy.springboottradingdata.model.Leg;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

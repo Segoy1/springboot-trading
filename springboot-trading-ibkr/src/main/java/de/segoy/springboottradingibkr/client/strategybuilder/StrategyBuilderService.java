@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
-import de.segoy.springboottradingibkr.client.datamodel.Leg;
+import de.segoy.springboottradingdata.model.Leg;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
