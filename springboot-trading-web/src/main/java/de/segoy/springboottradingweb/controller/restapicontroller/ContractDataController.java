@@ -4,7 +4,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.model.Leg;
-import de.segoy.springboottradingibkr.client.service.LegMapService;
+import de.segoy.springboottradingdata.service.LegMapService;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingweb.service.ResponseMapper;

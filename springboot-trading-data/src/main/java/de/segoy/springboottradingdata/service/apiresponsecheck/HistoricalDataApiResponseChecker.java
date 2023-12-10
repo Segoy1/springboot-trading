@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class HistoricalDataApiResponseChecker {
+class HistoricalDataApiResponseChecker implements ApiResponseCheckerForList<HistoricalData> {
 
     private final HistoricalDataRepository repository;
     private final RepositoryRefreshService repositoryRefreshService;
@@ -22,7 +22,8 @@ public class HistoricalDataApiResponseChecker {
     }
 
 
-    public List<HistoricalData> checkForApiResponseAndUpdate(Integer id) {
+    @Override
+    public List<HistoricalData> checkForApiResponseAndUpdate(int id) {
         do {
             repositoryRefreshService.clearCacheAndWait(repository);
         } while (propertiesConfig.getActiveApiCalls().contains(id));

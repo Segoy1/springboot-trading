@@ -3,7 +3,7 @@ package de.segoy.springboottradingibkr.client.service.order;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingdata.service.apiresponsecheck.OrderDataApiResponseChecker;
+import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForOptional;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class OrderValidateAndPlacementServiceTest {
     @Mock
     private OrderPlacementService orderPlacementService;
     @Mock
-    private OrderDataApiResponseChecker orderDataApiResponseChecker;
+    private ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker;
     @InjectMocks
     OrderValidateAndPlacementService orderValidateAndPlacementService;
 

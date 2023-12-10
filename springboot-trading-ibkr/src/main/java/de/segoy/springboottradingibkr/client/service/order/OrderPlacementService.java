@@ -6,10 +6,11 @@ import com.ib.client.Order;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.modelconverter.OrderDataToIBKROrder;
+import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;
 
 @Service
-class OrderPlacementService {
+class OrderPlacementService implements ApiCaller<OrderData> {
 
     private final ContractDataToIBKRContract contractDataToIBKRContract;
     private final OrderDataToIBKROrder orderDatatoIBKROrder;

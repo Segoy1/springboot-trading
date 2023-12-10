@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service;
+package de.segoy.springboottradingdata.service;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.Leg;

@@ -7,7 +7,7 @@ import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 
 import java.util.Optional;
 
-public abstract class AbstractApiResponseChecker<T extends IBKRDataTypeEntity> {
+abstract class AbstractApiResponseChecker<T extends IBKRDataTypeEntity> implements ApiResponseCheckerForOptional<T> {
 
     private final IBKRDataTypeRepository<T> repository;
     private final RepositoryRefreshService repositoryRefreshService;

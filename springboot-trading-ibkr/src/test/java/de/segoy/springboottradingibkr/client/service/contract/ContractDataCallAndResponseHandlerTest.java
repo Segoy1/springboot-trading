@@ -1,13 +1,10 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import com.ib.client.EClientSocket;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
-import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
-import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForOptional;
 import de.segoy.springboottradingdata.type.Currency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,21 +16,18 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ContractDataCallAndResponseHandlerTest {
 
-    @Mock
-    private ContractDataToIBKRContract contractDataToIBKRContract;
-    @Mock
-    private EClientSocket client;
+
     @Mock
     private ContractDataRepository contractDataRepository;
     @Mock
-    private RepositoryRefreshService repositoryRefreshService;
+    private ContractDataApiCaller contractDataApiCaller;
     @Mock
-    private ErrorMessageRepository errorMessageRepository;
+    private ApiResponseCheckerForOptional<ContractData> contractDataApiResponseChecker;
     @InjectMocks
     private ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
 
@@ -41,19 +35,21 @@ class ContractDataCallAndResponseHandlerTest {
     void testcallContractDetailsFromAPIWithValidCall() {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.OPT);
-//        contractData.setTouchedByApi(true);
 
-        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
+        when(contractDataRepository.nextValidId()).thenReturn(9000000);
+        when(contractDataApiResponseChecker.checkForApiResponseAndUpdate(9000001)).thenReturn(Optional.of(contractData));
 
         Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
 
+        verify(contractDataApiCaller,times(1)).callApi(contractData);
         assertEquals(123, testData.get().getContractId());
     }
     @Test
     void testcallContractDetailsFromAPIWithInvalidCall() {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.BAG);
-        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
+        when(contractDataRepository.nextValidId()).thenReturn(2);
+        when(contractDataApiResponseChecker.checkForApiResponseAndUpdate(3)).thenReturn(Optional.of(contractData));
         Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
@@ -62,8 +58,8 @@ class ContractDataCallAndResponseHandlerTest {
         ContractData contractData = buildBigContractData();
         contractData.setSecurityType(Types.SecType.OPT);
 
-        when(contractDataRepository.findById(9000000L)).thenReturn(Optional.of(contractData));
-        when(errorMessageRepository.existsById(9000000L)).thenReturn(true);
+        when(contractDataRepository.nextValidId()).thenReturn(2);
+        when(contractDataApiResponseChecker.checkForApiResponseAndUpdate(3)).thenReturn(Optional.of(contractData));
         Optional<ContractData> testData = contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractData);
         assertEquals(123, testData.get().getContractId());
     }
@@ -77,7 +73,7 @@ class ContractDataCallAndResponseHandlerTest {
                 .build();
 
         return ContractData.builder()
-                .id(9000000L)
+
                 .contractId(123)
                 .right(Types.Right.Call)
                 .symbol("SPX")

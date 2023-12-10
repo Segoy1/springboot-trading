@@ -1,6 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +10,11 @@ import java.util.Optional;
 @Service
 public class StartMarketDataService {
 
-    private final StartMarketDataApiCaller startMarketDataApiCaller;
+    private final ApiCaller<ContractData> startMarketDataApiCaller;
     private final UniqueContractDataProvider uniqueContractDataProvider;
 
 
-    public StartMarketDataService(StartMarketDataApiCaller startMarketDataApiCaller, UniqueContractDataProvider uniqueContractDataProvider) {
+    public StartMarketDataService(ApiCaller<ContractData> startMarketDataApiCaller, UniqueContractDataProvider uniqueContractDataProvider) {
         this.startMarketDataApiCaller = startMarketDataApiCaller;
         this.uniqueContractDataProvider = uniqueContractDataProvider;
     }

@@ -4,10 +4,11 @@ import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
+import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;
 
 @Service
-class StartMarketDataApiCaller {
+class StartMarketDataApiCaller implements ApiCaller<ContractData> {
 
     private final EClientSocket client;
     private final ContractDataToIBKRContract contractDataToIBKRContract;
