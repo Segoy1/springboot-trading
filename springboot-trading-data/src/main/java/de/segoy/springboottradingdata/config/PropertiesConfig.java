@@ -5,7 +5,9 @@ import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -36,6 +38,8 @@ public class PropertiesConfig {
 
     private final Set<Integer> activeApiCalls = new HashSet<>();
 
+    private final List<Integer> activeMarketData = new ArrayList<>();
+
     @Synchronized
     public Long getNextValidOrderId(){
         return nextValidOrderId;
@@ -57,5 +61,18 @@ public class PropertiesConfig {
     @Synchronized
     public void removeFromActiveApiCalls(int id){
         activeApiCalls.remove(id);
+    }
+
+    @Synchronized
+    public void addToActiveMarketData(int id){
+        activeMarketData.add(id);
+    }
+    @Synchronized
+    public List<Integer> getActiveMarketData(){
+        return activeMarketData;
+    }
+    @Synchronized
+    public void removeFromActiveMarketData(int id){
+        activeMarketData.remove(id);
     }
 }

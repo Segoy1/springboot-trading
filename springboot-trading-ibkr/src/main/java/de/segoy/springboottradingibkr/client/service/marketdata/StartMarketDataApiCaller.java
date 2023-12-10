@@ -20,6 +20,7 @@ public class StartMarketDataApiCaller {
     }
 
     public void callApi(ContractData savedContract) {
+        propertiesConfig.addToActiveMarketData(savedContract.getContractId());
         client.reqMktData(savedContract.getContractId(),
                 contractDataToIBKRContract.convertContractData(savedContract),
                 propertiesConfig.getGenericTicks(),
@@ -27,5 +28,4 @@ public class StartMarketDataApiCaller {
                 false,
                 null);
     }
-
 }
