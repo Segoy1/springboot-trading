@@ -10,13 +10,13 @@ import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;
 
 @Service
-class OrderPlacementService implements ApiCaller<OrderData> {
+class OrderPlacementApiCaller implements ApiCaller<OrderData> {
 
     private final ContractDataToIBKRContract contractDataToIBKRContract;
     private final OrderDataToIBKROrder orderDatatoIBKROrder;
     private final EClientSocket client;
 
-    public OrderPlacementService(ContractDataToIBKRContract contractDataToIBKRContract, OrderDataToIBKROrder orderDatatoIBKROrder, EClientSocket client) {
+    public OrderPlacementApiCaller(ContractDataToIBKRContract contractDataToIBKRContract, OrderDataToIBKROrder orderDatatoIBKROrder, EClientSocket client) {
         this.contractDataToIBKRContract = contractDataToIBKRContract;
         this.orderDatatoIBKROrder = orderDatatoIBKROrder;
         this.client = client;
