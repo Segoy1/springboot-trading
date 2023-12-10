@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacon
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingibkr.client.service.MarketDataService;
+import de.segoy.springboottradingibkr.client.service.marketdata.MarketDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -30,6 +30,7 @@ public class HistoricalMarketDataController {
     @GetMapping("/Test")
     public ResponseEntity<List<HistoricalMarketData>> testHistoricalData() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.SpxData())
                 .barSizeSetting(BarSizeSetting.get("1 day"))
                 .backfillDuration("1 Y")
                 .backfillEndTime(Timestamp.valueOf("2023-12-08 09:00:00"))
@@ -38,7 +39,7 @@ public class HistoricalMarketDataController {
                 .dateFormatStyle(1)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalMarketData> historicalData = historicalMarketDataService.requestHistoricalData(ContractDataTemplates.SpxData(), settings);
+        List<HistoricalMarketData> historicalData = historicalMarketDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalData);
     }
 }

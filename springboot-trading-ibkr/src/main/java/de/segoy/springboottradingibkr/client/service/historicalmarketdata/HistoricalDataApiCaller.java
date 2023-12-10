@@ -1,7 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.historicalmarketdata;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import de.segoy.springboottradingibkr.client.datamodel.HistoricalDataSettings;
@@ -20,9 +19,9 @@ public class HistoricalDataApiCaller {
         this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
     }
 
-    public void callApi(ContractData contractData, HistoricalDataSettings settings) {
-        client.reqHistoricalData(contractData.getContractId(),
-                contractDataToIBKRContract.convertContractData(contractData),
+    public void callApi(HistoricalDataSettings settings) {
+        client.reqHistoricalData(settings.getContractData().getContractId(),
+                contractDataToIBKRContract.convertContractData(settings.getContractData()),
                 ibkrTimeStampFormatter.formatTimestampToDateAndTime(settings.getBackfillEndTime()),
                 settings.getBackfillDuration(),
                 settings.getBarSizeSetting().toString(),

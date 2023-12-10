@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service;
+package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.ContractData;
