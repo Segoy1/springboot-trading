@@ -2,11 +2,13 @@ package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import com.ib.client.OrderType;
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
+import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +21,14 @@ public class OrderController {
     private final PropertiesConfig propertiesConfig;
     private final OrderService orderService;
     private final ResponseMapper responseMapper;
+    private final OrderCancelService orderCancelService;
 
 
-    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper) {
+    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper, OrderCancelService orderCancelService) {
         this.propertiesConfig = propertiesConfig;
         this.orderService = orderService;
         this.responseMapper = responseMapper;
+        this.orderCancelService = orderCancelService;
     }
     @GetMapping("/test")
     public ResponseEntity<OrderData> test(){
@@ -49,5 +53,17 @@ public class OrderController {
     public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
         orderData.setId(propertiesConfig.getNextValidOrderId());
         return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
+    }
+
+    @DeleteMapping("delete-order")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteOrderById(Long id){
+        orderCancelService.cancelOrderbyId(id);
+    }
+
+    @DeleteMapping("delete-all-open-orders")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteAllOpenOrders(){
+        orderCancelService.cancelAllOpenOrders();
     }
 }
