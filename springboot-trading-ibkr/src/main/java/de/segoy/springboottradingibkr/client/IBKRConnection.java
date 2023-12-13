@@ -308,7 +308,7 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void historicalData(int reqId, Bar bar) {
         HistoricalData historicalData = historicalDataDatabaseSynchronizer.findInDbOrSave(reqId, bar);
-        kafkaEntityTemplate.send("historicalData", historicalData);
+        kafkaEntityTemplate.send(propertiesConfig.getHistoricalTopic(), historicalData);
     }
 
     @Override

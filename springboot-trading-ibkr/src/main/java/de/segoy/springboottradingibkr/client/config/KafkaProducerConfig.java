@@ -1,5 +1,6 @@
 package de.segoy.springboottradingibkr.client.config;
 
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,13 +22,17 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
 
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+    private final PropertiesConfig propertiesConfig;
+
+    public KafkaProducerConfig(PropertiesConfig propertiesConfig) {
+        this.propertiesConfig = propertiesConfig;
+    }
+
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, propertiesConfig.getBootstrapServers());
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -41,9 +46,9 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, IBKRDataTypeEntity> entityProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, propertiesConfig.getBootstrapServers());
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String, IBKRDataTypeEntity>(configProps, new StringSerializer(),
                 new JsonSerializer<IBKRDataTypeEntity>());
     }
@@ -55,15 +60,11 @@ public class KafkaProducerConfig {
 
     @Bean
     public NewTopic contractDataTopic() {
-        return TopicBuilder.name("contractData").build();
+        return TopicBuilder.name(propertiesConfig.getContractTopic()).build();
     }
 
     @Bean
     public NewTopic historicalData() {
-        return TopicBuilder.name("historicalData")
-                .compact()
-                .partitions(3)
-                .replicas(1)
-                .build();
+        return TopicBuilder.name(propertiesConfig.getHistoricalTopic()).build();
     }
 }

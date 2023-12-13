@@ -32,6 +32,31 @@ public class PropertiesConfig {
     @Value("${app.ibkr.generic.ticks}")
     private String genericTicks;
 
+    @Getter
+    @Value("${spring.kafka.names.topic.historicalData}")
+    private String historicalTopic;
+
+    @Getter
+    @Value("${spring.kafka.names.topic.contractData}")
+    private String contractTopic;
+
+    @Getter
+    @Value("${spring.kafka.names.topic.orderData}")
+    private String orderTopic;
+
+    @Getter
+    @Value("${spring.kafka.names.topic.positionData}")
+    private String positionTopic;
+
+    @Getter
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
+
+    @Getter
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
+
+
 
 
     private final Set<Integer> activeApiCalls = new HashSet<>();

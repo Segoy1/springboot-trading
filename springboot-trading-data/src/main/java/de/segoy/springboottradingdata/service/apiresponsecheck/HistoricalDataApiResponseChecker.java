@@ -6,8 +6,10 @@ import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -20,27 +22,31 @@ class HistoricalDataApiResponseChecker implements ApiResponseCheckerForList<Hist
 
     private final HistoricalDataRepository repository;
     private final RepositoryRefreshService repositoryRefreshService;
-    private final KafkaConsumer<String, IBKRDataTypeEntity> kafkaConsumer;
+    private final ConsumerFactory<String, IBKRDataTypeEntity> entityConsumerFactory;
+    private final PropertiesConfig propertiesConfig;
 
-    public HistoricalDataApiResponseChecker(HistoricalDataRepository repository, RepositoryRefreshService repositoryRefreshService, KafkaConsumer<String, IBKRDataTypeEntity> kafkaConsumer) {
-        this.repositoryRefreshService = repositoryRefreshService;
+    public HistoricalDataApiResponseChecker(HistoricalDataRepository repository,
+                                            RepositoryRefreshService repositoryRefreshService,
+                                            ConsumerFactory<String, IBKRDataTypeEntity> entityConsumerFactory, PropertiesConfig propertiesConfig) {
         this.repository = repository;
-        this.kafkaConsumer = kafkaConsumer;
+        this.repositoryRefreshService = repositoryRefreshService;
+        this.entityConsumerFactory = entityConsumerFactory;
+        this.propertiesConfig = propertiesConfig;
     }
-
 
     @Override
     public List<HistoricalData> checkForApiResponseAndUpdate(int id) {
         List<HistoricalData> responseList = new ArrayList<>();
         ConsumerRecords<String, IBKRDataTypeEntity> records;
+        Consumer<String, IBKRDataTypeEntity> consumer = entityConsumerFactory.createConsumer();
+        consumer.subscribe(List.of(propertiesConfig.getHistoricalTopic()));
         do {
-            repositoryRefreshService.clearCacheAndWait(repository);
-            records = kafkaConsumer.poll(Duration.ofMillis(10L));
+            records = consumer.poll(Duration.ofMillis(100L));
             records.forEach((record) -> {
                 responseList.add((HistoricalData) record.value());
             });
-        } while (!records.isEmpty() && !responseList.isEmpty());
-
+        } while (!records.isEmpty() || responseList.isEmpty());
+        consumer.close();
         return responseList;
     }
 }
