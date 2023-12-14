@@ -26,6 +26,7 @@ public class HistoricalDataController {
         this.responseMapper = responseMapper;
     }
 
+    //TODO Error Handler who catches timeout with stopHistoricalData
     @GetMapping("/Test")
     public ResponseEntity<List<HistoricalData>> testHistoricalData(@RequestParam(name = "barSize")String barSize, @RequestParam(name = "duration")String duration) {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()

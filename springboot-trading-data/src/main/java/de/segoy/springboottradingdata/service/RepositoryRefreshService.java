@@ -28,7 +28,7 @@ public class RepositoryRefreshService {
     private void timeOutToWaitForRefresh() {
         try {
             //10ms Time Out before refreshing Cache
-            TimeUnit.MILLISECONDS.sleep(100L);
+            TimeUnit.MILLISECONDS.sleep(10L);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }

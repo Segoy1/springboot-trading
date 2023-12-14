@@ -15,8 +15,7 @@ public class OpenOrderService {
     private ApiCallerWithoutParameter<OrderData> openOrderApiCaller;
 
     public OpenOrderService(@Qualifier("OpenOrderApiCaller") ApiCallerWithoutParameter<OrderData> openOrderApiCaller) {
-
-        openOrderApiCaller = openOrderApiCaller;
+        this.openOrderApiCaller = openOrderApiCaller;
     }
 
     public List<OrderData> getOpenOrders(){

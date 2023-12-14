@@ -4,5 +4,5 @@ import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 
 public interface ApiCaller<T extends IBKRDataTypeEntity> {
 
-    public void callApi(T entity);
+    void callApi(T entity);
 }
