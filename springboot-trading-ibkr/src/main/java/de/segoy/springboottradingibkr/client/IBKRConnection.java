@@ -19,7 +19,6 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
-import de.segoy.springboottradingibkr.client.service.FaDataTypeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,6 @@ public class IBKRConnection implements EWrapper {
 
 
     private final ErrorCodeHandler errorCodeHandler;
-    private final FaDataTypeHandler faDataTypeHandler;
 
 
     private final ErrorMessageHandler errorsMessageHandler;
@@ -67,16 +65,16 @@ public class IBKRConnection implements EWrapper {
     @Autowired
     public IBKRConnection(
             ErrorCodeHandler errorCodeHandler,
-            FaDataTypeHandler faDataTypeHandler,
             ErrorMessageHandler errorMessageHandler,
             KafkaTemplate<String, String> kafkaTemplate,
             KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
-            HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer, PropertiesConfig propertiesConfig, OrderWriteToDBService orderWriteToDBService) {
+            HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
+            PropertiesConfig propertiesConfig,
+            OrderWriteToDBService orderWriteToDBService) {
         this.errorCodeHandler = errorCodeHandler;
-        this.faDataTypeHandler = faDataTypeHandler;
         this.errorsMessageHandler = errorMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaEntityTemplate = kafkaEntityTemplate;
@@ -161,8 +159,6 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         ContractData contractData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId), contractDetails.contract());
-//        kafkaTemplate.send("contract", EWrapperMsgGenerator.contractDetails(reqId,contractDetails));
-        kafkaEntityTemplate.send("contractData", contractData);
         log.debug("Added Contract Details: Id = " + reqId);
     }
 
@@ -353,7 +349,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void receiveFA(int faDataType, String xml) {
         displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError);
+//        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError);
     }
 
     @Override
