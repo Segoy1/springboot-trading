@@ -33,7 +33,6 @@ public class ContractData extends IBKRDataTypeEntity {
     @NotNull
     private String currency; //USD
 
-    @NotNull
     private String exchange; // "SMART"
 
     private String lastTradeDate; //format 20231116

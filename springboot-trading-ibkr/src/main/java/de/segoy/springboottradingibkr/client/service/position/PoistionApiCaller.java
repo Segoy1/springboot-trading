@@ -6,7 +6,7 @@ import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PoistionApiCaller implements ApiCallerWithoutParameter<PositionData> {
+class PoistionApiCaller implements ApiCallerWithoutParameter<PositionData> {
 
     private final EClientSocket client;
 

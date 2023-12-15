@@ -5,39 +5,41 @@ import de.segoy.springboottradingdata.kafkaconsumer.KafkaApiCallEndService;
 import de.segoy.springboottradingdata.kafkaconsumer.KafkaConsumerProvider;
 import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
+import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PositionApiResponseCheckerDataApiResponseChecker implements NoInputListApiResponseChecker<PositionData> {
 
-    private final KafkaConsumerProvider kafkaConsumerProvider;
+    private final RepositoryRefreshService repositoryRefreshService;
+    private final IBKRDataTypeRepository<PositionData> repository;
     private final PropertiesConfig propertiesConfig;
     private final KafkaApiCallEndService kafkaApiCallEndService;
 
-    public PositionApiResponseCheckerDataApiResponseChecker(KafkaConsumerProvider kafkaConsumerProvider, PropertiesConfig propertiesConfig, KafkaApiCallEndService kafkaApiCallEndService) {
-        this.kafkaConsumerProvider = kafkaConsumerProvider;
+    public PositionApiResponseCheckerDataApiResponseChecker(RepositoryRefreshService repositoryRefreshService,
+                                                            IBKRDataTypeRepository<PositionData> repository,
+                                                            PropertiesConfig propertiesConfig,
+                                                            KafkaApiCallEndService kafkaApiCallEndService) {
+        this.repositoryRefreshService = repositoryRefreshService;
+        this.repository = repository;
         this.propertiesConfig = propertiesConfig;
         this.kafkaApiCallEndService = kafkaApiCallEndService;
     }
 
     @Override
     public List<PositionData> checkForApiResponseAndUpdate() {
-        List<PositionData> responseList = new ArrayList<>();
-        ConsumerRecords<String, IBKRDataTypeEntity> records;
-        Consumer<String, IBKRDataTypeEntity> consumer =
-                kafkaConsumerProvider.createConsumerWithSubscription(List.of(propertiesConfig.getPOSITION_TOPIC()));
-        kafkaApiCallEndService.waitForApiCallToFinish(propertiesConfig.getPositionsCallId());
-        do {
-            records = consumer.poll(Duration.ofMillis(50L));
-            records.forEach((record) -> {
-                responseList.add((PositionData) record.value());
-            });
-        } while (!records.isEmpty());
-        consumer.close();
-        return responseList;
+        kafkaApiCallEndService.waitForApiCallToFinish(propertiesConfig.getPOSITION_CALL_ID());
+        repositoryRefreshService.clearCache(repository);
+
+        List<PositionData> positions = new ArrayList<>();
+        repository.findAll().forEach(positions::add);
+        return positions;
     }
 }

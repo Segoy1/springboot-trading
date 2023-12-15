@@ -17,6 +17,8 @@ public interface ContractDataRepository  extends IBKRDataTypeRepository<Contract
 
     Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, String symbol, BigDecimal strike, Types.Right right);
 
+//    Optional<ContractData> findByLocalSymbol
+
     List<ContractData> findAllBySecurityType(Types.SecType type);
 
     //Todo: find cleaner solution wich does not increment the sequence

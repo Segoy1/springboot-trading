@@ -66,7 +66,7 @@ public class PropertiesConfig {
 
     @Getter
     @Value("${app.constants.positions.call.id}")
-    private int positionsCallId;
+    private int POSITION_CALL_ID;
 
     @Getter
     @Value("${app.constants.time.millis}")

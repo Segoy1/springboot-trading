@@ -1,12 +1,14 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
+import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.model.PositionData;
 import de.segoy.springboottradingdata.modelconverter.IBKRResponseToPositionData;
 import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.OptionalLong;
 
 @Component
 public class PositionDataDatabaseSynchronizer {
@@ -21,7 +23,7 @@ public class PositionDataDatabaseSynchronizer {
     }
 
     public PositionData findInDbOrSave(String account, Contract contract, BigDecimal position, double avgCost) {
-        PositionData positionData = ibkrResponseToPositionData.convert(account, contract, position, avgCost);
+        PositionData positionData = ibkrResponseToPositionData.convertAndPersistContract(account, contract, position, avgCost);
         return positionDataRepository.findFirstByContractData(positionData.getContractData()).map((dbPositionData) -> {
             dbPositionData.setPosition(positionData.getPosition());
             dbPositionData.setAverageCost(positionData.getAverageCost());

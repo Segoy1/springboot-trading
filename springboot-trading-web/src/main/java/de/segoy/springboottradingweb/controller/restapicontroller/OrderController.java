@@ -5,6 +5,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
@@ -22,13 +23,15 @@ public class OrderController {
     private final OrderService orderService;
     private final ResponseMapper responseMapper;
     private final OrderCancelService orderCancelService;
+    private final ContractDataRepository contractDataRepository;
 
 
-    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper, OrderCancelService orderCancelService) {
+    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper, OrderCancelService orderCancelService, ContractDataRepository contractDataRepository) {
         this.propertiesConfig = propertiesConfig;
         this.orderService = orderService;
         this.responseMapper = responseMapper;
         this.orderCancelService = orderCancelService;
+        this.contractDataRepository = contractDataRepository;
     }
     @GetMapping("/test")
     public ResponseEntity<OrderData> test(){
@@ -38,6 +41,17 @@ public class OrderController {
                 .orderType(OrderType.LMT)
                 .limitPrice(BigDecimal.valueOf(400))
                 .contractData(ContractDataTemplates.SpxData())
+                .build();
+        return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
+    }
+
+    @GetMapping("/test2")
+    public ResponseEntity<OrderData> testWithParam(@RequestParam(name = "contractId") int contractId){
+        OrderData orderData = OrderData.builder()
+                .action(Types.Action.BUY)
+                .totalQuantity(BigDecimal.ONE)
+                .orderType(OrderType.MKT)
+                .contractData(contractDataRepository.findById((long)contractId).get())
                 .build();
         return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
     }
