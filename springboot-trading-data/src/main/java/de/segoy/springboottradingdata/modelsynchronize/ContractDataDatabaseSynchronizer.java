@@ -1,8 +1,9 @@
-package de.segoy.springboottradingdata.modelconverter;
+package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.springframework.stereotype.Component;

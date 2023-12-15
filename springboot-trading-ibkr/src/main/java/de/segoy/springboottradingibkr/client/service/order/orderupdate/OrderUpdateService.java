@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.service.order.orderupdate;
 
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
-import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForOptional;
+import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -12,11 +12,11 @@ import java.util.Optional;
 public class OrderUpdateService {
 
     private final OrderDataRepository orderDataRepository;
-    private final ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker;
+    private final OptionalApiResponseChecker<OrderData> orderDataApiResponseChecker;
     private final ApiCaller<OrderData> orderPlacementApiCaller;
 
     public OrderUpdateService(OrderDataRepository orderDataRepository,
-                              ApiResponseCheckerForOptional<OrderData> orderDataApiResponseChecker,
+                              OptionalApiResponseChecker<OrderData> orderDataApiResponseChecker,
                               @Qualifier("OrderPlacementApiCaller") ApiCaller<OrderData> orderPlacementApiCaller) {
         this.orderDataRepository = orderDataRepository;
         this.orderDataApiResponseChecker = orderDataApiResponseChecker;

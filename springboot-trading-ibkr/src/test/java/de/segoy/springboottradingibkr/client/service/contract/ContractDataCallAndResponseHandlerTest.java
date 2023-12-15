@@ -4,7 +4,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.ComboLegData;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
-import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForOptional;
+import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
 import de.segoy.springboottradingdata.type.Currency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ class ContractDataCallAndResponseHandlerTest {
     @Mock
     private ContractDataApiCaller contractDataApiCaller;
     @Mock
-    private ApiResponseCheckerForOptional<ContractData> contractDataApiResponseChecker;
+    private OptionalApiResponseChecker<ContractData> contractDataApiResponseChecker;
     @InjectMocks
     private ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
 

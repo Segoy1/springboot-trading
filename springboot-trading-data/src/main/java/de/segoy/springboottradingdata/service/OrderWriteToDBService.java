@@ -5,7 +5,7 @@ import com.ib.client.Order;
 import com.ib.client.OrderStatus;
 import de.segoy.springboottradingdata.model.ContractData;
 import de.segoy.springboottradingdata.model.OrderData;
-import de.segoy.springboottradingdata.modelconverter.ContractDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import org.springframework.stereotype.Service;

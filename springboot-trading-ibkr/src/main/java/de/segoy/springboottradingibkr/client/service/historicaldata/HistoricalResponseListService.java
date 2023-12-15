@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.service.historicaldata;
 
 import de.segoy.springboottradingdata.model.HistoricalData;
 import de.segoy.springboottradingdata.model.HistoricalDataSettings;
-import de.segoy.springboottradingdata.service.apiresponsecheck.ApiResponseCheckerForList;
+import de.segoy.springboottradingdata.service.apiresponsecheck.ListApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.List;
 @Service
 public class HistoricalResponseListService {
 
-    private final ApiResponseCheckerForList<HistoricalData> historicalDataApiResponseChecker;
+    private final ListApiResponseChecker<HistoricalData> historicalDataApiResponseChecker;
     private final ApiCaller<HistoricalDataSettings> historicalDataApiCaller;
 
-    public HistoricalResponseListService(ApiResponseCheckerForList<HistoricalData> historicalDataApiResponseChecker, ApiCaller<HistoricalDataSettings> historicalDataApiCaller) {
+    public HistoricalResponseListService(ListApiResponseChecker<HistoricalData> historicalDataApiResponseChecker, ApiCaller<HistoricalDataSettings> historicalDataApiCaller) {
         this.historicalDataApiResponseChecker = historicalDataApiResponseChecker;
         this.historicalDataApiCaller = historicalDataApiCaller;
     }

@@ -38,7 +38,7 @@ public class IBKRTimeStampFormatter {
             return Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(format).parse(timeString)));
         } else{
             //use unix Timestamp (HistoricalDataSettings.dateFormatStyle = 2, makes everything easier
-            return new Timestamp(Long.parseLong(timeString + propertiesConfig.addMillis()));
+            return new Timestamp(Long.parseLong(timeString + propertiesConfig.getAddMillis()));
         }
     }
 }

@@ -34,32 +34,44 @@ public class PropertiesConfig {
 
     @Getter
     @Value("${spring.kafka.names.topic.historicalData}")
-    private String historicalTopic;
+    private String HISTORICAL_TOPIC;
 
     @Getter
     @Value("${spring.kafka.names.topic.contractData}")
-    private String contractTopic;
+    private String CONTRACT_TOPIC;
 
     @Getter
     @Value("${spring.kafka.names.topic.orderData}")
-    private String orderTopic;
+    private String ORDER_TOPIC;
 
     @Getter
     @Value("${spring.kafka.names.topic.positionData}")
-    private String positionTopic;
+    private String POSITION_TOPIC;
+
+    @Getter
+    @Value("${spring.kafka.names.topic.twsMessage}")
+    private String TWS_MESSAGE_TOPIC;
+
+    @Getter
+    @Value("${spring.kafka.names.topic.errorMessage}")
+    private String ERROR_MESSAGE_TOPIC;
 
     @Getter
     @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+    private String BOOTSTRAP_SERVERS;
 
     @Getter
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    @Getter
+    @Value("${app.constants.positions.call.id}")
+    private int positionsCallId;
 
+    @Getter
+    @Value("${app.constants.time.millis}")
+    private String addMillis;
 
-
-    private final Set<Integer> activeApiCalls = new HashSet<>();
 
     private final List<Integer> activeMarketData = new ArrayList<>();
 
@@ -71,19 +83,6 @@ public class PropertiesConfig {
     @Synchronized
     public void setNextValidOrderId(Long nextValidOrderId) {
         this.nextValidOrderId = nextValidOrderId;
-    }
-
-    @Synchronized
-    public void addToActiveApiCalls(int id){
-        activeApiCalls.add(id);
-    }
-    @Synchronized
-    public Set<Integer> getActiveApiCalls(){
-        return activeApiCalls;
-    }
-    @Synchronized
-    public void removeFromActiveApiCalls(int id){
-        activeApiCalls.remove(id);
     }
 
     @Synchronized
@@ -99,9 +98,6 @@ public class PropertiesConfig {
         activeMarketData.remove(id);
     }
 
-    public String addMillis(){
-        return "000";
-    }
 
     public Date getTwoSecondsAgo(){
         return Date.from(Instant.now().minusSeconds(2L));

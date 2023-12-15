@@ -16,9 +16,9 @@ public class KafkaConsumerProvider {
         this.entityConsumerFactory = entityConsumerFactory;
     }
 
-    public Consumer<String, IBKRDataTypeEntity> createConsumerWithSubscription(String topic) {
+    public Consumer<String, IBKRDataTypeEntity> createConsumerWithSubscription(List<String> topic) {
         Consumer<String, IBKRDataTypeEntity> consumer = entityConsumerFactory.createConsumer();
-        consumer.subscribe(List.of(topic));
+        consumer.subscribe(topic);
         return consumer;
     }
 }

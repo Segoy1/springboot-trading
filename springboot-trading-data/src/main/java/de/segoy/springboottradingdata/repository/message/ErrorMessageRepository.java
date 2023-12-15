@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ErrorMessageRepository extends BaseRepository<ErrorMessage> {
 
-    public List<ErrorMessage> findAllByErrorId(Integer errorId);
+    public List<ErrorMessage> findAllByMessageId(Integer errorId);
 }

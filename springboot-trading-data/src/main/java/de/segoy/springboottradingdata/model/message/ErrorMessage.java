@@ -1,6 +1,5 @@
 package de.segoy.springboottradingdata.model.message;
 
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -14,12 +13,12 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorMessage extends IBKRDataTypeEntity {
+public class ErrorMessage extends BaseMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer errorId;
+    private Integer messageId;
 
     @NotBlank
     @Lob

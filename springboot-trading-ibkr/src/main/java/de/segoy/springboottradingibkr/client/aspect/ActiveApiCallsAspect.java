@@ -15,8 +15,8 @@ public class ActiveApiCallsAspect {
         this.propertiesConfig = propertiesConfig;
     }
 
-    @Before("bean(eClientSocket) && execution(* *(int, ..)) && args(id,..) && !execution(* *MktData(int, ..))")
-    protected void addToActiveApiCalls( int id){
-        propertiesConfig.addToActiveApiCalls(id);
-    }
+//    @Before("bean(eClientSocket) && execution(* *(int, ..)) && args(id,..) && !execution(* *MktData(int, ..))")
+//    protected void addToActiveApiCalls( int id){
+//        propertiesConfig.addToActiveApiCalls(id);
+//    }
 }

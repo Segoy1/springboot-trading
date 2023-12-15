@@ -13,11 +13,14 @@ import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
-import de.segoy.springboottradingdata.modelconverter.ContractDataDatabaseSynchronizer;
-import de.segoy.springboottradingdata.modelconverter.HistoricalDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.model.message.TwsMessage;
+import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.service.ErrorMessageHandler;
+import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
+import de.segoy.springboottradingdata.service.messagehandler.TwsMessageHandler;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +42,8 @@ public class IBKRConnection implements EWrapper {
     private final ErrorCodeHandler errorCodeHandler;
 
 
-    private final ErrorMessageHandler errorsMessageHandler;
+    private final ErrorMessageHandler errorMessageHandler;
+    private final TwsMessageHandler twsMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
 
@@ -47,6 +51,7 @@ public class IBKRConnection implements EWrapper {
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
     private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
+    private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
     private final PropertiesConfig propertiesConfig;
     private final OrderWriteToDBService orderWriteToDBService;
 
@@ -65,22 +70,24 @@ public class IBKRConnection implements EWrapper {
     public IBKRConnection(
             ErrorCodeHandler errorCodeHandler,
             ErrorMessageHandler errorMessageHandler,
-            KafkaTemplate<String, String> kafkaTemplate,
+            TwsMessageHandler twsMessageHandler, KafkaTemplate<String, String> kafkaTemplate,
             KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
             HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
-            PropertiesConfig propertiesConfig,
+            PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
             OrderWriteToDBService orderWriteToDBService) {
         this.errorCodeHandler = errorCodeHandler;
-        this.errorsMessageHandler = errorMessageHandler;
+        this.errorMessageHandler = errorMessageHandler;
+        this.twsMessageHandler = twsMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaEntityTemplate = kafkaEntityTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
         this.historicalDataDatabaseSynchronizer = historicalDataDatabaseSynchronizer;
+        this.positionDataDatabaseSynchronizer = positionDataDatabaseSynchronizer;
         this.propertiesConfig = propertiesConfig;
 
         this.orderWriteToDBService = orderWriteToDBService;
@@ -140,10 +147,9 @@ public class IBKRConnection implements EWrapper {
                             int permId, int parentId, double lastFillPrice, int clientId, String whyHeld,
                             double mktCapPrice) {
         // received order status
-        log.info(EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
-                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
         orderStatusUpdateService.updateOrderStatus(orderId, status);
-        propertiesConfig.removeFromActiveApiCalls(orderId);
+        twsMessageHandler.handleMessage(orderId, EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
+                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
         propertiesConfig.setNextValidOrderId((long) orderId + 1);
 
     }
@@ -172,8 +178,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void contractDetailsEnd(int reqId) {
-        propertiesConfig.removeFromActiveApiCalls(reqId);
-        log.debug(EWrapperMsgGenerator.contractDetailsEnd(reqId));
+        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.contractDetailsEnd(reqId));
     }
 
     @Override
@@ -257,8 +262,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         // received error
-        propertiesConfig.removeFromActiveApiCalls(id);
-        errorsMessageHandler.handleError(id,
+        errorMessageHandler.handleError(id,
                 EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
@@ -316,14 +320,12 @@ public class IBKRConnection implements EWrapper {
     @Override
     @Transactional
     public void historicalData(int reqId, Bar bar) {
-        HistoricalData historicalData = historicalDataDatabaseSynchronizer.findInDbOrSave(reqId, bar);
-        kafkaEntityTemplate.send(propertiesConfig.getHistoricalTopic(), historicalData);
+        historicalDataDatabaseSynchronizer.findInDbOrSave(reqId, bar);
     }
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        propertiesConfig.removeFromActiveApiCalls(reqId);
-        log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
+        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
     }
 
     @Override
@@ -380,13 +382,15 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        kafkaTemplate.send("position", EWrapperMsgGenerator.position(account, contract, pos, avgCost));
+        kafkaEntityTemplate.send("position",
+                positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(),
+                        avgCost));
         log.info(EWrapperMsgGenerator.position(account, contract, pos, avgCost));
     }
 
     @Override
     public void positionEnd() {
-        log.info(EWrapperMsgGenerator.positionEnd());
+        twsMessageHandler.handleMessage(propertiesConfig.getPositionsCallId(),EWrapperMsgGenerator.positionEnd());
     }
 
     @Override

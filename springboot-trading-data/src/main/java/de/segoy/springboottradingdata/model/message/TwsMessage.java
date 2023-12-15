@@ -1,5 +1,6 @@
 package de.segoy.springboottradingdata.model.message;
 
+import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -12,10 +13,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TwsMessage {
+public class TwsMessage extends BaseMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Integer messageId;
 
     @NotBlank
     @Lob
