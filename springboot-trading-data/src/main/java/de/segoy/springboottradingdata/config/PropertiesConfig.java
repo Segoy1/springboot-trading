@@ -69,6 +69,10 @@ public class PropertiesConfig {
     private int POSITION_CALL_ID;
 
     @Getter
+    @Value("${app.constants.open.orders.id}")
+    private int OPEN_ORDERS_ID;
+
+    @Getter
     @Value("${app.constants.time.millis}")
     private String addMillis;
 

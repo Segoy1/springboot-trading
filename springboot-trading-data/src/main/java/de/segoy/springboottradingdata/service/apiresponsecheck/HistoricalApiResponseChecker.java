@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-class HistoricalApiResponseCheckerDataApiResponseChecker implements ListApiResponseChecker<HistoricalData> {
+class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalData> {
 
     private final RepositoryRefreshService repositoryRefreshService;
     private final HistoricalDataRepository repository;
     private final PropertiesConfig propertiesConfig;
     private final KafkaApiCallEndService kafkaApiCallEndService;
 
-    public HistoricalApiResponseCheckerDataApiResponseChecker(RepositoryRefreshService repositoryRefreshService, HistoricalDataRepository historicalDataRepository, PropertiesConfig propertiesConfig, KafkaApiCallEndService kafkaApiCallEndService) {
+    public HistoricalApiResponseChecker(RepositoryRefreshService repositoryRefreshService, HistoricalDataRepository historicalDataRepository, PropertiesConfig propertiesConfig, KafkaApiCallEndService kafkaApiCallEndService) {
         this.repositoryRefreshService = repositoryRefreshService;
         this.repository = historicalDataRepository;
         this.propertiesConfig = propertiesConfig;

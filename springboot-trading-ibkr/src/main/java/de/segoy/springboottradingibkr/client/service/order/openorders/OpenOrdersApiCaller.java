@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.order.openorder;
+package de.segoy.springboottradingibkr.client.service.order.openorders;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.model.OrderData;
@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-@Qualifier("OpenOrderApiCaller")
-class OpenOrderApiCaller implements ApiCallerWithoutParameter<OrderData> {
+@Qualifier("OpenOrdersApiCaller")
+class OpenOrdersApiCaller implements ApiCallerWithoutParameter<OrderData> {
 
     private final EClientSocket client;
 
-    public OpenOrderApiCaller(EClientSocket client) {
+    public OpenOrdersApiCaller(EClientSocket client) {
         this.client = client;
     }
 

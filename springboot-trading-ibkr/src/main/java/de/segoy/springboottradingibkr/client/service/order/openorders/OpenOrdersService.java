@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.order.openorder;
+package de.segoy.springboottradingibkr.client.service.order.openorders;
 
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OpenOrderService {
+public class OpenOrdersService {
 
 
-    private ApiCallerWithoutParameter<OrderData> openOrderApiCaller;
+    private final ApiCallerWithoutParameter<OrderData> openOrderApiCaller;
 
-    public OpenOrderService(@Qualifier("OpenOrderApiCaller") ApiCallerWithoutParameter<OrderData> openOrderApiCaller) {
+    public OpenOrdersService(@Qualifier("OpenOrdersApiCaller") ApiCallerWithoutParameter<OrderData> openOrderApiCaller) {
         this.openOrderApiCaller = openOrderApiCaller;
     }
 

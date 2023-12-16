@@ -41,7 +41,6 @@ public class IBKRConnection implements EWrapper {
     private final ErrorMessageHandler errorMessageHandler;
     private final TwsMessageHandler twsMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
@@ -67,7 +66,6 @@ public class IBKRConnection implements EWrapper {
             ErrorCodeHandler errorCodeHandler,
             ErrorMessageHandler errorMessageHandler,
             TwsMessageHandler twsMessageHandler, KafkaTemplate<String, String> kafkaTemplate,
-            KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
@@ -78,7 +76,6 @@ public class IBKRConnection implements EWrapper {
         this.errorMessageHandler = errorMessageHandler;
         this.twsMessageHandler = twsMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
-        this.kafkaEntityTemplate = kafkaEntityTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
@@ -154,21 +151,19 @@ public class IBKRConnection implements EWrapper {
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         //populates DB On init and first Time Order is saved to DB when opened
         orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
-        // received open order
-        log.info(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
+        twsMessageHandler.handleMessage(orderId, EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
     }
 
     @Override
     public void openOrderEnd() {
-        // received open order end
-        log.info(EWrapperMsgGenerator.openOrderEnd());
+        twsMessageHandler.handleMessage(propertiesConfig.getOPEN_ORDERS_ID(),EWrapperMsgGenerator.openOrderEnd());
     }
 
     @Override
     @Transactional
     public void contractDetails(int reqId, ContractDetails contractDetails) {
-        ContractData contractData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
-                OptionalLong.of(reqId), contractDetails.contract());
+        contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId),
+                contractDetails.contract());
     }
 
     @Override
@@ -250,8 +245,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void error(String str) {
-        log.warn(EWrapperMsgGenerator.error(str));
-//        m_errors.save(ErrorMessage.builder().message(EWrapperMsgGenerator.error(str)).build());
+        errorMessageHandler.handleError(-1000, str);
     }
 
     @Override
@@ -267,9 +261,7 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void connectionClosed() {
         connectionDataRepository.setConnectFalseById(1);
-
-        String msg = EWrapperMsgGenerator.connectionClosed();
-        log.error(msg);
+        log.warn(EWrapperMsgGenerator.connectionClosed());
     }
 
     @Override
@@ -297,7 +289,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange) {
-        String msg = EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange);
+      log.info(EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange));
         //TODO replacement for JOptionPane
     }
 
@@ -377,8 +369,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        PositionData data = positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(), avgCost);
-        log.info(EWrapperMsgGenerator.position(account, contract, pos, avgCost));
+        positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(), avgCost);
     }
 
     @Override
@@ -485,7 +476,6 @@ public class IBKRConnection implements EWrapper {
     public void tickNews(int tickerId, long timeStamp, String providerCode, String articleId, String headline,
                          String extraData) {
         log.info(EWrapperMsgGenerator.tickNews(tickerId, timeStamp, providerCode, articleId, headline, extraData));
-        ;
     }
 
     @Override
@@ -517,7 +507,6 @@ public class IBKRConnection implements EWrapper {
                 log.info("Binary/pdf article was saved to " + path);
             } catch (IOException ex) {
                 log.info("Binary/pdf article was not saved to " + path + " due to error: " + ex.getMessage());
-                ;
             }
         }
     }
@@ -525,7 +514,6 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void historicalNews(int requestId, String time, String providerCode, String articleId, String headline) {
         log.info(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline));
-        ;
     }
 
     @Override
@@ -544,6 +532,7 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
+    @Transactional
     public void historicalDataUpdate(int reqId, Bar bar) {
         historicalData(reqId, bar);
     }
@@ -667,7 +656,6 @@ public class IBKRConnection implements EWrapper {
     public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone,
                                    List<HistoricalSession> sessions) {
         log.info(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions));
-        ;
     }
 
     @Override

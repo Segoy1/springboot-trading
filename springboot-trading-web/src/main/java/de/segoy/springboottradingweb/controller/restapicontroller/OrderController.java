@@ -7,6 +7,7 @@ import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
+import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -23,14 +25,18 @@ public class OrderController {
     private final OrderService orderService;
     private final ResponseMapper responseMapper;
     private final OrderCancelService orderCancelService;
+    private final OpenOrdersService openOrdersService;
+
+    //only for test purposes
     private final ContractDataRepository contractDataRepository;
 
 
-    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper, OrderCancelService orderCancelService, ContractDataRepository contractDataRepository) {
+    public OrderController(PropertiesConfig propertiesConfig, OrderService orderService, ResponseMapper responseMapper, OrderCancelService orderCancelService, OpenOrdersService openOrdersService, ContractDataRepository contractDataRepository) {
         this.propertiesConfig = propertiesConfig;
         this.orderService = orderService;
         this.responseMapper = responseMapper;
         this.orderCancelService = orderCancelService;
+        this.openOrdersService = openOrdersService;
         this.contractDataRepository = contractDataRepository;
     }
     @GetMapping("/test")
@@ -79,5 +85,10 @@ public class OrderController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteAllOpenOrders(){
         orderCancelService.cancelAllOpenOrders();
+    }
+
+    @GetMapping("/open-orders")
+    public ResponseEntity<List<OrderData>> getOpenOrders(){
+        return responseMapper.mapResponse(openOrdersService.getOpenOrders());
     }
 }

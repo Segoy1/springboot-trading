@@ -1,7 +1,6 @@
-package de.segoy.springboottradingdata.service.apiresponsecheck;
+package de.segoy.springboottradingdata.service.apiresponsecheck.noinput;
 
 import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.PositionData;
 
 import java.util.List;
 

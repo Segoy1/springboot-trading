@@ -4,7 +4,6 @@ import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,10 +25,8 @@ class OrderDataApiResponseCheckerTest {
     private OrderDataRepository repository;
     @Mock
     private RepositoryRefreshService repositoryRefreshService;
-    @Mock
-    private PropertiesConfig propertiesConfig;
     @InjectMocks
-    private OrderApiResponseCheckerDataApiResponseChecker dataApiResponseChecker;
+    private OrderDataApiResponseChecker dataApiResponseChecker;
 
 //    @Test
     void testOnFirstTry() {

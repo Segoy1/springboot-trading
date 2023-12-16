@@ -7,11 +7,11 @@ import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Service;
 
 @Service
-class ContractApiResponseCheckerDataApiResponseChecker extends AbstractApiResponseCheckerApiResponseChecker<ContractData> {
+class ContractApiResponseChecker extends AbstractApiResponseChecker<ContractData> {
 
-    public ContractApiResponseCheckerDataApiResponseChecker(IBKRDataTypeRepository<ContractData> repository,
-                                                            RepositoryRefreshService repositoryRefreshService,
-                                                            KafkaApiCallEndService kafkaApiCallEndService) {
+    public ContractApiResponseChecker(IBKRDataTypeRepository<ContractData> repository,
+                                      RepositoryRefreshService repositoryRefreshService,
+                                      KafkaApiCallEndService kafkaApiCallEndService) {
         super(repository,repositoryRefreshService, kafkaApiCallEndService);
     }
 }

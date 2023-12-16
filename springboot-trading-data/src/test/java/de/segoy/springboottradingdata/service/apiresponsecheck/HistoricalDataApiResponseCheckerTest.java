@@ -27,7 +27,7 @@ class HistoricalDataApiResponseCheckerTest {
     @Mock
     private PropertiesConfig propertiesConfig;
     @InjectMocks
-    private HistoricalApiResponseCheckerDataApiResponseChecker historicalDataApiResponseChecker;
+    private HistoricalApiResponseChecker historicalDataApiResponseChecker;
 
 //    @Test
     void testOnFirstTry(){

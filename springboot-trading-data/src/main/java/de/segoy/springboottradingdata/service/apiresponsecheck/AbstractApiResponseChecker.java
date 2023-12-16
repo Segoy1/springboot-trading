@@ -7,15 +7,15 @@ import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 
 import java.util.Optional;
 
-abstract class AbstractApiResponseCheckerApiResponseChecker<T extends IBKRDataTypeEntity> implements OptionalApiResponseChecker<T> {
+abstract class AbstractApiResponseChecker<T extends IBKRDataTypeEntity> implements OptionalApiResponseChecker<T> {
 
     private final IBKRDataTypeRepository<T> repository;
     private final RepositoryRefreshService repositoryRefreshService;
     private final KafkaApiCallEndService kafkaApiCallEndService;
 
-    public AbstractApiResponseCheckerApiResponseChecker(IBKRDataTypeRepository<T> repository,
-                                                        RepositoryRefreshService repositoryRefreshService,
-                                                        KafkaApiCallEndService kafkaApiCallEndService) {
+    public AbstractApiResponseChecker(IBKRDataTypeRepository<T> repository,
+                                      RepositoryRefreshService repositoryRefreshService,
+                                      KafkaApiCallEndService kafkaApiCallEndService) {
         this.repositoryRefreshService = repositoryRefreshService;
         this.repository = repository;
         this.kafkaApiCallEndService = kafkaApiCallEndService;
