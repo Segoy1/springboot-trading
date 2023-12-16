@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.config;
+package de.segoy.springboottradingdata.config;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;

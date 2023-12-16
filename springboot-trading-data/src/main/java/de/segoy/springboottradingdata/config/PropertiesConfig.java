@@ -57,6 +57,10 @@ public class PropertiesConfig {
     private String ERROR_MESSAGE_TOPIC;
 
     @Getter
+    @Value("${spring.kafka.names.topic.accountSummary}")
+    private String ACCOUNT_SUMMARY_TOPIC;
+
+    @Getter
     @Value("${spring.kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVERS;
 
@@ -71,6 +75,10 @@ public class PropertiesConfig {
     @Getter
     @Value("${app.constants.open.orders.id}")
     private int OPEN_ORDERS_ID;
+    @Getter
+    @Value("${app.constants.account.summary.id}")
+    private int ACCOUNT_SUMMARY_ID;
+
 
     @Getter
     @Value("${app.constants.time.millis}")

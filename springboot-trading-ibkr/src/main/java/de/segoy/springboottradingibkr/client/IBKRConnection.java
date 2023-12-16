@@ -5,6 +5,7 @@ package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import de.segoy.springboottradingdata.model.AccountSummary;
 import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
@@ -14,6 +15,7 @@ import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynch
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.service.messagehandler.AccountSummaryMessageHandler;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
@@ -51,6 +53,7 @@ public class IBKRConnection implements EWrapper {
     private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
     private final OrderWriteToDBService orderWriteToDBService;
     private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
+    private final AccountSummaryMessageHandler accountSummaryMessageHandler;
 
 
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
@@ -73,7 +76,8 @@ public class IBKRConnection implements EWrapper {
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
             HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
-            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator) {
+            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator,
+            AccountSummaryMessageHandler accountSummaryMessageHandler) {
         this.errorCodeHandler = errorCodeHandler;
         this.errorMessageHandler = errorMessageHandler;
         this.twsMessageHandler = twsMessageHandler;
@@ -87,6 +91,7 @@ public class IBKRConnection implements EWrapper {
 
         this.orderWriteToDBService = orderWriteToDBService;
         this.nextValidOrderIdGenerator = nextValidOrderIdGenerator;
+        this.accountSummaryMessageHandler = accountSummaryMessageHandler;
     }
 
     @Override
@@ -380,12 +385,13 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void accountSummary(int reqId, String account, String tag, String value, String currency) {
-        log.info(EWrapperMsgGenerator.accountSummary(reqId, account, tag, value, currency));
+        accountSummaryMessageHandler.sendAccountSummaryMessage(
+                AccountSummary.builder().id((long) reqId).account(account).tag(tag).value(value).currency(currency).build());
     }
 
     @Override
     public void accountSummaryEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.accountSummaryEnd(reqId));
+        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.accountSummaryEnd(reqId));
     }
 
     @Override
