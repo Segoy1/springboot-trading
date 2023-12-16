@@ -5,7 +5,6 @@ import de.segoy.springboottradingdata.model.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
-import de.segoy.springboottradingdata.type.Currency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -77,7 +76,7 @@ class ContractDataCallAndResponseHandlerTest {
                 .contractId(123)
                 .right(Types.Right.Call)
                 .symbol("SPX")
-                .currency(Currency.USD.toString())
+                .currency("USD")
                 .exchange("SMART")
                 .lastTradeDate("20231117")
                 .multiplier("100")
