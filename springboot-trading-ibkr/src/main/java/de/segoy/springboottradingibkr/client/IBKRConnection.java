@@ -14,6 +14,7 @@ import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynch
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingdata.service.messagehandler.TwsMessageHandler;
@@ -37,6 +38,7 @@ public class IBKRConnection implements EWrapper {
 
     private final ErrorCodeHandler errorCodeHandler;
 
+    private final PropertiesConfig propertiesConfig;
 
     private final ErrorMessageHandler errorMessageHandler;
     private final TwsMessageHandler twsMessageHandler;
@@ -47,8 +49,8 @@ public class IBKRConnection implements EWrapper {
     private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
     private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
     private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
-    private final PropertiesConfig propertiesConfig;
     private final OrderWriteToDBService orderWriteToDBService;
+    private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
 
 
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
@@ -71,7 +73,7 @@ public class IBKRConnection implements EWrapper {
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
             HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
-            OrderWriteToDBService orderWriteToDBService) {
+            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator) {
         this.errorCodeHandler = errorCodeHandler;
         this.errorMessageHandler = errorMessageHandler;
         this.twsMessageHandler = twsMessageHandler;
@@ -84,6 +86,7 @@ public class IBKRConnection implements EWrapper {
         this.propertiesConfig = propertiesConfig;
 
         this.orderWriteToDBService = orderWriteToDBService;
+        this.nextValidOrderIdGenerator = nextValidOrderIdGenerator;
     }
 
     @Override
@@ -143,7 +146,7 @@ public class IBKRConnection implements EWrapper {
         orderStatusUpdateService.updateOrderStatus(orderId, status);
         twsMessageHandler.handleMessage(orderId, EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
                 avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
-        propertiesConfig.setNextValidOrderId((long) orderId + 1);
+        nextValidId(orderId + 1);
 
     }
 
@@ -156,7 +159,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void openOrderEnd() {
-        twsMessageHandler.handleMessage(propertiesConfig.getOPEN_ORDERS_ID(),EWrapperMsgGenerator.openOrderEnd());
+        twsMessageHandler.handleMessage(propertiesConfig.getOPEN_ORDERS_ID(), EWrapperMsgGenerator.openOrderEnd());
     }
 
     @Override
@@ -228,9 +231,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void nextValidId(int orderId) {
-        // received next valid order id
-        propertiesConfig.setNextValidOrderId((long) orderId);
-        log.info(EWrapperMsgGenerator.nextValidId(orderId));
+        nextValidOrderIdGenerator.generateAndSaveNextOrderId(orderId);
     }
 
     @Override
@@ -289,7 +290,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange) {
-      log.info(EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange));
+        log.info(EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange));
         //TODO replacement for JOptionPane
     }
 

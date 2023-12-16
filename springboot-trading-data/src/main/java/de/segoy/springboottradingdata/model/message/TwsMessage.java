@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -23,6 +26,9 @@ public class TwsMessage extends BaseMessage {
     @NotBlank
     @Lob
     private String message;
+
+    @CreationTimestamp
+    private Timestamp createDate;
 
 //    public void add(Collection<String> lines) {
 //        for (String line : lines) {
