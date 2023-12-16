@@ -3,7 +3,7 @@ package de.segoy.springboottradingibkr.client.service.order;
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Order;
-import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.modelconverter.OrderDataToIBKROrder;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;

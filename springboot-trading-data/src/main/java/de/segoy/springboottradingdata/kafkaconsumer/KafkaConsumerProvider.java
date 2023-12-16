@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.kafkaconsumer;
 
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.stereotype.Component;

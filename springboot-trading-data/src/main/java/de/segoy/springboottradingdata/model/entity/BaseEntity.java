@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model;
+package de.segoy.springboottradingdata.model.entity;
 
 import jakarta.persistence.MappedSuperclass;
 

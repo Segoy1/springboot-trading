@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean

@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model;
+package de.segoy.springboottradingdata.model.entity;
 
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;

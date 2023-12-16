@@ -1,9 +1,9 @@
 package de.segoy.springboottradingdata.kafkaconsumer;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.message.BaseMessage;
-import de.segoy.springboottradingdata.model.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.message.BaseMessage;
+import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

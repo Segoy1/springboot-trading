@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.config;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

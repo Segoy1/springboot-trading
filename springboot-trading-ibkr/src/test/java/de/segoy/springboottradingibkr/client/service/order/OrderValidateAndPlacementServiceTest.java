@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.junit.jupiter.api.Test;

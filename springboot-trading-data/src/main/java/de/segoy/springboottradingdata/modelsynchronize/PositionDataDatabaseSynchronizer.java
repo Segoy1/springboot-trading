@@ -1,14 +1,12 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.ContractData;
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingdata.modelconverter.IBKRResponseToPositionData;
 import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.OptionalLong;
 
 @Component
 public class PositionDataDatabaseSynchronizer {

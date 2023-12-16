@@ -1,12 +1,11 @@
 package de.segoy.springboottradingibkr.client.service.position;
 
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PortfolioUpdateService {

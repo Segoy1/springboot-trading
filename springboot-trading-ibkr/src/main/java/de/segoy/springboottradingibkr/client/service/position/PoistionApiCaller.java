@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.position;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.stereotype.Service;
 

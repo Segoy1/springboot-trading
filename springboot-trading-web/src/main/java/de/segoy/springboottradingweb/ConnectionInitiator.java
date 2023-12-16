@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.ConnectionData;
-import de.segoy.springboottradingdata.model.message.TwsMessage;
+import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.service.EReaderHolder;

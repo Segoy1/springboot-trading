@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.portfolio;
 
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingibkr.client.service.position.PositionService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;

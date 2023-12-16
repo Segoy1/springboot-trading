@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.service.messagehandler;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

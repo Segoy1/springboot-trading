@@ -4,7 +4,7 @@ import com.ib.client.OrderType;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
 import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;

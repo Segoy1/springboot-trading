@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.position;
 
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingdata.service.apiresponsecheck.noinput.PositionApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.stereotype.Service;

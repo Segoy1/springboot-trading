@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.dataobject;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingdata.model.entity.ContractData;
 
 public class ContractDataTemplates {
 

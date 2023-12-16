@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.service.apiresponsecheck;
 
 import de.segoy.springboottradingdata.kafkaconsumer.KafkaApiCallEndService;
-import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Service;

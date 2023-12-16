@@ -2,7 +2,7 @@ package de.segoy.springboottradingdata.service.apiresponsecheck.noinput;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.kafkaconsumer.KafkaApiCallEndService;
-import de.segoy.springboottradingdata.model.PositionData;
+import de.segoy.springboottradingdata.model.entity.PositionData;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Service;

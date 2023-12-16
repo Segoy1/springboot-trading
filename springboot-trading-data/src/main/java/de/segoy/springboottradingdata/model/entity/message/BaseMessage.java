@@ -1,6 +1,6 @@
-package de.segoy.springboottradingdata.model.message;
+package de.segoy.springboottradingdata.model.entity.message;
 
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;

@@ -1,7 +1,6 @@
 package de.segoy.springboottradingdata.service.apiresponsecheck;
 
-import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.junit.jupiter.api.extension.ExtendWith;

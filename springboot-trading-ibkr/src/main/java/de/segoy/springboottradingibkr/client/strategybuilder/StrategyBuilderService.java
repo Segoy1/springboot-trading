@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.strategybuilder;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.ComboLegData;
-import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingdata.model.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import de.segoy.springboottradingdata.model.Leg;

@@ -1,6 +1,5 @@
-package de.segoy.springboottradingdata.model.message;
+package de.segoy.springboottradingdata.model.entity.message;
 
-import de.segoy.springboottradingdata.model.IBKRDataTypeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

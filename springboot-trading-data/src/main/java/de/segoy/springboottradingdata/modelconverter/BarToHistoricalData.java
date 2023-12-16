@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Bar;
-import de.segoy.springboottradingdata.model.HistoricalData;
+import de.segoy.springboottradingdata.model.entity.HistoricalData;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import org.springframework.stereotype.Component;
 

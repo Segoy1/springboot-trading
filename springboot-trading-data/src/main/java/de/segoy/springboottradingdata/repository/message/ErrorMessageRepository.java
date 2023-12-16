@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.repository.message;
 
-import de.segoy.springboottradingdata.model.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.repository.BaseRepository;
 
 import java.util.List;

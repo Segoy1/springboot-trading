@@ -1,12 +1,11 @@
 package de.segoy.springboottradingibkr.client.service.order.openorders;
 
-import de.segoy.springboottradingdata.model.OrderData;
+import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.service.apiresponsecheck.noinput.OpenOrdersApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

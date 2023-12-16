@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.modelconverter;
 import com.ib.client.ComboLeg;
 import com.ib.client.Contract;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.ContractData;
+import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.type.Currency;
 import org.junit.jupiter.api.Test;
 
