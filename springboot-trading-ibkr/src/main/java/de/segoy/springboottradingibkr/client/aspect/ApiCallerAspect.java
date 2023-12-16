@@ -18,7 +18,7 @@ public class ApiCallerAspect {
         this.client = client;
     }
 
-    @Around("execution(* callApi(..))")
+    @Around("execution(public void callApi(..))")
     protected void checkIfConnected(ProceedingJoinPoint joinPoint) throws Throwable {
         if(client.isConnected()){
             joinPoint.proceed();
