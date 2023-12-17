@@ -67,4 +67,8 @@ public class KafkaProducerConfig {
     public NewTopic twsMessageTopic() {
         return TopicBuilder.name(propertiesConfig.getTWS_MESSAGE_TOPIC()).build();
     }
+    @Bean
+    public NewTopic accountSummaryTopic() {
+        return TopicBuilder.name(propertiesConfig.getACCOUNT_SUMMARY_TOPIC()).build();
+    }
 }

@@ -42,6 +42,7 @@ public class KafkaApiCallEndService {
             BaseMessage message = (BaseMessage) record.value();
             if (message.getMessageId().equals(id)) {
                 if (message.getClass().equals(ErrorMessage.class)) {
+                    messageConsumer.close();
                     throw new RuntimeException("Error occured: " + message.getMessage());
                 }
                 processed = true;

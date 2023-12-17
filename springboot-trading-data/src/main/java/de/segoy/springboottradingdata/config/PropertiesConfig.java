@@ -78,6 +78,15 @@ public class PropertiesConfig {
     @Getter
     @Value("${app.constants.account.summary.id}")
     private int ACCOUNT_SUMMARY_ID;
+    @Getter
+    @Value("${spring.kafka.names.topic.accountSummary.tags.AccruedCash}")
+    private String ACCRUED_CASH;
+    @Getter
+    @Value("${spring.kafka.names.topic.accountSummary.tags.BuyingPower}")
+    private String BUYING_POWER;
+    @Getter
+    @Value("${spring.kafka.names.topic.accountSummary.tags.NetLiquidation}")
+    private String NET_LIQUIDATION;
 
 
     @Getter

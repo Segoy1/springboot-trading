@@ -1,22 +1,25 @@
 package de.segoy.springboottradingibkr.client.service.accountsummery;
 
-import de.segoy.springboottradingdata.model.AccountSummary;
+import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
+import de.segoy.springboottradingdata.service.apiresponsecheck.noinput.NoInputListApiResponseChecker;
+import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AccountSummaryService {
 
-    private final AccountSummaryApiCaller accountSummaryApiCaller;
+    private final ApiCallerWithoutParameter<AccountSummaryData> accountSummaryApiCaller;
+    private final NoInputListApiResponseChecker<AccountSummaryData> accountSummaryApiResponseChecker;
 
-    public AccountSummaryService(AccountSummaryApiCaller accountSummaryApiCaller) {
+    public AccountSummaryService(AccountSummaryApiCaller accountSummaryApiCaller, NoInputListApiResponseChecker<AccountSummaryData> accountSummaryApiResponseChecker) {
         this.accountSummaryApiCaller = accountSummaryApiCaller;
+        this.accountSummaryApiResponseChecker = accountSummaryApiResponseChecker;
     }
 
-    public List<AccountSummary> getAccountSummary(){
+    public List<AccountSummaryData> getAccountSummary(){
         accountSummaryApiCaller.callApi();
-        return new ArrayList<>();//TODO Implement
+        return accountSummaryApiResponseChecker.checkForApiResponseAndUpdate();
     }
 }

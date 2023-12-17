@@ -1,6 +1,7 @@
 package de.segoy.springboottradingdata.kafkaconsumer;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaListenerServiceTest {
 
-//    @KafkaListener(groupId = "marketDataGroup",topics = "historical1")
-//    public void handleMessage(String msg){
-//      log.warn(msg);
+//    @KafkaListener(groupId = "marketDataGroup",topics = "errorMessage")
+//    public void handleMessage(IBKRDataTypeEntity msg){
+//      log.warn(msg.toString());
 //    }
 }
