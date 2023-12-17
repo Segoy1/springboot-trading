@@ -4,6 +4,7 @@ import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.model.entity.message.BaseMessage;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
+import de.segoy.springboottradingdata.service.ErrorCodeMapper;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -17,10 +18,12 @@ public class KafkaApiCallEndService {
 
     private final KafkaConsumerProvider kafkaConsumerProvider;
     private final KafkaConstantsConfig kafkaConstantsConfig;
+    private final ErrorCodeMapper errorCodeMapper;
 
-    public KafkaApiCallEndService(KafkaConsumerProvider kafkaConsumerProvider, KafkaConstantsConfig kafkaConstantsConfig) {
+    public KafkaApiCallEndService(KafkaConsumerProvider kafkaConsumerProvider, KafkaConstantsConfig kafkaConstantsConfig, ErrorCodeMapper errorCodeMapper) {
         this.kafkaConsumerProvider = kafkaConsumerProvider;
         this.kafkaConstantsConfig = kafkaConstantsConfig;
+        this.errorCodeMapper = errorCodeMapper;
     }
 
     public void waitForApiCallToFinish(int id, String topic) {
@@ -42,8 +45,9 @@ public class KafkaApiCallEndService {
             BaseMessage message = (BaseMessage) record.value();
             if (message.getMessageId().equals(id)) {
                 if (message.getClass().equals(ErrorMessage.class)) {
-                    messageConsumer.close();
-                    throw new RuntimeException("Error occured: " + message.getMessage());
+                    try (messageConsumer) {
+                        errorCodeMapper.mapError((ErrorMessage) message);
+                    }
                 }
                 processed = true;
             }

@@ -482,7 +482,6 @@ public class IBKRConnection implements EWrapper {
         log.info(
                 EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass,
                         multiplier, expirations, strikes));
-        ;
     }
 
     @Override
