@@ -33,42 +33,6 @@ public class PropertiesConfig {
     private String genericTicks;
 
     @Getter
-    @Value("${spring.kafka.names.topic.historicalData}")
-    private String HISTORICAL_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.contractData}")
-    private String CONTRACT_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.orderData}")
-    private String ORDER_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.positionData}")
-    private String POSITION_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.twsMessage}")
-    private String TWS_MESSAGE_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.errorMessage}")
-    private String ERROR_MESSAGE_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.names.topic.accountSummary}")
-    private String ACCOUNT_SUMMARY_TOPIC;
-
-    @Getter
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String BOOTSTRAP_SERVERS;
-
-    @Getter
-    @Value("${spring.kafka.consumer.group-id}")
-    private String groupId;
-
-    @Getter
     @Value("${app.constants.positions.call.id}")
     private int POSITION_CALL_ID;
 
@@ -79,13 +43,13 @@ public class PropertiesConfig {
     @Value("${app.constants.account.summary.id}")
     private int ACCOUNT_SUMMARY_ID;
     @Getter
-    @Value("${spring.kafka.names.topic.accountSummary.tags.AccruedCash}")
+    @Value("${app.ibkr.accountSummary.tags.AccruedCash}")
     private String ACCRUED_CASH;
     @Getter
-    @Value("${spring.kafka.names.topic.accountSummary.tags.BuyingPower}")
+    @Value("${app.ibkr.accountSummary.tags.BuyingPower}")
     private String BUYING_POWER;
     @Getter
-    @Value("${spring.kafka.names.topic.accountSummary.tags.NetLiquidation}")
+    @Value("${app.ibkr.accountSummary.tags.NetLiquidation}")
     private String NET_LIQUIDATION;
 
 

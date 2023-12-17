@@ -26,6 +26,8 @@ public class TwsMessage extends BaseMessage {
     @Lob
     private String message;
 
+    private String topic;
+
     @CreationTimestamp
     private Timestamp createDate;
 

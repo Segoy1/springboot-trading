@@ -1,6 +1,5 @@
 package de.segoy.springboottradingdata.service.messagehandler;
 
-import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
@@ -14,17 +13,16 @@ public class TwsMessageHandler {
 
     private final TwsMessageRepository twsMessageRepository;
     private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
-    private final PropertiesConfig propertiesConfig;
 
-    public TwsMessageHandler(TwsMessageRepository twsMessageRepository, KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate, PropertiesConfig propertiesConfig) {
+    public TwsMessageHandler(TwsMessageRepository twsMessageRepository,
+                             KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate) {
         this.twsMessageRepository = twsMessageRepository;
         this.kafkaEntityTemplate = kafkaEntityTemplate;
-        this.propertiesConfig = propertiesConfig;
     }
 
-    public void handleMessage(int id, String message) {
-        log.info(message);
-        TwsMessage twsMessage = twsMessageRepository.save(TwsMessage.builder().messageId(id).message(message).build());
-        kafkaEntityTemplate.send(propertiesConfig.getTWS_MESSAGE_TOPIC(), twsMessage);
+    public void handleMessage(TwsMessage twsMessage) {
+        log.info(twsMessage.getMessage());
+        TwsMessage savedTwsMessage = twsMessageRepository.save(twsMessage);
+        kafkaEntityTemplate.send(savedTwsMessage.getTopic(), savedTwsMessage);
     }
 }

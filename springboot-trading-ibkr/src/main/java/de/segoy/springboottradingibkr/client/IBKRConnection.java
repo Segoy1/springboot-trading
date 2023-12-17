@@ -4,22 +4,24 @@
 package de.segoy.springboottradingibkr.client;
 
 import com.ib.client.*;
+import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
+import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingdata.model.entity.ConnectionData;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
+import de.segoy.springboottradingdata.modelsynchronize.AccountSummaryDataDBSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.modelsynchronize.AccountSummaryDataDBSynchronizer;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
-import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
+import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
 import de.segoy.springboottradingdata.service.messagehandler.TwsMessageHandler;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
@@ -42,6 +44,7 @@ public class IBKRConnection implements EWrapper {
     private final ErrorCodeHandler errorCodeHandler;
 
     private final PropertiesConfig propertiesConfig;
+    private final KafkaConstantsConfig kafkaConstantsConfig;
 
     private final ErrorMessageHandler errorMessageHandler;
     private final TwsMessageHandler twsMessageHandler;
@@ -70,7 +73,7 @@ public class IBKRConnection implements EWrapper {
     @Autowired
     public IBKRConnection(
             ErrorCodeHandler errorCodeHandler,
-            ErrorMessageHandler errorMessageHandler,
+            KafkaConstantsConfig kafkaConstantsConfig, ErrorMessageHandler errorMessageHandler,
             TwsMessageHandler twsMessageHandler, KafkaTemplate<String, String> kafkaTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
@@ -80,6 +83,7 @@ public class IBKRConnection implements EWrapper {
             OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator,
             AccountSummaryDataDBSynchronizer accountSummaryDataDBSynchronizer) {
         this.errorCodeHandler = errorCodeHandler;
+        this.kafkaConstantsConfig = kafkaConstantsConfig;
         this.errorMessageHandler = errorMessageHandler;
         this.twsMessageHandler = twsMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
@@ -150,8 +154,12 @@ public class IBKRConnection implements EWrapper {
                             double mktCapPrice) {
         // received order status
         orderStatusUpdateService.updateOrderStatus(orderId, status);
-        twsMessageHandler.handleMessage(orderId, EWrapperMsgGenerator.orderStatus(orderId, status, filled, remaining,
-                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice));
+        twsMessageHandler.handleMessage(TwsMessage.builder()
+                .messageId(orderId)
+                .topic(kafkaConstantsConfig.getORDER_TOPIC())
+                .message(EWrapperMsgGenerator.orderStatus(orderId, status, filled,
+                        remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld,
+                        mktCapPrice)).build());
         nextValidId(orderId + 1);
 
     }
@@ -160,12 +168,20 @@ public class IBKRConnection implements EWrapper {
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         //populates DB On init and first Time Order is saved to DB when opened
         orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
-        twsMessageHandler.handleMessage(orderId, EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState));
+        twsMessageHandler.handleMessage(
+                TwsMessage.builder()
+                        .messageId(orderId)
+                        .topic(kafkaConstantsConfig.getORDER_TOPIC())
+                        .message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
     }
 
     @Override
     public void openOrderEnd() {
-        twsMessageHandler.handleMessage(propertiesConfig.getOPEN_ORDERS_ID(), EWrapperMsgGenerator.openOrderEnd());
+        twsMessageHandler.handleMessage(
+                TwsMessage.builder()
+                        .messageId(propertiesConfig.getOPEN_ORDERS_ID())
+                        .topic(kafkaConstantsConfig.getOPEN_ORDER_TOPIC())
+                        .message(EWrapperMsgGenerator.openOrderEnd()).build());
     }
 
     @Override
@@ -177,7 +193,11 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void contractDetailsEnd(int reqId) {
-        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.contractDetailsEnd(reqId));
+        twsMessageHandler.handleMessage(
+                TwsMessage.builder().messageId(reqId)
+                        .topic(kafkaConstantsConfig.getCONTRACT_TOPIC())
+                        .message(EWrapperMsgGenerator.contractDetailsEnd(reqId))
+                        .build());
     }
 
     @Override
@@ -258,8 +278,9 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         // received error
-        errorMessageHandler.handleError(ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
-                advancedOrderRejectJson).build());
+        errorMessageHandler.handleError(
+                ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
+                        advancedOrderRejectJson).build());
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
     }
@@ -319,7 +340,9 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
+        twsMessageHandler.handleMessage(TwsMessage.builder().messageId(reqId)
+                .topic(kafkaConstantsConfig.getHISTORICAL_TOPIC())
+                .message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
     }
 
     @Override
@@ -381,7 +404,10 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void positionEnd() {
-        twsMessageHandler.handleMessage(propertiesConfig.getPOSITION_CALL_ID(), EWrapperMsgGenerator.positionEnd());
+        twsMessageHandler.handleMessage(TwsMessage.builder()
+                .messageId(propertiesConfig.getPOSITION_CALL_ID())
+                .topic(kafkaConstantsConfig.getPOSITION_TOPIC())
+                .message(EWrapperMsgGenerator.positionEnd()).build());
     }
 
     @Override
@@ -392,7 +418,10 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void accountSummaryEnd(int reqId) {
-        twsMessageHandler.handleMessage(reqId, EWrapperMsgGenerator.accountSummaryEnd(reqId));
+        twsMessageHandler.handleMessage(TwsMessage.builder()
+                .messageId(reqId)
+                .topic(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC())
+                .message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
     }
 
     @Override
