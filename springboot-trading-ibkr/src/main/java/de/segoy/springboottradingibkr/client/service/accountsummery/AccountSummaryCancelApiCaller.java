@@ -8,26 +8,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Qualifier("AccountSummaryApiCaller")
-public class AccountSummaryApiCaller implements ApiCallerWithoutParameter<AccountSummaryData> {
+@Qualifier("AccountSummaryCancelApiCaller")
+public class AccountSummaryCancelApiCaller implements ApiCallerWithoutParameter<AccountSummaryData> {
 
     private final EClientSocket client;
     private final PropertiesConfig propertiesConfig;
 
-    //TODO move Values
-    public final static String GROUD_NAME = "All";
-
-    public AccountSummaryApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {
+    public AccountSummaryCancelApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {
         this.client = client;
         this.propertiesConfig = propertiesConfig;
     }
 
     @Override
     public void callApi() {
-        String tags =
-                propertiesConfig.getACCRUED_CASH() + "," +
-                        propertiesConfig.getBUYING_POWER() + "," +
-                        propertiesConfig.getNET_LIQUIDATION();
-        client.reqAccountSummary(propertiesConfig.getACCOUNT_SUMMARY_ID(), GROUD_NAME, tags);
+        client.cancelAccountSummary(propertiesConfig.getACCOUNT_SUMMARY_ID());
     }
 }

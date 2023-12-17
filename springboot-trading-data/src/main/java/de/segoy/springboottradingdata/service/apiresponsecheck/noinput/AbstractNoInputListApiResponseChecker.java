@@ -28,7 +28,6 @@ public abstract class AbstractNoInputListApiResponseChecker<T extends IBKRDataTy
     @Override
     public List<T> checkForApiResponseAndUpdate() {
         kafkaApiCallEndService.waitForApiCallToFinish(id);
-        repositoryRefreshService.clearCache(repository);
 
         List<T> tableValues = new ArrayList<>();
         repository.findAll().forEach(tableValues::add);
