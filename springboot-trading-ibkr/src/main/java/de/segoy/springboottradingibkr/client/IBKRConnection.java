@@ -11,6 +11,7 @@ import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
@@ -251,14 +252,14 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void error(String str) {
-        errorMessageHandler.handleError(-1000, str);
+        errorMessageHandler.handleError(ErrorMessage.builder().messageId(-1000).message(str).build());
     }
 
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         // received error
-        errorMessageHandler.handleError(id,
-                EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
+        errorMessageHandler.handleError(ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
+                advancedOrderRejectJson).build());
         faError = errorCodeHandler.isFaError(errorCode);
         errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
     }

@@ -26,4 +26,7 @@ public class ErrorMessage extends BaseMessage {
 
     @CreationTimestamp
     private Timestamp createDate;
+
+    private Integer errorCode;
+    private String advancedOrderReject;
 }

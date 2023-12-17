@@ -22,9 +22,9 @@ public class ErrorMessageHandler {
         this.propertiesConfig = propertiesConfig;
     }
 
-    public void handleError(int id, String message) {
-        log.warn(message);
-        ErrorMessage error = errorMessageRepository.save(ErrorMessage.builder().messageId(id).message(message).build());
+    public void handleError(ErrorMessage errorMessage) {
+        log.warn(errorMessage.getMessage());
+        ErrorMessage error = errorMessageRepository.save(errorMessage);
         kafkaEntityTemplate.send(propertiesConfig.getERROR_MESSAGE_TOPIC(), error);
     }
 
