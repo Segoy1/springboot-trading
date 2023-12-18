@@ -9,10 +9,12 @@ export class AppComponent {
   isOrders: boolean = false;
   isMarketData: boolean = false ;
   isPortfolio: boolean = false;
+  isLogin: boolean = false;
 
   activeCategory(category: string){
     this.isMarketData = category === "marketData";
     this.isOrders = category === "orders";
     this.isPortfolio = category === "portfolio";
+    this.isLogin = category === "login";
   }
 }

@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {HttpService} from "./http-service";
 
 @Component({
   selector: 'app-header',
@@ -8,7 +10,10 @@ import {Component, EventEmitter, Output} from '@angular/core';
 export class HeaderComponent {
   @Output() headerSelectEvent: EventEmitter<string> = new EventEmitter<string>();
   collapsed: boolean = false;
-  isConnected:boolean = false;
+  isConnected:any = false;
+
+  constructor(private httpService:HttpService) {
+  }
 
   onHeaderClick(category:string){
     this.headerSelectEvent.emit(category)
@@ -16,12 +21,13 @@ export class HeaderComponent {
 
   onConnect(connect:boolean){
     if(connect){
-    // this.http.get('http://localhost:8080/connect').subscribe(() => {
-    //   this.isConnected=true;
-    // })
-    // }if(!connect){
-    // }if(!connect){
-    // this.http.get('http://localhost:8080/connect').subscribe(() => {
+    this.httpService.getConnect().subscribe(
+      (response) => {
+        this.isConnected = response; },
+      (error) => { console.log(error); });
+    }if(!connect){
+    // this.httpService.get('http://localhost:8080/disconnect').subscribe((data) => {
+    //   console.log(data);
     //   this.isConnected=true;
     // })
     }

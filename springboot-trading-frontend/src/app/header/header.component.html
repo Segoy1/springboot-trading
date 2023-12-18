@@ -15,11 +15,14 @@
           <li><a href="#" (click)="onHeaderClick('marketData')">Market Data</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+          <li><a href="#" (click)="onHeaderClick('login')">Login</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
           <li class="dropdown" appDropdown>
             <a href="#" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
             <ul class="dropdown-menu">
-              <li><a href="http://localhost:8080/connect" [ngClass]="{'disabled': isConnected}" (click)="isConnected=true">Connect</a></li>
-              <li><a href="http://localhost:8080/disconnect" [ngClass]="{'disabled': !isConnected}" (click)="isConnected=false">Disconnect</a></li>
+              <li><a href="#" [ngClass]="{'disabled': isConnected}" (click)="onConnect(true)">Connect</a></li>
+              <li><a href="#" [ngClass]="{'disabled': !isConnected}" (click)="onConnect(false)">Disconnect</a></li>
             </ul>
           </li>
         </ul>

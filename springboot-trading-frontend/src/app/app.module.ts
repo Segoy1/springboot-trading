@@ -9,6 +9,18 @@ import { PortfolioComponent } from './header/portfolio/portfolio.component';
 import { MarketDataComponent } from './header/market-data/market-data.component';
 import {DropdownDirective} from "./header/shared/dropdown.directive";
 import {HttpClientModule} from "@angular/common/http";
+import { HistoicalDataComponent } from './header/histoical-data/histoical-data.component';
+import { AccountComponent } from './header/account/account.component';
+import { LoginComponent } from './header/login/login.component';
+import {FormsModule} from "@angular/forms";
+import {RouterModule, Routes} from "@angular/router";
+import {LoginService} from "./header/shared/login.service";
+
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'home'},
+  { path: 'home', component: HeaderComponent},
+  { path: 'login', component: LoginComponent}
+];
 
 @NgModule({
   declarations: [
@@ -17,13 +29,17 @@ import {HttpClientModule} from "@angular/common/http";
     OrdersComponent,
     PortfolioComponent,
     MarketDataComponent,
-    DropdownDirective
+    DropdownDirective,
+    HistoicalDataComponent,
+    AccountComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
