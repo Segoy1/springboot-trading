@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(exposedHeaders="Access-Control-Allow-Origin",origins = "http://localhost:4200/")
 public class ConnectionController {
 
     private final ConnectionInitiator connectionInitiator;
@@ -25,9 +24,10 @@ public class ConnectionController {
     }
 
     @GetMapping("disconnect")
-    public void disconnect(){
+    public ResponseEntity<Boolean> disconnect(){
         client.eDisconnect();;
         connectionDataRepository.deleteAll();
+        return ResponseEntity.ok(false);
     }
 
     @GetMapping("connect")

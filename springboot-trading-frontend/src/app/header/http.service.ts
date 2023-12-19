@@ -7,15 +7,17 @@ import {Injectable} from '@angular/core';
 
 export class HttpService {
 
-  // private url = 'http://localhost:8080/connect';
-  private url = 'http://localhost:8080/login';
+  private connectUrl = 'http://localhost:8080/connect';
+  private disconnectUrl = 'http://localhost:8080/disconnect';
   private headers:Headers;
 
   constructor(private http: HttpClient) {
   }
 
   getConnect() {
-
-    return this.http.get(this.url);
+    return this.http.get(this.connectUrl);
+  }
+  getDisconnect(){
+    return this.http.get(this.disconnectUrl);
   }
 }

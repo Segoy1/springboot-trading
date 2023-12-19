@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {HttpService} from "./http-service";
+import {HttpService} from "./http.service";
 
 @Component({
   selector: 'app-header',
@@ -22,14 +22,15 @@ export class HeaderComponent {
   onConnect(connect:boolean){
     if(connect){
     this.httpService.getConnect().subscribe(
-      (response) => {
+      response => {
+        console.log(response)
         this.isConnected = response; },
       (error) => { console.log(error); });
     }if(!connect){
-    // this.httpService.get('http://localhost:8080/disconnect').subscribe((data) => {
-    //   console.log(data);
-    //   this.isConnected=true;
-    // })
+    this.httpService.getDisconnect().subscribe((data) => {
+      console.log(data);
+      this.isConnected=data;
+    })
     }
   }
 

@@ -1,9 +1,11 @@
 package de.segoy.springboottradingweb.security;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,9 +20,16 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import javax.sql.DataSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 
@@ -38,17 +47,19 @@ public class WebSecurityConfig {
                         .requestMatchers(mvc.pattern("/departments")).hasRole(DEPARTMENTS_PAG_VIEW)
                         .requestMatchers(mvc.pattern("/customers")).hasRole(CUSTOMERS_PAG_VIEW)
                         .requestMatchers(mvc.servletPath("/h2-console").pattern("**")).permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .failureUrl("/login-error")
-                        .permitAll())
-                .logout(form -> form
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .permitAll());
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+                        .anyRequest().permitAll())
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .failureUrl("/login-error")
+//                        .permitAll())
+//                .logout(form -> form
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login")
+//                        .permitAll())
+                .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors((cors) -> {
+                    cors.configurationSource(corsConfigurationSource());
+        });
         return http.build();
     }
 
@@ -78,5 +89,19 @@ public class WebSecurityConfig {
         users.createUser(user);
         users.createUser(user2);
         return users;
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200/"));
+        configuration.applyPermitDefaultValues();
+//        configuration.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE","HEAD","OPTIONS"));
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Origin", "Requestor-Type"));
+//        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
