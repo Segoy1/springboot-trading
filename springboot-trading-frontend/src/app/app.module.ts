@@ -15,6 +15,9 @@ import { LoginComponent } from './header/login/login.component';
 import {FormsModule} from "@angular/forms";
 import {RouterModule, Routes} from "@angular/router";
 import {LoginService} from "./header/shared/login.service";
+import {CommonModule} from "@angular/common";
+import { PositionItemComponent } from './header/portfolio/position-item/position-item.component';
+import {PortfolioService} from "./header/portfolio/portfolio.service";
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home'},
@@ -32,14 +35,16 @@ const routes: Routes = [
     DropdownDirective,
     HistoicalDataComponent,
     AccountComponent,
-    LoginComponent
+    LoginComponent,
+    PositionItemComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     HttpClientModule,
     FormsModule
   ],
-  providers: [LoginService],
+  providers: [LoginService, PortfolioService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
