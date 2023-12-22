@@ -12,17 +12,17 @@ export class LoginService {
 
   authenticate(credentials, callback) {
 
-    const headers = new HttpHeaders(credentials ? {
-      authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
-    } : {});
-
-    this.http.get(this.url, {headers: headers}).subscribe(response => {
-      if (response['name']) {
-        this.authenticated = true;
-      } else {
-        this.authenticated = false;
-      }
-      return callback && callback();
-    });
+    // const headers = new HttpHeaders(credentials ? {
+    //   authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
+    // } : {});
+    //
+    // this.http.get(this.url, {headers: headers}).subscribe(response => {
+    //   if (response['name']) {
+    //     this.authenticated = true;
+    //   } else {
+    //     this.authenticated = false;
+    //   }
+    //   return callback && callback();
+    // });
   }
 }

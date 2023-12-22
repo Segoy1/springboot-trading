@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {Position} from "../../model/position.model";
-import {PortfolioService} from "../portfolio.service";
 
 @Component({
   selector: 'app-position-item',

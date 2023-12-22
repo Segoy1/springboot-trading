@@ -18,6 +18,9 @@ import {LoginService} from "./header/shared/login.service";
 import {CommonModule} from "@angular/common";
 import { PositionItemComponent } from './header/portfolio/position-item/position-item.component';
 import {PortfolioService} from "./header/portfolio/portfolio.service";
+import { OpenOrderItemComponent } from './header/orders/open-order-item/open-order-item.component';
+import {OpenOrderService} from "./header/orders/open-order.service";
+import { OrderFormComponent } from './header/orders/order-form/order-form.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home'},
@@ -36,7 +39,9 @@ const routes: Routes = [
     HistoicalDataComponent,
     AccountComponent,
     LoginComponent,
-    PositionItemComponent
+    PositionItemComponent,
+    OpenOrderItemComponent,
+    OrderFormComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +49,7 @@ const routes: Routes = [
     HttpClientModule,
     FormsModule
   ],
-  providers: [LoginService, PortfolioService],
+  providers: [LoginService, PortfolioService, OpenOrderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

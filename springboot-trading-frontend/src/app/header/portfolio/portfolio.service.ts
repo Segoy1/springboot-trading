@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Position} from "../model/position.model";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Injectable()
 export class PortfolioService {
