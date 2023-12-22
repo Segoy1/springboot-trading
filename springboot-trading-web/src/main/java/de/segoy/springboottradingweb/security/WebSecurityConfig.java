@@ -7,6 +7,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -37,15 +38,13 @@ import static de.segoy.springboottradingweb.security.SecurityRoles.*;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+    public SecurityFilterChain securityFilterChain1(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/");
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(mvc.pattern("/"), mvc.pattern("/home")).permitAll()
-                        .requestMatchers(mvc.pattern("/employees")).hasRole(EMPLOYEES_PAG_VIEW)
-                        .requestMatchers(mvc.pattern("/departments")).hasRole(DEPARTMENTS_PAG_VIEW)
-                        .requestMatchers(mvc.pattern("/customers")).hasRole(CUSTOMERS_PAG_VIEW)
                         .requestMatchers(mvc.servletPath("/h2-console").pattern("**")).permitAll()
                         .anyRequest().permitAll())
 //                .formLogin(form -> form
@@ -56,6 +55,7 @@ public class WebSecurityConfig {
 //                        .logoutUrl("/logout")
 //                        .logoutSuccessUrl("/login")
 //                        .permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .cors((cors) -> {
                     cors.configurationSource(corsConfigurationSource());
