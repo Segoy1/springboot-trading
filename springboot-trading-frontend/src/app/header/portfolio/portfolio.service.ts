@@ -1,18 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Position} from "../model/position.model";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Injectable()
 export class PortfolioService {
 
   private positions: Position[] = [];
-  private errorMessage:string;
-  private url:string = 'http://localhost:8080/portfolio';
+  private errorMessage: string;
+  private url: string = 'http://localhost:8080/portfolio';
 
-  constructor(private httpClient: HttpClient){
+  constructor(private httpClient: HttpClient) {
   };
 
-  initPortfolio(){
+  initPortfolio() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json',
@@ -20,17 +21,19 @@ export class PortfolioService {
       })
     };
 
-    this.httpClient.get<Position[]>(this.url, httpOptions).subscribe(
-      positions => {
-        positions.forEach(position => {
-          this.positions.push(position);
-        })
+    this.httpClient.get<Position[]>(this.url, httpOptions).subscribe({
+      next: (positions) => {
+        positions.forEach((position) => {
+          this.positions.push(position)
+        });
       },
-      error => {this.errorMessage}
-    )
+      error: (error) => {
+        this.errorMessage = error;
+      }
+    })
   }
 
-  getPortfolio(){
+  getPortfolio() {
     return this.positions;
   }
 }
