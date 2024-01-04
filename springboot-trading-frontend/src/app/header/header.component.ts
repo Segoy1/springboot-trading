@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HttpService} from "./http.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -12,11 +13,12 @@ export class HeaderComponent {
   collapsed: boolean = false;
   isConnected:any = false;
 
-  constructor(private httpService:HttpService) {
+  constructor(private httpService:HttpService, private router:Router) {
   }
 
   onHeaderClick(category:string){
     this.headerSelectEvent.emit(category)
+    this.router.navigate([category]);
   }
 
   onConnect(connect:boolean){
