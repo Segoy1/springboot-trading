@@ -10,19 +10,19 @@
 
       <div class="navbar-default">
         <ul class="nav navbar-nav">
-          <li><a href="#" (click)="onHeaderClick('orders')">Orders</a></li>
-          <li><a href="#" (click)="onHeaderClick('portfolio')">Portfolio</a></li>
-          <li><a href="#" (click)="onHeaderClick('marketData')">Market Data</a></li>
+          <li routerLinkActive="active"><a routerLink="/orders">Orders</a></li>
+          <li routerLinkActive="active"><a routerLink="/portfolio">Portfolio</a></li>
+          <li routerLinkActive="active"><a routerLink="/marketData">Market Data</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#" (click)="onHeaderClick('login')">Login</a></li>
+          <li routerLinkActive="active"><a routerLink="/login">Login</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown" appDropdown>
             <a href="#" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
             <ul class="dropdown-menu">
-              <li><a href="#" [ngClass]="{'disabled': isConnected}" (click)="onConnect(true)">Connect</a></li>
-              <li><a href="#" [ngClass]="{'disabled': !isConnected}" (click)="onConnect(false)">Disconnect</a></li>
+              <li><a [ngClass]="{'disabled': isConnected}" (click)="onConnect(true)">Connect</a></li>
+              <li><a [ngClass]="{'disabled': !isConnected}" (click)="onConnect(false)">Disconnect</a></li>
             </ul>
           </li>
         </ul>
