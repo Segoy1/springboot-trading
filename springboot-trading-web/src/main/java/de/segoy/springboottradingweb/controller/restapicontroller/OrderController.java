@@ -75,15 +75,15 @@ public class OrderController {
         return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
     }
 
-    @DeleteMapping("delete-order")
+    @DeleteMapping("/cancel-order")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteOrderById(Long id){
+    public void cancelOrderById(Long id){
         orderCancelService.cancelOrderbyId(id);
     }
 
-    @DeleteMapping("delete-all-open-orders")
+    @DeleteMapping("/cancel-all-open-orders")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteAllOpenOrders(){
+    public void cancelAllOpenOrders(){
         orderCancelService.cancelAllOpenOrders();
     }
 
