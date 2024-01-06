@@ -22,6 +22,7 @@ import {OpenOrderItemComponent} from './header/orders/open-order-item/open-order
 import {OpenOrderService} from "./header/orders/open-order.service";
 import {OrderFormComponent} from './header/orders/order-form/order-form.component';
 import {AppRoutingModule} from "./app-routing.module";
+import {OrderFormValidationService} from "./header/orders/order-form/order-form-validation.service";
 
 
 @NgModule({
@@ -49,7 +50,7 @@ import {AppRoutingModule} from "./app-routing.module";
     ReactiveFormsModule,
     AppRoutingModule
   ],
-  providers: [LoginService, PortfolioService, OpenOrderService],
+  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
