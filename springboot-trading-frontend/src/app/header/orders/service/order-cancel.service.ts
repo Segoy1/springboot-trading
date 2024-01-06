@@ -3,7 +3,7 @@ import {Order} from "../../model/order.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HttpHeaderService} from "../../shared/http-header.service";
 
-@Injectable()
+@Injectable({providedIn:"root"})
 export class OrderCancelService{
   private errorMessage: string;
   private singleCancelUrl: string = 'http://localhost:8080/order/cancel-order';

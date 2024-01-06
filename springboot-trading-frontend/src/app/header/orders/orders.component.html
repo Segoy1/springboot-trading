@@ -10,6 +10,7 @@
     <div class="row">
       <app-open-order-item *ngFor="let openOrder of openOrders" [order]="openOrder"></app-open-order-item>
     </div>
+    <button class="btn btn-danger" (click)="onCancelAllOpenOrders()">Cancel All Open Orders</button>
   </div>
   <div class="col-md-8">
     <router-outlet></router-outlet>

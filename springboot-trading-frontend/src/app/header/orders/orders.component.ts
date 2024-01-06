@@ -2,6 +2,7 @@ import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {OrderCancelService} from "./service/order-cancel.service";
 
 @Component({
   selector: 'app-orders',
@@ -12,7 +13,10 @@ export class OrdersComponent implements OnInit, OnChanges {
 
   openOrders: Order[];
 
-  constructor(private openOrdersService: OpenOrderService, private route: ActivatedRoute, private router:Router) {
+  constructor(private openOrdersService: OpenOrderService,
+              private orderCancelService: OrderCancelService,
+              private route: ActivatedRoute,
+              private router:Router) {
   }
 
   ngOnInit() {
@@ -24,5 +28,8 @@ export class OrdersComponent implements OnInit, OnChanges {
   }
   onOpenNewOrder(){
     this.router.navigate(['new'],{relativeTo:this.route});
+  }
+  onCancelAllOpenOrders(){
+    this.orderCancelService.cancelAllOpenOrders();
   }
 }
