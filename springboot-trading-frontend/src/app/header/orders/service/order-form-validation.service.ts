@@ -14,7 +14,9 @@ export class OrderFormValidationService {
   private securityTypes = ['None', 'STK', 'OPT', 'FUT', 'CONTFUT', 'CASH', 'BOND', 'CFD', 'FOP', 'WAR', 'IOPT', 'FWD',
                           'BAG', 'IND', 'BILL', 'FUND', 'FIXED', 'SLB', 'NEWS', 'CMDTY', 'BSK', 'ICU', 'ICS', 'CRYPTO'];
 
-  private right = ['Put', 'Call', 'C', 'P'];
+  private right = ['Put', 'Call', 'C', 'P', ''];
+
+  private side = ['Buy', 'Sell', 'buy', 'sell'];
 
   getOrderTypes(){
     return this.orderTypes.slice();
@@ -27,5 +29,8 @@ export class OrderFormValidationService {
   }
   getRight(){
     return this.right.slice();
+  }
+  getSide(){
+    return this.side.slice();
   }
 }

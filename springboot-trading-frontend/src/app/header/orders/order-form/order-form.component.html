@@ -36,7 +36,7 @@
               <label for="limitPrice">Limit Price</label>
               <input
                 [disabled]=""
-                type="text"
+                type="number"
                 id="limitPrice"
                 formControlName="limitPrice"
                 class="form-control">
@@ -55,105 +55,105 @@
         <!--        CONTRACT DATA -->
         <h4> Contract Data</h4>
         <div formGroupName="contractData" class="row">
-        <div class="row">
-          <div class="col-xs-12" style="margin-bottom: 10px">
-            <div class="col-xs-3">
-              <label for="contractId">Contract Id</label>
-              <input
-                type="text"
-                id="contractId"
-                formControlName="contractId"
-                class="form-control">
-            </div>
-            <div class="col-xs-2">
-              <label for="symbol">Symbol</label>
-              <input
-                type="text"
-                id="symbol"
-                formControlName="symbol"
-                class="form-control">
-            </div>
-            <div class="col-xs-2">
-              <label for="securityType">Sec Type</label>
-              <input
-                type="text"
-                id="securityType"
-                formControlName="securityType"
-                class="form-control">
-            </div>
-            <div class="col-xs-2">
-              <label for="currency">Currency</label>
-              <input
-                type="text"
-                id="currency"
-                formControlName="currency"
-                class="form-control">
-            </div>
-            <div class="col-xs-3">
-              <label for="exchange">Exchange</label>
-              <input
-                type="text"
-                id="exchange"
-                formControlName="exchange"
-                class="form-control">
-            </div>
-          </div>
-        </div>
-
-            <div class="row">
-              <div class="col-xs-12 col-sm-offset-1 col-md-offset-1">
-              <h5>For Derivatives: </h5>
-                <div class="col-xs-3">
-                  <label for="lastTradeDate">Last Trade Date</label>
-                  <input
-                    type="text"
-                    id="lastTradeDate"
-                    formControlName="lastTradeDate"
-                    class="form-control">
-                </div>
-                <div class="col-xs-2">
-                  <label for="strike">Strike</label>
-                  <input
-                    type="number"
-                    id="strike"
-                    formControlName="strike"
-                    class="form-control">
-                </div>
-                <div class="col-xs-2">
-                  <label for="right">Put/Call</label>
-                  <input
-                    type="text"
-                    id="right"
-                    formControlName="right"
-                    class="form-control">
-                </div>
-                <div class="col-xs-3">
-                  <label for="tradingClass">Trading Class</label>
-                  <input
-                    type="text"
-                    id="tradingClass"
-                    formControlName="tradingClass"
-                    class="form-control">
-                </div>
-                <div class="col-xs-4">
-                  <label for="localSymbol">Local Symbol</label>
-                  <input
-                    type="text"
-                    id="localSymbol"
-                    formControlName="localSymbol"
-                    class="form-control">
-                </div>
+          <div class="row">
+            <div class="col-xs-12" style="margin-bottom: 10px">
+              <div class="col-xs-3">
+                <label for="contractId">Contract Id</label>
+                <input
+                  type="text"
+                  id="contractId"
+                  formControlName="contractId"
+                  class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <label for="symbol">Symbol</label>
+                <input
+                  type="text"
+                  id="symbol"
+                  formControlName="symbol"
+                  class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <label for="securityType">Sec Type</label>
+                <input
+                  type="text"
+                  id="securityType"
+                  formControlName="securityType"
+                  class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <label for="currency">Currency</label>
+                <input
+                  type="text"
+                  id="currency"
+                  formControlName="currency"
+                  class="form-control">
+              </div>
+              <div class="col-xs-3">
+                <label for="exchange">Exchange</label>
+                <input
+                  type="text"
+                  id="exchange"
+                  formControlName="exchange"
+                  class="form-control">
               </div>
             </div>
-          <hr>
+          </div>
+
           <div class="row">
-            <div class="col-xs-12" formArrayName="comboLegs">
+            <div class="col-xs-12 col-sm-offset-1 col-md-offset-1">
+              <h5>For Derivatives: </h5>
+              <div class="col-xs-3">
+                <label for="lastTradeDate">Last Trade Date</label>
+                <input
+                  type="text"
+                  id="lastTradeDate"
+                  formControlName="lastTradeDate"
+                  class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <label for="strike">Strike</label>
+                <input
+                  type="number"
+                  id="strike"
+                  formControlName="strike"
+                  class="form-control">
+              </div>
+              <div class="col-xs-2">
+                <label for="right">Put/Call</label>
+                <input
+                  type="text"
+                  id="right"
+                  formControlName="right"
+                  class="form-control">
+              </div>
+              <div class="col-xs-3">
+                <label for="tradingClass">Trading Class</label>
+                <input
+                  type="text"
+                  id="tradingClass"
+                  formControlName="tradingClass"
+                  class="form-control">
+              </div>
+              <div class="col-xs-4">
+                <label for="localSymbol">Local Symbol</label>
+                <input
+                  type="text"
+                  id="localSymbol"
+                  formControlName="localSymbol"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-10 pull-right" formArrayName="comboLegs">
               <div
                 class="row"
                 *ngFor="let comboLegControl of getComboLegControls(); let i = index"
                 [formGroupName]="i"
                 style="margin-top: 10px">
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                   <label *ngIf="i===0" for="comboContractId">ContractId</label>
                   <input
                     id="comboContractId"
@@ -169,7 +169,7 @@
                   <label *ngIf="i===0" for="side">Buy/Sell</label>
                   <input id="side" type="text" class="form-control" formControlName="side">
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-3">
                   <label *ngIf="i===0" for="comboExchange">Exchange</label>
                   <input id="comboExchange" type="text" class="form-control" formControlName="exchange">
                 </div>
@@ -180,11 +180,19 @@
               </div>
               <div class="row">
                 <div class="col-xs-12" style="margin-top: 10px">
-
-                  <button class="btn btn-success pull-right" type="button" (click)="onAddComboLeg()">Add Combo Leg
+                  <button class="btn btn-default glyphicon-plus pull-right" type="button" (click)="onAddComboLeg()"> Combo Leg
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="form-group col-xs-2">
+              <button type="submit" class="btn btn-primary" [disabled]="!orderSubmitForm.valid">Place Order</button>
+            </div>
+            <div class="form-group col-xs-2">
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
             </div>
           </div>
         </div>

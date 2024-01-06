@@ -12,7 +12,9 @@ export class OrderFormComponent implements OnInit {
 
   orderSubmitForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private openOrderService: OpenOrderService, private orderFormValidationService: OrderFormValidationService) {
+  constructor(private formBuilder: FormBuilder,
+              private openOrderService: OpenOrderService,
+              private orderFormValidationService: OrderFormValidationService) {
   }
 
   ngOnInit() {
@@ -64,10 +66,13 @@ export class OrderFormComponent implements OnInit {
       new FormGroup({
         'contractId': new FormControl(null, Validators.required),
         'ratio': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
-        'side': new FormControl(null),
-        'exchange': new FormControl(this.orderSubmitForm.get('contractData.exchange').value)
+        'side': new FormControl(null, [Validators.required, this.validSide.bind(this)]),
+        'exchange': new FormControl(this.orderSubmitForm.get('contractData.exchange').value, Validators.required)
       })
     )
+  }
+  onCancel(){
+    this.orderSubmitForm.reset();
   }
 
   validOrderTypes(control:FormControl):{[s:string]:boolean}{
@@ -88,6 +93,11 @@ export class OrderFormComponent implements OnInit {
   validSecType(control:FormControl):{[s:string]:boolean}{
     if(this.orderFormValidationService.getSecurityTypes().indexOf(control.value)=== -1){
       return {'noValidSecType': true};
+    }
+  }
+  validSide(control:FormControl):{[s:string]:boolean}{
+    if(this.orderFormValidationService.getSide().indexOf(control.value)=== -1){
+      return {'noValidSide': true};
     }
   }
 }
