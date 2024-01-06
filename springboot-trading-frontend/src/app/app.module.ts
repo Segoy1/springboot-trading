@@ -19,10 +19,11 @@ import {CommonModule} from "@angular/common";
 import {PositionItemComponent} from './header/portfolio/position-item/position-item.component';
 import {PortfolioService} from "./header/portfolio/portfolio.service";
 import {OpenOrderItemComponent} from './header/orders/open-order-item/open-order-item.component';
-import {OpenOrderService} from "./header/orders/open-order.service";
+import {OpenOrderService} from "./header/orders/service/open-order.service";
 import {OrderFormComponent} from './header/orders/order-form/order-form.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {OrderFormValidationService} from "./header/orders/order-form/order-form-validation.service";
+import {HttpHeaderService} from "./header/shared/http-header.service";
 
 
 @NgModule({
@@ -50,7 +51,7 @@ import {OrderFormValidationService} from "./header/orders/order-form/order-form-
     ReactiveFormsModule,
     AppRoutingModule
   ],
-  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService],
+  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService, HttpHeaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,6 +1,6 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Order} from "../model/order.model";
-import {OpenOrderService} from "./open-order.service";
+import {OpenOrderService} from "./service/open-order.service";
 
 @Component({
   selector: 'app-orders',
