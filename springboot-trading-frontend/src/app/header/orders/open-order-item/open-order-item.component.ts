@@ -10,10 +10,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class OpenOrderItemComponent {
   @Input() order: Order;
 
-  constructor(private router:Router, private route:ActivatedRoute) {
-  }
-
-  onClick(){
-  this.router.navigate([this.order.id,'edit'], {relativeTo:this.route});
+  constructor() {
   }
 }

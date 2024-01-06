@@ -14,8 +14,7 @@ const appRoutes: Routes = [
   {path: 'orders', component: OrdersComponent, children: [
       {path: '', component: OrderStartComponent},
       {path: 'new', component: OrderFormComponent},
-      {path: ':id', component: OrderFormComponent},
-      {path: ':id/edit', component:OrderFormComponent}
+      {path: ':id', component: OrderFormComponent}
     ]},
   {path: 'portfolio', component: PortfolioComponent},
   {path: 'market-data', component: MarketDataComponent},
