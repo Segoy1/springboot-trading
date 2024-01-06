@@ -22,7 +22,7 @@ import {OpenOrderItemComponent} from './header/orders/open-order-item/open-order
 import {OpenOrderService} from "./header/orders/service/open-order.service";
 import {OrderFormComponent} from './header/orders/order-form/order-form.component';
 import {AppRoutingModule} from "./app-routing.module";
-import {OrderFormValidationService} from "./header/orders/order-form/order-form-validation.service";
+import {OrderFormValidationService} from "./header/orders/service/order-form-validation.service";
 import {HttpHeaderService} from "./header/shared/http-header.service";
 
 

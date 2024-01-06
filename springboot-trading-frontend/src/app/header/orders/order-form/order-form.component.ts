@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OpenOrderService} from "../service/open-order.service";
-import {OrderFormValidationService} from "./order-form-validation.service";
+import {OrderFormValidationService} from "../service/order-form-validation.service";
 
 @Component({
   selector: 'app-order-form',
@@ -56,7 +56,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   onDeleteComboLeg(index: number) {
-
+    (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).removeAt(index);
   }
 
   onAddComboLeg() {
@@ -65,7 +65,7 @@ export class OrderFormComponent implements OnInit {
         'contractId': new FormControl(null, Validators.required),
         'ratio': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
         'side': new FormControl(null),
-        'exchange': new FormControl(null)
+        'exchange': new FormControl(this.orderSubmitForm.get('contractData.exchange').value)
       })
     )
   }
