@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Order} from "../../model/order.model";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-open-order-item',
@@ -9,6 +10,10 @@ import {Order} from "../../model/order.model";
 export class OpenOrderItemComponent {
   @Input() order: Order;
 
-  constructor() {
+  constructor(private router:Router, private route:ActivatedRoute) {
+  }
+
+  onClick(){
+  this.router.navigate([this.order.id,'edit'], {relativeTo:this.route});
   }
 }

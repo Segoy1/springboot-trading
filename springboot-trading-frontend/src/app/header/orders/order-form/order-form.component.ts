@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OpenOrderService} from "../service/open-order.service";
 import {OrderFormValidationService} from "../service/order-form-validation.service";
+import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
   selector: 'app-order-form',
@@ -10,15 +11,23 @@ import {OrderFormValidationService} from "../service/order-form-validation.servi
 })
 export class OrderFormComponent implements OnInit {
 
+  id: number;
+  editMode = false;
   orderSubmitForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private openOrderService: OpenOrderService,
-              private orderFormValidationService: OrderFormValidationService) {
+  constructor(private route: ActivatedRoute,
+              private orderFormValidationService: OrderFormValidationService, private openOrderService: OpenOrderService) {
   }
 
   ngOnInit() {
-    this.initForm();
+    this.route.params
+      .subscribe(
+        (params: Params) => {
+          this.id = +params['id'];
+          this.editMode = params['id'] != null;
+          this.initForm();
+        }
+      )
   }
 
   initForm() {
@@ -28,17 +37,50 @@ export class OrderFormComponent implements OnInit {
     let limitPrice = null;
     let timeInForce = '';
     let comboLegs = new FormArray([]);
+    let contractId = null;
+    let symbol = '';
+    let securityType = 'STK';
+    let currency = 'USD';
+    let exchange = 'SMART';
+    let lastTradeDate = '';
+    let strike = null;
+    let right = '';
+    let tradingClass = '';
+    let localSymbol = '';
+
+    if (this.editMode) {
+      const order = this.openOrderService.getOpenOrder(this.id);
+      action = order.action;
+      totalQuantity = order.totalQuantity;
+      orderType = order.orderType;
+      limitPrice = order.limitPrice;
+      timeInForce = order.timeInForce;
+      contractId = order.contractData.id;
+      symbol = order.contractData.symbol;
+      currency = order.contractData.currency;
+      exchange = order.contractData.exchange;
+      lastTradeDate = order.contractData.lastTradeDate;
+      strike = order.contractData.strike;
+      right = order.contractData.right;
+      tradingClass = order.contractData.tradingClass;
+      localSymbol = order.contractData.localSymbol;
+
+      order.contractData.comboLegs.forEach((comboLeg) => {
+        comboLegs.push(this.buildComboLeg(comboLeg.contractId,comboLeg.ratio,comboLeg.action, comboLeg.exchange));
+      })
+    }
+
     let contractData = new FormGroup({
-      'contractId': new FormControl(''),
-      'symbol': new FormControl(''),
-      'securityType': new FormControl('STK', [this.validSecType.bind(this)]),
-      'currency': new FormControl('USD'),
-      'exchange': new FormControl('SMART'),
-      'lastTradeDate': new FormControl(''),
-      'strike': new FormControl(null),
-      'right': new FormControl('', [this.validRight.bind(this)]),
-      'tradingClass': new FormControl(''),
-      'localSymbol': new FormControl(''),
+      'contractId': new FormControl(contractId),
+      'symbol': new FormControl(symbol),
+      'securityType': new FormControl(securityType, [this.validSecType.bind(this)]),
+      'currency': new FormControl(currency),
+      'exchange': new FormControl(exchange),
+      'lastTradeDate': new FormControl(lastTradeDate),
+      'strike': new FormControl(strike),
+      'right': new FormControl(right, [this.validRight.bind(this)]),
+      'tradingClass': new FormControl(tradingClass),
+      'localSymbol': new FormControl(localSymbol),
       'comboLegs': comboLegs
     });
 
@@ -62,41 +104,48 @@ export class OrderFormComponent implements OnInit {
   }
 
   onAddComboLeg() {
-    (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).push(
-      new FormGroup({
-        'contractId': new FormControl(null, Validators.required),
-        'ratio': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
-        'side': new FormControl(null, [Validators.required, this.validSide.bind(this)]),
-        'exchange': new FormControl(this.orderSubmitForm.get('contractData.exchange').value, Validators.required)
-      })
-    )
+    (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).push(this.buildComboLeg(null, null, '', ''));
   }
-  onCancel(){
+
+  private buildComboLeg(contractId: number, ratio: number, side: string, exchange: string) {
+    return new FormGroup({
+        'contractId': new FormControl(contractId, Validators.required),
+        'ratio': new FormControl(ratio, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
+        'side': new FormControl(side, [Validators.required, this.validSide.bind(this)]),
+        'exchange': new FormControl((exchange === '' ? this.orderSubmitForm.get('contractData.exchange').value : exchange), Validators.required)
+      })
+  }
+
+  onCancel() {
     this.orderSubmitForm.reset();
   }
 
-  validOrderTypes(control:FormControl):{[s:string]:boolean}{
-    if(this.orderFormValidationService.getOrderTypes().indexOf(control.value)=== -1){
+  validOrderTypes(control: FormControl): { [s: string]: boolean } {
+    if (this.orderFormValidationService.getOrderTypes().indexOf(control.value) === -1) {
       return {'noValidOrderType': true};
     }
   }
-  validTIF(control:FormControl):{[s:string]:boolean}{
-    if(this.orderFormValidationService.getTIF().indexOf(control.value)=== -1){
+
+  validTIF(control: FormControl): { [s: string]: boolean } {
+    if (this.orderFormValidationService.getTIF().indexOf(control.value) === -1) {
       return {'noValidTIF': true};
     }
   }
-  validRight(control:FormControl):{[s:string]:boolean}{
-    if(this.orderFormValidationService.getRight().indexOf(control.value)=== -1){
+
+  validRight(control: FormControl): { [s: string]: boolean } {
+    if (this.orderFormValidationService.getRight().indexOf(control.value) === -1) {
       return {'noValidRight': true};
     }
   }
-  validSecType(control:FormControl):{[s:string]:boolean}{
-    if(this.orderFormValidationService.getSecurityTypes().indexOf(control.value)=== -1){
+
+  validSecType(control: FormControl): { [s: string]: boolean } {
+    if (this.orderFormValidationService.getSecurityTypes().indexOf(control.value) === -1) {
       return {'noValidSecType': true};
     }
   }
-  validSide(control:FormControl):{[s:string]:boolean}{
-    if(this.orderFormValidationService.getSide().indexOf(control.value)=== -1){
+
+  validSide(control: FormControl): { [s: string]: boolean } {
+    if (this.orderFormValidationService.getSide().indexOf(control.value) === -1) {
       return {'noValidSide': true};
     }
   }

@@ -34,4 +34,13 @@ export class OpenOrderService{
   getOpenOrders() {
     return this.openOrders.slice();
   }
+  getOpenOrder(id:number){
+    let order1:Order;
+    this.openOrders.forEach((order2)=>{
+      if(order2.id===id){
+        order1 = order2;
+      }
+    });
+    return order1;
+  }
 }

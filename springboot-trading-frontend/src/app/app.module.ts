@@ -24,6 +24,7 @@ import {OrderFormComponent} from './header/orders/order-form/order-form.componen
 import {AppRoutingModule} from "./app-routing.module";
 import {OrderFormValidationService} from "./header/orders/service/order-form-validation.service";
 import {HttpHeaderService} from "./header/shared/http-header.service";
+import { OrderStartComponent } from './header/orders/order-start/order-start.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import {HttpHeaderService} from "./header/shared/http-header.service";
     LoginComponent,
     PositionItemComponent,
     OpenOrderItemComponent,
-    OrderFormComponent
+    OrderFormComponent,
+    OrderStartComponent
   ],
   imports: [
     CommonModule,

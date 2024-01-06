@@ -1,5 +1,5 @@
 <div class="container">
-  <h3 class="media-heading">Place Order</h3>
+  <h3 class="media-heading">{{editMode? 'Edit Order': 'Open Order'}}</h3>
   <hr>
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8">
@@ -12,8 +12,8 @@
                 id="action"
                 formControlName="action"
                 class="form-control">
-                <option value="buy">Buy</option>
-                <option value="buy">Sell</option>
+                <option value="BUY">Buy</option>
+                <option value="SELL">Sell</option>
               </select>
             </div>
             <div class="col-xs-2">
@@ -60,7 +60,7 @@
               <div class="col-xs-3">
                 <label for="contractId">Contract Id</label>
                 <input
-                  type="text"
+                  type="number"
                   id="contractId"
                   formControlName="contractId"
                   class="form-control">
@@ -154,24 +154,24 @@
                 [formGroupName]="i"
                 style="margin-top: 10px">
                 <div class="col-xs-3">
-                  <label *ngIf="i===0" for="comboContractId">ContractId</label>
+                  <label *ngIf="i===0" for="{{i}}comboContractId">ContractId</label>
                   <input
-                    id="comboContractId"
+                    id="{{i}}comboContractId"
                     type="number"
                     class="form-control"
                     formControlName="contractId">
                 </div>
                 <div class="col-xs-2">
-                  <label *ngIf="i===0" for="ratio">Ratio</label>
-                  <input id="ratio" type="number" class="form-control" formControlName="ratio">
+                  <label *ngIf="i===0" for="{{i}}ratio">Ratio</label>
+                  <input id="{{i}}ratio" type="number" class="form-control" formControlName="ratio">
                 </div>
                 <div class="col-xs-2">
-                  <label *ngIf="i===0" for="side">Buy/Sell</label>
-                  <input id="side" type="text" class="form-control" formControlName="side">
+                  <label *ngIf="i===0" for="{{i}}side">Buy/Sell</label>
+                  <input id="{{i}}side" type="text" class="form-control" formControlName="side">
                 </div>
                 <div class="col-xs-3">
-                  <label *ngIf="i===0" for="comboExchange">Exchange</label>
-                  <input id="comboExchange" type="text" class="form-control" formControlName="exchange">
+                  <label *ngIf="i===0" for="{{i}}comboExchange">Exchange</label>
+                  <input id="{{i}}comboExchange" type="text" class="form-control" formControlName="exchange">
                 </div>
                 <div class="col-xs-2">
                   <br *ngIf="i===0" style="padding-top: 5px">
@@ -192,7 +192,7 @@
               <button type="submit" class="btn btn-primary" [disabled]="!orderSubmitForm.valid">Place Order</button>
             </div>
             <div class="form-group col-xs-2">
-              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>
             </div>
           </div>
         </div>

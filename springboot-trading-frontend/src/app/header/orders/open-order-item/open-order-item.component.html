@@ -1,9 +1,22 @@
-<a style="cursor: pointer" class="list-group-item clearfix">
-  <div class="pull-left">
-    <h4 class="list-group-item-heading">{{order.contractData.localSymbol}}</h4>
-    <p class="list-group-item-text col-lg-6">Limit Price: {{order.limitPrice}}</p>
-    <p class="list-group-item-text col-lg-6">Qty: {{order.totalQuantity}}</p>
-    <p class="list-group-item-text col-lg-6">TIF: {{order.timeInForce}}</p>
-    <p class="list-group-item-text col-lg-6">Status: {{order.status}}</p>
+<div class="row" style="margin-bottom: 10px">
+  <div class="col-xs-12">
+  <a
+    style="cursor: pointer"
+    [routerLink]="[order.id]"
+    routerLinkActive="active"
+    class="list-group-item clearfix">
+    <div class="row">
+      <div class="pull-left">
+        <h4 class="list-group-item-heading">{{order.contractData.localSymbol}}</h4>
+        <p class="list-group-item-text col-lg-6">Limit Price: {{order.limitPrice}}</p>
+        <p class="list-group-item-text col-lg-6">Qty: {{order.totalQuantity}}</p>
+        <p class="list-group-item-text col-lg-6">TIF: {{order.timeInForce}}</p>
+        <p class="list-group-item-text col-lg-6">Status: {{order.status}}</p>
+      </div>
+    </div>
+  </a>
   </div>
-</a>
+  <div class="col-xs-12">
+    <button class="btn btn-primary" (click)="onClick()">Edit</button>
+  </div>
+</div>
