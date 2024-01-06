@@ -1,10 +1,14 @@
 <div class="row" style="margin-bottom: 10px">
   <div class="col-xs-12">
+
+  </div>
+  <button class="btn btn-danger pull-right top-right" type="button">Cancel Order</button>
+  <div class="col-xs-12 list-group-item">
   <a
     style="cursor: pointer"
     [routerLink]="[order.id]"
     routerLinkActive="active"
-    class="list-group-item clearfix">
+    class="list-group-item clearfix " style="border: transparent">
     <div class="row">
       <div class="pull-left">
         <h4 class="list-group-item-heading">{{order.contractData.localSymbol}}</h4>
