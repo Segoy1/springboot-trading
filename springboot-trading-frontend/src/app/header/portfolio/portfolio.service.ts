@@ -13,6 +13,7 @@ export class PortfolioService {
   };
 
   initPortfolio() {
+    this.positions = [];
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json',

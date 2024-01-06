@@ -13,6 +13,7 @@ export class OpenOrderService{
   };
 
   initOpenOrders() {
+    let fetchedOrders = [];
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json',
@@ -24,18 +25,18 @@ export class OpenOrderService{
       next: (openOrders) => {
           console.log(openOrders)
         openOrders.forEach((order) => {
-          this.openOrders.push(order)
+          fetchedOrders.push(order)
         });
       },
       error: (error) => {
         this.errorMessage = error;
       }
     })
-          console.log(this.openOrders)
-    return this.openOrders;
+    this.openOrders = fetchedOrders;
+    return fetchedOrders;
   }
 
   getOpenOrders() {
-    return this.openOrders;
+    return this.openOrders.slice();
   }
 }
