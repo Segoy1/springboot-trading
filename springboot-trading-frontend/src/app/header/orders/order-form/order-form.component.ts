@@ -93,6 +93,7 @@ export class OrderFormComponent implements OnInit {
       'timeInForce': new FormControl<string>(timeInForce, [Validators.required, this.validTIF.bind(this)]),
       'contractData': contractData
     });
+    console.log(this.orderSubmitForm);
   }
 
   getComboLegControls() {
