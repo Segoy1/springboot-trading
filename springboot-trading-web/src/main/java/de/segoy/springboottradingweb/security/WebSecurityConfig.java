@@ -96,7 +96,7 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200/"));
         configuration.applyPermitDefaultValues();
-//        configuration.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE","HEAD","OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE","HEAD","OPTIONS"));
 //        configuration.setAllowCredentials(true);
 //        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Origin", "Requestor-Type"));
 //        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
