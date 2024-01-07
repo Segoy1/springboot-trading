@@ -17,8 +17,10 @@ public class NextValidOrderIdGenerator {
     }
 
     public long generateAndSaveNextOrderId(int id) {
-        propertiesConfig.setNextValidOrderId(orderDataRepository.findTopByOrderByIdDesc().map(
-                orderData -> orderData.getId() >= id ? orderData.getId() + 1 : id).orElse((long)id));
+        long oldId = propertiesConfig.getNextValidOrderId();
+        long newId = orderDataRepository.findTopByOrderByIdDesc().map(
+                orderData -> orderData.getId() >= id ? orderData.getId() + 1 : id).orElse((long)id);
+        propertiesConfig.setNextValidOrderId(Math.max(oldId, newId));
         return propertiesConfig.getNextValidOrderId();
     }
 }
