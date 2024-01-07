@@ -71,7 +71,6 @@ public class OrderController {
     //    curl -i -X POST 'http://localhost:8080/login' --data 'username=john&password=john'
     @PostMapping("/place-order")
     public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
-        orderData.setId(propertiesConfig.getNextValidOrderId());
         return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
     }
 

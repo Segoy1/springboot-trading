@@ -37,6 +37,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   initForm() {
+    let id:number;
     let action = '';
     let totalQuantity = null;
     let orderType = '';
@@ -56,6 +57,7 @@ export class OrderFormComponent implements OnInit {
 
     if (this.editMode) {
       const order = this.openOrderService.findOpenOrderById(this.id);
+      id = order.id
       action = order.action;
       totalQuantity = order.totalQuantity;
       orderType = order.orderType;
@@ -92,6 +94,7 @@ export class OrderFormComponent implements OnInit {
 
 
     this.orderSubmitForm = new FormGroup({
+      'id': new FormControl(id),
       'action': new FormControl<string>(action, Validators.required),
       'totalQuantity': new FormControl<number>(totalQuantity, Validators.required),
       'orderType': new FormControl<string>(orderType, [Validators.required, this.validOrderTypes.bind(this)]),

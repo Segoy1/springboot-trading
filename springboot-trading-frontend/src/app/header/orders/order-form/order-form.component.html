@@ -6,7 +6,15 @@
       <form [formGroup]="orderSubmitForm">
         <div class="col-xs-12" style="margin-bottom: 20px">
           <div class="row">
-            <div class="col-xs-3">
+            <div class="col-xs-2">
+              <label for="id">ID</label>
+              <input
+                type="number"
+                id="id"
+                formControlName="id"
+                class="form-control">
+            </div>
+            <div class="col-xs-2">
               <label for="action">Action</label>
               <select
                 id="action"
@@ -24,7 +32,7 @@
                 formControlName="totalQuantity"
                 class="form-control">
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-2">
               <label for="orderType">Order Type</label>
               <input
                 type="text"
