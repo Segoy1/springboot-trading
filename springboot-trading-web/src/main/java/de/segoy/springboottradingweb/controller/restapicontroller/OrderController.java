@@ -77,8 +77,8 @@ public class OrderController {
 
     @DeleteMapping("/cancel-order")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void cancelOrderById(Long id){
-        orderCancelService.cancelOrderbyId(id);
+    public void cancelOrderById(@RequestParam(name = "id") int id){
+        orderCancelService.cancelOrderbyId((long) id);
     }
 
     @DeleteMapping("/cancel-all-open-orders")

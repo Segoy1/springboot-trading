@@ -18,6 +18,6 @@ class OpenOrdersApiCaller implements ApiCallerWithoutParameter<OrderData> {
 
     @Override
     public void callApi() {
-        client.reqAllOpenOrders();
+        client.reqOpenOrders();
     }
 }

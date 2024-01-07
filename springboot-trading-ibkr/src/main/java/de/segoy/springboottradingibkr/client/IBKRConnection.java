@@ -167,14 +167,12 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         //populates DB On init and first Time Order is saved to DB when opened
-        int newOrderId = orderId==0?(int)nextValidOrderIdGenerator.generateAndSaveNextOrderId(orderId):orderId;
-        order.orderId(newOrderId);
         orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
         twsMessageHandler.handleMessage(
                 TwsMessage.builder()
-                        .messageId(newOrderId)
+                        .messageId(orderId)
                         .topic(kafkaConstantsConfig.getORDER_TOPIC())
-                        .message(EWrapperMsgGenerator.openOrder(newOrderId, contract, order, orderState)).build());
+                        .message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
     }
 
     @Override
