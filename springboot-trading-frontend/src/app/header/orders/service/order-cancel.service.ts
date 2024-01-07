@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Order} from "../../model/order.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {HttpHeaderService} from "../../shared/http-header.service";
 
 @Injectable({providedIn:"root"})
 export class OrderCancelService{
@@ -9,12 +8,12 @@ export class OrderCancelService{
   private singleCancelUrl: string = 'http://localhost:8080/order/cancel-order';
   private allCancelUrl: string = 'http://localhost:8080/order/cancel-all-open-orders';
 
-  constructor(private httpClient: HttpClient, private httpHeaderService: HttpHeaderService) {
+  constructor(private httpClient: HttpClient) {
   };
 
   cancelSingleOrder(orderId:number) {
 
-    this.httpClient.delete(this.singleCancelUrl, this.httpHeaderService.getHttpOptions()).subscribe({
+    this.httpClient.delete(this.singleCancelUrl).subscribe({
       next: () => {
         console.log('success deleting order')
       },
@@ -25,7 +24,7 @@ export class OrderCancelService{
   }
   cancelAllOpenOrders() {
 
-    this.httpClient.delete(this.allCancelUrl, this.httpHeaderService.getHttpOptions()).subscribe({
+    this.httpClient.delete(this.allCancelUrl).subscribe({
       next: () => {
         console.log('success deleting order')
       },

@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {Order} from "../../model/order.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Position} from "../../model/position.model";
-import {HttpHeaderService} from "../../shared/http-header.service";
 
 @Injectable()
 export class OpenOrderService{
@@ -10,13 +9,13 @@ export class OpenOrderService{
   private errorMessage: string;
   private url: string = 'http://localhost:8080/order/open-orders';
 
-  constructor(private httpClient: HttpClient, private httpHeaderService: HttpHeaderService) {
+  constructor(private httpClient: HttpClient) {
   };
 
   initOpenOrders() {
     let fetchedOrders = [];
 
-    this.httpClient.get<Order[]>(this.url, this.httpHeaderService.getHttpOptions()).subscribe({
+    this.httpClient.get<Order[]>(this.url).subscribe({
       next: (openOrders) => {
           console.log(openOrders)
         openOrders.forEach((order) => {
