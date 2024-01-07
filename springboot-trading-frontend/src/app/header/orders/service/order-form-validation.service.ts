@@ -14,7 +14,7 @@ export class OrderFormValidationService {
   private securityTypes = ['None', 'STK', 'OPT', 'FUT', 'CONTFUT', 'CASH', 'BOND', 'CFD', 'FOP', 'WAR', 'IOPT', 'FWD',
                           'BAG', 'IND', 'BILL', 'FUND', 'FIXED', 'SLB', 'NEWS', 'CMDTY', 'BSK', 'ICU', 'ICS', 'CRYPTO'];
 
-  private right = ['Put', 'Call', 'C', 'P', '', 'None'];
+  private right = ['Put', 'Call', 'C', 'P', 'None'];
 
   private side = ['Buy', 'Sell', 'buy', 'sell','BUY','SELL'];
 

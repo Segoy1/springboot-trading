@@ -3,6 +3,7 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angul
 import {OpenOrderService} from "../service/open-order.service";
 import {OrderFormValidationService} from "../service/order-form-validation.service";
 import {ActivatedRoute, Params} from "@angular/router";
+import {OrderSubmitService} from "../service/order-submit.service";
 
 @Component({
   selector: 'app-order-form',
@@ -16,7 +17,12 @@ export class OrderFormComponent implements OnInit {
   orderSubmitForm: FormGroup;
 
   constructor(private route: ActivatedRoute,
-              private orderFormValidationService: OrderFormValidationService, private openOrderService: OpenOrderService) {
+              private orderFormValidationService: OrderFormValidationService,
+              private openOrderService: OpenOrderService,
+              private orderSubmitService: OrderSubmitService) {
+  }
+  onSubmit(){
+    this.orderSubmitService.placeOrder(this.orderSubmitForm.value);
   }
 
   ngOnInit() {
@@ -44,7 +50,7 @@ export class OrderFormComponent implements OnInit {
     let exchange = 'SMART';
     let lastTradeDate = '';
     let strike = null;
-    let right = '';
+    let right = 'None';
     let tradingClass = '';
     let localSymbol = '';
 
@@ -93,7 +99,6 @@ export class OrderFormComponent implements OnInit {
       'timeInForce': new FormControl<string>(timeInForce, [Validators.required, this.validTIF.bind(this)]),
       'contractData': contractData
     });
-    console.log(this.orderSubmitForm);
   }
 
   getComboLegControls() {

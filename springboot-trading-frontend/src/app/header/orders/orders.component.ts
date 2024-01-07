@@ -32,7 +32,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orderSub = this.openOrdersService.ordersChanged.subscribe(
       (orders:Order[])=>{
-        console.log(orders);
         this.openOrders = orders;
     }
     );

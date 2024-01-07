@@ -121,11 +121,14 @@
               </div>
               <div class="col-xs-2">
                 <label for="right">Put/Call</label>
-                <input
-                  type="text"
+                <select
                   id="right"
                   formControlName="right"
                   class="form-control">
+                <option value="None">None</option>
+                <option value="Call">Call</option>
+                <option value="Put">Put</option>
+                </select>
               </div>
               <div class="col-xs-3">
                 <label for="tradingClass">Trading Class</label>
@@ -189,7 +192,7 @@
           <hr>
           <div class="row">
             <div class="form-group col-xs-2">
-              <button type="submit" class="btn btn-primary" [disabled]="!orderSubmitForm.valid || !orderSubmitForm.touched">{{editMode? 'Update Order': 'Place Order'}}</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!orderSubmitForm.valid || !orderSubmitForm.touched" (click)="onSubmit()">{{editMode? 'Update Order': 'Place Order'}}</button>
             </div>
             <div class="form-group col-xs-2">
               <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>

@@ -29,7 +29,6 @@ export class OpenOrderService{
     })
     this.openOrders = fetchedOrders;
 
-    console.log(this.openOrders);
     this.ordersChange();
   }
 
