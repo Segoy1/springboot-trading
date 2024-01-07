@@ -38,6 +38,6 @@ export class OrderCancelService {
         this.errorMessage = error;
       }
     });
+    this.openOrderService.removeAllOrders();
   }
-
 }

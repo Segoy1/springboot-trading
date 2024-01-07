@@ -46,6 +46,9 @@ export class OpenOrderService{
     const order = this.findOpenOrderById(id);
     this.openOrders.splice(this.openOrders.indexOf(order),1);
   }
+  removeAllOrders(){
+    this.openOrders = [];
+  }
 
   ordersChange(){
     this.ordersChanged.next(this.openOrders);
