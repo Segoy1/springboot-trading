@@ -1,17 +1,27 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewChecked,
+  Component,
+  DoCheck,
+  OnChanges, OnDestroy,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
 import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
-export class OrdersComponent implements OnInit, OnChanges {
+export class OrdersComponent implements OnInit, OnDestroy {
 
   openOrders: Order[];
+  orderSub : Subscription;
 
   constructor(private openOrdersService: OpenOrderService,
               private orderCancelService: OrderCancelService,
@@ -20,12 +30,19 @@ export class OrdersComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.openOrders = this.openOrdersService.initOpenOrders();
+    this.orderSub = this.openOrdersService.ordersChanged.subscribe(
+      (orders:Order[])=>{
+        console.log(orders);
+        this.openOrders = orders;
+    }
+    );
+    this.openOrdersService.initOpenOrders();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.openOrders = this.openOrdersService.getOpenOrders();
+  ngOnDestroy() {
+    this.orderSub.unsubscribe();
   }
+
   onOpenNewOrder(){
     this.router.navigate(['new'],{relativeTo:this.route});
   }

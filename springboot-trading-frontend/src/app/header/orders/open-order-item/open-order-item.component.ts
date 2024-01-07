@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, DoCheck, Input, OnChanges} from '@angular/core';
 import {Order} from "../../model/order.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {OrderCancelService} from "../service/order-cancel.service";

@@ -49,7 +49,7 @@ export class OrderFormComponent implements OnInit {
     let localSymbol = '';
 
     if (this.editMode) {
-      const order = this.openOrderService.getOpenOrder(this.id);
+      const order = this.openOrderService.findOpenOrderById(this.id);
       action = order.action;
       totalQuantity = order.totalQuantity;
       orderType = order.orderType;
