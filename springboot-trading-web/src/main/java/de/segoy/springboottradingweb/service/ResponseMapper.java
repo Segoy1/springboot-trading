@@ -15,6 +15,8 @@ public class ResponseMapper {
 
     public <T> ResponseEntity<List<T>> mapResponse(List<T> responseObjectList){
         return responseObjectList.isEmpty()?ResponseEntity.badRequest().build():ResponseEntity.ok(responseObjectList);
-
+    }
+    public <T> ResponseEntity<T> mapResponse(T responseObject){
+        return ResponseEntity.ok(responseObject);
     }
 }

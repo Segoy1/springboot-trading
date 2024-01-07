@@ -4,6 +4,7 @@ import {OpenOrderService} from "../service/open-order.service";
 import {OrderFormValidationService} from "../service/order-form-validation.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
+import {OrderIdService} from "../service/order-id.service";
 
 @Component({
   selector: 'app-order-form',
@@ -19,13 +20,15 @@ export class OrderFormComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private orderFormValidationService: OrderFormValidationService,
               private openOrderService: OpenOrderService,
-              private orderSubmitService: OrderSubmitService) {
+              private orderSubmitService: OrderSubmitService,
+              private orderIdService: OrderIdService) {
   }
   onSubmit(){
     this.orderSubmitService.placeOrder(this.orderSubmitForm.value);
   }
 
   ngOnInit() {
+    this.orderIdService.getNextValidId();
     this.route.params
       .subscribe(
         (params: Params) => {
@@ -37,7 +40,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   initForm() {
-    let id:number;
+    let id = this.orderIdService.nextId;
     let action = '';
     let totalQuantity = null;
     let orderType = '';
@@ -91,7 +94,6 @@ export class OrderFormComponent implements OnInit {
       'localSymbol': new FormControl(localSymbol),
       'comboLegs': comboLegs
     });
-
 
     this.orderSubmitForm = new FormGroup({
       'id': new FormControl(id),
