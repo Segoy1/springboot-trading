@@ -41,6 +41,10 @@ export class OpenOrderService{
     });
     return returnOrder;
   }
+  addOrder(order:Order){
+    this.openOrders.push(order);
+    this.ordersChange();
+  }
   removeOrderById(id:number){
     const order = this.findOpenOrderById(id);
     this.openOrders.splice(this.openOrders.indexOf(order),1);

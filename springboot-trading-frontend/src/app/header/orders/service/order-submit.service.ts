@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import { FormBuilder } from '@angular/forms';
 import {OpenOrderService} from "./open-order.service";
 import {HttpClient} from "@angular/common/http";
+import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService{
@@ -12,8 +13,16 @@ export class OrderSubmitService{
 
   placeOrder(req : []){
     console.log(req);
-    this.http.post(this.url, req).subscribe(response => {
+    this.http.post<Order>(this.url, req).subscribe({
+      next:
+      response => {
+      this.openOrderService.addOrder(response);
       console.log(response);
-    })
+    }
+    ,error:
+    err => {
+      console.log(err);
+      }
+    });
   }
 }
