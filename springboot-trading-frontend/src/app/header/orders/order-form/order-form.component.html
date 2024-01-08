@@ -1,9 +1,9 @@
 <div class="container">
-  <h3 class="media-heading">{{editMode? 'Edit Order': 'Open Order'}}</h3>
+  <h3 class="media-heading">{{isEditMode()? 'Edit Order': 'Open Order'}}</h3>
   <hr>
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8">
-      <form [formGroup]="getOrderFormService().orderSubmitForm">
+      <form [formGroup]="getOrderForm()">
         <div class="col-xs-12" style="margin-bottom: 20px">
           <div class="row">
             <div class="col-xs-2">
@@ -159,7 +159,11 @@
           <app-combo-legs></app-combo-legs>
           <div class="row">
             <div class="form-group col-xs-2">
-              <button type="submit" class="btn btn-primary" [disabled]="!getOrderFormService().orderSubmitForm.valid || !getOrderFormService().orderSubmitForm.touched" (click)="onSubmit()">{{editMode? 'Update Order': 'Place Order'}}</button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!isFormValid() || !isFormTouched()"
+                (click)="onSubmit()">{{isEditMode()? 'Update Order': 'Place Order'}}</button>
             </div>
             <div class="form-group col-xs-2">
               <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>
