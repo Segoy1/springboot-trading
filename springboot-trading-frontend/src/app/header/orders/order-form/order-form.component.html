@@ -3,7 +3,7 @@
   <hr>
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8">
-      <form [formGroup]="orderSubmitForm">
+      <form [formGroup]="getOrderFormService().orderSubmitForm">
         <div class="col-xs-12" style="margin-bottom: 20px">
           <div class="row">
             <div class="col-xs-2">
@@ -43,7 +43,6 @@
             <div class="col-xs-2">
               <label for="limitPrice">Limit Price</label>
               <input
-                [disabled]=""
                 type="number"
                 id="limitPrice"
                 formControlName="limitPrice"
@@ -157,57 +156,16 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-xs-10 pull-right" formArrayName="comboLegs">
-              <div
-                class="row"
-                *ngFor="let comboLegControl of getComboLegControls(); let i = index"
-                [formGroupName]="i"
-                style="margin-top: 10px">
-                <div class="col-xs-3">
-                  <label *ngIf="i===0" for="{{i}}comboContractId">ContractId</label>
-                  <input
-                    id="{{i}}comboContractId"
-                    type="number"
-                    class="form-control"
-                    formControlName="contractId">
-                </div>
-                <div class="col-xs-2">
-                  <label *ngIf="i===0" for="{{i}}ratio">Ratio</label>
-                  <input id="{{i}}ratio" type="number" class="form-control" formControlName="ratio">
-                </div>
-                <div class="col-xs-2">
-                  <label *ngIf="i===0" for="{{i}}side">Buy/Sell</label>
-                  <input id="{{i}}side" type="text" class="form-control" formControlName="side">
-                </div>
-                <div class="col-xs-3">
-                  <label *ngIf="i===0" for="{{i}}comboExchange">Exchange</label>
-                  <input id="{{i}}comboExchange" type="text" class="form-control" formControlName="exchange">
-                </div>
-                <div class="col-xs-2">
-                  <br *ngIf="i===0" style="padding-top: 5px">
-                  <button class="btn btn-danger" type="button" (click)="onDeleteComboLeg(i)">X</button>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12" style="margin-top: 10px">
-                  <button class="btn btn-default glyphicon-plus pull-right" type="button" (click)="onAddComboLeg()"> Combo Leg
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr>
+          <app-combo-legs></app-combo-legs>
           <div class="row">
             <div class="form-group col-xs-2">
-              <button type="submit" class="btn btn-primary" [disabled]="!orderSubmitForm.valid || !orderSubmitForm.touched" (click)="onSubmit()">{{editMode? 'Update Order': 'Place Order'}}</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!getOrderFormService().orderSubmitForm.valid || !getOrderFormService().orderSubmitForm.touched" (click)="onSubmit()">{{editMode? 'Update Order': 'Place Order'}}</button>
             </div>
             <div class="form-group col-xs-2">
               <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>
             </div>
           </div>
         </div>
-
       </form>
     </div>
   </div>

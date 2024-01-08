@@ -5,6 +5,7 @@ import {OrderFormValidationService} from "../service/order-form-validation.servi
 import {ActivatedRoute, Params} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
 import {OrderIdService} from "../service/order-id.service";
+import {OrderFormService} from "../service/order-form.service";
 
 @Component({
   selector: 'app-order-form',
@@ -15,16 +16,20 @@ export class OrderFormComponent implements OnInit {
 
   id: number;
   editMode = false;
-  orderSubmitForm: FormGroup;
+  // orderSubmitForm: FormGroup;
 
   constructor(private route: ActivatedRoute,
               private orderFormValidationService: OrderFormValidationService,
               private openOrderService: OpenOrderService,
               private orderSubmitService: OrderSubmitService,
-              private orderIdService: OrderIdService) {
+              private orderIdService: OrderIdService,
+              private orderFormService: OrderFormService) {
+  }
+  getOrderFormService(){
+    return this.orderFormService;
   }
   onSubmit(){
-    this.orderSubmitService.placeOrder(this.orderSubmitForm.value);
+    this.orderSubmitService.placeOrder(this.orderFormService.orderSubmitForm.value);
   }
 
   ngOnInit() {
@@ -46,7 +51,6 @@ export class OrderFormComponent implements OnInit {
     let orderType = '';
     let limitPrice = null;
     let timeInForce = '';
-    let comboLegs = new FormArray([]);
     let contractId = null;
     let symbol = '';
     let securityType = 'STK';
@@ -57,6 +61,7 @@ export class OrderFormComponent implements OnInit {
     let right = 'None';
     let tradingClass = '';
     let localSymbol = '';
+    let comboLegs = new FormArray([]);
 
     if (this.editMode) {
       const order = this.openOrderService.findOpenOrderById(this.id);
@@ -76,9 +81,7 @@ export class OrderFormComponent implements OnInit {
       tradingClass = order.contractData.tradingClass;
       localSymbol = order.contractData.localSymbol;
 
-      order.contractData.comboLegs.forEach((comboLeg) => {
-        comboLegs.push(this.buildComboLeg(comboLeg.contractId,comboLeg.ratio,comboLeg.action, comboLeg.exchange));
-      })
+
     }
 
     let contractData = new FormGroup({
@@ -95,7 +98,7 @@ export class OrderFormComponent implements OnInit {
       'comboLegs': comboLegs
     });
 
-    this.orderSubmitForm = new FormGroup({
+    this.orderFormService.orderSubmitForm = new FormGroup({
       'id': new FormControl(id),
       'action': new FormControl<string>(action, Validators.required),
       'totalQuantity': new FormControl<number>(totalQuantity, Validators.required),
@@ -106,29 +109,10 @@ export class OrderFormComponent implements OnInit {
     });
   }
 
-  getComboLegControls() {
-    return (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).controls;
-  }
 
-  onDeleteComboLeg(index: number) {
-    (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).removeAt(index);
-  }
-
-  onAddComboLeg() {
-    (<FormArray>this.orderSubmitForm.get('contractData.comboLegs')).push(this.buildComboLeg(null, null, '', ''));
-  }
-
-  private buildComboLeg(contractId: number, ratio: number, side: string, exchange: string) {
-    return new FormGroup({
-        'contractId': new FormControl(contractId, Validators.required),
-        'ratio': new FormControl(ratio, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
-        'side': new FormControl(side, [Validators.required, this.validSide.bind(this)]),
-        'exchange': new FormControl((exchange === '' ? this.orderSubmitForm.get('contractData.exchange').value : exchange), Validators.required)
-      })
-  }
 
   onCancel() {
-    this.orderSubmitForm.reset();
+    this.orderFormService.orderSubmitForm.reset();
   }
 
   validOrderTypes(control: FormControl): { [s: string]: boolean } {
