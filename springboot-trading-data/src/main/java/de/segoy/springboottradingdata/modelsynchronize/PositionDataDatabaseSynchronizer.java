@@ -7,6 +7,7 @@ import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Component
 public class PositionDataDatabaseSynchronizer {
@@ -21,11 +22,12 @@ public class PositionDataDatabaseSynchronizer {
     }
 
     public PositionData findInDbOrSave(String account, Contract contract, BigDecimal position, double avgCost) {
-        PositionData positionData = ibkrResponseToPositionData.convertAndPersistContract(account, contract, position, avgCost);
+        PositionData positionData = ibkrResponseToPositionData.convertAndPersistContract(account, contract, position,
+                avgCost);
         return positionDataRepository.findFirstByContractData(positionData.getContractData()).map((dbPositionData) -> {
             dbPositionData.setPosition(positionData.getPosition());
             dbPositionData.setAverageCost(positionData.getAverageCost());
             return positionDataRepository.save(dbPositionData);
-        }).orElse(positionDataRepository.save(positionData));
+        }).orElseGet(()-> positionDataRepository.save(positionData));
     }
 }
