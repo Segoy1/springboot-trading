@@ -66,7 +66,7 @@ export class OrderFormComponent implements OnInit {
       orderType = order.orderType;
       limitPrice = order.limitPrice;
       timeInForce = order.timeInForce;
-      contractId = order.contractData.id;
+      contractId = order.contractData.contractId;
       symbol = order.contractData.symbol;
       currency = order.contractData.currency;
       exchange = order.contractData.exchange;
