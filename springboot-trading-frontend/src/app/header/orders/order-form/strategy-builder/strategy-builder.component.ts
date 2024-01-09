@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {OrderFormService} from "../../service/order-form.service";
 import {FormArray} from "@angular/forms";
 
@@ -7,9 +7,12 @@ import {FormArray} from "@angular/forms";
   templateUrl: './strategy-builder.component.html',
   styleUrl: './strategy-builder.component.css'
 })
-export class StrategyBuilderComponent {
+export class StrategyBuilderComponent  implements OnInit{
 
-  constructor(private orderFormService: OrderFormService) {
+  constructor(private orderFormService: OrderFormService){
+  }
+  ngOnInit() {
+    this.orderFormService.initStrategyForm();
   }
 
   getStrategyForm(){

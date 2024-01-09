@@ -40,7 +40,6 @@ export class OrderFormComponent implements OnInit {
   }
   onStrategyBuilder(){
     this.router.navigate(['strategy'],{relativeTo:this.route});
-    this.orderFormService.initStrategyForm();
   }
   onCancel() {
     this.orderFormService.getSubmitForm().reset();
