@@ -5,13 +5,15 @@ import {OrderIdService} from "./order-id.service";
 import {OpenOrderService} from "./open-order.service";
 
 @Injectable({providedIn: "root"})
-export class OrderFormService{
-  private orderSubmitForm : FormGroup;
+export class OrderFormService {
+  private simpleOrderSubmitForm: FormGroup;
+  private strategySubmitForm: FormGroup;
+  strategyMode = false;
   editMode = false;
-  id:number;
+  id: number;
 
-  constructor(private orderFormValidationService:OrderFormValidationService,
-              private orderIdService:OrderIdService,
+  constructor(private orderFormValidationService: OrderFormValidationService,
+              private orderIdService: OrderIdService,
               private openOrderService: OpenOrderService) {
   }
 
@@ -52,7 +54,7 @@ export class OrderFormService{
       tradingClass = order.contractData.tradingClass;
       localSymbol = order.contractData.localSymbol;
       order.contractData.comboLegs.forEach((comboLeg) => {
-        (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId,comboLeg.ratio,comboLeg.action, comboLeg.exchange));
+        (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
       })
 
 
@@ -72,7 +74,7 @@ export class OrderFormService{
       'comboLegs': comboLegs
     });
 
-    this.orderSubmitForm = new FormGroup({
+    this.simpleOrderSubmitForm = new FormGroup({
       'id': new FormControl(id),
       'action': new FormControl<string>(action, Validators.required),
       'totalQuantity': new FormControl<number>(totalQuantity, Validators.required),
@@ -82,20 +84,51 @@ export class OrderFormService{
       'contractData': contractData
     });
   }
-  buildComboLeg(contractId: number, ratio: number, side: string, exchange: string) {
+
+  initStrategyForm() {
+    this.strategyMode = true;
+    let legs = new FormArray([]);
+    (<FormArray>this.simpleOrderSubmitForm.get('contractData.comboLegs')).clear();
+
+    this.strategySubmitForm = new FormGroup<any>({
+      'orderData': this.simpleOrderSubmitForm,
+      'strategyLegs': legs
+    });
+  }
+
+
+  getSimpleForm() {
+    return this.simpleOrderSubmitForm;
+  }
+
+  getStrategyForm() {
+    return this.strategySubmitForm;
+  }
+
+  getSubmitForm() {
+    return this.strategyMode ? this.strategySubmitForm : this.simpleOrderSubmitForm;
+  }
+
+
+  buildStrategyLeg(right: string, action: string, ratio: number, strike: number) {
     return new FormGroup({
-      'contractId': new FormControl(contractId, Validators.required),
+      'right': new FormControl(right, [Validators.required, this.validRight.bind(this)]),
+      'action': new FormControl(action, [Validators.required, this.validAction.bind(this)]),
       'ratio': new FormControl(ratio, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
-      'side': new FormControl(side, [Validators.required, this.validSide.bind(this)]),
-      'exchange': new FormControl((exchange === '' ? this.orderSubmitForm.get('contractData.exchange').value : exchange), Validators.required)
+      'strike': new FormControl(strike, Validators.required)
     })
   }
 
-
-  getForm(){
-    return this.orderSubmitForm;
+  buildComboLeg(contractId: number, ratio: number, action: string, exchange: string) {
+    return new FormGroup({
+      'contractId': new FormControl(contractId, Validators.required),
+      'ratio': new FormControl(ratio, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
+      'action': new FormControl(action, [Validators.required, this.validAction.bind(this)]),
+      'exchange': new FormControl((exchange === '' ? this.simpleOrderSubmitForm.get('contractData.exchange').value : exchange), Validators.required)
+    })
   }
 
+  //--------Validators--------
   validOrderTypes(control: FormControl): { [s: string]: boolean } {
     if (this.orderFormValidationService.getOrderTypes().indexOf(control.value) === -1) {
       return {'noValidOrderType': true};
@@ -120,7 +153,7 @@ export class OrderFormService{
     }
   }
 
-  validSide(control: FormControl): { [s: string]: boolean } {
+  validAction(control: FormControl): { [s: string]: boolean } {
     if (this.orderFormValidationService.getSide().indexOf(control.value) === -1) {
       return {'noValidSide': true};
     }

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray} from "@angular/forms";
+import {FormArray, FormGroup} from "@angular/forms";
 import {OrderFormValidationService} from "../../service/order-form-validation.service";
 import {OrderFormService} from "../../service/order-form.service";
 
@@ -10,12 +10,11 @@ import {OrderFormService} from "../../service/order-form.service";
 })
 export class ComboLegsComponent{
 
-  constructor(private orderFormValidationService: OrderFormValidationService,
-              private orderFormService: OrderFormService) {
+  constructor(private orderFormService: OrderFormService) {
   }
 
   getOrderForm(){
-    return this.orderFormService.getForm();
+    return this.orderFormService.getSimpleForm();
   }
 
   getComboLegControls() {

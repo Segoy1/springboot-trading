@@ -25,6 +25,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import {OrderFormValidationService} from "./header/orders/service/order-form-validation.service";
 import { OrderStartComponent } from './header/orders/order-start/order-start.component';
 import { ComboLegsComponent } from './header/orders/order-form/combo-legs/combo-legs.component';
+import { StrategyBuilderComponent } from './header/orders/order-form/strategy-builder/strategy-builder.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { ComboLegsComponent } from './header/orders/order-form/combo-legs/combo-
     OpenOrderItemComponent,
     OrderFormComponent,
     OrderStartComponent,
-    ComboLegsComponent
+    ComboLegsComponent,
+    StrategyBuilderComponent
   ],
   imports: [
     CommonModule,

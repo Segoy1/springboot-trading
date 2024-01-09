@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OpenOrderService} from "../service/open-order.service";
 import {OrderFormValidationService} from "../service/order-form-validation.service";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
 import {OrderIdService} from "../service/order-id.service";
 import {OrderFormService} from "../service/order-form.service";
@@ -17,13 +17,14 @@ export class OrderFormComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private orderSubmitService: OrderSubmitService,
               private orderIdService: OrderIdService,
-              private orderFormService: OrderFormService) {
+              private orderFormService: OrderFormService,
+              private router: Router) {
   }
   getOrderForm(){
-    return this.orderFormService.getForm();
+    return this.orderFormService.getSimpleForm();
   }
   onSubmit(){
-    this.orderSubmitService.placeOrder(this.orderFormService.getForm().value);
+    this.orderSubmitService.placeOrder(this.orderFormService.getSubmitForm().value);
   }
 
   ngOnInit() {
@@ -37,18 +38,23 @@ export class OrderFormComponent implements OnInit {
         }
       )
   }
+  onStrategyBuilder(){
+    this.router.navigate(['strategy'],{relativeTo:this.route});
+    this.orderFormService.initStrategyForm();
+  }
   onCancel() {
-    this.orderFormService.getForm().reset();
+    this.orderFormService.getSubmitForm().reset();
   }
   isEditMode(){
     return this.orderFormService.editMode;
   }
+  isStrategyMode(){
+    return this.orderFormService.strategyMode;
+  }
   isFormValid(){
-    return this.orderFormService.getForm().valid;
+    return this.orderFormService.getSubmitForm().valid;
   }
   isFormTouched(){
-    return this.orderFormService.getForm().touched;
+    return this.orderFormService.getSubmitForm().touched;
   }
-
-
 }
