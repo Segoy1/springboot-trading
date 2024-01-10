@@ -1,6 +1,7 @@
 package de.segoy.springboottradingdata.repository;
 
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.model.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.entity.ContractData;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +13,8 @@ public interface ContractDataRepository  extends IBKRDataTypeRepository<Contract
 
     List<ContractData> findAllByContractId(Integer id);
     Optional<ContractData> findFirstByContractId(Integer id);
+    List<ContractData> findByComboLegsContains(ComboLegData comboLegData);
+    List<ContractData> findByComboLegsDescriptionContains(String contractId);
 
     Optional<ContractData> findFirstBySymbolAndSecurityTypeAndCurrency(String symbol, Types.SecType secType,
                                                                        String currency);

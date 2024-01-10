@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -56,7 +57,12 @@ public class ContractData extends IBKRDataTypeEntity {
     private boolean includeExpired;  // can not be set to true for orders
     private String comboLegsDescription; // received in open order version 14 and up for all combos
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name="contract_legs",
+            joinColumns = @JoinColumn(name="contract_data_id"),
+            inverseJoinColumns = @JoinColumn(name="combo_leg_id")
+    )
     @Singular
     private List<ComboLegData> comboLegs;
 }
