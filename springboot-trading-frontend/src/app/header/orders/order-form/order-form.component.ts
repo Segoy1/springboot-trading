@@ -25,7 +25,7 @@ export class OrderFormComponent implements OnInit {
     return this.orderFormService.getSimpleForm();
   }
   onSubmit(){
-    this.orderSubmitService.placeOrder(this.orderFormService.getSubmitForm().value);
+    this.orderSubmitService.placeOrder(this.orderFormService.getSubmitForm().getRawValue());
   }
 
   ngOnInit() {
