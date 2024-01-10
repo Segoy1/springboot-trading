@@ -7,6 +7,7 @@ import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.service.ComboContractDataFinder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,11 +18,13 @@ public class ContractDataDatabaseSynchronizer {
     private final IBKRContractToContractData ibkrContractToContractData;
     private final ContractDataRepository contractDataRepository;
     private final ComboLegDataRepository comboLegDataRepository;
+    private final ComboContractDataFinder comboContractDataFinder;
 
-    public ContractDataDatabaseSynchronizer(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository, ComboLegDataRepository comboLegDataRepository) {
+    public ContractDataDatabaseSynchronizer(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository, ComboLegDataRepository comboLegDataRepository, ComboContractDataFinder comboContractDataFinder) {
         this.ibkrContractToContractData = ibkrContractToContractData;
         this.contractDataRepository = contractDataRepository;
         this.comboLegDataRepository = comboLegDataRepository;
+        this.comboContractDataFinder = comboContractDataFinder;
     }
 
     public ContractData findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong id, Contract contract){
@@ -32,15 +35,15 @@ public class ContractDataDatabaseSynchronizer {
             List<ComboLegData> comboLegs = new ArrayList<>();
             ContractData newContractData = ibkrContractToContractData.convertIBKRContract(contract);
 
-            id.ifPresent(newContractData::setId);
             if(isCombo){
             newContractData.getComboLegs().forEach(
                     (comboLeg)-> {
                     comboLegs.add(saveComboLegIfNotExistent(comboLeg));
                     });
             newContractData.setComboLegs(comboLegs);
-            newContractData = checkContractWithComboLegs(comboLegs).orElse(newContractData);
+            id = id.isPresent()?id:comboContractDataFinder.checkContractWithComboLegs(comboLegs);
             }
+            id.ifPresent(newContractData::setId);
             return contractDataRepository.save(newContractData);
         }
     }
@@ -52,27 +55,5 @@ public class ContractDataDatabaseSynchronizer {
                 comboLegData.getExchange()).orElseGet(()->{
             return comboLegDataRepository.save(comboLegData);
         });
-    }
-    private Optional<ContractData> checkContractWithComboLegs(List<ComboLegData> comboLegs){
-        final List<ContractData> oldContracts= new ArrayList<>();
-        for(ComboLegData comboLeg : comboLegs){
-            List<ContractData> contracts =
-                    contractDataRepository.findByComboLegsDescriptionContains(comboLeg.getContractId().toString());
-            if(contracts.isEmpty()){
-                //if none are found on any Given ComboLeg there is no existing Order
-                return Optional.empty();
-            }else if(oldContracts.isEmpty()){
-                //populate List of existing Orders with first iteration
-                oldContracts.addAll(contracts);
-            }else{
-                //remove all existing Orders that are not in latest iteration
-                oldContracts.removeIf(oldContract -> !contracts.contains(oldContract));
-                if(oldContracts.isEmpty()){
-                    return Optional.empty();
-                }
-            }
-        };
-        //if list is not empty return first value, there should never be more than one
-        return Optional.of(oldContracts.get(0));
     }
 }
