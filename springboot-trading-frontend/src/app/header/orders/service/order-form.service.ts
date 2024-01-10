@@ -93,7 +93,9 @@ export class OrderFormService {
     this.simpleOrderSubmitForm.get('contractData.securityType').disable();
     this.simpleOrderSubmitForm.get('contractData.lastTradeDate').addValidators(Validators.required);
     this.simpleOrderSubmitForm.get('contractData.right').disable();
+    this.simpleOrderSubmitForm.get('contractData.right').setValue('None');
     this.simpleOrderSubmitForm.get('contractData.strike').disable();
+    this.simpleOrderSubmitForm.get('contractData.strike').setValue(null);
 
     let legs = new FormArray([]);
     (<FormArray>this.simpleOrderSubmitForm.get('contractData.comboLegs')).clear();
@@ -102,6 +104,16 @@ export class OrderFormService {
       'orderData': this.simpleOrderSubmitForm,
       'strategyLegs': legs
     });
+  }
+
+  switchFromStrategyToSimple() {
+    this.strategyMode = false;
+
+    this.simpleOrderSubmitForm.get('contractData.securityType').setValue('BAG');
+    this.simpleOrderSubmitForm.get('contractData.securityType').enable();
+    this.simpleOrderSubmitForm.get('contractData.lastTradeDate').removeValidators(Validators.required);
+    this.simpleOrderSubmitForm.get('contractData.right').enable();
+    this.simpleOrderSubmitForm.get('contractData.strike').enable();
   }
 
 
@@ -166,9 +178,10 @@ export class OrderFormService {
       return {'noValidSide': true};
     }
   }
-    validStrategyLegs(control:FormControl): { [s: string]: boolean } {
-    if((<FormArray>this.getStrategyForm().get('strategyLegs')).length<2){
-      return {'notAStrategy':true};
+
+  validStrategyLegs(control: FormControl): { [s: string]: boolean } {
+    if ((<FormArray>this.getStrategyForm().get('strategyLegs')).length < 2) {
+      return {'notAStrategy': true};
     }
-    }
+  }
 }
