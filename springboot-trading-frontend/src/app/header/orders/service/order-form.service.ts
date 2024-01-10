@@ -19,7 +19,7 @@ export class OrderFormService {
 
   initForm() {
     this.strategyMode = false;
-    let id = this.orderIdService.nextId;
+    let id:number;
     let action = '';
     let totalQuantity = null;
     let orderType = '';

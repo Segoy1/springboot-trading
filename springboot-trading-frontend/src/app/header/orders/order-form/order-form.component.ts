@@ -13,6 +13,7 @@ import {OrderFormService} from "../service/order-form.service";
   styleUrl: './order-form.component.css'
 })
 export class OrderFormComponent implements OnInit {
+  nextId:number;
 
   constructor(private route: ActivatedRoute,
               private orderSubmitService: OrderSubmitService,
@@ -28,7 +29,9 @@ export class OrderFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.orderIdService.getNextValidId();
+    this.orderIdService.getNextValidId().subscribe((id)=>{
+      this.nextId=id;
+    })
     this.route.params
       .subscribe(
         (params: Params) => {
