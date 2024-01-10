@@ -59,40 +59,6 @@ public class ContractDataController {
     }
 
 
-    //Test Code
-    @GetMapping("/iron_condor")
-    public ResponseEntity<ContractData> fourLegContractDataWithParams(@RequestParam(defaultValue = "SPX", name = "symbol") String symbol,
-                                                                      @RequestParam(defaultValue = "BAG", name = "securityType") Types.SecType securityType,
-                                                                      @RequestParam(defaultValue = "USD", name = "currency") String currency,
-                                                                      @RequestParam(defaultValue = "SMART", name = "exchange") String exchange,
-                                                                      @RequestParam(defaultValue = "SPXW", name = "tradingClass") String tradingClass,
-                                                                      @RequestParam(required = true, name = "lastTradeDate") String lastTradeDate,
-                                                                      @RequestParam(required = true, name = "buyPutStrike") double buyPutStrike,
-                                                                      @RequestParam(required = true, name = "sellPutStrike") double sellPutStrike,
-                                                                      @RequestParam(required = true, name = "buyCallStrike") double buyCallStrike,
-                                                                      @RequestParam(required = true, name = "sellCallStrike") double sellCallStrike
-    ) {
-
-        List<Leg> legs = new ArrayList<>();
-        legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Put).strike(buyPutStrike).ratio(1).build());
-        legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Put).strike(sellPutStrike).ratio(1).build());
-        legs.add(Leg.builder().action(Types.Action.BUY).right(Types.Right.Call).strike(buyCallStrike).ratio(1).build());
-        legs.add(Leg.builder().action(Types.Action.SELL).right(Types.Right.Call).strike(sellCallStrike).ratio(1).build());
-
-        ContractData contractData = ContractData.builder()
-                .symbol(symbol)
-                .securityType(securityType)
-                .currency(currency)
-                .exchange(exchange)
-                .lastTradeDate(lastTradeDate)
-                .build();
-
-        Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contractData, legs);
-
-        return responseMapper.mapResponse(savedContract);
-    }
-
-
     @PutMapping()
     public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contractData) {
         Optional<ContractData> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);

@@ -18,6 +18,7 @@ export class OrderFormService {
   }
 
   initForm() {
+    this.strategyMode = false;
     let id = this.orderIdService.nextId;
     let action = '';
     let totalQuantity = null;
@@ -87,6 +88,13 @@ export class OrderFormService {
 
   initStrategyForm() {
     this.strategyMode = true;
+
+    this.simpleOrderSubmitForm.get('contractData.securityType').setValue('BAG');
+    this.simpleOrderSubmitForm.get('contractData.securityType').disable();
+    this.simpleOrderSubmitForm.get('contractData.lastTradeDate').addValidators(Validators.required);
+    this.simpleOrderSubmitForm.get('contractData.right').disable();
+    this.simpleOrderSubmitForm.get('contractData.strike').disable();
+
     let legs = new FormArray([]);
     (<FormArray>this.simpleOrderSubmitForm.get('contractData.comboLegs')).clear();
 
@@ -158,4 +166,9 @@ export class OrderFormService {
       return {'noValidSide': true};
     }
   }
+    validStrategyLegs(control:FormControl): { [s: string]: boolean } {
+    if((<FormArray>this.getStrategyForm().get('strategyLegs')).length<2){
+      return {'notAStrategy':true};
+    }
+    }
 }

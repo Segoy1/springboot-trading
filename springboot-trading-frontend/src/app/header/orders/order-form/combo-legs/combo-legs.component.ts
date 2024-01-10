@@ -2,15 +2,20 @@ import {Component, OnInit} from '@angular/core';
 import {FormArray, FormGroup} from "@angular/forms";
 import {OrderFormValidationService} from "../../service/order-form-validation.service";
 import {OrderFormService} from "../../service/order-form.service";
+import {OrderSubmitService} from "../../service/order-submit.service";
 
 @Component({
   selector: 'app-combo-legs',
   templateUrl: './combo-legs.component.html',
   styleUrl: './combo-legs.component.css'
 })
-export class ComboLegsComponent{
+export class ComboLegsComponent implements OnInit{
 
-  constructor(private orderFormService: OrderFormService) {
+  constructor(private orderFormService: OrderFormService,
+              private orderSubmitService: OrderSubmitService) {
+  }
+  ngOnInit() {
+    this.orderSubmitService.setUrlToStrategyRequest(false);
   }
 
   getOrderForm(){

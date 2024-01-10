@@ -6,14 +6,19 @@ import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService{
-  private url = 'http://localhost:8080/order/place-order';
+  private orderUrl = 'http://localhost:8080/order/place-order';
+  private strategyUrl = 'http://localhost:8080/order/place-strategy-order';
+  private activeUrl= this.orderUrl;
 
   constructor(private openOrderService: OpenOrderService, private http: HttpClient) {
+  }
+  setUrlToStrategyRequest(strategy: boolean){
+    this.activeUrl = strategy?this.strategyUrl:this.orderUrl;
   }
 
   placeOrder(req : []){
     console.log(req);
-    this.http.post<Order>(this.url, req).subscribe({
+    this.http.post<Order>(this.activeUrl, req).subscribe({
       next:
       response => {
       this.openOrderService.addOrder(response);

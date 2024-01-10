@@ -8,15 +8,20 @@
         style="margin-top: 10px">
         <div class="col-xs-3">
           <label *ngIf="i===0" for="{{i}}right">Call/Put</label>
-          <input
+          <select
             id="{{i}}right"
-            type="text"
-            class="form-control"
-            formControlName="right">
+            formControlName="right"
+            class="form-control">
+            <option value="Call">Call</option>
+            <option value="Put">Put</option>
+          </select>
         </div>
         <div class="col-xs-2">
           <label *ngIf="i===0" for="{{i}}action">Buy/Sell</label>
-          <input id="{{i}}action" type="text" class="form-control" formControlName="action">
+          <select id="{{i}}action" type="text" class="form-control" formControlName="action">
+            <option value="BUY">Buy</option>
+            <option value="SELL">Sell</option>
+          </select>
         </div>
         <div class="col-xs-2">
           <label *ngIf="i===0" for="{{i}}ratio">Ratio</label>
