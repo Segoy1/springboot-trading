@@ -25,10 +25,19 @@ public class StrategyBuilderService {
     public Optional<ContractData> getComboLegContractData(ContractData contractData, List<Leg> legs) {
         try {
             contractData.setComboLegs(legListBuilder(contractData, legs));
+            setComboLegsDescription(contractData);
             return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData);
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
+    }
+
+    private void setComboLegsDescription(ContractData contractData) {
+        StringBuilder description= new StringBuilder();
+        for(ComboLegData leg:contractData.getComboLegs()){
+            description.append(leg.getContractId()).append(" | ");
+        }
+        contractData.setComboLegsDescription(description.toString());
     }
 
     private List<ComboLegData> legListBuilder(ContractData contractData, List<Leg> legs) {
