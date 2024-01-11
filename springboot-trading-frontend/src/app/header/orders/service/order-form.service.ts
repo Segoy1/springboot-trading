@@ -48,6 +48,7 @@ export class OrderFormService {
       timeInForce = order.timeInForce;
       contractId = order.contractData.contractId;
       symbol = order.contractData.symbol;
+      securityType = order.contractData.securityType;
       currency = order.contractData.currency;
       exchange = order.contractData.exchange;
       lastTradeDate = order.contractData.lastTradeDate;
