@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OpenOrderService} from "../service/open-order.service";
 import {OrderFormValidationService} from "../service/order-form-validation.service";
@@ -15,13 +15,11 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 })
 export class OrderFormComponent implements OnInit {
   nextId:number;
-  ordersLoaded:Promise<boolean>;
 
   constructor(private route: ActivatedRoute,
               private orderSubmitService: OrderSubmitService,
               private orderIdService: OrderIdService,
               private orderFormService: OrderFormService,
-              private openOrderService: OpenOrderService,
               private router: Router) {
   }
   ngOnInit() {
@@ -42,6 +40,7 @@ export class OrderFormComponent implements OnInit {
         }
       )
   }
+
   getOrderForm(){
     return this.orderFormService.getSimpleForm();
   }

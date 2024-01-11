@@ -40,7 +40,6 @@ export class OrderFormService {
     if (this.editMode) {
       let order = this.openOrderService.findOpenOrderById(this.id);
 
-      console.log(order);
       id = order.id
       action = order.action;
       totalQuantity = order.totalQuantity;

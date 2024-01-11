@@ -15,6 +15,7 @@ export class ComboLegsComponent implements OnInit{
               private orderSubmitService: OrderSubmitService) {
   }
   ngOnInit() {
+    this.orderFormService.strategyMode=false;
     this.orderSubmitService.setUrlToStrategyRequest(false);
   }
 
