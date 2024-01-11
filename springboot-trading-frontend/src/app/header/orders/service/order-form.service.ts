@@ -3,6 +3,7 @@ import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OrderFormValidationService} from "./order-form-validation.service";
 import {OrderIdService} from "./order-id.service";
 import {OpenOrderService} from "./open-order.service";
+import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {
@@ -13,13 +14,12 @@ export class OrderFormService {
   id: number;
 
   constructor(private orderFormValidationService: OrderFormValidationService,
-              private orderIdService: OrderIdService,
               private openOrderService: OpenOrderService) {
   }
 
   initForm() {
     this.strategyMode = false;
-    let id:number;
+    let id: number;
     let action = '';
     let totalQuantity = null;
     let orderType = '';
@@ -38,7 +38,9 @@ export class OrderFormService {
     let comboLegs = new FormArray([]);
 
     if (this.editMode) {
-      const order = this.openOrderService.findOpenOrderById(this.id);
+      let order = this.openOrderService.findOpenOrderById(this.id);
+
+      console.log(order);
       id = order.id
       action = order.action;
       totalQuantity = order.totalQuantity;
@@ -57,7 +59,6 @@ export class OrderFormService {
       order.contractData.comboLegs.forEach((comboLeg) => {
         (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
       })
-
 
     }
 
@@ -118,6 +119,9 @@ export class OrderFormService {
 
 
   getSimpleForm() {
+    if (this.simpleOrderSubmitForm == null) {
+      this.initForm();
+    }
     return this.simpleOrderSubmitForm;
   }
 

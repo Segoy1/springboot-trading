@@ -56,4 +56,7 @@ export class OpenOrderService{
   ordersChange(){
     this.ordersChanged.next(this.openOrders);
   }
+  getOpenOrders(){
+    return this.openOrders.slice()
+  }
 }
