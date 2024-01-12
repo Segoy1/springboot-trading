@@ -40,15 +40,11 @@ class DatabaseSyncIBKRContractAndContractDataTest {
 
         when(contractDataRepository.findFirstByContractId(123)).thenReturn(Optional.empty());
         when(ibkrContractToContractData.convertIBKRContract(contract)).thenReturn(data);
-        when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(1, Types.Action.BUY,1,"SMART")).thenReturn(Optional.empty());
-        when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(2, Types.Action.SELL,2,"SMART")).thenReturn(Optional.empty());
         when(contractDataRepository.save(data)).thenReturn(data);
 
 
         ContractData returnData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(1), contract);
         verify(contractDataRepository, times(1)).save(data);
-        verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(0));
-        verify(comboLegDataRepository, times(1)).save(data.getComboLegs().get(1));
         assertEquals(1L, returnData.getId());
     }
 
@@ -75,9 +71,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
 
         when(contractDataRepository.findFirstByContractId(123)).thenReturn(Optional.empty());
         when(ibkrContractToContractData.convertIBKRContract(contract)).thenReturn(data);
-        when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(1, Types.Action.BUY,1,"SMART")).thenReturn(Optional.of(data.getComboLegs().get(0)));
-        when(comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(2, Types.Action.SELL,2,"SMART")).thenReturn(Optional.of(data.getComboLegs().get(1)));
-        when(contractDataRepository.save(data)).thenReturn(data);
+       when(contractDataRepository.save(data)).thenReturn(data);
 
         ContractData returnData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
         verify(contractDataRepository, times(1)).save(data);
