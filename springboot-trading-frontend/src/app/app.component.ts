@@ -1,20 +1,18 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthResponse, LoginService} from "./header/login/login.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  isOrders: boolean = false;
-  isMarketData: boolean = false ;
-  isPortfolio: boolean = false;
-  isLogin: boolean = false;
+export class AppComponent implements OnInit{
 
-  activeCategory(category: string){
-    this.isMarketData = category === "marketData";
-    this.isOrders = category === "orders";
-    this.isPortfolio = category === "portfolio";
-    this.isLogin = category === "login";
+  constructor(private loginService: LoginService) {
   }
+
+  ngOnInit() {
+    this.loginService.autoLogin();
+  }
+
 }

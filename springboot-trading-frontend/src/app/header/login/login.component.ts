@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
-import {LoginService} from "../shared/login.service";
+import {LoginService} from "./login.service";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-login',
@@ -10,15 +11,35 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
-  credentials = {username: '', password: ''};
+  isLoading = false;
+  error:string = null;
 
   constructor(private loginService: LoginService, private http: HttpClient, private router: Router) {
   }
 
-  login() {
-    this.loginService.authenticate(this.credentials, () => {
-      this.router.navigateByUrl('/');
+  login(form: NgForm) {
+    if(!form.valid){
+      return
+    }
+    const username = form.value.username;
+    const password = form.value.password;
+    this.isLoading = true;
+
+    this.loginService.login(username, password).subscribe({
+      next:
+        (resData) => {
+          console.log(resData);
+          this.isLoading = false;
+          this.router.navigate(['./portfolio']);
+        }
+      , error:
+        (errorMessage) => {
+          this.error = errorMessage;
+          this.isLoading = false;
+          console.log(this.error);
+        }
     });
-    return false;
+    form.resetForm();
+
   }
 }

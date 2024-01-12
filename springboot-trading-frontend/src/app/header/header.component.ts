@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 export class HeaderComponent {
   @Output() headerSelectEvent: EventEmitter<string> = new EventEmitter<string>();
   collapsed: boolean = false;
-  isConnected:any = false;
+  isConnected:any = true;
 
   constructor(private httpService:HttpService, private router:Router) {
   }

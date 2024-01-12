@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {error} from "@angular/compiler-cli/src/transformers/util";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
+import {User} from "./user.model";
 
-export interface Token{
+export interface AuthResponse {
   username: string;
   token: string;
   authorities: string;
@@ -11,30 +12,41 @@ export interface Token{
 @Injectable()
 export class LoginService {
   private loginUrl = 'http://localhost:8080/login'
-  token = new BehaviorSubject<Token>(null)
+  user = new BehaviorSubject<User>(null)
 
   constructor(private http: HttpClient) {
   }
 
   login(username: string, password: string) {
-    this.http.post<Token>(this.loginUrl,
+    return this.http.post<AuthResponse>(this.loginUrl,
       {
         username: username, password: password
-      })
-      .subscribe({
-          next:
-            (res) => {
-            // this.token = res
-              console.log(res);
-            },
-          error:
-            (error) => {
-              console.log(error);
-            }
-        }
-      );
+      }).pipe(catchError(this.handleError),tap(responeData => {
+        this.handleResponse(responeData.username, responeData.token, responeData.authorities)
+    }))
   }
-  // private handleResponse(token: string){
-  //   const token =
-  // }
+  autoLogin(){
+    const userData:{
+      username:string;
+      token:string;
+      authorities:string;
+    }=JSON.parse(localStorage.getItem('userData'));
+    if(!userData){
+      return
+    }
+    const loadedUser = new User(userData.username, userData.token, userData.authorities);
+    this.user.next(loadedUser);
+  }
+  logout(){
+    this.user.next(null);
+    localStorage.removeItem('userData');
+  }
+  private handleResponse(username: string, token: string, authorities: string){
+    const user = new User(username, token, authorities);
+    this.user.next(user);
+    localStorage.setItem('userData', JSON.stringify(user));
+   }
+   private handleError(errorRes: HttpErrorResponse){
+    return throwError(errorRes);
+   }
 }

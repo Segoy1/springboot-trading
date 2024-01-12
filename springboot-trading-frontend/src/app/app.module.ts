@@ -8,13 +8,13 @@ import {OrdersComponent} from './header/orders/orders.component';
 import {PortfolioComponent} from './header/portfolio/portfolio.component';
 import {MarketDataComponent} from './header/market-data/market-data.component';
 import {DropdownDirective} from "./header/shared/dropdown.directive";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HistoicalDataComponent} from './header/histoical-data/histoical-data.component';
 import {AccountComponent} from './header/account/account.component';
 import {LoginComponent} from './header/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterLink, RouterLinkActive, RouterModule, Routes} from "@angular/router";
-import {LoginService} from "./header/shared/login.service";
+import {LoginService} from "./header/login/login.service";
 import {CommonModule} from "@angular/common";
 import {PositionItemComponent} from './header/portfolio/position-item/position-item.component';
 import {PortfolioService} from "./header/portfolio/portfolio.service";
@@ -26,6 +26,8 @@ import {OrderFormValidationService} from "./header/orders/service/order-form-val
 import { OrderStartComponent } from './header/orders/order-start/order-start.component';
 import { ComboLegsComponent } from './header/orders/order-form/combo-legs/combo-legs.component';
 import { StrategyBuilderComponent } from './header/orders/order-form/strategy-builder/strategy-builder.component';
+import { LoadingSpinnerComponent } from './header/shared/loading-spinner/loading-spinner.component';
+import {LoginInterceptorService} from "./header/login/login-interceptor.service";
 
 
 @NgModule({
@@ -44,7 +46,8 @@ import { StrategyBuilderComponent } from './header/orders/order-form/strategy-bu
     OrderFormComponent,
     OrderStartComponent,
     ComboLegsComponent,
-    StrategyBuilderComponent
+    StrategyBuilderComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +59,7 @@ import { StrategyBuilderComponent } from './header/orders/order-form/strategy-bu
     ReactiveFormsModule,
     AppRoutingModule
   ],
-  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService],
+  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService, {provide: HTTP_INTERCEPTORS, useClass: LoginInterceptorService, multi:true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
