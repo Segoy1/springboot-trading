@@ -24,6 +24,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
@@ -49,19 +50,19 @@ public class WebSecurityConfig {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/");
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(mvc.pattern("/"), mvc.pattern("/home")).permitAll()
+                        .requestMatchers(mvc.pattern("/"), mvc.pattern("**")).permitAll()
                         .requestMatchers(mvc.servletPath("/h2-console").pattern("**")).permitAll()
                         .requestMatchers(mvc.servletPath("/login").pattern("**")).permitAll()
                         .anyRequest().authenticated())
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .failureUrl("/login-error")
-//                        .permitAll())
-//                .logout(form -> form
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/login")
-//                        .permitAll())
+
+                // csrf disable + getting the SessionId + adding it in Header as Cookie seems to work just in case
+                //curl -i -X POST 'http://localhost:8080/login' -H 'Content-Type: application/json' --data '{"username":"john","password":"john"}'
+                // curl -i -H 'Cookie:  JSESSIONID=9EA7269CE206590E522DDA66A2BD3B63' http://localhost:8080/order/open-orders
                 .csrf(AbstractHttpConfigurer::disable)
+
+//                 .csrf((csrf) -> {
+//                    csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+//                 })
                 .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .cors((cors) -> {
                     cors.configurationSource(corsConfigurationSource());
