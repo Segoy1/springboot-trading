@@ -10,12 +10,13 @@
 
       <div class="navbar-default">
         <ul class="nav navbar-nav">
-          <li routerLinkActive="active"><a routerLink="/orders">Orders</a></li>
-          <li routerLinkActive="active"><a routerLink="/portfolio">Portfolio</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn"><a routerLink="/orders">Orders</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn"><a routerLink="/portfolio">Portfolio</a></li>
           <li routerLinkActive="active"><a routerLink="/market-data">Market Data</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li routerLinkActive="active"><a routerLink="/login">Login</a></li>
+          <li routerLinkActive="active" *ngIf="!isLoggedIn"><a routerLink="/login">Login</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn"><a routerLink="/logout">Logout</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown" appDropdown>
