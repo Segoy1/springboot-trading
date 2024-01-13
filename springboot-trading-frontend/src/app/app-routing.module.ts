@@ -9,11 +9,11 @@ import {OrderFormComponent} from "./header/orders/order-form/order-form.componen
 import {OrderStartComponent} from "./header/orders/order-start/order-start.component";
 import {StrategyBuilderComponent} from "./header/orders/order-form/strategy-builder/strategy-builder.component";
 import {ComboLegsComponent} from "./header/orders/order-form/combo-legs/combo-legs.component";
-import {OpenOrdersResolverService} from "./header/orders/open-orders-resolver.service";
+import {LoginGuard} from "./header/login/login.guard";
 
 const appRoutes: Routes = [
   {path: 'home', component: HeaderComponent},
-  {path: 'orders', component: OrdersComponent, children: [
+  {path: 'orders', component: OrdersComponent, canActivate: [LoginGuard], children: [
       {path: '', component: OrderStartComponent},
       {path: 'new', component: OrderFormComponent, children: [
           {path: '',component: ComboLegsComponent},
@@ -23,7 +23,7 @@ const appRoutes: Routes = [
           {path: '',component: ComboLegsComponent}
         ]}
     ]},
-  {path: 'portfolio', component: PortfolioComponent},
+  {path: 'portfolio', canActivate: [LoginGuard], component: PortfolioComponent},
   {path: 'market-data', component: MarketDataComponent},
   {path: 'login', component: LoginComponent}
 ];
