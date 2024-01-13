@@ -13,11 +13,12 @@ export class LoginInterceptorService implements HttpInterceptor{
     return this.loginService.user.pipe(
       take(1),
       exhaustMap(user => {
+        console.log(req);
         if(!user){
           return next.handle(req);
         }
         const modifiedReq = req.clone({
-          headers: new HttpHeaders().set('Cookie', 'JSESSIONID='+user.token)
+          headers: new HttpHeaders().set('authorization', 'Basic '+user.token)
         });
         return next.handle(modifiedReq);
       })
