@@ -1,21 +1,17 @@
 package de.segoy.springboottradingweb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.apache.tomcat.util.json.JSONParser;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,17 +38,9 @@ public class LoginController {
                 loginRequest.password));
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authenticationResponse);
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
-        result.put("token", session.getId());
         result.put("username", loginRequest.username);
-        result.put("authorities", authenticationRequest.getAuthorities().toString());
+        result.put("authorities", authenticationResponse.getAuthorities().toString());
         return result;
-    }
-
-    @RequestMapping("/token")
-    public Map<String,String> token(HttpSession session) {
-        return Collections.singletonMap("token", session.getId());
     }
 
 
