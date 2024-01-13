@@ -25,7 +25,7 @@ const appRoutes: Routes = [
     ]},
   {path: 'portfolio', component: PortfolioComponent},
   {path: 'market-data', component: MarketDataComponent},
-  {path: 'login', component: LoginComponent},
+  {path: 'login', component: LoginComponent}
 ];
 
 @NgModule({
