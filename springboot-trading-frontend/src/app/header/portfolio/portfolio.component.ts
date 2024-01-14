@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {PortfolioService} from "./service/portfolio.service";
+import {PositionService} from "./service/position.service";
 import {Position} from "../model/position.model";
 import {Subscription} from "rxjs";
+import {ProfitAndLoss} from "../model/profit-and-loss.model";
+import {ProfitLossService} from "./service/profit-loss.service";
+import {PortfolioService} from "./service/portfolio.service";
+import {Portfolio} from "../model/portfolio.model";
 
 @Component({
   selector: 'app-portfolio',
@@ -10,19 +14,16 @@ import {Subscription} from "rxjs";
 })
 export class PortfolioComponent implements OnInit {
 
-  positions: Position[];
-  positionsSub: Subscription;
+  portfolio: Portfolio[];
+  portfolioSub: Subscription;
 
 
   constructor(private portfolioService: PortfolioService) {
   }
-
   ngOnInit() {
-    this.positionsSub = this.portfolioService.positionsChanged.subscribe(positions => {
-      this.positions = positions;
+    this.portfolioSub = this.portfolioService.portfolioChanged.subscribe(positions => {
+      this.portfolio = positions;
     });
     this.portfolioService.initPortfolio();
   }
-
-
 }
