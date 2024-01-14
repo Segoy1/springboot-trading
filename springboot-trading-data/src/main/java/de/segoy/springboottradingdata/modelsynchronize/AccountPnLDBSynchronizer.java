@@ -14,6 +14,15 @@ public class AccountPnLDBSynchronizer {
     }
 
     public void saveToDB(ProfitAndLossData profitAndLossData){
+        if(profitAndLossData.getRealizedPnL()==Double.MAX_VALUE){
+            profitAndLossData.setRealizedPnL(null);
+        }
+        if(profitAndLossData.getDailyPnL()==Double.MAX_VALUE){
+            profitAndLossData.setDailyPnL(null);
+        }
+        if(profitAndLossData.getUnrealizedPnL()==Double.MAX_VALUE){
+            profitAndLossData.setUnrealizedPnL(null);
+        }
         profitAndLossDataRepository.save(profitAndLossData);
     }
 }
