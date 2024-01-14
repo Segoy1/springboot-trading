@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.accountsummery;
+package de.segoy.springboottradingibkr.client.service.accountsummary;
 
 import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingdata.service.apiresponsecheck.noinput.NoInputListApiResponseChecker;

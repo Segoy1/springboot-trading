@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.accountsummery;
+package de.segoy.springboottradingibkr.client.service.accountsummary;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
