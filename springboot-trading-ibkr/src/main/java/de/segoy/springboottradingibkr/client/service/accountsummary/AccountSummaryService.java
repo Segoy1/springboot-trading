@@ -11,12 +11,12 @@ import java.util.List;
 @Service
 public class AccountSummaryService {
 
-    private final ApiCallerWithoutParameter<AccountSummaryData> accountSummaryApiCaller;
-    private final ApiCallerWithoutParameter<AccountSummaryData> accountSummaryCancelApiCaller;
+    private final ApiCallerWithoutParameter accountSummaryApiCaller;
+    private final ApiCallerWithoutParameter accountSummaryCancelApiCaller;
     private final NoInputListApiResponseChecker<AccountSummaryData> accountSummaryApiResponseChecker;
 
     public AccountSummaryService(@Qualifier("AccountSummaryApiCaller") AccountSummaryApiCaller accountSummaryApiCaller,
-                                 @Qualifier("AccountSummaryCancelApiCaller") ApiCallerWithoutParameter<AccountSummaryData> accountSummaryCancelApiCaller,
+                                 @Qualifier("AccountSummaryCancelApiCaller") ApiCallerWithoutParameter accountSummaryCancelApiCaller,
                                  NoInputListApiResponseChecker<AccountSummaryData> accountSummaryApiResponseChecker) {
         this.accountSummaryApiCaller = accountSummaryApiCaller;
         this.accountSummaryCancelApiCaller = accountSummaryCancelApiCaller;

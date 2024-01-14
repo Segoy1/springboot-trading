@@ -2,14 +2,13 @@ package de.segoy.springboottradingibkr.client.service.accountsummary;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 @Qualifier("AccountSummaryCancelApiCaller")
-public class AccountSummaryCancelApiCaller implements ApiCallerWithoutParameter<AccountSummaryData> {
+public class AccountSummaryCancelApiCaller implements ApiCallerWithoutParameter {
 
     private final EClientSocket client;
     private final PropertiesConfig propertiesConfig;

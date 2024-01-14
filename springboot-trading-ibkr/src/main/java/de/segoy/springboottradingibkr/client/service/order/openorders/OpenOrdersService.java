@@ -13,11 +13,11 @@ import java.util.List;
 public class OpenOrdersService {
 
 
-    private final ApiCallerWithoutParameter<OrderData> openOrderApiCaller;
+    private final ApiCallerWithoutParameter openOrderApiCaller;
     private final OpenOrdersApiResponseChecker openOrdersApiResponseChecker;
     private final OrderDataRepository orderDataRepository;
 
-    public OpenOrdersService(@Qualifier("OpenOrdersApiCaller") ApiCallerWithoutParameter<OrderData> openOrderApiCaller, OpenOrdersApiResponseChecker openOrdersApiResponseChecker, OrderDataRepository orderDataRepository) {
+    public OpenOrdersService(@Qualifier("OpenOrdersApiCaller") ApiCallerWithoutParameter openOrderApiCaller, OpenOrdersApiResponseChecker openOrdersApiResponseChecker, OrderDataRepository orderDataRepository) {
         this.openOrderApiCaller = openOrderApiCaller;
         this.openOrdersApiResponseChecker = openOrdersApiResponseChecker;
         this.orderDataRepository = orderDataRepository;
