@@ -13,7 +13,6 @@ export class LoginInterceptorService implements HttpInterceptor{
     return this.loginService.user.pipe(
       take(1),
       exhaustMap(user => {
-        console.log(req);
         if(!user){
           return next.handle(req);
         }
