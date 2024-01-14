@@ -1,14 +1,14 @@
 import {Injectable} from "@angular/core";
 import {Order} from "../../model/order.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 
 @Injectable({providedIn: "root"})
 export class OpenOrderService {
   private openOrders: Order[] = [];
   private errorMessage: string;
   private url: string = 'http://localhost:8080/order/open-orders';
-  ordersChanged = new Subject<Order[]>();
+  ordersChanged = new BehaviorSubject<Order[]>(null);
 
   constructor(private httpClient: HttpClient) {
   };
