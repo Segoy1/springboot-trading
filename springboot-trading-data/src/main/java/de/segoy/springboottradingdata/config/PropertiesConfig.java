@@ -29,6 +29,10 @@ public class PropertiesConfig {
     private int connectionId;
 
     @Getter
+    @Value("${app.ibkr.pnl.accountId}")
+    private int pnlAccountId;
+
+    @Getter
     @Value("${app.ibkr.generic.ticks}")
     private String genericTicks;
 
