@@ -18,6 +18,8 @@ public class ConnectionData extends BaseEntity{
     //blank for localhost
     private String ipAddress;
 
+    private String accountList;
+
     //Optional Capabilities
     private String optCapts;
 

@@ -327,6 +327,7 @@ public class IBKRConnection implements EWrapper {
         ConnectionData connectionData = connectionDataRepository.findById(
                 propertiesConfig.getConnectionId()).orElseThrow();
         connectionData.setIsFAAccount(true);
+        connectionData.setAccountList(accountsList);
         connectionDataRepository.save(connectionData);
 //        m_FAAcctCodes = accountsList;
         log.info(EWrapperMsgGenerator.managedAccounts(accountsList));
