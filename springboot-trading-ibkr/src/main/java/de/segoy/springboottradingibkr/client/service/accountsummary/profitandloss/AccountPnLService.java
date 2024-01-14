@@ -11,19 +11,22 @@ import java.util.Optional;
 public class AccountPnLService {
 
     private final AccountPnLApiCaller accountPnLApiCaller;
-    private final AccountPnLCancelApiCaller accountPnLCancelApiCaller;
+    private final CancelAccountPnLApiCaller cancelAccountPnLApiCaller;
     private final AccountPnLApiResponseChecker accountPnLApiResponseChecker;
     private final PropertiesConfig propertiesConfig;
 
-    public AccountPnLService(AccountPnLApiCaller accountPnLApiCaller, AccountPnLCancelApiCaller accountPnLCancelApiCaller, AccountPnLApiResponseChecker accountPnLApiResponseChecker, PropertiesConfig propertiesConfig) {
+    public AccountPnLService(AccountPnLApiCaller accountPnLApiCaller,
+                             CancelAccountPnLApiCaller cancelAccountPnLApiCaller,
+                             AccountPnLApiResponseChecker accountPnLApiResponseChecker,
+                             PropertiesConfig propertiesConfig) {
         this.accountPnLApiCaller = accountPnLApiCaller;
-        this.accountPnLCancelApiCaller = accountPnLCancelApiCaller;
+        this.cancelAccountPnLApiCaller = cancelAccountPnLApiCaller;
         this.accountPnLApiResponseChecker = accountPnLApiResponseChecker;
         this.propertiesConfig = propertiesConfig;
     }
 
-    public Optional<ProfitAndLossData> getAccountPnL(){
-        accountPnLCancelApiCaller.callApi();
+    public Optional<ProfitAndLossData> getAccountPnL() {
+        cancelAccountPnLApiCaller.callApi();
         accountPnLApiCaller.callApi();
         return accountPnLApiResponseChecker.checkForApiResponseAndUpdate(propertiesConfig.getPnlAccountId());
     }

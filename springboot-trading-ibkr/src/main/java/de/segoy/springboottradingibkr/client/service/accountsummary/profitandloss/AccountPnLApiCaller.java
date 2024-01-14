@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Qualifier("AccountPnLApiCaller")
-public class AccountPnLApiCaller implements ApiCallerWithoutParameter<ProfitAndLossData> {
+class AccountPnLApiCaller implements ApiCallerWithoutParameter<ProfitAndLossData> {
 
     private final EClientSocket client;
     private final ConnectionDataRepository connectionDataRepository;

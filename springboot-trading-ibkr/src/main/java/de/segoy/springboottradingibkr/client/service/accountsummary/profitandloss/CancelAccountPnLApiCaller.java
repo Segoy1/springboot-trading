@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Qualifier("AccountPnLCancelApiCaller")
-public class AccountPnLCancelApiCaller implements ApiCallerWithoutParameter<ProfitAndLossData> {
+class CancelAccountPnLApiCaller implements ApiCallerWithoutParameter<ProfitAndLossData> {
 
     private final EClientSocket client;
     private final PropertiesConfig propertiesConfig;
 
-    public AccountPnLCancelApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {
+    public CancelAccountPnLApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {
         this.client = client;
         this.propertiesConfig = propertiesConfig;
     }
