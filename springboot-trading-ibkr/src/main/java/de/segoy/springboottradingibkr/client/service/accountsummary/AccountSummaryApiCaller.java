@@ -14,7 +14,6 @@ public class AccountSummaryApiCaller implements ApiCallerWithoutParameter<Accoun
     private final EClientSocket client;
     private final PropertiesConfig propertiesConfig;
 
-    //TODO move Values
     public final static String GROUD_NAME = "All";
 
     public AccountSummaryApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {

@@ -91,5 +91,10 @@ public class KafkaProducerConfig {
     public NewTopic accountSummaryTopic() {
         return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC()).build();
     }
+    @Bean
+    @Qualifier("${spring.kafka.names.topic.accountPnL}")
+    public NewTopic accountPnLTopic() {
+        return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_PNL()).build();
+    }
 
 }

@@ -12,12 +12,10 @@ import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.ProfitAndLossData;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
-import de.segoy.springboottradingdata.modelsynchronize.AccountSummaryDataDBSynchronizer;
-import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
-import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
-import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.*;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
@@ -53,6 +51,7 @@ public class IBKRConnection implements EWrapper {
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
+    private final AccountPnLDBSynchronizer accountPnLDBSynchronizer;
     private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
     private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
     private final OrderWriteToDBService orderWriteToDBService;
@@ -78,7 +77,7 @@ public class IBKRConnection implements EWrapper {
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
-            HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
+            AccountPnLDBSynchronizer accountPnLDBSynchronizer, HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
             OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator,
             AccountSummaryDataDBSynchronizer accountSummaryDataDBSynchronizer) {
@@ -90,6 +89,7 @@ public class IBKRConnection implements EWrapper {
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
+        this.accountPnLDBSynchronizer = accountPnLDBSynchronizer;
         this.historicalDataDatabaseSynchronizer = historicalDataDatabaseSynchronizer;
         this.positionDataDatabaseSynchronizer = positionDataDatabaseSynchronizer;
         this.propertiesConfig = propertiesConfig;
@@ -591,7 +591,13 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
-        log.info(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL));
+        ProfitAndLossData pnLData = ProfitAndLossData.builder().id((long) reqId).dailyPnL(dailyPnL).unrealizedPnL(
+                unrealizedPnL).realizedPnL(realizedPnL).build();
+        accountPnLDBSynchronizer.saveToDB(pnLData);
+        twsMessageHandler.handleMessage(TwsMessage.builder()
+                .messageId(reqId)
+                .topic(kafkaConstantsConfig.getACCOUNT_PNL())
+                .message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override

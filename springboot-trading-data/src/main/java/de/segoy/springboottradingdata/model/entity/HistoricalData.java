@@ -18,7 +18,6 @@ public class HistoricalData extends IBKRDataTypeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //Maybe Have to refactor to long
     private Long id;
 
     private Integer contractId;

@@ -21,5 +21,5 @@ public class ProfitAndLossData extends IBKRDataTypeEntity{
     private Double dailyPnL;
     private Double unrealizedPnL;
     private Double realizedPnL;
-    private Double value;
+    private Double currentValue;
 }

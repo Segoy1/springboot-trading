@@ -29,4 +29,8 @@ public class AccountSummaryService {
         accountSummaryApiCaller.callApi();
         return accountSummaryApiResponseChecker.checkForApiResponseAndUpdate();
     }
+
+    public void cancelAccountSummary(){
+        accountSummaryCancelApiCaller.callApi();
+    }
 }
