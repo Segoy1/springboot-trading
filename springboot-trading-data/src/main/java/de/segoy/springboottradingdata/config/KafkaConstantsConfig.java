@@ -38,5 +38,8 @@ public class KafkaConstantsConfig {
     private String ERROR_MESSAGE_TOPIC;
 
     @Value("${spring.kafka.names.topic.accountPnL}")
-    private String ACCOUNT_PNL;
+    private String ACCOUNT_PNL_TOPIC;
+
+    @Value("${spring.kafka.names.topic.singlePnL}")
+    private String SINGLE_PNL_TOPIC;
 }

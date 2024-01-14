@@ -596,14 +596,21 @@ public class IBKRConnection implements EWrapper {
         accountPnLDBSynchronizer.saveToDB(pnLData);
         twsMessageHandler.handleMessage(TwsMessage.builder()
                 .messageId(reqId)
-                .topic(kafkaConstantsConfig.getACCOUNT_PNL())
+                .topic(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC())
                 .message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override
     public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL,
                           double value) {
-        log.info(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value));
+        ProfitAndLossData pnLData =
+                ProfitAndLossData.builder().id((long) reqId).pos(pos.value()).dailyPnL(dailyPnL).unrealizedPnL(
+                unrealizedPnL).realizedPnL(realizedPnL).currentValue(value).build();
+        accountPnLDBSynchronizer.saveToDB(pnLData);
+        twsMessageHandler.handleMessage(TwsMessage.builder()
+                .messageId(reqId)
+                .topic(kafkaConstantsConfig.getSINGLE_PNL_TOPIC())
+                .message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value)).build());
     }
 
     @Override

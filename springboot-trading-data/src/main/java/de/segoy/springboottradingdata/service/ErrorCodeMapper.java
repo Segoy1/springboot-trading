@@ -16,6 +16,12 @@ public class ErrorCodeMapper {
             case 10185:
                 //not Subscribed to Account PNL, ignore
                 break;
+            case 10186:
+                //not Subscribed to Single PNL, ignore
+                break;
+            case 2150:
+                //Todo find out what this is
+                break;
             default:
                 throw new RuntimeException("Error occured: " + errorMessage.getMessage());
 

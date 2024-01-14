@@ -14,6 +14,6 @@ public class AccountPnLApiResponseChecker extends AbstractApiResponseChecker<Pro
                                       RepositoryRefreshService repositoryRefreshService,
                                       KafkaApiCallEndService kafkaApiCallEndService,
                                       KafkaConstantsConfig kafkaConstantsConfig) {
-            super(repository,repositoryRefreshService, kafkaApiCallEndService, kafkaConstantsConfig.getACCOUNT_PNL());
+            super(repository,repositoryRefreshService, kafkaApiCallEndService, kafkaConstantsConfig.getACCOUNT_PNL_TOPIC());
         }
 }

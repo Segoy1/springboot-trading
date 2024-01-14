@@ -94,7 +94,11 @@ public class KafkaProducerConfig {
     @Bean
     @Qualifier("${spring.kafka.names.topic.accountPnL}")
     public NewTopic accountPnLTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_PNL()).build();
+        return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC()).build();
     }
-
+    @Bean
+    @Qualifier("${spring.kafka.names.topic.singlePnL}")
+    public NewTopic singlePnLTopic() {
+        return TopicBuilder.name(kafkaConstantsConfig.getSINGLE_PNL_TOPIC()).build();
+    }
 }
