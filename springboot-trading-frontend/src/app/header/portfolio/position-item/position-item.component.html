@@ -11,13 +11,13 @@
     </div>
     <div class="col-xs-6">
       <div class="row">
-        <p class="list-group-item-text col-xs-6">Daily: {{portfolio.profitAndLoss.dailyPnL | number: "1.0-2"}}</p>
+        <p class="list-group-item-text">Daily: {{portfolio.profitAndLoss.dailyPnL | number: "1.0-2" | notavailable}}</p>
       </div>
       <div class="row">
-        <p class="list-group-item-text col-lg-6">Unrealized: {{portfolio.profitAndLoss.unrealizedPnL | number: "1.0-2"}}</p>
+        <p class="list-group-item-text">Unrealized: {{portfolio.profitAndLoss.unrealizedPnL | number: "1.0-2" | notavailable}}</p>
       </div>
       <div class="row">
-        <p class="list-group-item-text col-lg-6">Market Value: {{portfolio.profitAndLoss.currentValue | number: "1.0-2"}}</p>
+        <p class="list-group-item-text">Market Value: {{portfolio.profitAndLoss.currentValue | number: "1.0-2" | notavailable}}</p>
       </div>
     </div>
   </div>

@@ -24,6 +24,7 @@ import { StrategyBuilderComponent } from './header/orders/order-form/strategy-bu
 import { LoadingSpinnerComponent } from './header/shared/loading-spinner/loading-spinner.component';
 import {LoginInterceptorService} from "./header/login/login-interceptor.service";
 import {AccountComponent} from "./header/portfolio/account/account.component";
+import {NotAvailablePipe} from "./header/shared/not-available.pipe";
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import {AccountComponent} from "./header/portfolio/account/account.component";
     OrderStartComponent,
     ComboLegsComponent,
     StrategyBuilderComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    NotAvailablePipe
   ],
   imports: [
     CommonModule,
