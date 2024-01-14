@@ -10,7 +10,7 @@ export interface AuthResponse {
   authorities: string;
 }
 
-@Injectable()
+@Injectable({providedIn:"root"})
 export class LoginService {
   private loginUrl = 'http://localhost:8080/login'
   user = new BehaviorSubject<User>(null)

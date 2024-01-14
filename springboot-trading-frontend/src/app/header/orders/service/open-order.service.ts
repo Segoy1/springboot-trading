@@ -1,12 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Order} from "../../model/order.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Position} from "../../model/position.model";
 import {Subject} from "rxjs";
 
-@Injectable()
-export class OpenOrderService{
-  private openOrders : Order[] = [];
+@Injectable({providedIn: "root"})
+export class OpenOrderService {
+  private openOrders: Order[] = [];
   private errorMessage: string;
   private url: string = 'http://localhost:8080/order/open-orders';
   ordersChanged = new Subject<Order[]>();
@@ -32,31 +31,35 @@ export class OpenOrderService{
     this.ordersChange();
   }
 
-  findOpenOrderById(id:number){
-    let returnOrder:Order;
-    this.openOrders.forEach((listOrder)=>{
-      if(listOrder.id===id){
+  findOpenOrderById(id: number) {
+    let returnOrder: Order;
+    this.openOrders.forEach((listOrder) => {
+      if (listOrder.id === id) {
         returnOrder = listOrder;
       }
     });
     return returnOrder;
   }
-  addOrder(order:Order){
+
+  addOrder(order: Order) {
     this.openOrders.push(order);
     this.ordersChange();
   }
-  removeOrderById(id:number){
+
+  removeOrderById(id: number) {
     const order = this.findOpenOrderById(id);
-    this.openOrders.splice(this.openOrders.indexOf(order),1);
+    this.openOrders.splice(this.openOrders.indexOf(order), 1);
   }
-  removeAllOrders(){
+
+  removeAllOrders() {
     this.openOrders = [];
   }
 
-  ordersChange(){
+  ordersChange() {
     this.ordersChanged.next(this.openOrders);
   }
-  getOpenOrders(){
+
+  getOpenOrders() {
     return this.openOrders.slice()
   }
 }

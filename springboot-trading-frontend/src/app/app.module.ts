@@ -17,7 +17,7 @@ import {RouterLink, RouterLinkActive, RouterModule, Routes} from "@angular/route
 import {LoginService} from "./header/login/login.service";
 import {CommonModule} from "@angular/common";
 import {PositionItemComponent} from './header/portfolio/position-item/position-item.component';
-import {PortfolioService} from "./header/portfolio/portfolio.service";
+import {PortfolioService} from "./header/portfolio/service/portfolio.service";
 import {OpenOrderItemComponent} from './header/orders/open-order-item/open-order-item.component';
 import {OpenOrderService} from "./header/orders/service/open-order.service";
 import {OrderFormComponent} from './header/orders/order-form/order-form.component';
@@ -59,7 +59,7 @@ import {LoginInterceptorService} from "./header/login/login-interceptor.service"
     ReactiveFormsModule,
     AppRoutingModule
   ],
-  providers: [LoginService, PortfolioService, OpenOrderService, OrderFormValidationService, {provide: HTTP_INTERCEPTORS, useClass: LoginInterceptorService, multi:true }],
+  providers: [ {provide: HTTP_INTERCEPTORS, useClass: LoginInterceptorService, multi:true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

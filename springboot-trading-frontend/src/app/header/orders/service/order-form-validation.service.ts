@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {FormControl} from "@angular/forms";
 
-@Injectable()
+@Injectable({providedIn:"root"})
 export class OrderFormValidationService {
   private orderTypes = ['', 'MKT', 'LMT', 'STP', 'STP LMT', 'REL', 'TRAIL', 'BOX TOP', 'FIX PEGGED', 'LIT', 'LMT + MKT',
                         'LOC', 'MIT', 'MKT PRT', 'MOC', 'MTL', 'PASSV REL', 'PEG BENCH', 'PEG BEST', 'PEG MID', 'PEG MKT',

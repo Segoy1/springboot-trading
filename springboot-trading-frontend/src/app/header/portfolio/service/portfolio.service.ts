@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Position} from "../model/position.model";
+import {Position} from "../../model/position.model";
 
-@Injectable()
+@Injectable({providedIn:"root"})
 export class PortfolioService {
 
   private positions: Position[] = [];
