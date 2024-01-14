@@ -23,7 +23,7 @@ export class LoginService {
       {
         username: username, password: password
       }).pipe(catchError(this.handleError), tap(responeData => {
-      this.handleResponse(responeData.username, this.createToken(username, password), responeData.authorities)
+      this.handleResponse(responeData.username, responeData.token, responeData.authorities)
     }))
   }
 
@@ -54,10 +54,5 @@ export class LoginService {
 
   private handleError(errorRes: HttpErrorResponse) {
     return throwError(errorRes);
-  }
-
-  private createToken(username: string, password: string) {
-    console.log(username+':'+password);
-    return window.btoa(username + ':' + password);
   }
 }
