@@ -14,7 +14,7 @@ import {LoginComponent} from './header/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {CommonModule} from "@angular/common";
-import {PositionItemComponent} from './header/portfolio/position-item/position-item.component';
+import {PositionItemComponent} from './header/portfolio/position-list/position-item/position-item.component';
 import {OpenOrderItemComponent} from './header/orders/open-order-item/open-order-item.component';
 import {OrderFormComponent} from './header/orders/order-form/order-form.component';
 import {AppRoutingModule} from "./app-routing.module";
@@ -25,6 +25,7 @@ import { LoadingSpinnerComponent } from './header/shared/loading-spinner/loading
 import {LoginInterceptorService} from "./header/login/login-interceptor.service";
 import {AccountComponent} from "./header/portfolio/account/account.component";
 import {NotAvailablePipe} from "./header/shared/not-available.pipe";
+import { PositionListComponent } from './header/portfolio/position-list/position-list.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {NotAvailablePipe} from "./header/shared/not-available.pipe";
     ComboLegsComponent,
     StrategyBuilderComponent,
     LoadingSpinnerComponent,
-    NotAvailablePipe
+    NotAvailablePipe,
+    PositionListComponent
   ],
   imports: [
     CommonModule,
