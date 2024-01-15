@@ -1,0 +1,8 @@
+<a style="cursor: pointer" class="list-group-item clearfix">
+  <div class="row">
+    <h4 class="list-group-item-heading text-center">Margin</h4>
+    <div *ngFor="let summary of accountSummary">
+      <p class="list-group-item-text col-xs-6">{{summary.tag + ": " + summary.amount + " " + summary.currency }}</p>
+    </div>
+  </div>
+</a>

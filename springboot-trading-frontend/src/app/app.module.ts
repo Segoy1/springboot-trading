@@ -26,6 +26,8 @@ import {LoginInterceptorService} from "./header/login/login-interceptor.service"
 import {AccountComponent} from "./header/portfolio/account/account.component";
 import {NotAvailablePipe} from "./header/shared/not-available.pipe";
 import { PositionListComponent } from './header/portfolio/position-list/position-list.component';
+import { AccountPnlComponent } from './header/portfolio/account/account-pnl/account-pnl.component';
+import { AccountMarginComponent } from './header/portfolio/account/account-margin/account-margin.component';
 
 
 @NgModule({
@@ -47,7 +49,9 @@ import { PositionListComponent } from './header/portfolio/position-list/position
     StrategyBuilderComponent,
     LoadingSpinnerComponent,
     NotAvailablePipe,
-    PositionListComponent
+    PositionListComponent,
+    AccountPnlComponent,
+    AccountMarginComponent
   ],
   imports: [
     CommonModule,
