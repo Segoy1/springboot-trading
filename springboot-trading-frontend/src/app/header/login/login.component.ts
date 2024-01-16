@@ -2,9 +2,16 @@ import {Component} from '@angular/core';
 import {LoginService} from "./login.service";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {NgForm} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
+import {LoadingSpinnerComponent} from "../shared/loading-spinner/loading-spinner.component";
+import {CommonModule} from "@angular/common";
 
 @Component({
+  standalone: true,
+  imports: [
+    LoadingSpinnerComponent,
+    CommonModule,
+    FormsModule,],
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'

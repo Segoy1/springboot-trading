@@ -12,6 +12,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
 import {LoadingSpinnerComponent} from './header/shared/loading-spinner/loading-spinner.component';
 import {LoginInterceptorService} from "./header/login/login-interceptor.service";
+import {LoginComponent} from "./header/login/login.component";
 
 
 @NgModule({
@@ -20,15 +21,15 @@ import {LoginInterceptorService} from "./header/login/login-interceptor.service"
     HeaderComponent,
     MarketDataComponent,
     DropdownDirective,
-    HistoicalDataComponent,
-    LoadingSpinnerComponent
+    HistoicalDataComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     RouterLink,
     RouterLinkActive,
-    AppRoutingModule
+    AppRoutingModule,
+    LoginComponent
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: LoginInterceptorService, multi: true}],
   bootstrap: [AppComponent]

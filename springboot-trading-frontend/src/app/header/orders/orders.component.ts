@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
 import {Subscription} from "rxjs";
 
@@ -21,19 +21,19 @@ import {Subscription} from "rxjs";
 export class OrdersComponent implements OnInit, OnDestroy {
 
   openOrders: Order[];
-  orderSub : Subscription;
+  orderSub: Subscription;
 
   constructor(private openOrdersService: OpenOrderService,
               private orderCancelService: OrderCancelService,
               private route: ActivatedRoute,
-              private router:Router) {
+              private router: Router) {
   }
 
   ngOnInit() {
     this.orderSub = this.openOrdersService.ordersChanged.subscribe(
-      (orders:Order[])=>{
+      (orders: Order[]) => {
         this.openOrders = orders;
-    }
+      }
     );
     this.openOrdersService.initOpenOrders();
   }
@@ -42,10 +42,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.orderSub.unsubscribe();
   }
 
-  onOpenNewOrder(){
-    this.router.navigate(['new'],{relativeTo:this.route});
+  onOpenNewOrder() {
+    this.router.navigate(['new'], {relativeTo: this.route});
   }
-  onCancelAllOpenOrders(){
+
+  onCancelAllOpenOrders() {
     this.orderCancelService.cancelAllOpenOrders();
   }
 }

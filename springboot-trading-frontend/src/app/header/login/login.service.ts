@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {error} from "@angular/compiler-cli/src/transformers/util";
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {User} from "./user.model";
 
@@ -10,7 +9,9 @@ export interface AuthResponse {
   authorities: string;
 }
 
-@Injectable({providedIn:"root"})
+@Injectable({
+  providedIn:"root"
+})
 export class LoginService {
   private loginUrl = 'http://localhost:8080/login'
   user = new BehaviorSubject<User>(null)

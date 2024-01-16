@@ -8,7 +8,7 @@ const appRoutes: Routes = [
   {path: 'orders', loadChildren: () => import('./header/orders/orders.module').then(m => m.OrdersModule)},
   {path: 'portfolio', loadChildren: () => import('./header/portfolio/portfolio.module').then(m => m.PortfolioModule)},
   {path: 'market-data', component: MarketDataComponent},
-  {path: 'login', loadChildren: () => import('./header/login/login.module').then(m => m.LoginModule)}
+  {path: 'login', loadChildren: () => import('./header/login/login.routes').then((mod)=> mod.routes)}
 ];
 
 @NgModule({
