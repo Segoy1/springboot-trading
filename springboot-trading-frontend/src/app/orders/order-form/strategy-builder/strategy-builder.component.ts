@@ -1,11 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {OrderFormService} from "../../service/order-form.service";
-import {FormArray} from "@angular/forms";
+import {FormArray, ReactiveFormsModule} from "@angular/forms";
 import {OrderSubmitService} from "../../service/order-submit.service";
+import {NgForOf, NgIf} from "@angular/common";
 
 @Component({
+  standalone: true,
   selector: 'app-strategy-builder',
   templateUrl: './strategy-builder.component.html',
+  imports: [
+    ReactiveFormsModule,
+    NgForOf,
+    NgIf
+  ],
   styleUrl: './strategy-builder.component.css'
 })
 export class StrategyBuilderComponent  implements OnInit{

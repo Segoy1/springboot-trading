@@ -6,13 +6,21 @@ import {
 } from '@angular/core';
 import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
 import {Subscription} from "rxjs";
+import {OpenOrderItemComponent} from "./open-order-item/open-order-item.component";
+import {NgForOf} from "@angular/common";
 
 @Component({
+  standalone: true,
   selector: 'app-orders',
   templateUrl: './orders.component.html',
+  imports: [
+    OpenOrderItemComponent,
+    RouterOutlet,
+    NgForOf
+  ],
   styleUrl: './orders.component.css'
 })
 export class OrdersComponent implements OnInit, OnDestroy {

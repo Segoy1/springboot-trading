@@ -1,12 +1,20 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Params, Router, RouterOutlet} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
 import {OrderIdService} from "../service/order-id.service";
 import {OrderFormService} from "../service/order-form.service";
+import {ReactiveFormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
 
 @Component({
+  standalone: true,
   selector: 'app-order-form',
   templateUrl: './order-form.component.html',
+  imports: [
+    ReactiveFormsModule,
+    RouterOutlet,
+    NgIf
+  ],
   styleUrl: './order-form.component.css'
 })
 export class OrderFormComponent implements OnInit {
