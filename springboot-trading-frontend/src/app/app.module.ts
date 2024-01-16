@@ -34,16 +34,10 @@ import { AccountMarginComponent } from './header/portfolio/account/account-margi
   declarations: [
     AppComponent,
     HeaderComponent,
-    OrdersComponent,
     MarketDataComponent,
     DropdownDirective,
     HistoicalDataComponent,
     LoginComponent,
-    OpenOrderItemComponent,
-    OrderFormComponent,
-    OrderStartComponent,
-    ComboLegsComponent,
-    StrategyBuilderComponent,
     LoadingSpinnerComponent
   ],
   imports: [
@@ -52,7 +46,6 @@ import { AccountMarginComponent } from './header/portfolio/account/account-margi
     FormsModule,
     RouterLink,
     RouterLinkActive,
-    ReactiveFormsModule,
     AppRoutingModule
   ],
   providers: [ {provide: HTTP_INTERCEPTORS, useClass: LoginInterceptorService, multi:true }],
