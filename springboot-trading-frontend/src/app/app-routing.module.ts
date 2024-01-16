@@ -1,7 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
 import {HeaderComponent} from "./header/header.component";
 import {OrdersComponent} from "./header/orders/orders.component";
-import {PortfolioComponent} from "./header/portfolio/portfolio.component";
 import {NgModule} from "@angular/core";
 import {LoginComponent} from "./header/login/login.component";
 import {MarketDataComponent} from "./header/market-data/market-data.component";
@@ -23,7 +22,7 @@ const appRoutes: Routes = [
           {path: '',component: ComboLegsComponent}
         ]}
     ]},
-  {path: 'portfolio', canActivate: [LoginGuard], component: PortfolioComponent},
+  {path: 'portfolio', loadChildren: ()=> import('./header/portfolio/portfolio.module').then(m => m.PortfolioModule)},
   {path: 'market-data', component: MarketDataComponent},
   {path: 'login', component: LoginComponent}
 ];
