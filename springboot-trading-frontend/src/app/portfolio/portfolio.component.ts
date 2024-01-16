@@ -1,9 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {PositionService} from "./service/position.service";
-import {Position} from "../model/position.model";
 import {Subscription} from "rxjs";
-import {ProfitAndLoss} from "../model/profit-and-loss.model";
-import {ProfitLossService} from "./service/profit-loss.service";
 import {PortfolioService} from "./service/portfolio.service";
 import {Portfolio} from "../model/portfolio.model";
 

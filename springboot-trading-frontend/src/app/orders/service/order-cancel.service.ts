@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Order} from "../../model/order.model";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {OpenOrderService} from "./open-order.service";
 
 @Injectable({providedIn: "root"})

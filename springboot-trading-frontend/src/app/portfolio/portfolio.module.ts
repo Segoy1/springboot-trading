@@ -19,13 +19,13 @@ const routes: Routes = [{path: '', canActivate: [LoginGuard], component: Portfol
     PositionItemComponent,
     PositionListComponent,
     AccountPnlComponent,
-    AccountMarginComponent,
-    NotAvailablePipe
+    AccountMarginComponent
   ],
   imports:[
     CommonModule,
     HttpClientModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    NotAvailablePipe
   ],
   exports:[
     RouterModule

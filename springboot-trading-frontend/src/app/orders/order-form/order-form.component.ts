@@ -1,12 +1,8 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {OpenOrderService} from "../service/open-order.service";
-import {OrderFormValidationService} from "../service/order-form-validation.service";
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
 import {OrderIdService} from "../service/order-id.service";
 import {OrderFormService} from "../service/order-form.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-order-form',

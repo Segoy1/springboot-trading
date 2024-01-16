@@ -1,15 +1,12 @@
 import {
-  AfterContentChecked,
-  AfterViewChecked,
+
   Component,
-  DoCheck,
-  OnChanges, OnDestroy,
+  OnDestroy,
   OnInit,
-  SimpleChanges
 } from '@angular/core';
 import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
 import {Subscription} from "rxjs";
 

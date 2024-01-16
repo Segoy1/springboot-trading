@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Position} from "../../model/position.model";
-import {BehaviorSubject, map, Observable, Subject} from "rxjs";
+import {BehaviorSubject, map, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ProfitAndLoss} from "../../model/profit-and-loss.model";
 

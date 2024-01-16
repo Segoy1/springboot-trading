@@ -1,9 +1,7 @@
 import {Injectable} from "@angular/core";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OrderFormValidationService} from "./order-form-validation.service";
-import {OrderIdService} from "./order-id.service";
 import {OpenOrderService} from "./open-order.service";
-import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {

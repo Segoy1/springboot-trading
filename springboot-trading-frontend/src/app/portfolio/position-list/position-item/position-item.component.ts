@@ -1,7 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Position} from "../../../model/position.model";
-import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
-import {ProfitLossService} from "../../service/profit-loss.service";
+import {Component, Input} from '@angular/core';
 import {Portfolio} from "../../../model/portfolio.model";
 
 @Component({

@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Order} from "../../model/order.model";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BehaviorSubject, Subject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({providedIn: "root"})
 export class OpenOrderService {

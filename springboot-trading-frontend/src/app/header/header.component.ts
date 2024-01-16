@@ -1,9 +1,7 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpService} from "./http.service";
-import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
-import {LoginService} from "./login/login.service";
+import {LoginService} from "../login/login.service";
 
 @Component({
   selector: 'app-header',

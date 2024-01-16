@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormGroup} from "@angular/forms";
-import {OrderFormValidationService} from "../../service/order-form-validation.service";
+import {FormArray} from "@angular/forms";
 import {OrderFormService} from "../../service/order-form.service";
 import {OrderSubmitService} from "../../service/order-submit.service";
 

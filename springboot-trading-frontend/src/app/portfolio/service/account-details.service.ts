@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Position} from "../../model/position.model";
 import {HttpClient} from "@angular/common/http";
 import {AccountSummary} from "../../model/account-summary.model";
 import {ProfitAndLoss} from "../../model/profit-and-loss.model";
