@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {LoginService} from "./login.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {FormsModule, NgForm} from "@angular/forms";
 import {LoadingSpinnerComponent} from "../shared/loading-spinner/loading-spinner.component";
@@ -8,24 +8,24 @@ import {CommonModule} from "@angular/common";
 
 @Component({
   standalone: true,
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
   imports: [
     LoadingSpinnerComponent,
     CommonModule,
-    FormsModule,],
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+    FormsModule]
 })
 export class LoginComponent {
 
   isLoading = false;
-  error:string = null;
+  error: string = null;
 
   constructor(private loginService: LoginService, private http: HttpClient, private router: Router) {
   }
 
   login(form: NgForm) {
-    if(!form.valid){
+    if (!form.valid) {
       return
     }
     const username = form.value.username;

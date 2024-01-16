@@ -2,10 +2,20 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpService} from "./http.service";
 import {Subscription} from "rxjs";
 import {LoginService} from "../login/login.service";
+import {RouterLinkActive, RouterModule} from "@angular/router";
+import {DropdownDirective} from "../shared/dropdown.directive";
+import {CommonModule} from "@angular/common";
 
 @Component({
+  standalone: true,
   selector: 'app-header',
   templateUrl: './header.component.html',
+  imports: [
+    RouterLinkActive,
+    RouterModule,
+    DropdownDirective,
+    CommonModule
+  ],
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -45,7 +55,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       })
     }
   }
-  onLogout(){
+
+  onLogout() {
     this.loginService.logout();
   }
 
