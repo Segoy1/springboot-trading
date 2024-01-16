@@ -6,7 +6,7 @@ import {MarketDataComponent} from "./market-data/market-data.component";
 const appRoutes: Routes = [
   {path: 'home', component: HeaderComponent},
   {path: 'orders', loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule)},
-  {path: 'portfolio', loadChildren: () => import('./portfolio/portfolio.module').then(m => m.PortfolioModule)},
+  {path: 'portfolio', loadChildren: () => import('./portfolio/portfolio.routes').then(m => m.routes)},
   {path: 'market-data', component: MarketDataComponent},
   {path: 'login', loadChildren: () => import('./login/login.routes').then((mod)=> mod.routes)}
 ];

@@ -2,11 +2,18 @@ import {Component, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {PortfolioService} from "./service/portfolio.service";
 import {Portfolio} from "../model/portfolio.model";
+import {AccountComponent} from "./account/account.component";
+import {PositionListComponent} from "./position-list/position-list.component";
 
 @Component({
+  standalone: true,
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
-  styleUrl: './portfolio.component.css'
+  styleUrl: './portfolio.component.css',
+  imports: [
+    AccountComponent,
+    PositionListComponent
+  ]
 })
 export class PortfolioComponent implements OnInit {
 
