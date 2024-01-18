@@ -8,7 +8,7 @@
   <div class="col-xs-3">
     <button class="btn btn-primary" (click)="onOpenNewOrder()">Open New Order</button>
     <div class="row">
-      <app-open-order-item *ngFor="let openOrder of openOrders" [order]="openOrder"></app-open-order-item>
+      <app-open-order-item *ngFor="let openOrder of openOrders |async" [order]="openOrder"></app-open-order-item>
     </div>
     <button class="btn btn-danger" (click)="onCancelAllOpenOrders()">Cancel All Open Orders</button>
   </div>

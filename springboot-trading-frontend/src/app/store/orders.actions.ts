@@ -9,8 +9,14 @@ export const add = createAction(
   '[Orders] Add',
   props<{order: Order}>()
 );
-
+export const remove = createAction(
+  '[Orders] Remove',
+  props<{orderId: number}>()
+);
 export const set = createAction(
   '[Orders] Set',
   props<{orders: Order[]}>()
 );
+export const removeAll = createAction(
+  '[Orders] RemoveAll'
+)

@@ -1,16 +1,14 @@
 import {
 
   Component,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import {Order} from "../model/order.model";
-import {OpenOrderService} from "./service/open-order.service";
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
 import {Observable, Subscription} from "rxjs";
 import {OpenOrderItemComponent} from "./open-order-item/open-order-item.component";
-import {NgForOf} from "@angular/common";
+import {AsyncPipe, NgForOf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {set} from "../store/orders.actions";
@@ -23,14 +21,14 @@ import {selectOrders} from "../store/orders.selector";
   imports: [
     OpenOrderItemComponent,
     RouterOutlet,
-    NgForOf
+    NgForOf,
+    AsyncPipe
   ],
   styleUrl: './orders.component.css'
 })
 export class OrdersComponent implements OnInit {
 
   openOrders: Observable<Order[]>;
-  orderSub: Subscription;
   errorMessage: string;
   private url: string = 'http://localhost:8080/order/open-orders';
 

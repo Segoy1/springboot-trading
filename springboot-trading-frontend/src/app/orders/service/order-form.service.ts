@@ -1,7 +1,9 @@
 import {Injectable} from "@angular/core";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OrderFormValidationService} from "./order-form-validation.service";
-import {OpenOrderService} from "./open-order.service";
+import {Store} from "@ngrx/store";
+import {findOrder} from "../../store/orders.selector";
+import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {
@@ -12,75 +14,48 @@ export class OrderFormService {
   id: number;
 
   constructor(private orderFormValidationService: OrderFormValidationService,
-              private openOrderService: OpenOrderService) {
+              private store: Store) {
   }
 
   initForm() {
     this.strategyMode = false;
-    let id: number;
-    let action = '';
-    let totalQuantity = null;
-    let orderType = '';
-    let limitPrice = null;
-    let timeInForce = '';
-    let contractId = null;
-    let symbol = '';
-    let securityType = 'STK';
-    let currency = 'USD';
-    let exchange = 'SMART';
-    let lastTradeDate = '';
-    let strike = null;
-    let right = 'None';
-    let tradingClass = '';
-    let localSymbol = '';
-    let comboLegs = new FormArray([]);
-
     if (this.editMode) {
-      let order = this.openOrderService.findOpenOrderById(this.id);
+      let orderSub = this.store.select(findOrder(this.id)).subscribe((order) => {
+        this.setFormValues(order)
+      });
+    } else {
+      this.setFormValues()
+    }
+  }
 
-      id = order.id
-      action = order.action;
-      totalQuantity = order.totalQuantity;
-      orderType = order.orderType;
-      limitPrice = order.limitPrice;
-      timeInForce = order.timeInForce;
-      contractId = order.contractData.contractId;
-      symbol = order.contractData.symbol;
-      securityType = order.contractData.securityType;
-      currency = order.contractData.currency;
-      exchange = order.contractData.exchange;
-      lastTradeDate = order.contractData.lastTradeDate;
-      strike = order.contractData.strike;
-      right = order.contractData.right;
-      tradingClass = order.contractData.tradingClass;
-      localSymbol = order.contractData.localSymbol;
-      order.contractData.comboLegs.forEach((comboLeg) => {
-        (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
-      })
-
+  private setFormValues(order?: Order) {
+    let comboLegs = new FormArray([]);
+    if(order){
+    order.contractData.comboLegs.forEach((comboLeg) => {
+      (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
+    });
     }
 
     let contractData = new FormGroup({
-      'contractId': new FormControl(contractId),
-      'symbol': new FormControl(symbol),
-      'securityType': new FormControl(securityType, [this.validSecType.bind(this)]),
-      'currency': new FormControl(currency),
-      'exchange': new FormControl(exchange),
-      'lastTradeDate': new FormControl(lastTradeDate),
-      'strike': new FormControl(strike),
-      'right': new FormControl(right, [this.validRight.bind(this)]),
-      'tradingClass': new FormControl(tradingClass),
-      'localSymbol': new FormControl(localSymbol),
+      'contractId': new FormControl(order ? order.contractData.contractId : null),
+      'symbol': new FormControl(order ? order.contractData.symbol : null),
+      'securityType': new FormControl(order ? order.contractData.securityType : 'STK', [this.validSecType.bind(this)]),
+      'currency': new FormControl(order ? order.contractData.currency : 'USD'),
+      'exchange': new FormControl(order ? order.contractData.exchange : 'SMART'),
+      'lastTradeDate': new FormControl(order ? order.contractData.lastTradeDate : null),
+      'strike': new FormControl(order ? order.contractData.strike : null),
+      'right': new FormControl(order ? order.contractData.right : 'None', [this.validRight.bind(this)]),
+      'tradingClass': new FormControl(order ? order.contractData.tradingClass : null),
+      'localSymbol': new FormControl(order ? order.contractData.localSymbol : null),
       'comboLegs': comboLegs
     });
-
     this.simpleOrderSubmitForm = new FormGroup({
-      'id': new FormControl(id),
-      'action': new FormControl<string>(action, Validators.required),
-      'totalQuantity': new FormControl<number>(totalQuantity, Validators.required),
-      'orderType': new FormControl<string>(orderType, [Validators.required, this.validOrderTypes.bind(this)]),
-      'limitPrice': new FormControl<number>(limitPrice),
-      'timeInForce': new FormControl<string>(timeInForce, [Validators.required, this.validTIF.bind(this)]),
+      'id': new FormControl(order ? order.id : null),
+      'action': new FormControl<string>(order ? order.action : null, Validators.required),
+      'totalQuantity': new FormControl<number>(order ? order.totalQuantity : null, Validators.required),
+      'orderType': new FormControl<string>(order ? order.orderType : null, [Validators.required, this.validOrderTypes.bind(this)]),
+      'limitPrice': new FormControl<number>(order ? order.limitPrice : null),
+      'timeInForce': new FormControl<string>(order ? order.timeInForce : null, [Validators.required, this.validTIF.bind(this)]),
       'contractData': contractData
     });
   }
