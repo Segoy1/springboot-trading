@@ -8,9 +8,13 @@ import {Order} from "../model/order.model";
 import {OpenOrderService} from "./service/open-order.service";
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {OrderCancelService} from "./service/order-cancel.service";
-import {Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {OpenOrderItemComponent} from "./open-order-item/open-order-item.component";
 import {NgForOf} from "@angular/common";
+import {HttpClient} from "@angular/common/http";
+import {Store} from "@ngrx/store";
+import {set} from "../store/orders.actions";
+import {selectOrders} from "../store/orders.selector";
 
 @Component({
   standalone: true,
@@ -23,28 +27,34 @@ import {NgForOf} from "@angular/common";
   ],
   styleUrl: './orders.component.css'
 })
-export class OrdersComponent implements OnInit, OnDestroy {
+export class OrdersComponent implements OnInit {
 
-  openOrders: Order[];
+  openOrders: Observable<Order[]>;
   orderSub: Subscription;
+  errorMessage: string;
+  private url: string = 'http://localhost:8080/order/open-orders';
 
-  constructor(private openOrdersService: OpenOrderService,
+  constructor(private http: HttpClient,
               private orderCancelService: OrderCancelService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private store: Store) {
   }
 
   ngOnInit() {
-    this.orderSub = this.openOrdersService.ordersChanged.subscribe(
-      (orders: Order[]) => {
-        this.openOrders = orders;
+    const fetchedOrders: Order[] = [];
+    this.http.get<Order[]>(this.url).subscribe({
+      next: (openOrders) => {
+        openOrders.forEach((order) => {
+          fetchedOrders.push(order)
+        });
+        this.store.dispatch(set({orders: fetchedOrders}));
+        this.openOrders = this.store.select(selectOrders);
+      },
+      error: (error) => {
+        this.errorMessage = error;
       }
-    );
-    this.openOrdersService.initOpenOrders();
-  }
-
-  ngOnDestroy() {
-    this.orderSub.unsubscribe();
+    })
   }
 
   onOpenNewOrder() {

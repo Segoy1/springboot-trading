@@ -6,30 +6,9 @@ import {BehaviorSubject} from "rxjs";
 @Injectable({providedIn: "root"})
 export class OpenOrderService {
   private openOrders: Order[] = [];
-  private errorMessage: string;
-  private url: string = 'http://localhost:8080/order/open-orders';
+
   ordersChanged = new BehaviorSubject<Order[]>(null);
 
-  constructor(private httpClient: HttpClient) {
-  };
-
-  initOpenOrders() {
-    let fetchedOrders = [];
-
-    this.httpClient.get<Order[]>(this.url).subscribe({
-      next: (openOrders) => {
-        openOrders.forEach((order) => {
-          fetchedOrders.push(order)
-        });
-      },
-      error: (error) => {
-        this.errorMessage = error;
-      }
-    })
-    this.openOrders = fetchedOrders;
-
-    this.ordersChange();
-  }
 
   findOpenOrderById(id: number) {
     let returnOrder: Order;
@@ -41,10 +20,6 @@ export class OpenOrderService {
     return returnOrder;
   }
 
-  addOrder(order: Order) {
-    this.openOrders.push(order);
-    this.ordersChange();
-  }
 
   removeOrderById(id: number) {
     const order = this.findOpenOrderById(id);
@@ -53,13 +28,5 @@ export class OpenOrderService {
 
   removeAllOrders() {
     this.openOrders = [];
-  }
-
-  ordersChange() {
-    this.ordersChanged.next(this.openOrders);
-  }
-
-  getOpenOrders() {
-    return this.openOrders.slice()
   }
 }
