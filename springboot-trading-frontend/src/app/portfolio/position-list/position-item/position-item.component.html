@@ -1,4 +1,6 @@
-<a  class="list-group-item clearfix"style="cursor: pointer;{{portfolio.profitAndLoss.dailyPnL >0 ? 'background-color: green; color:black' : 'background-color: darkred; color: white'}}">
+<a  class="list-group-item clearfix"
+    style="cursor: pointer;{{portfolio.profitAndLoss.dailyPnL >0 ? 'background-color: green; color:black' : 'background-color: darkred; color: white'}}"
+    [@position]="state">
   <div>
     <h4 style="color:white" class="list-group-item-heading">{{portfolio.position.contractData.localSymbol}}</h4>
     <div class="col-xs-6">
