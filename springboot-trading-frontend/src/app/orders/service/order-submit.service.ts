@@ -18,11 +18,13 @@ export class OrderSubmitService {
   }
 
   placeOrder(req: []) {
+    console.log("Request: ")
     console.log(req);
     this.http.post<Order>(this.activeUrl, req).subscribe({
       next:
         response => {
           this.store.dispatch(add({order: response}));
+          console.log("Response: ")
           console.log(response);
         }
       , error:

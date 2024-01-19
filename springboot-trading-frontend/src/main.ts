@@ -6,12 +6,13 @@ import {AppHttpModule} from "./app/app-http.module";
 import { provideStore } from '@ngrx/store';
 import {ordersReducer} from "./app/store/orders.reducer";
 import { provideEffects } from '@ngrx/effects';
+import {ordersStrategyModeReducer} from "./app/store/orders-strategy-mode.reducer";
 
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(AppRoutingModule, AppHttpModule),
-    provideStore({ orders: ordersReducer }),
+    provideStore({ orders: ordersReducer, strategyMode: ordersStrategyModeReducer }),
     provideEffects()
 ]
 

@@ -1,7 +1,6 @@
 import {Order} from "../model/order.model";
 import {createReducer, on} from "@ngrx/store";
 import {add, remove, removeAll, set} from "./orders.actions";
-import {findOrder} from "./orders.selector";
 
 const initialOrders: Order[] = [];
 
