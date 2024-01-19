@@ -1,4 +1,4 @@
-import {Order} from "../model/order.model";
+import {Order} from "../../model/order.model";
 import {createReducer, on} from "@ngrx/store";
 import {add, remove, removeAll, set} from "./orders.actions";
 

@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Order} from "../../model/order.model";
 import {Store} from "@ngrx/store";
-import {add} from "../../store/orders.actions";
+import {add} from "../../store/orders/orders.actions";
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService {

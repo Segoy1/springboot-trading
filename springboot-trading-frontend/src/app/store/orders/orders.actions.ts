@@ -1,5 +1,5 @@
 import {createAction, props} from "@ngrx/store";
-import {Order} from "../model/order.model";
+import {Order} from "../../model/order.model";
 
 export const init = createAction(
   '[Orders] Init'

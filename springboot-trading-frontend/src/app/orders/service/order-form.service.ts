@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {OrderFormValidationService} from "./order-form-validation.service";
 import {Store} from "@ngrx/store";
-import {findOrder} from "../../store/orders.selector";
+import {findOrder} from "../../store/orders/orders.selector";
 import {Order} from "../../model/order.model";
 
 @Injectable({providedIn: "root"})

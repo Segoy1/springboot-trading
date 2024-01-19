@@ -1,4 +1,4 @@
-import {Order} from "../model/order.model";
+import {Order} from "../../model/order.model";
 import {createSelector} from "@ngrx/store";
 
 export const selectOrders = (state: { orders: Order[] }) => state.orders;

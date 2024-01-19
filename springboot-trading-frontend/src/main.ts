@@ -4,9 +4,9 @@ import {importProvidersFrom} from "@angular/core";
 import {AppRoutingModule} from "./app/app-routing.module";
 import {AppHttpModule} from "./app/app-http.module";
 import { provideStore } from '@ngrx/store';
-import {ordersReducer} from "./app/store/orders.reducer";
+import {ordersReducer} from "./app/store/orders/orders.reducer";
 import { provideEffects } from '@ngrx/effects';
-import {ordersStrategyModeReducer} from "./app/store/orders-strategy-mode.reducer";
+import {ordersStrategyModeReducer} from "./app/store/orders/modes/strategy/orders-strategy-mode.reducer";
 
 
 bootstrapApplication(AppComponent, {

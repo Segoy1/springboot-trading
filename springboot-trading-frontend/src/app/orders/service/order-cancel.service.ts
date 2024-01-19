@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Store} from "@ngrx/store";
-import {findOrder, selectOrders} from "../../store/orders.selector";
-import {remove, removeAll} from "../../store/orders.actions";
+import {findOrder, selectOrders} from "../../store/orders/orders.selector";
+import {remove, removeAll} from "../../store/orders/orders.actions";
 
 @Injectable({providedIn: "root"})
 export class OrderCancelService {
