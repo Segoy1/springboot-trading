@@ -19,3 +19,11 @@ a {
 a:hover {
   color: #a382f7;
 }
+.list-group-item {
+  background-color: darkgrey;
+  border-color: black;
+}
+.navbar-default {
+  background-color: lightgray;
+  border-color: black;
+}
