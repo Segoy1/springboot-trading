@@ -1,5 +1,5 @@
 <div class="container">
-  <h3 class="media-heading">{{isEditMode()? 'Edit Order': 'Open Order'}}</h3>
+  <h3 class="media-heading">{{(editMode$| async)? 'Edit Order': 'Open Order'}}</h3>
   <hr>
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8">
@@ -166,12 +166,12 @@
                 type="submit"
                 class="btn btn-primary"
                 [disabled]="!isFormValid() || !isFormTouched()"
-                (click)="onSubmit()">{{isEditMode()? 'Update Order': 'Place Order'}}</button>
+                (click)="onSubmit()">{{(editMode$ | async)? 'Update Order': 'Place Order'}}</button>
             </div>
-            <div class="form-group col-xs-2" *ngIf="!isEditMode()&& !isStrategyMode()">
+            <div class="form-group col-xs-2" *ngIf="!(editMode$ |async) && !(strategyMode$ | async)">
               <button type="button" class="btn btn-default" (click)="onStrategyBuilder()">Strategy Builder</button>
             </div>
-            <div class="form-group col-xs-2" *ngIf="isStrategyMode()">
+            <div class="form-group col-xs-2" *ngIf="strategyMode$ | async">
               <button type="button" class="btn btn-default" (click)="onStandardOrder()">Standard Order</button>
             </div>
             <div class="form-group col-xs-2">

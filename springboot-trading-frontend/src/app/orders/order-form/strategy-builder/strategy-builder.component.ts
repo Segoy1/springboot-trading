@@ -17,12 +17,10 @@ import {NgForOf, NgIf} from "@angular/common";
 })
 export class StrategyBuilderComponent  implements OnInit{
 
-  constructor(private orderFormService: OrderFormService,
-              private orderSubmitService: OrderSubmitService){
+  constructor(private orderFormService: OrderFormService){
   }
   ngOnInit() {
     this.orderFormService.initStrategyForm();
-    this.orderSubmitService.setUrlToStrategyRequest(true);
   }
 
   getStrategyForm(){

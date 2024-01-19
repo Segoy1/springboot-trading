@@ -4,13 +4,14 @@ import {OrderFormValidationService} from "./order-form-validation.service";
 import {Store} from "@ngrx/store";
 import {findOrder} from "../../store/orders/orders.selector";
 import {Order} from "../../model/order.model";
+import {setStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.actions";
+import {selectEditMode} from "../../store/orders/modes/edit/orders-edit-mode.selector";
+import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {
   private simpleOrderSubmitForm: FormGroup;
   private strategySubmitForm: FormGroup;
-  strategyMode = false;
-  editMode = false;
   id: number;
 
   constructor(private orderFormValidationService: OrderFormValidationService,
@@ -18,22 +19,25 @@ export class OrderFormService {
   }
 
   initForm() {
-    this.strategyMode = false;
-    if (this.editMode) {
-      let orderSub = this.store.select(findOrder(this.id)).subscribe((order) => {
-        this.setFormValues(order)
-      });
-    } else {
-      this.setFormValues()
-    }
+    this.store.dispatch(setStrategyMode({strategyMode: false}));
+
+    this.store.select(selectEditMode).subscribe(editMode => {
+      if (editMode) {
+        this.store.select(findOrder(this.id)).subscribe((order) => {
+          this.setFormValues(order);
+        }).unsubscribe();
+      } else {
+        this.setFormValues();
+      }
+    }).unsubscribe();
   }
 
   private setFormValues(order?: Order) {
     let comboLegs = new FormArray([]);
-    if(order){
-    order.contractData.comboLegs.forEach((comboLeg) => {
-      (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
-    });
+    if (order) {
+      order.contractData.comboLegs.forEach((comboLeg) => {
+        (<FormArray>comboLegs).push(this.buildComboLeg(comboLeg.contractId, comboLeg.ratio, comboLeg.action, comboLeg.exchange));
+      });
     }
 
     let contractData = new FormGroup({
@@ -61,7 +65,8 @@ export class OrderFormService {
   }
 
   initStrategyForm() {
-    this.strategyMode = true;
+    this.store.dispatch(setStrategyMode({strategyMode: true}));
+    // this.strategyMode = true;
 
     this.simpleOrderSubmitForm.get('contractData.securityType').setValue('BAG');
     this.simpleOrderSubmitForm.get('contractData.securityType').disable();
@@ -81,7 +86,8 @@ export class OrderFormService {
   }
 
   switchFromStrategyToSimple() {
-    this.strategyMode = false;
+    this.store.dispatch(setStrategyMode({strategyMode: false}));
+    // this.strategyMode = false;
 
     this.simpleOrderSubmitForm.get('contractData.securityType').setValue('BAG');
     this.simpleOrderSubmitForm.get('contractData.securityType').enable();
@@ -101,11 +107,6 @@ export class OrderFormService {
   getStrategyForm() {
     return this.strategySubmitForm;
   }
-
-  getSubmitForm() {
-    return this.strategyMode ? this.strategySubmitForm : this.simpleOrderSubmitForm;
-  }
-
 
   buildStrategyLeg(right: string, action: string, ratio: number, strike: number) {
     return new FormGroup({
@@ -156,9 +157,9 @@ export class OrderFormService {
     }
   }
 
-  validStrategyLegs(control: FormControl): { [s: string]: boolean } {
-    if ((<FormArray>this.getStrategyForm().get('strategyLegs')).length < 2) {
-      return {'notAStrategy': true};
-    }
-  }
+  // validStrategyLegs(control: FormControl): { [s: string]: boolean } {
+  //   if ((<FormArray>this.getStrategyForm().get('strategyLegs')).length < 2) {
+  //     return {'notAStrategy': true};
+  //   }
+  // }
 }

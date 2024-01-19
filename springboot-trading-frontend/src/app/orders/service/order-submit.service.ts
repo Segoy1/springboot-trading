@@ -3,24 +3,21 @@ import {HttpClient} from "@angular/common/http";
 import {Order} from "../../model/order.model";
 import {Store} from "@ngrx/store";
 import {add} from "../../store/orders/orders.actions";
+import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService {
   private orderUrl = 'http://localhost:8080/order/place-order';
   private strategyUrl = 'http://localhost:8080/order/place-strategy-order';
-  private activeUrl = this.orderUrl;
 
   constructor(private store: Store, private http: HttpClient) {
   }
 
-  setUrlToStrategyRequest(strategy: boolean) {
-    this.activeUrl = strategy ? this.strategyUrl : this.orderUrl;
-  }
-
   placeOrder(req: []) {
+    const activeUrl = this.store.select(selectStrategyMode) ? this.strategyUrl : this.orderUrl;
     console.log("Request: ")
     console.log(req);
-    this.http.post<Order>(this.activeUrl, req).subscribe({
+    this.http.post<Order>(activeUrl, req).subscribe({
       next:
         response => {
           this.store.dispatch(add({order: response}));

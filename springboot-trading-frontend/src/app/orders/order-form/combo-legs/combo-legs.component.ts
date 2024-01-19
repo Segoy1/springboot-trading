@@ -15,14 +15,9 @@ import {NgForOf, NgIf} from "@angular/common";
   ],
   styleUrl: './combo-legs.component.css'
 })
-export class ComboLegsComponent implements OnInit{
+export class ComboLegsComponent{
 
-  constructor(private orderFormService: OrderFormService,
-              private orderSubmitService: OrderSubmitService) {
-  }
-  ngOnInit() {
-    this.orderFormService.strategyMode=false;
-    this.orderSubmitService.setUrlToStrategyRequest(false);
+  constructor(private orderFormService: OrderFormService) {
   }
 
   getOrderForm(){

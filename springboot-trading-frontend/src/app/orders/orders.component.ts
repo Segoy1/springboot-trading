@@ -13,6 +13,8 @@ import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {set} from "../store/orders/orders.actions";
 import {selectOrders} from "../store/orders/orders.selector";
+import {selectStrategyMode} from "../store/orders/modes/strategy/orders-strategy-mode.selector";
+import {selectEditMode} from "../store/orders/modes/edit/orders-edit-mode.selector";
 
 @Component({
   standalone: true,
