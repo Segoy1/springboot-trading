@@ -24,5 +24,7 @@ public class TwsMessageHandler {
         log.info(twsMessage.getMessage());
         TwsMessage savedTwsMessage = twsMessageRepository.save(twsMessage);
         kafkaEntityTemplate.send(savedTwsMessage.getTopic(), savedTwsMessage);
+        //Change to Submit with Key
+//        kafkaEntityTemplate.send(savedTwsMessage.getTopic(), savedTwsMessage.getMessageId().toString(), savedTwsMessage);
     }
 }
