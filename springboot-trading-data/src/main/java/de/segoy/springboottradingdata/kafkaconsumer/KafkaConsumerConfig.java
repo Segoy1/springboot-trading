@@ -31,20 +31,6 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
         return factory;
     }
 
-    //This used to be the old Configuration without error handling, keeping it in case things dont work
-    // TODO remove once kafka works with more stability
-
-    @Bean
-    public ConsumerFactory<String, IBKRDataTypeEntity> consumerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getGroupId());
-        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
-                new JsonDeserializer<IBKRDataTypeEntity>(new com.fasterxml.jackson.core.type.TypeReference<IBKRDataTypeEntity>() {
-                }));
-    }
     @Bean ConsumerFactory<String, IBKRDataTypeEntity> entityConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());

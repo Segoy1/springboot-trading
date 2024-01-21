@@ -24,8 +24,9 @@ public class SinglePnLService {
     }
 
     public Optional<ProfitAndLossData> getProfitAndLossData(PositionData positionData){
-        singlePnLCancelApiCaller.callApi(positionData);
+//        singlePnLCancelApiCaller.callApi(positionData);
         singlePnLApiCaller.callApi(positionData);
-        return singlePnLApiResponseChecker.checkForApiResponseAndUpdate(positionData.getContractData().getContractId());
+        return Optional.empty();
+//        return singlePnLApiResponseChecker.checkForApiResponseAndUpdate(positionData.getContractData().getContractId());
     }
 }

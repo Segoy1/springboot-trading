@@ -12,6 +12,7 @@ import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
 import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import de.segoy.springboottradingdata.model.entity.ProfitAndLossData;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
@@ -47,6 +48,7 @@ public class IBKRConnection implements EWrapper {
     private final ErrorMessageHandler errorMessageHandler;
     private final TwsMessageHandler twsMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
@@ -74,10 +76,12 @@ public class IBKRConnection implements EWrapper {
             ErrorCodeHandler errorCodeHandler,
             KafkaConstantsConfig kafkaConstantsConfig, ErrorMessageHandler errorMessageHandler,
             TwsMessageHandler twsMessageHandler, KafkaTemplate<String, String> kafkaTemplate,
+            KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
-            AccountPnLDBSynchronizer accountPnLDBSynchronizer, HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
+            AccountPnLDBSynchronizer accountPnLDBSynchronizer,
+            HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
             OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator,
             AccountSummaryDataDBSynchronizer accountSummaryDataDBSynchronizer) {
@@ -86,6 +90,7 @@ public class IBKRConnection implements EWrapper {
         this.errorMessageHandler = errorMessageHandler;
         this.twsMessageHandler = twsMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
+        this.kafkaEntityTemplate = kafkaEntityTemplate;
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
@@ -603,14 +608,21 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL,
                           double value) {
-        ProfitAndLossData pnLData =
-                ProfitAndLossData.builder().id((long) reqId).pos(pos.value()).dailyPnL(dailyPnL).unrealizedPnL(
-                unrealizedPnL).realizedPnL(realizedPnL).currentValue(value).build();
-        accountPnLDBSynchronizer.saveToDB(pnLData);
-        twsMessageHandler.handleMessage(TwsMessage.builder()
-                .messageId(reqId)
-                .topic(kafkaConstantsConfig.getSINGLE_PNL_TOPIC())
-                .message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value)).build());
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getSINGLE_PNL_TOPIC(),
+                Integer.toString(reqId),
+                ProfitAndLossData.builder()
+                        .id((long) reqId)
+                        .pos(pos.value())
+                        .dailyPnL(dailyPnL)
+                        .unrealizedPnL(unrealizedPnL)
+                        .realizedPnL(realizedPnL)
+                        .currentValue(value).build());
+//        accountPnLDBSynchronizer.saveToDB(pnLData);
+//        twsMessageHandler.handleMessage(TwsMessage.builder()
+//                .messageId(reqId)
+//                .topic(kafkaConstantsConfig.getSINGLE_PNL_TOPIC())
+//                .message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value))
+//                .build());
     }
 
     @Override
