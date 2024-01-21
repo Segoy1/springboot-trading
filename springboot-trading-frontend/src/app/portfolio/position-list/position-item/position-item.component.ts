@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Portfolio} from "../../../model/portfolio.model";
 import {CurrencyPipe, DecimalPipe, NgIf} from "@angular/common";
 import {NotAvailablePipe} from "../../../shared/not-available.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";

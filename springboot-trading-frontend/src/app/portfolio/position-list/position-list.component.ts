@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Portfolio} from "../../model/portfolio.model";
 import {Subscription} from "rxjs";
-import {PortfolioService} from "../service/portfolio.service";
 import {PositionItemComponent} from "./position-item/position-item.component";
 import {NgForOf} from "@angular/common";
 import {PositionService} from "../service/position.service";
