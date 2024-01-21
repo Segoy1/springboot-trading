@@ -4,6 +4,7 @@ import {NotAvailablePipe} from "../../../shared/not-available.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Position} from "../../../model/position.model";
 import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
+import {ProfitLossService} from "../../service/profit-loss.service";
 
 @Component({
   standalone: true,
@@ -19,28 +20,33 @@ import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
   animations: [
     trigger('position',
       [
-        state('exists', style({
-      })),
-        transition('void => *',[
-          style(
-            {
-              transform: 'translateX(300px)'
-            }
-          ),animate(300)
-        ]
+        state('exists', style({})),
+        transition('void => *', [
+            style(
+              {
+                transform: 'translateX(300px)'
+              }
+            ), animate(300)
+          ]
         )
       ]
     )
   ]
 })
 
-export class PositionItemComponent implements OnInit{
+export class PositionItemComponent implements OnInit {
   @Input() position: Position;
-  state='exists';
+  state = 'exists';
   profitAndLoss: ProfitAndLoss;
 
-  ngOnInit(){
-    this.profitAndLoss= null;
+  constructor(private profitLossService: ProfitLossService) {
   }
 
+  ngOnInit() {
+    this.profitLossService.connection();
+    console.log("Component on Init Method");
+    this.profitLossService.getForPosition(this.position.id).subscribe((pnl) => {
+      this.profitAndLoss = pnl;
+    })
+  }
 }

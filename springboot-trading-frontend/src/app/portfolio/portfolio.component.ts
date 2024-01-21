@@ -1,7 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
-import {PortfolioService} from "./service/portfolio.service";
-import {Portfolio} from "../model/portfolio.model";
+import {Component} from '@angular/core';
 import {AccountComponent} from "./account/account.component";
 import {PositionListComponent} from "./position-list/position-list.component";
 
@@ -15,18 +12,4 @@ import {PositionListComponent} from "./position-list/position-list.component";
     PositionListComponent
   ]
 })
-export class PortfolioComponent implements OnInit {
-
-  portfolio: Portfolio[];
-  portfolioSub: Subscription;
-
-
-  constructor(private portfolioService: PortfolioService) {
-  }
-  ngOnInit() {
-    this.portfolioSub = this.portfolioService.portfolioChanged.subscribe(positions => {
-      this.portfolio = positions;
-    });
-    this.portfolioService.initPortfolio();
-  }
-}
+export class PortfolioComponent{}

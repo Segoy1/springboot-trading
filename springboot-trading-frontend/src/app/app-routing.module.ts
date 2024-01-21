@@ -1,5 +1,4 @@
 import {RouterModule, Routes} from "@angular/router";
-import {HeaderComponent} from "./header/header.component";
 import {NgModule} from "@angular/core";
 import {MarketDataComponent} from "./market-data/market-data.component";
 import {HttpClientModule} from "@angular/common/http";
