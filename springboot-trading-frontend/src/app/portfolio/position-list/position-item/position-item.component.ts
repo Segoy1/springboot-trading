@@ -1,8 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Portfolio} from "../../../model/portfolio.model";
-import {CurrencyPipe, DecimalPipe} from "@angular/common";
+import {CurrencyPipe, DecimalPipe, NgIf} from "@angular/common";
 import {NotAvailablePipe} from "../../../shared/not-available.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {Position} from "../../../model/position.model";
+import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
 
 @Component({
   standalone: true,
@@ -11,7 +13,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
   imports: [
     DecimalPipe,
     NotAvailablePipe,
-    CurrencyPipe
+    CurrencyPipe,
+    NgIf
   ],
   styleUrl: './position-item.component.css',
   animations: [
@@ -32,8 +35,13 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
   ]
 })
 
-export class PositionItemComponent {
-  @Input() portfolio: Portfolio;
+export class PositionItemComponent implements OnInit{
+  @Input() position: Position;
   state='exists';
+  profitAndLoss: ProfitAndLoss;
+
+  ngOnInit(){
+    this.profitAndLoss= null;
+  }
 
 }
