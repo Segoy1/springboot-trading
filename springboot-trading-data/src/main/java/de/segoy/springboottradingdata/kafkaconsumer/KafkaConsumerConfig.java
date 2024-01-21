@@ -51,6 +51,7 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getGroupId());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity");
