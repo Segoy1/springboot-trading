@@ -1,14 +1,13 @@
 package de.segoy.springboottradingibkr.client.service.position.profitandloss;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.entity.PositionData;
-import de.segoy.springboottradingibkr.client.service.ApiCaller;
+import de.segoy.springboottradingibkr.client.service.ApiCallerWithId;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 @Qualifier("SinglePnLCancelApiCaller")
-class SinglePnLCancelApiCaller implements ApiCaller<PositionData> {
+class SinglePnLCancelApiCaller implements ApiCallerWithId {
     private final EClientSocket client;
 
     public SinglePnLCancelApiCaller(EClientSocket client) {
@@ -16,7 +15,7 @@ class SinglePnLCancelApiCaller implements ApiCaller<PositionData> {
     }
 
     @Override
-    public void callApi(PositionData positionData) {
-        client.cancelPnLSingle(positionData.getContractData().getContractId());
+    public void callApi(int id) {
+        client.cancelPnLSingle(id);
     }
 }
