@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CurrencyPipe, DecimalPipe, NgIf} from "@angular/common";
+import {CurrencyPipe, DecimalPipe, NgClass, NgIf} from "@angular/common";
 import {NotAvailablePipe} from "../../../shared/not-available.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Position} from "../../../model/position.model";
 import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
 import {ProfitLossService} from "../../service/profit-loss.service";
+import {BehaviorSubject, Subscription} from "rxjs";
 
 @Component({
   standalone: true,
@@ -14,7 +15,8 @@ import {ProfitLossService} from "../../service/profit-loss.service";
     DecimalPipe,
     NotAvailablePipe,
     CurrencyPipe,
-    NgIf
+    NgIf,
+    NgClass
   ],
   styleUrl: './position-item.component.css',
   animations: [
@@ -38,15 +40,22 @@ export class PositionItemComponent implements OnInit {
   @Input() position: Position;
   state = 'exists';
   profitAndLoss: ProfitAndLoss;
+  profitAndLossSub: Subscription;
+  isDailyProfit = false
 
   constructor(private profitLossService: ProfitLossService) {
   }
 
   ngOnInit() {
-    this.profitLossService.connection();
-    console.log("Component on Init Method");
-    this.profitLossService.getForPosition(this.position.id).subscribe((pnl) => {
-      this.profitAndLoss = pnl;
+    this.profitAndLossSub = this.profitLossService.getForPosition(this.position.contractData.contractId).subscribe((pnl) => {
+      if (pnl) {
+        this.profitAndLoss = pnl;
+        this.isDailyProfit = pnl.dailyPnL > 0;
+      }
     })
+  }
+
+  isPnLready() {
+    return !!this.profitAndLoss;
   }
 }

@@ -11,23 +11,34 @@ export class ProfitLossService {
   private url: string = 'http://localhost:8080/websocket';
   client:any;
 
+  constructor() {
+    this.connection();
+  }
+
   connection(){
     let webSocket = new SockJS(this.url);
     this.client = Stomp.over(webSocket);
     let that = this;
 
     this.client.connect({}, function (frame: any){
-      console.log("Connection Started");
-      that.client.subscribe("/topic/singlePnL", (message:ProfitAndLoss[])=>{
-        console.log("Websocket works");
-        if(message){
-          console.log("message arrives: " + message);
-          that.profitLoss = message;
+      that.client.subscribe("/topic/singlePnL", (message:any)=>{
+        if(message.body){
+          that.updateOrAdd(<ProfitAndLoss>JSON.parse(message.body));
           that.profitLossChange();
         }
       })
     });
   }
+
+  updateOrAdd(pnl: ProfitAndLoss){
+    const index =this.profitLoss.findIndex(inArray => inArray.id === pnl.id);
+    if(index>-1){
+      this.profitLoss[index]=pnl;
+    }else {
+      this.profitLoss.push(pnl);
+    }
+  }
+
   profitLossChange() {
     this.profitLossChanged.next(this.profitLoss);
   }
