@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {AccountDetailsService} from "../service/account-details.service";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AccountSummaryOpenCloseService} from "../service/account-summary-open-close.service";
 import {AccountSummary} from "../../model/account-summary.model";
 import {ProfitAndLoss} from "../../model/profit-and-loss.model";
 import {Subscription} from "rxjs";
@@ -14,23 +14,16 @@ import {NgIf} from "@angular/common";
   styleUrl: './account.component.css',
   imports: [AccountMarginComponent, AccountPnlComponent, NgIf]
 })
-export class AccountComponent implements OnInit{
-  accountSummary: AccountSummary[];
+export class AccountComponent implements OnInit, OnDestroy{
   profitAndLoss: ProfitAndLoss;
-  summarySub:Subscription;
-  pnlSub:Subscription;
 
-  constructor(private accountDetailService: AccountDetailsService) {
+  constructor(private accountSummaryOpenCloseService: AccountSummaryOpenCloseService) {
   }
 
   ngOnInit() {
-    this.accountDetailService.initAccountSummary();
-    this.summarySub = this.accountDetailService.accountSummaryChanged.subscribe(summary =>{
-      this.accountSummary = summary;
-    })
-    this.accountDetailService.initPnL();
-    this.pnlSub = this.accountDetailService.pnlChanged.subscribe(pnl=>{
-      this.profitAndLoss = pnl;
-    })
+    this.accountSummaryOpenCloseService.initAccountSummary();
+  }
+  ngOnDestroy() {
+    this.accountSummaryOpenCloseService.closeAccountSummary();
   }
 }

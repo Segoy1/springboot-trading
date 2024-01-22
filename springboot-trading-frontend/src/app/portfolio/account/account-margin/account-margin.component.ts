@@ -1,6 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AccountSummary} from "../../../model/account-summary.model";
 import {CommonModule, NgForOf} from "@angular/common";
+import {Subscription} from "rxjs";
+import {AccountMarginWebsocketService} from "./account-margin-websocket.service";
 
 @Component({
   standalone: true,
@@ -11,6 +13,23 @@ import {CommonModule, NgForOf} from "@angular/common";
     NgForOf
   ]
 })
-export class AccountMarginComponent {
-@Input() accountSummary: AccountSummary[];
+export class AccountMarginComponent implements OnInit {
+  accountSummary: AccountSummary[];
+  accountSummarySub: Subscription;
+
+
+  constructor(private accountMarginWebsocketService: AccountMarginWebsocketService) {
+  }
+
+  ngOnInit() {
+    this.accountSummarySub = this.accountMarginWebsocketService.responseChangedSubject.subscribe(
+      summary => {
+        this.accountSummary = summary;
+      }
+    );
+  }
+  isAccountSummaryReady(){
+    return !!this.accountSummary;
+  }
+
 }
