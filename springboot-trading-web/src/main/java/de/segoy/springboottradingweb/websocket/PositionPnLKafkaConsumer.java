@@ -24,6 +24,6 @@ public class PositionPnLKafkaConsumer {
     public void consumeMessage(IBKRDataTypeEntity message){
         ProfitAndLossData pnl = (ProfitAndLossData) message;
       log.warn("Message received: " + pnl.getId());
-      messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getSINGLE_PNL_TOPIC(), message);
+      messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getSINGLE_PNL_TOPIC(), pnl);
     }
 }

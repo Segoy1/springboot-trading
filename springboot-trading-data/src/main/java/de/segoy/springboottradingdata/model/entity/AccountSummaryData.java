@@ -1,10 +1,8 @@
 package de.segoy.springboottradingdata.model.entity;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
 @Builder

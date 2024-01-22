@@ -53,12 +53,10 @@ public class IBKRConnection implements EWrapper {
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
     private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
-    private final AccountPnLDBSynchronizer accountPnLDBSynchronizer;
     private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
     private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
     private final OrderWriteToDBService orderWriteToDBService;
     private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
-    private final AccountSummaryDataDBSynchronizer accountSummaryDataDBSynchronizer;
 
 
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
@@ -80,11 +78,9 @@ public class IBKRConnection implements EWrapper {
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
-            AccountPnLDBSynchronizer accountPnLDBSynchronizer,
             HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
-            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator,
-            AccountSummaryDataDBSynchronizer accountSummaryDataDBSynchronizer) {
+            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator) {
         this.errorCodeHandler = errorCodeHandler;
         this.kafkaConstantsConfig = kafkaConstantsConfig;
         this.errorMessageHandler = errorMessageHandler;
@@ -94,14 +90,12 @@ public class IBKRConnection implements EWrapper {
         this.connectionDataRepository = connectionDataRepository;
         this.orderStatusUpdateService = orderStatusUpdateService;
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
-        this.accountPnLDBSynchronizer = accountPnLDBSynchronizer;
         this.historicalDataDatabaseSynchronizer = historicalDataDatabaseSynchronizer;
         this.positionDataDatabaseSynchronizer = positionDataDatabaseSynchronizer;
         this.propertiesConfig = propertiesConfig;
 
         this.orderWriteToDBService = orderWriteToDBService;
         this.nextValidOrderIdGenerator = nextValidOrderIdGenerator;
-        this.accountSummaryDataDBSynchronizer = accountSummaryDataDBSynchronizer;
     }
 
     @Override
@@ -418,16 +412,19 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void accountSummary(int reqId, String account, String tag, String value, String currency) {
-        accountSummaryDataDBSynchronizer.sendAccountSummaryMessage(
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
+                Integer.toString(reqId),
                 AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
+//        accountSummaryDataDBSynchronizer.sendAccountSummaryMessage(
+//                AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
     }
 
     @Override
     public void accountSummaryEnd(int reqId) {
-        twsMessageHandler.handleMessage(TwsMessage.builder()
-                .messageId(reqId)
-                .topic(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC())
-                .message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
+//        twsMessageHandler.handleMessage(TwsMessage.builder()
+//                .messageId(reqId)
+//                .topic(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC())
+//                .message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
     }
 
     @Override
@@ -598,11 +595,12 @@ public class IBKRConnection implements EWrapper {
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
         ProfitAndLossData pnLData = ProfitAndLossData.builder().id((long) reqId).dailyPnL(dailyPnL).unrealizedPnL(
                 unrealizedPnL).realizedPnL(realizedPnL).build();
-        accountPnLDBSynchronizer.saveToDB(pnLData);
-        twsMessageHandler.handleMessage(TwsMessage.builder()
-                .messageId(reqId)
-                .topic(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC())
-                .message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), Integer.toString(reqId), pnLData);
+//        accountPnLDBSynchronizer.saveToDB(pnLData);
+//        twsMessageHandler.handleMessage(TwsMessage.builder()
+//                .messageId(reqId)
+//                .topic(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC())
+//                .message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override
@@ -618,11 +616,6 @@ public class IBKRConnection implements EWrapper {
                         .realizedPnL(realizedPnL)
                         .currentValue(value).build());
 //        accountPnLDBSynchronizer.saveToDB(pnLData);
-//        twsMessageHandler.handleMessage(TwsMessage.builder()
-//                .messageId(reqId)
-//                .topic(kafkaConstantsConfig.getSINGLE_PNL_TOPIC())
-//                .message(EWrapperMsgGenerator.pnlSingle(reqId, pos, dailyPnL, unrealizedPnL, realizedPnL, value))
-//                .build());
     }
 
     @Override
