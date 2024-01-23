@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {User} from "../model/user.model";
+import {environment} from "../../environments/environment";
 
 export interface AuthResponse {
   username: string;
@@ -13,7 +14,7 @@ export interface AuthResponse {
   providedIn:"root"
 })
 export class LoginService {
-  private loginUrl = 'http://localhost:8080/login'
+  private loginUrl = environment.apiUrl+'login'
   user = new BehaviorSubject<User>(null)
 
   constructor(private http: HttpClient) {

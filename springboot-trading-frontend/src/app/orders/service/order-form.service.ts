@@ -6,7 +6,6 @@ import {findOrder} from "../../store/orders/orders.selector";
 import {Order} from "../../model/order.model";
 import {setStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.actions";
 import {selectEditMode} from "../../store/orders/modes/edit/orders-edit-mode.selector";
-import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {

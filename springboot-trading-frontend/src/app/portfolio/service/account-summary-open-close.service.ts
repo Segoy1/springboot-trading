@@ -3,12 +3,13 @@ import {HttpClient} from "@angular/common/http";
 import {AccountSummary} from "../../model/account-summary.model";
 import {ProfitAndLoss} from "../../model/profit-and-loss.model";
 import {BehaviorSubject} from "rxjs";
+import {environment} from "../../../environments/environment";
 
 
 @Injectable({providedIn:"root"})
 export class AccountSummaryOpenCloseService {
-  private summaryUrl: string = 'http://localhost:8080/account-summary';
-  private pnLUrl: string = 'http://localhost:8080/account-summary/pnl';
+  private summaryUrl: string = environment.apiUrl+'account-summary';
+  private pnLUrl: string = environment.apiUrl+'account-summary/pnl';
   private cancelSuffix = '/cancel';
 
 

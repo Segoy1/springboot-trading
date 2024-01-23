@@ -15,6 +15,7 @@ import {set} from "../store/orders/orders.actions";
 import {selectOrders} from "../store/orders/orders.selector";
 import {selectStrategyMode} from "../store/orders/modes/strategy/orders-strategy-mode.selector";
 import {selectEditMode} from "../store/orders/modes/edit/orders-edit-mode.selector";
+import {environment} from "../../environments/environment";
 
 @Component({
   standalone: true,
@@ -32,7 +33,7 @@ export class OrdersComponent implements OnInit {
 
   openOrders: Observable<Order[]>;
   errorMessage: string;
-  private url: string = 'http://localhost:8080/order/open-orders';
+  private url: string = environment.apiUrl+'order/open-orders';
 
   constructor(private http: HttpClient,
               private orderCancelService: OrderCancelService,

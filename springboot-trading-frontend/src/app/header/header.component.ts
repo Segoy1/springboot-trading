@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HttpService} from "./http.service";
+import {ConnectionService} from "./connection.service";
 import {Subscription} from "rxjs";
 import {LoginService} from "../login/login.service";
 import {RouterLinkActive, RouterModule} from "@angular/router";
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = true;
   private userSubscription: Subscription;
 
-  constructor(private httpService: HttpService, private loginService: LoginService) {
+  constructor(private httpService: ConnectionService, private loginService: LoginService) {
   }
 
   ngOnInit() {
