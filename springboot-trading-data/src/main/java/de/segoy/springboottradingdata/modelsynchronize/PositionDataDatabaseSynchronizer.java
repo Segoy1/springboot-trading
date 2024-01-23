@@ -7,7 +7,6 @@ import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Component
 public class PositionDataDatabaseSynchronizer {
@@ -27,6 +26,12 @@ public class PositionDataDatabaseSynchronizer {
         return positionDataRepository.findFirstByContractData(positionData.getContractData()).map((dbPositionData) -> {
             dbPositionData.setPosition(positionData.getPosition());
             dbPositionData.setAverageCost(positionData.getAverageCost());
+
+            //delete if Position is 0.
+            if(dbPositionData.getPosition().equals(BigDecimal.ZERO)){
+                positionDataRepository.delete(dbPositionData);
+                return dbPositionData;
+            }
             return positionDataRepository.save(dbPositionData);
         }).orElseGet(()-> positionDataRepository.save(positionData));
     }

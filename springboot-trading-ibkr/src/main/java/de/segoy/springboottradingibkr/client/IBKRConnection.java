@@ -10,10 +10,7 @@ import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
-import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
-import de.segoy.springboottradingdata.model.entity.ConnectionData;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.entity.ProfitAndLossData;
+import de.segoy.springboottradingdata.model.entity.*;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.modelsynchronize.*;
@@ -398,16 +395,18 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
+    @Transactional
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(), avgCost);
+        PositionData position = positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(),
+                avgCost);
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getPOSITION_TOPIC(),
+                Integer.toString(position.getContractData().getContractId()),
+                position);
     }
 
     @Override
     public void positionEnd() {
-        twsMessageHandler.handleMessage(TwsMessage.builder()
-                .messageId(propertiesConfig.getPOSITION_CALL_ID())
-                .topic(kafkaConstantsConfig.getPOSITION_TOPIC())
-                .message(EWrapperMsgGenerator.positionEnd()).build());
+        log.info(EWrapperMsgGenerator.positionEnd());
     }
 
     @Override
@@ -415,16 +414,11 @@ public class IBKRConnection implements EWrapper {
         kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
                 Integer.toString(reqId),
                 AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
-//        accountSummaryDataDBSynchronizer.sendAccountSummaryMessage(
-//                AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
     }
 
     @Override
     public void accountSummaryEnd(int reqId) {
-//        twsMessageHandler.handleMessage(TwsMessage.builder()
-//                .messageId(reqId)
-//                .topic(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC())
-//                .message(EWrapperMsgGenerator.accountSummaryEnd(reqId)).build());
+        log.info(EWrapperMsgGenerator.accountSummaryEnd(reqId));
     }
 
     @Override
