@@ -4,12 +4,12 @@ import {Order} from "../../model/order.model";
 import {Store} from "@ngrx/store";
 import {add} from "../../store/orders/orders.actions";
 import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
-import {environment} from "../../../environments/environment";
+import {environmentDevelopment} from "../../../environments/environment.development";
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService {
-  private orderUrl = environment.apiUrl+'order/place-order';
-  private strategyUrl = environment.apiUrl+'order/place-strategy-order';
+  private orderUrl = environmentDevelopment.apiUrl+'order/place-order';
+  private strategyUrl = environmentDevelopment.apiUrl+'order/place-strategy-order';
 
   constructor(private store: Store, private http: HttpClient) {
   }

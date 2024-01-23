@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {PositionItemComponent} from "./position-item/position-item.component";
 import {NgForOf} from "@angular/common";
-import {PositionService} from "../service/position.service";
+import {PositionsWebsocketService} from "../service/positions-websocket.service";
 import {Position} from "../../model/position.model";
 import {PositionsOpenCloseService} from "../service/positions-open-close.service";
 
@@ -22,14 +22,13 @@ export class PositionListComponent implements OnInit, OnDestroy {
   portfolioSub: Subscription;
 
 
-  constructor(private positionService: PositionService,
+  constructor(private positionsWebsocketService: PositionsWebsocketService,
               private positionsOpenCloseService: PositionsOpenCloseService) {
   }
   ngOnInit() {
-    this.portfolioSub = this.positionService.positionsChanged.subscribe(positions => {
+    this.portfolioSub = this.positionsWebsocketService.responseChangedSubject.subscribe(positions => {
       this.positions = positions;
     });
-    this.positionService.initPositions();
     this.positionsOpenCloseService.initPositions();
   }
   ngOnDestroy() {

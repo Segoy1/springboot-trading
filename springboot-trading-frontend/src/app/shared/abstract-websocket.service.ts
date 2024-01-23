@@ -1,12 +1,12 @@
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
 import {BehaviorSubject} from "rxjs";
-import {environment} from "../../environments/environment";
+import {environmentDevelopment} from "../../environments/environment.development";
 
 export abstract class AbstractWebsocketService<T> {
   protected response: T[] = [];
   responseChangedSubject = new BehaviorSubject<T[]>(null);
-  private url: string = environment.apiUrl+'websocket';
+  private url: string = environmentDevelopment.apiUrl+'websocket';
   client:any;
 
   constructor(topicName:string) {

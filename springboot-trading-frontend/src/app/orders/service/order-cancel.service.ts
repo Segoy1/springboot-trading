@@ -3,13 +3,13 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {findOrder, selectOrders} from "../../store/orders/orders.selector";
 import {remove, removeAll} from "../../store/orders/orders.actions";
-import {environment} from "../../../environments/environment";
+import {environmentDevelopment} from "../../../environments/environment.development";
 
 @Injectable({providedIn: "root"})
 export class OrderCancelService {
   private errorMessage: string;
-  private singleCancelUrl: string = environment.apiUrl+'order/cancel-order';
-  private allCancelUrl: string = environment.apiUrl+'order/cancel-all-open-orders';
+  private singleCancelUrl: string = environmentDevelopment.apiUrl+'order/cancel-order';
+  private allCancelUrl: string = environmentDevelopment.apiUrl+'order/cancel-all-open-orders';
 
   constructor(private httpClient: HttpClient, private store: Store) {
   };

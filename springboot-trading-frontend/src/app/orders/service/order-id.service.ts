@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import {environmentDevelopment} from "../../../environments/environment.development";
 
 @Injectable({providedIn: "root"})
 export class OrderIdService {
-  private url = environment.apiUrl+'get-next-order-id';
+  private url = environmentDevelopment.apiUrl+'get-next-order-id';
 
   constructor(private http: HttpClient) {
   }

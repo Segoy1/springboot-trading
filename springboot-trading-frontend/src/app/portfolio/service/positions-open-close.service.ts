@@ -1,23 +1,27 @@
 import {Injectable} from "@angular/core";
-import {Position} from "../../model/position.model";
-import {BehaviorSubject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import {environmentDevelopment} from "../../../environments/environment.development";
 
 @Injectable({providedIn: "root"})
 export class PositionsOpenCloseService {
 
 
-  private pnlUrl = environment.apiUrl+'portfolio/pnl';
+  private pnlUrl = environmentDevelopment.apiUrl+'portfolio/pnl';
+  private positionsUrl = environmentDevelopment.apiUrl+'portfolio/positions';
   private cancelSuffix = '/cancel';
+  private storageItemName = 'isPortfolioCallOpen';
+
   constructor(private httpClient: HttpClient) {
   };
 
   initPositions() {
     this.httpClient.get(this.pnlUrl).subscribe();
+    this.httpClient.get(this.positionsUrl).subscribe();
+    localStorage.setItem(this.storageItemName, JSON.stringify(true));
   }
 
   cancelPositions(){
     this.httpClient.get(this.pnlUrl+this.cancelSuffix).subscribe();
+    localStorage.setItem(this.storageItemName, JSON.stringify(false));
   }
 }

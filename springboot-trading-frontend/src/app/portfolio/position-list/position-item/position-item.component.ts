@@ -43,11 +43,11 @@ export class PositionItemComponent implements OnInit {
   profitAndLossSub: Subscription;
   isDailyProfit = false
 
-  constructor(private profitLossService: ProfitLossWebsocketService) {
+  constructor(private profitLossWebsocketService: ProfitLossWebsocketService) {
   }
 
   ngOnInit() {
-    this.profitAndLossSub = this.profitLossService.getForPosition(this.position.contractData.contractId).subscribe((pnl) => {
+    this.profitAndLossSub = this.profitLossWebsocketService.getForPosition(this.position.contractData.contractId).subscribe((pnl) => {
       if (pnl) {
         this.profitAndLoss = pnl;
         this.isDailyProfit = pnl.dailyPnL > 0;
