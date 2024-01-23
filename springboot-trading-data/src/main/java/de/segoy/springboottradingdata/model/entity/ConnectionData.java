@@ -12,7 +12,6 @@ import lombok.*;
 public class ConnectionData extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //blank for localhost

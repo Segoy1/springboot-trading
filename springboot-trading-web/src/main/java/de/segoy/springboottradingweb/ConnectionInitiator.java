@@ -1,6 +1,7 @@
 package de.segoy.springboottradingweb;
 
 import com.ib.client.EClientSocket;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.entity.ConnectionData;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
@@ -20,23 +21,26 @@ public class ConnectionInitiator {
     private final ConnectionDataRepository connectionDataRepository;
     private final TwsMessageRepository tws_messages;
     private final EReaderHolder eReaderHolder;
+    private final PropertiesConfig propertiesConfig;
 
 
-    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, TwsMessageRepository tws, EReaderHolder eReaderHolder) {
+    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, TwsMessageRepository tws, EReaderHolder eReaderHolder, PropertiesConfig propertiesConfig) {
         this.client = m_client;
         this.connectionDataRepository = connectionDataRepository;
         this.tws_messages = tws;
         this.eReaderHolder = eReaderHolder;
+        this.propertiesConfig = propertiesConfig;
     }
 
-    public boolean connect(int port) {
+    public void connect(int port) {
         if (client.isConnected()) {
-            return true;
+            return;
         }
         client.eConnect("", port, 0);
 
         if (client.isConnected()) {
             ConnectionData connectionData = ConnectionData.builder()
+                    .id(propertiesConfig.getConnectionId())
                     .ipAddress("")
                     .port(port)
                     .clientId(0)
@@ -52,22 +56,25 @@ public class ConnectionInitiator {
                             client.getTwsConnectionTime()).build();
             log.info(msg.getMessage());
             tws_messages.save(msg);
-            ConnectionData savedConnectionData = connectionDataRepository.save(connectionData);
+            connectionDataRepository.save(connectionData);
             eReaderHolder.startReader();
-            return true;
+        }else{
+            throw new RuntimeException("Connection to Tws Failed!!");
         }
-        return false;
     }
 
     @PreDestroy
     public ConnectionData disconnect(){
-        ConnectionData connectionData = connectionDataRepository.findById(1).orElse(ConnectionData.builder().build());
+        ConnectionData connectionData =
+                connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElse(ConnectionData.builder().build());
         connectionData.setDisconnectInProgress(true);
-        connectionDataRepository.save(connectionData);
+        ConnectionData processingConnectionData = connectionDataRepository.save(connectionData);
 
         client.eDisconnect();
 
-        connectionDataRepository.deleteAll();
-        return connectionData;
+        processingConnectionData.setConnected(false);
+        processingConnectionData.setDisconnectInProgress(false);
+        return connectionDataRepository.save(processingConnectionData);
+
     }
 }

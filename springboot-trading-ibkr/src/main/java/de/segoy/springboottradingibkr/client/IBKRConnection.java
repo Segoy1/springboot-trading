@@ -287,7 +287,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     @Transactional
     public void connectionClosed() {
-        connectionDataRepository.setConnectFalseById(1);
+        connectionDataRepository.setConnectFalseById(propertiesConfig.getConnectionId());
         log.warn(EWrapperMsgGenerator.connectionClosed());
     }
 

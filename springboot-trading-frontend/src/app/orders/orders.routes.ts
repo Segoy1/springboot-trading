@@ -1,4 +1,3 @@
-import {NgModule} from "@angular/core";
 import {OrdersComponent} from "./orders.component";
 import {LoginGuard} from "../login/login.guard";
 import {OrderStartComponent} from "./order-start/order-start.component";

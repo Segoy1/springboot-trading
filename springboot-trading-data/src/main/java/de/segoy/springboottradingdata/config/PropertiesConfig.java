@@ -26,7 +26,7 @@ public class PropertiesConfig {
 
     @Getter
     @Value("${app.ibkr.connectionId}")
-    private int connectionId;
+    private long connectionId;
 
     @Getter
     @Value("${app.ibkr.pnl.accountId}")
