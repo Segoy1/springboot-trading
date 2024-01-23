@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AccountSummary} from "../../../model/account-summary.model";
-import {CommonModule, NgForOf} from "@angular/common";
+import {NgForOf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {AccountMarginWebsocketService} from "./account-margin-websocket.service";
 
@@ -28,8 +28,4 @@ export class AccountMarginComponent implements OnInit {
       }
     );
   }
-  isAccountSummaryReady(){
-    return !!this.accountSummary;
-  }
-
 }

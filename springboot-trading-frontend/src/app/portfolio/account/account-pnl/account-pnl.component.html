@@ -1,10 +1,10 @@
 <a style="cursor: pointer" class="list-group-item clearfix">
-<div class="row">
+<div class="row" *ngIf="profitAndLoss">
 
   <h4 class="list-group-item-heading text-center">Profit and Loss</h4>
   <div class="list-group-item-text col-xs-5 col-xs-offset-1">
     <div class="row">Daily:</div>
-    <h5 class="row" style="font-size: large; {{profitAndLoss.dailyPnL>0? 'color: green':'color: red'}}">{{profitAndLoss.dailyPnL | number : '1.0-2'}}$</h5>
+    <h5 class="row" style="font-size: xx-large; {{profitAndLoss.dailyPnL>0? 'color: green':'color: red'}}">{{profitAndLoss.dailyPnL | number : '1.0-2'}}$</h5>
   </div>
 
   <div class="col-xs-5 col-xs-offset-1">
@@ -12,7 +12,7 @@
       <p class="list-group-item-text">Unrealized: {{profitAndLoss.unrealizedPnL | number : '1.0-2'}}</p>
     </div>
     <div class="row">
-      <p class="list-group-item-text">Reailized: {{profitAndLoss.realizedPnL}}</p>
+      <p class="list-group-item-text">Realized: {{profitAndLoss.realizedPnL}}</p>
     </div>
   </div>
 </div>

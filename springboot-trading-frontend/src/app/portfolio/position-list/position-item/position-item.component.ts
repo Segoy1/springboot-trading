@@ -4,8 +4,8 @@ import {NotAvailablePipe} from "../../../shared/not-available.pipe";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Position} from "../../../model/position.model";
 import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
-import {ProfitLossService} from "../../service/profit-loss.service";
-import {BehaviorSubject, Subscription} from "rxjs";
+import {ProfitLossWebsocketService} from "../../service/profit-loss-websocket.service";
+import { Subscription} from "rxjs";
 
 @Component({
   standalone: true,
@@ -43,7 +43,7 @@ export class PositionItemComponent implements OnInit {
   profitAndLossSub: Subscription;
   isDailyProfit = false
 
-  constructor(private profitLossService: ProfitLossService) {
+  constructor(private profitLossService: ProfitLossWebsocketService) {
   }
 
   ngOnInit() {

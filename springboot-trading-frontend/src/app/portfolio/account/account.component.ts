@@ -15,7 +15,6 @@ import {NgIf} from "@angular/common";
   imports: [AccountMarginComponent, AccountPnlComponent, NgIf]
 })
 export class AccountComponent implements OnInit, OnDestroy{
-  profitAndLoss: ProfitAndLoss;
 
   constructor(private accountSummaryOpenCloseService: AccountSummaryOpenCloseService) {
   }

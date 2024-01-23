@@ -10,7 +10,7 @@ export class AccountPnlWebsocketService extends AbstractWebsocketService<ProfitA
   }
 
   updateOrAdd(response: ProfitAndLoss): void {
-    // Only hast one Value, only list because of abstract Method
+    // Only has one Value, only list because of abstract Method
     this.response[0] = response;
   }
 
