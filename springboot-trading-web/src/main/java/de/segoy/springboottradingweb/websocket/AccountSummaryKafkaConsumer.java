@@ -23,13 +23,15 @@ public class AccountSummaryKafkaConsumer {
     @KafkaListener(topics = "${spring.kafka.names.topic.accountPnL}")
     public void consumePnLMessage(IBKRDataTypeEntity message){
         ProfitAndLossData pnl = (ProfitAndLossData) message;
-        log.warn("Message received: " + pnl.getId());
-        messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), message);
+        String topic = kafkaConstantsConfig.getACCOUNT_PNL_TOPIC();
+        log.info("Message received: "+ topic +"-" + pnl.getId());
+        messagingTemplate.convertAndSend("/topic/"+ topic, message);
     }
     @KafkaListener(topics = "${spring.kafka.names.topic.accountSummary}")
     public void consumeSummaryMessage(IBKRDataTypeEntity message){
         AccountSummaryData summary = (AccountSummaryData) message;
-        log.warn("Message received: " + summary.getId());
-        messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(), summary);
+        String summaryTopic = kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC();
+        log.info("Message received: "+summaryTopic+ "-" + summary.getTag());
+        messagingTemplate.convertAndSend("/topic/"+ summaryTopic, summary);
     }
 }
