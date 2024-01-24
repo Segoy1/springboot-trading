@@ -5,7 +5,6 @@ import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.entity.database.ConnectionData;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
-import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;
 import de.segoy.springboottradingibkr.client.service.EReaderHolder;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +18,13 @@ public class ConnectionInitiator {
     private final Integer LAST_CLIENT_ID = 0;
     private final EClientSocket client;
     private final ConnectionDataRepository connectionDataRepository;
-    private final TwsMessageRepository tws_messages;
     private final EReaderHolder eReaderHolder;
     private final PropertiesConfig propertiesConfig;
 
 
-    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, TwsMessageRepository tws, EReaderHolder eReaderHolder, PropertiesConfig propertiesConfig) {
+    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, EReaderHolder eReaderHolder, PropertiesConfig propertiesConfig) {
         this.client = m_client;
         this.connectionDataRepository = connectionDataRepository;
-        this.tws_messages = tws;
         this.eReaderHolder = eReaderHolder;
         this.propertiesConfig = propertiesConfig;
     }
@@ -55,7 +52,6 @@ public class ConnectionInitiator {
                             client.serverVersion() + " at " +
                             client.getTwsConnectionTime()).build();
             log.info(msg.getMessage());
-            tws_messages.save(msg);
             connectionDataRepository.save(connectionData);
             eReaderHolder.startReader();
         }else{
