@@ -15,8 +15,14 @@ public class OrderStatusUpdateService {
     }
 
     public OrderData updateOrderStatus(int orderId, String status) {
-        OrderData orderData = orderDataRepository.findById((long)orderId).orElseThrow();
-        orderData.setStatus(OrderStatus.get(status));
-        return orderDataRepository.save(orderData);
+        OrderData orderData = orderDataRepository.findById((long) orderId).orElseThrow();
+        if (OrderStatus.get(status).equals(OrderStatus.Cancelled) ||
+                OrderStatus.get(status).equals(OrderStatus.ApiCancelled)) {
+            orderDataRepository.delete(orderData);
+            return orderData;
+        } else {
+            orderData.setStatus(OrderStatus.get(status));
+            return orderDataRepository.save(orderData);
+        }
     }
 }

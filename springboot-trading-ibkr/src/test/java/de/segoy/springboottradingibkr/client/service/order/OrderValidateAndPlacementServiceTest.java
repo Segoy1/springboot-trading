@@ -35,10 +35,9 @@ class OrderValidateAndPlacementServiceTest {
         OrderData orderData = OrderData.builder().id(1L).contractData(contractData).build();
         when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.empty());
 
-        Optional<OrderData> valid = orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
+       orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
 
         verify(orderPlacementApiCaller, times(0)).callApi(orderData);
-        assertFalse(valid.isPresent());
     }
 
     @Test
@@ -49,11 +48,11 @@ class OrderValidateAndPlacementServiceTest {
         when(orderDataApiResponseChecker.checkForApiResponseAndUpdate(orderData.getId().intValue())).thenReturn(Optional.of(orderData));
 
 
-        Optional<OrderData> valid = orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
+        orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
 
         verify(orderPlacementApiCaller, times(1)).callApi(orderData);
         assertEquals(2, orderData.getContractData().getId());
         assertNotEquals(Types.Right.Call, orderData.getContractData().getRight());
-        assertTrue(valid.isPresent());
+
     }
 }

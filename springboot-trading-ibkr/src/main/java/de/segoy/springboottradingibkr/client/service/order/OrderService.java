@@ -4,8 +4,6 @@ import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.entity.OrderData;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class OrderService {
 
@@ -18,10 +16,10 @@ public class OrderService {
         this.propertiesConfig = propertiesConfig;
     }
 
-    public Optional<OrderData> setIdAndPlaceOrder(OrderData orderData) {
+    public void setIdAndPlaceOrder(OrderData orderData) {
         if (orderData.getId() == null) {
             orderData.setId(propertiesConfig.getNextValidOrderId());
         }
-        return orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
+        orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
     }
 }

@@ -1,24 +1,16 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import com.ib.client.OrderType;
-import com.ib.client.Types;
-import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.StrategyData;
-import de.segoy.springboottradingdata.model.entity.ContractData;
 import de.segoy.springboottradingdata.model.entity.OrderData;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderService;
 import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
-import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyOrderDataBuilder;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -53,22 +45,15 @@ public class OrderController {
 
     //    curl -i -X POST 'http://localhost:8080/login' --data 'username=john&password=john'
     @PostMapping("/place-order")
-    public ResponseEntity<OrderData> orderWithOrderObject(@RequestBody OrderData orderData) {
-        return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
+    public void orderWithOrderObject(@RequestBody OrderData orderData) {
+        orderService.setIdAndPlaceOrder(orderData);
     }
 
     @PostMapping("/place-strategy-order")
-    public ResponseEntity<OrderData> orderWithStrategyOrderObject(@RequestBody StrategyData strategyData) {
-        return strategyOrderDataBuilder
-                .buildOrderWithStrategyData(strategyData)
-                .map(
-                (orderData)->{
-        return responseMapper.mapResponse(orderService.setIdAndPlaceOrder(orderData));
-        }
-        )
-                .orElseGet(()->{
-                    return ResponseEntity.badRequest().build();
-                });
+    public void orderWithStrategyOrderObject(@RequestBody StrategyData strategyData) {
+        strategyOrderDataBuilder.buildOrderWithStrategyData(strategyData).ifPresent(
+                orderService::setIdAndPlaceOrder
+        );
     }
 
     @DeleteMapping("/cancel-order")

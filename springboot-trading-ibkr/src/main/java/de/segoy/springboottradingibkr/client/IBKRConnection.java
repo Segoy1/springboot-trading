@@ -588,10 +588,6 @@ public class IBKRConnection implements EWrapper {
                 unrealizedPnL).realizedPnL(realizedPnL).build();
         kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), Integer.toString(reqId), pnLData);
 //        accountPnLDBSynchronizer.saveToDB(pnLData);
-//        twsMessageHandler.handleMessage(TwsMessage.builder()
-//                .messageId(reqId)
-//                .topic(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC())
-//                .message(EWrapperMsgGenerator.pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)).build());
     }
 
     @Override

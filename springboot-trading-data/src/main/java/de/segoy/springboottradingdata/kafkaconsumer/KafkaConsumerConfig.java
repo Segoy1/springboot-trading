@@ -4,6 +4,7 @@ import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -27,14 +28,25 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, IBKRDataTypeEntity> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, IBKRDataTypeEntity> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(entityConsumerFactory());
+        factory.setConsumerFactory(websocketConsumerFactory());
         return factory;
     }
 
-    @Bean ConsumerFactory<String, IBKRDataTypeEntity> entityConsumerFactory(){
+    @Bean
+    @Qualifier("WebsocketConsumerFactory")
+    ConsumerFactory<String, IBKRDataTypeEntity> websocketConsumerFactory(){
+        return getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getGroupId());
+    }
+    @Bean
+    @Qualifier("RestResponseConsumerFactory")
+    ConsumerFactory<String, IBKRDataTypeEntity> restResponseConsumerFactory(){
+        return  getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getRestResponseGroupId());
+    }
+
+    private DefaultKafkaConsumerFactory<String, IBKRDataTypeEntity> getConsumerFactoryWithConsumerGroup(String groupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getGroupId());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
