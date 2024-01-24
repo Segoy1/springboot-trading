@@ -1,7 +1,7 @@
-package de.segoy.springboottradingdata.model.entity.database;
+package de.segoy.springboottradingdata.model.data.entity;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractData extends IBKRDataTypeEntity {
+public class ContractData extends IBKRDataType {
 
     @Id
     @SequenceGenerator(initialValue = 9000000, allocationSize = 1, name = "contract_id_sequence")

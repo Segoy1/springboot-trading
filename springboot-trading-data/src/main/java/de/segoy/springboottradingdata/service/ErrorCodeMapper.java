@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
-import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import org.springframework.stereotype.Component;
 
 @Component

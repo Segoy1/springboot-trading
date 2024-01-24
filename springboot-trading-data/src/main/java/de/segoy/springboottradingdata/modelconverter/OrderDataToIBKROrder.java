@@ -2,7 +2,7 @@ package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Decimal;
 import com.ib.client.Order;
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import org.springframework.stereotype.Component;
 
 @Component

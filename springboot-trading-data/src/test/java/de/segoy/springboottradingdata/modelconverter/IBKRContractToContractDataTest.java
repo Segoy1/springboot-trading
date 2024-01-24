@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.modelconverter;
 import com.ib.client.ComboLeg;
 import com.ib.client.Contract;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

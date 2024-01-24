@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.LegMapService;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;

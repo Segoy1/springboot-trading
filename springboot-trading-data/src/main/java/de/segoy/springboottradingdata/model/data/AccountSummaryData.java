@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model.entity;
+package de.segoy.springboottradingdata.model.data;
 
 import jakarta.persistence.Id;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountSummaryData extends IBKRDataTypeEntity {
+public class AccountSummaryData extends IBKRDataType {
 
     @Id
     private Long id;

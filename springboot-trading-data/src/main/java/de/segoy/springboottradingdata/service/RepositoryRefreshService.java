@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class RepositoryRefreshService {
         this.entityManager = entityManager;
     }
 
-    public <T extends IBKRDataTypeEntity> void clearCacheAndWait(IBKRDataTypeRepository<T> repository){
+    public <T extends IBKRDataType> void clearCacheAndWait(IBKRDataTypeRepository<T> repository){
         timeOutToWaitForRefresh();
         entityManager.getEntityManagerFactory().getCache().evict(repository.getClass());
         entityManager.clear();

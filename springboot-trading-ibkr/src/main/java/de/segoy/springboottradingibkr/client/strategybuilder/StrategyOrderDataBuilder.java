@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.strategybuilder;
 
-import de.segoy.springboottradingdata.model.entity.StrategyData;
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.StrategyData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

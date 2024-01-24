@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
-import de.segoy.springboottradingdata.model.entity.database.PositionData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import org.springframework.stereotype.Component;
 

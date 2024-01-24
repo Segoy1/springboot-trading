@@ -1,9 +1,9 @@
 package de.segoy.springboottradingweb.websocket;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
-import de.segoy.springboottradingdata.model.entity.AccountSummaryData;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.entity.ProfitAndLossData;
+import de.segoy.springboottradingdata.model.data.AccountSummaryData;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import de.segoy.springboottradingdata.model.data.ProfitAndLossData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,14 +21,14 @@ public class AccountSummaryKafkaConsumer {
     }
 
     @KafkaListener(topics = "${spring.kafka.names.topic.accountPnL}")
-    public void consumePnLMessage(IBKRDataTypeEntity message){
+    public void consumePnLMessage(IBKRDataType message){
         ProfitAndLossData pnl = (ProfitAndLossData) message;
         String topic = kafkaConstantsConfig.getACCOUNT_PNL_TOPIC();
         log.info("Message received: "+ topic +"-" + pnl.getId());
         messagingTemplate.convertAndSend("/topic/"+ topic, message);
     }
     @KafkaListener(topics = "${spring.kafka.names.topic.accountSummary}")
-    public void consumeSummaryMessage(IBKRDataTypeEntity message){
+    public void consumeSummaryMessage(IBKRDataType message){
         AccountSummaryData summary = (AccountSummaryData) message;
         String summaryTopic = kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC();
         log.info("Message received: "+summaryTopic+ "-" + summary.getTag());

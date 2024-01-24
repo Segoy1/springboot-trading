@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

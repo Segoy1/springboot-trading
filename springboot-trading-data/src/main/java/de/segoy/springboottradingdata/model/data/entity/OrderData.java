@@ -1,9 +1,9 @@
-package de.segoy.springboottradingdata.model.entity.database;
+package de.segoy.springboottradingdata.model.data.entity;
 
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderData extends IBKRDataTypeEntity {
+public class OrderData extends IBKRDataType {
 
     @Id
     private Long id;

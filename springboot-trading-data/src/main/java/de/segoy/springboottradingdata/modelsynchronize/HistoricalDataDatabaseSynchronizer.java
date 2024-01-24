@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Bar;
-import de.segoy.springboottradingdata.model.entity.database.HistoricalData;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.modelconverter.BarToHistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;

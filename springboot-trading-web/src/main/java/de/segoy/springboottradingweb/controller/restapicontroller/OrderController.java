@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
-import de.segoy.springboottradingdata.model.entity.StrategyData;
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.StrategyData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import de.segoy.springboottradingibkr.client.service.order.OrderPlacementService;
 import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;

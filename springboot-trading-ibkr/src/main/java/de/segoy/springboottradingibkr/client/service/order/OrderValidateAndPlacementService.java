@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.beans.factory.annotation.Qualifier;

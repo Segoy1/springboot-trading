@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model.entity;
+package de.segoy.springboottradingdata.model.data;
 
 import jakarta.persistence.Id;
 import lombok.*;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfitAndLossData extends IBKRDataTypeEntity{
+public class ProfitAndLossData extends IBKRDataType{
 
     @Id
     private Long id;

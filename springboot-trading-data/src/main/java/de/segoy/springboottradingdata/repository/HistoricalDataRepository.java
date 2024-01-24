@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.entity.database.HistoricalData;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 
 import java.util.Date;
 import java.sql.Timestamp;

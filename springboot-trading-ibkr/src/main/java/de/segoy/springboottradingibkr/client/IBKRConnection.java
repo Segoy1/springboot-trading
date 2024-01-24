@@ -10,11 +10,11 @@ import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
-import de.segoy.springboottradingdata.model.entity.*;
-import de.segoy.springboottradingdata.model.entity.database.ConnectionData;
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
-import de.segoy.springboottradingdata.model.entity.database.PositionData;
-import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
+import de.segoy.springboottradingdata.model.data.*;
+import de.segoy.springboottradingdata.model.data.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.PositionData;
+import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
@@ -47,7 +47,7 @@ public class IBKRConnection implements EWrapper {
 
     private final ErrorMessageHandler errorMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
+    private final KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate;
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
@@ -73,7 +73,7 @@ public class IBKRConnection implements EWrapper {
             ErrorCodeHandler errorCodeHandler,
             KafkaConstantsConfig kafkaConstantsConfig, ErrorMessageHandler errorMessageHandler,
             KafkaTemplate<String, String> kafkaTemplate,
-            KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
+            KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
             ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,

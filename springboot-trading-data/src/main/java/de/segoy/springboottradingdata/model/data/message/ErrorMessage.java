@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model.entity.message;
+package de.segoy.springboottradingdata.model.data.message;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

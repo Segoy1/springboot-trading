@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.kafkaconsumer;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,24 +26,24 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, IBKRDataTypeEntity> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, IBKRDataTypeEntity> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(websocketConsumerFactory());
         return factory;
     }
 
     @Bean
     @Qualifier("WebsocketConsumerFactory")
-    ConsumerFactory<String, IBKRDataTypeEntity> websocketConsumerFactory(){
+    ConsumerFactory<String, IBKRDataType> websocketConsumerFactory(){
         return getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getGroupId());
     }
     @Bean
     @Qualifier("RestResponseConsumerFactory")
-    ConsumerFactory<String, IBKRDataTypeEntity> restResponseConsumerFactory(){
+    ConsumerFactory<String, IBKRDataType> restResponseConsumerFactory(){
         return  getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getRestResponseGroupId());
     }
 
-    private DefaultKafkaConsumerFactory<String, IBKRDataTypeEntity> getConsumerFactoryWithConsumerGroup(String groupId) {
+    private DefaultKafkaConsumerFactory<String, IBKRDataType> getConsumerFactoryWithConsumerGroup(String groupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -52,7 +52,7 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity");
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, IBKRDataType.class.getName());
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "de.segoy.springboottradingdata.model.*");
 
         return new DefaultKafkaConsumerFactory<>(props);

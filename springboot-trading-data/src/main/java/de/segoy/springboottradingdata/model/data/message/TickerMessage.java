@@ -1,6 +1,6 @@
-package de.segoy.springboottradingdata.model.entity.message;
+package de.segoy.springboottradingdata.model.data.message;
 
-import de.segoy.springboottradingdata.model.entity.BaseEntity;
+import de.segoy.springboottradingdata.model.data.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

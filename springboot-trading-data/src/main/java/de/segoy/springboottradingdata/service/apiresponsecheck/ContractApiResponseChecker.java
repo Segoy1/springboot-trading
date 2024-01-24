@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service.apiresponsecheck;
 
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
 import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;

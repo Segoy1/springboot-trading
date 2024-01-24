@@ -2,8 +2,8 @@ package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;

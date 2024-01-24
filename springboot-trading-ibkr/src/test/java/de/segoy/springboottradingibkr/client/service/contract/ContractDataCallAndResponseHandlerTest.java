@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
 import org.junit.jupiter.api.Test;

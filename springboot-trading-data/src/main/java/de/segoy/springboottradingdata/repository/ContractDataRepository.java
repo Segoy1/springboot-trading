@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.repository;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
-import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;

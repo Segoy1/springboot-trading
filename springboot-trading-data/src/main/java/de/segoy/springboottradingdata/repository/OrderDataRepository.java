@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 
 import java.util.Optional;
 

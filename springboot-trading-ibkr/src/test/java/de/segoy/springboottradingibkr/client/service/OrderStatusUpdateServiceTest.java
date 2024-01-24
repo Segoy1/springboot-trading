@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import org.junit.jupiter.api.Test;
