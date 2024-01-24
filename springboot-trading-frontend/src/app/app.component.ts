@@ -2,8 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {LoginService} from "./login/login.service";
 import {HeaderComponent} from "./header/header.component";
 import {RouterModule} from "@angular/router";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {LoginInterceptorService} from "./login/login-interceptor.service";
+import {OpenOrdersWebsocketService} from "./orders/service/open-orders-websocket.service";
+import {PositionsOpenCloseService} from "./portfolio/service/positions-open-close.service";
+import {AccountMarginWebsocketService} from "./portfolio/account/account-margin/account-margin-websocket.service";
+import {PositionsWebsocketService} from "./portfolio/service/positions-websocket.service";
+import {AccountPnlWebsocketService} from "./portfolio/account/account-pnl/account-pnl-websocket.service";
 
 @Component({
   standalone: true,
@@ -14,7 +17,11 @@ import {LoginInterceptorService} from "./login/login-interceptor.service";
 })
 export class AppComponent implements OnInit{
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: LoginService,
+              private openOrderWebsocketService: OpenOrdersWebsocketService,
+              private positionsWebsocketService: PositionsWebsocketService,
+              private accountMarginWebsocketService:AccountMarginWebsocketService,
+              private accountPnlWebsocketService:AccountPnlWebsocketService) {
   }
 
   ngOnInit() {

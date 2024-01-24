@@ -38,12 +38,10 @@ export class OrdersComponent implements OnInit {
               private orderCancelService: OrderCancelService,
               private route: ActivatedRoute,
               private router: Router,
-              private store: Store,
-              private openOrdersWebsocketService: OpenOrdersWebsocketService) {
+              private store: Store) {
   }
 
   ngOnInit() {
-    const fetchedOrders: Order[] = [];
     this.openOrders = this.store.select(selectOrders);
     this.http.get(this.url).subscribe();
   }
