@@ -8,6 +8,7 @@ import de.segoy.springboottradingdata.model.entity.OrderData;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.util.OptionalLong;
@@ -25,12 +26,12 @@ public class OrderWriteToDBService {
         this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
     }
 
-    public void saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
+    public OrderData saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
         ContractData contractData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
                 OptionalLong.empty(), contract);
         OrderData orderData = ibkrOrderToOrderData.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
         orderData.setContractData(contractData);
-        orderDataRepository.save(orderData);
+        return orderDataRepository.save(orderData);
     }
 }

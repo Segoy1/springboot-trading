@@ -145,30 +145,27 @@ public class IBKRConnection implements EWrapper {
     }
 
     @Override
+    @Transactional
     public void orderStatus(int orderId, String status, Decimal filled, Decimal remaining, double avgFillPrice,
                             int permId, int parentId, double lastFillPrice, int clientId, String whyHeld,
                             double mktCapPrice) {
         // received order status
-        orderStatusUpdateService.updateOrderStatus(orderId, status);
-        twsMessageHandler.handleMessage(TwsMessage.builder()
-                .messageId(orderId)
-                .topic(kafkaConstantsConfig.getORDER_TOPIC())
-                .message(EWrapperMsgGenerator.orderStatus(orderId, status, filled,
-                        remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld,
-                        mktCapPrice)).build());
+        OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), Long.toString(orderData.getId()),
+                        orderData);
+
         nextValidId(orderId + 1);
 
     }
 
     @Override
+    @Transactional
     public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
         //populates DB On init and first Time Order is saved to DB when opened
-        orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
-        twsMessageHandler.handleMessage(
-                TwsMessage.builder()
-                        .messageId(orderId)
-                        .topic(kafkaConstantsConfig.getORDER_TOPIC())
-                        .message(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState)).build());
+        OrderData orderData =
+                orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderData);
+
     }
 
     @Override
