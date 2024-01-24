@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.database.ConnectionData;
 import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.repository.message.TwsMessageRepository;

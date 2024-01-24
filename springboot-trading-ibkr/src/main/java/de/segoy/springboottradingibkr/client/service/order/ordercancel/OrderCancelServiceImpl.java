@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.order.ordercancel;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.entity.OrderData;
+import de.segoy.springboottradingdata.model.entity.database.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.beans.factory.annotation.Qualifier;

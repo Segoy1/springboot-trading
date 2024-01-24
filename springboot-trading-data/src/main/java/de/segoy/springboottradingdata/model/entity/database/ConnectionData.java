@@ -1,5 +1,6 @@
-package de.segoy.springboottradingdata.model.entity;
+package de.segoy.springboottradingdata.model.entity.database;
 
+import de.segoy.springboottradingdata.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectionData extends BaseEntity{
+public class ConnectionData extends BaseEntity {
 
     @Id
     private Long id;

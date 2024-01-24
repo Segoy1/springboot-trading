@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.model.entity;
+package de.segoy.springboottradingdata.model.entity.database;
 
 import com.ib.client.Types;
 import jakarta.persistence.*;

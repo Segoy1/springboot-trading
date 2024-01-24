@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.entity.PositionData;
+import de.segoy.springboottradingdata.model.entity.database.PositionData;
 import de.segoy.springboottradingdata.modelconverter.IBKRResponseToPositionData;
 import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import org.springframework.stereotype.Component;

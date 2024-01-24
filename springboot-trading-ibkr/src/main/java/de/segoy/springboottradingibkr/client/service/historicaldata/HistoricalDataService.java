@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.historicaldata;
 
-import de.segoy.springboottradingdata.model.entity.HistoricalData;
-import de.segoy.springboottradingdata.model.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.entity.database.HistoricalData;
+import de.segoy.springboottradingdata.model.entity.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;
 

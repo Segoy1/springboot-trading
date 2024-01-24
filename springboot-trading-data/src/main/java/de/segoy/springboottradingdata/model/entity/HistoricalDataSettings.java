@@ -1,8 +1,7 @@
-package de.segoy.springboottradingdata.model;
+package de.segoy.springboottradingdata.model.entity;
 
 import com.ib.client.TagValue;
-import de.segoy.springboottradingdata.model.entity.ContractData;
-import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import de.segoy.springboottradingdata.model.subtype.BarSizeSetting;
 import de.segoy.springboottradingdata.model.subtype.WhatToShowType;
 import lombok.*;

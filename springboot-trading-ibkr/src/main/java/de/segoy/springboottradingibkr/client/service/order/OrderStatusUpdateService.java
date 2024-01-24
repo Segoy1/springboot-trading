@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.entity.OrderData;
+import de.segoy.springboottradingdata.model.entity.database.OrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.dataobject;
 
-import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

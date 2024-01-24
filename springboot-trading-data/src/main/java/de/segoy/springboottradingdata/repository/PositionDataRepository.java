@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.entity.ContractData;
-import de.segoy.springboottradingdata.model.entity.PositionData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.PositionData;
 import java.util.Optional;
 
 public interface PositionDataRepository extends IBKRDataTypeRepository<PositionData> {

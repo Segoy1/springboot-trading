@@ -1,10 +1,9 @@
 package de.segoy.springboottradingdata.service;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.ComboLegData;
-import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

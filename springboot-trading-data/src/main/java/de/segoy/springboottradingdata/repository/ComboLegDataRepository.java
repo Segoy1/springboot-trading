@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.repository;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

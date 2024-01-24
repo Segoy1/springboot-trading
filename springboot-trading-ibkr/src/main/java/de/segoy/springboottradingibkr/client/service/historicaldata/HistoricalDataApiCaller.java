@@ -3,7 +3,7 @@ package de.segoy.springboottradingibkr.client.service.historicaldata;
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
-import de.segoy.springboottradingdata.model.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.entity.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.entity.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.database.ConnectionData;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

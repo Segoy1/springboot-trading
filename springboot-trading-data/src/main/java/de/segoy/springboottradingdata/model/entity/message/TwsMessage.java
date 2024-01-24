@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor

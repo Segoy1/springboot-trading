@@ -1,8 +1,8 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.entity.HistoricalData;
-import de.segoy.springboottradingdata.model.HistoricalDataSettings;
+import de.segoy.springboottradingdata.model.entity.database.HistoricalData;
+import de.segoy.springboottradingdata.model.entity.HistoricalDataSettings;
 import de.segoy.springboottradingdata.model.subtype.BarSizeSetting;
 import de.segoy.springboottradingdata.model.subtype.WhatToShowType;
 import de.segoy.springboottradingibkr.client.service.historicaldata.HistoricalDataService;

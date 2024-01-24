@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
 import org.springframework.stereotype.Service;

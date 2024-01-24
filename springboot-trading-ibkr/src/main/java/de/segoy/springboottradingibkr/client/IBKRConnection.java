@@ -11,6 +11,9 @@ import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.entity.*;
+import de.segoy.springboottradingdata.model.entity.database.ConnectionData;
+import de.segoy.springboottradingdata.model.entity.database.OrderData;
+import de.segoy.springboottradingdata.model.entity.database.PositionData;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
@@ -19,7 +22,6 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
-import de.segoy.springboottradingdata.service.messagehandler.TwsMessageHandler;
 import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +46,6 @@ public class IBKRConnection implements EWrapper {
     private final KafkaConstantsConfig kafkaConstantsConfig;
 
     private final ErrorMessageHandler errorMessageHandler;
-    private final TwsMessageHandler twsMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate;
 
@@ -71,7 +72,7 @@ public class IBKRConnection implements EWrapper {
     public IBKRConnection(
             ErrorCodeHandler errorCodeHandler,
             KafkaConstantsConfig kafkaConstantsConfig, ErrorMessageHandler errorMessageHandler,
-            TwsMessageHandler twsMessageHandler, KafkaTemplate<String, String> kafkaTemplate,
+            KafkaTemplate<String, String> kafkaTemplate,
             KafkaTemplate<String, IBKRDataTypeEntity> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
             OrderStatusUpdateService orderStatusUpdateService,
@@ -82,7 +83,6 @@ public class IBKRConnection implements EWrapper {
         this.errorCodeHandler = errorCodeHandler;
         this.kafkaConstantsConfig = kafkaConstantsConfig;
         this.errorMessageHandler = errorMessageHandler;
-        this.twsMessageHandler = twsMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaEntityTemplate = kafkaEntityTemplate;
         this.connectionDataRepository = connectionDataRepository;

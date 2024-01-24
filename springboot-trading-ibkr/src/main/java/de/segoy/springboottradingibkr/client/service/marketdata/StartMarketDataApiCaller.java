@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import org.springframework.stereotype.Service;

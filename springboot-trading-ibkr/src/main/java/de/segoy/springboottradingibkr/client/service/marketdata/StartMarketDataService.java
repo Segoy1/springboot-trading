@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.entity.ContractData;
+import de.segoy.springboottradingdata.model.entity.database.ContractData;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.springframework.stereotype.Service;

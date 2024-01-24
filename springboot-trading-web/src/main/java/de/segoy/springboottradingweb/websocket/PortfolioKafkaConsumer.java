@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb.websocket;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.model.entity.IBKRDataTypeEntity;
-import de.segoy.springboottradingdata.model.entity.PositionData;
+import de.segoy.springboottradingdata.model.entity.database.PositionData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

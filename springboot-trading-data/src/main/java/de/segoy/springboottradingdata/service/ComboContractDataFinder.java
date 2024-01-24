@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
-import de.segoy.springboottradingdata.model.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.entity.database.ComboLegData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.springframework.stereotype.Service;
 
