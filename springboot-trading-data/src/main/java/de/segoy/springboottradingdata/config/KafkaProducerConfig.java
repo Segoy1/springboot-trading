@@ -58,47 +58,71 @@ public class KafkaProducerConfig {
 
     @Bean
     @Qualifier("${spring.kafka.names.topic.historicalData}")
-    public NewTopic historicalTopic(){
-        return TopicBuilder.name(kafkaConstantsConfig.getHISTORICAL_TOPIC()).build();
+    public NewTopic historicalTopic() {
+        return topicHelper(kafkaConstantsConfig.getHISTORICAL_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.orderData}")
-    public NewTopic orderTopicString (){
-        return TopicBuilder.name(kafkaConstantsConfig.getORDER_TOPIC()).build();
+    public NewTopic orderTopicString() {
+        return topicHelper(kafkaConstantsConfig.getORDER_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.contractData}")
-    public NewTopic contractTopic(){
-        return TopicBuilder.name(kafkaConstantsConfig.getCONTRACT_TOPIC()).build();
+    public NewTopic contractTopic() {
+        return topicHelper(kafkaConstantsConfig.getCONTRACT_TOPIC());
     }
+
     @Bean
     @Value("${spring.kafka.names.topic.errorMessage}")
     public NewTopic errorMessageTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.positions}")
     public NewTopic positionsTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getPOSITION_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getPOSITION_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.openOrders}")
     public NewTopic openOrdersTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getOPEN_ORDER_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getOPEN_ORDER_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.accountSummary}")
     public NewTopic accountSummaryTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.accountPnL}")
     public NewTopic accountPnLTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC());
     }
+
     @Bean
     @Qualifier("${spring.kafka.names.topic.singlePnL}")
     public NewTopic singlePnLTopic() {
-        return TopicBuilder.name(kafkaConstantsConfig.getSINGLE_PNL_TOPIC()).build();
+        return topicHelper(kafkaConstantsConfig.getSINGLE_PNL_TOPIC());
+    }
+
+    @Bean
+    @Qualifier("${spring.kafka.names.topic.optionMarketData}")
+    public NewTopic optionMarketDataTopic() {
+        return topicHelper(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC());
+    }
+
+    @Bean
+    @Qualifier("${spring.kafka.names.topic.standardMarketData}")
+    public NewTopic standardMarketData() {
+        return topicHelper(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC());
+    }
+
+    private NewTopic topicHelper(String topicName) {
+        return TopicBuilder.name(topicName).build();
     }
 }

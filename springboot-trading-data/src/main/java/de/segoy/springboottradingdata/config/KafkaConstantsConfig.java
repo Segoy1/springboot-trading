@@ -44,4 +44,10 @@ public class KafkaConstantsConfig {
 
     @Value("${spring.kafka.names.topic.singlePnL}")
     private String SINGLE_PNL_TOPIC;
+
+    @Value("${spring.kafka.names.topic.optionMarketData}")
+    private String OPTION_MARKET_DATA_TOPIC;
+
+    @Value("${spring.kafka.names.topic.standardMarketData}")
+    private String STANDARD_MARKET_DATA_TOPIC;
 }

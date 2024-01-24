@@ -99,13 +99,14 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib));
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),Integer.toString(tickerId),
+                StandardMarketData.builder().tickerId(tickerId).field(field).price(price).attrib(attrib).build());
     }
 
     @Override
     public void tickSize(int tickerId, int field, Decimal size) {
         // received size tick
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickSize(tickerId, field, size));
+        log.info(EWrapperMsgGenerator.tickSize(tickerId, field, size));
     }
 
     @Override
@@ -113,23 +114,33 @@ public class IBKRConnection implements EWrapper {
                                       double optPrice, double pvDividend, double gamma, double vega, double theta,
                                       double undPrice) {
         // received computation tick
-        kafkaTemplate.send("tick",
-                EWrapperMsgGenerator.tickOptionComputation(tickerId, field, tickAttrib, impliedVol, delta, optPrice,
-                        pvDividend,
-                        gamma, vega, theta, undPrice));
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
+                Integer.toString(tickerId),
+                OptionMarketData.builder()
+                        .tickerId(tickerId)
+                        .field(field)
+                        .tickAttrib(tickAttrib)
+                        .impliedVol(impliedVol)
+                        .delta(delta)
+                        .optPrice(optPrice)
+                        .pvDividend(pvDividend)
+                        .gamma(gamma)
+                        .vega(vega)
+                        .theta(theta)
+                        .undPrice(undPrice).build());
     }
 
     @Override
     public void tickGeneric(int tickerId, int tickType, double value) {
         // received generic tick
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
+        log.info(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
 
     }
 
     @Override
     public void tickString(int tickerId, int tickType, String value) {
         // received String tick
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickString(tickerId, tickType, value));
+        log.info(EWrapperMsgGenerator.tickString(tickerId, tickType, value));
     }
 
     @Override
@@ -142,7 +153,7 @@ public class IBKRConnection implements EWrapper {
                         double impliedFuture, int holdDays, String futureLastTradeDate, double dividendImpact,
                         double dividendsToLastTradeDate) {
         // received EFP tick
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
+        log.info(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
                 impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate));
     }
 
@@ -154,7 +165,7 @@ public class IBKRConnection implements EWrapper {
         // received order status
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
         kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), Long.toString(orderData.getId()),
-                        orderData);
+                orderData);
 
         nextValidId(orderId + 1);
 
@@ -190,7 +201,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void scannerData(int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark,
                             String projection, String legsStr) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
+        log.info(EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
                 benchmark, projection, legsStr));
     }
 
@@ -328,7 +339,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-      log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
+        log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
     }
 
     @Override
