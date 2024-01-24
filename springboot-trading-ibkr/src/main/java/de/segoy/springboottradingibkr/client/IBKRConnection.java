@@ -12,8 +12,9 @@ import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.entity.*;
 import de.segoy.springboottradingdata.model.entity.message.ErrorMessage;
-import de.segoy.springboottradingdata.model.entity.message.TwsMessage;
-import de.segoy.springboottradingdata.modelsynchronize.*;
+import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
@@ -97,6 +98,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
+//        TickType.getField( field);
         kafkaTemplate.send("tick", EWrapperMsgGenerator.tickPrice(tickerId, field, price, attrib));
     }
 
@@ -182,11 +184,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void contractDetailsEnd(int reqId) {
-        twsMessageHandler.handleMessage(
-                TwsMessage.builder().messageId(reqId)
-                        .topic(kafkaConstantsConfig.getCONTRACT_TOPIC())
-                        .message(EWrapperMsgGenerator.contractDetailsEnd(reqId))
-                        .build());
+        log.info(EWrapperMsgGenerator.contractDetailsEnd(reqId));
     }
 
     @Override
@@ -330,9 +328,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        twsMessageHandler.handleMessage(TwsMessage.builder().messageId(reqId)
-                .topic(kafkaConstantsConfig.getHISTORICAL_TOPIC())
-                .message(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate)).build());
+      log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
     }
 
     @Override
@@ -666,8 +662,8 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
-        orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
-        log.info(EWrapperMsgGenerator.completedOrder(contract, order, orderState));
+        OrderData orderData = orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), Long.toString(orderData.getId()), orderData);
     }
 
     @Override

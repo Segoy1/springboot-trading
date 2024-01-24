@@ -47,7 +47,7 @@ class HistoricalDataApiResponseCheckerTest {
 
         List<HistoricalData> returnList = historicalDataApiResponseChecker.checkForApiResponseAndUpdate(6);
 
-        verify(repositoryRefreshService, times(1)).clearCache(repository);
+        verify(repositoryRefreshService, times(1)).clearCacheAndWait(repository);
         assertTrue(returnList.contains(historicalData));
         assertTrue(returnList.contains(historicalData2));
         assertEquals(2, returnList.size());

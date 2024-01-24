@@ -6,6 +6,8 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @Slf4j
 public class RepositoryRefreshService {
@@ -17,8 +19,17 @@ public class RepositoryRefreshService {
         this.entityManager = entityManager;
     }
 
-    public <T extends IBKRDataTypeEntity> void clearCache(IBKRDataTypeRepository<T> repository){
+    public <T extends IBKRDataTypeEntity> void clearCacheAndWait(IBKRDataTypeRepository<T> repository){
+        timeOutToWaitForRefresh();
         entityManager.getEntityManagerFactory().getCache().evict(repository.getClass());
         entityManager.clear();
+    }
+    private void timeOutToWaitForRefresh() {
+        try {
+            //10ms Time Out before refreshing Cache
+            TimeUnit.MILLISECONDS.sleep(10L);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
     }
 }
