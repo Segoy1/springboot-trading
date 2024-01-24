@@ -24,6 +24,6 @@ public class OrdersKafkaConsumer {
     public void consumeMessage(IBKRDataTypeEntity message){
         OrderData order = (OrderData) message;
         log.info("Order received: " + order.getId());
-        messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getPOSITION_TOPIC(), order);
+        messagingTemplate.convertAndSend("/topic/"+kafkaConstantsConfig.getORDER_TOPIC(), order);
     }
 }

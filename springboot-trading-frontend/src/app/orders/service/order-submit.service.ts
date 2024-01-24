@@ -15,24 +15,12 @@ export class OrderSubmitService {
   }
 
   placeOrder(req: []) {
-    console.log(this.store.select(selectStrategyMode));
     this.store.select(selectStrategyMode).subscribe(
       strategyMode => {
 
         console.log("Request: ")
         console.log(req);
-        this.http.post<Order>(strategyMode ? this.strategyUrl : this.orderUrl, req).subscribe({
-          next:
-            response => {
-              this.store.dispatch(add({order: response}));
-              console.log("Response: ")
-              console.log(response);
-            }
-          , error:
-            err => {
-              console.log(err);
-            }
-        });
+        this.http.post(strategyMode ? this.strategyUrl : this.orderUrl, req).subscribe();
       }
     ).unsubscribe();
   }

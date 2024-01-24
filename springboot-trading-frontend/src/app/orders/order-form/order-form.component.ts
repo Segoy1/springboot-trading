@@ -62,7 +62,9 @@ export class OrderFormComponent implements OnInit {
     return this.orderFormService.getSimpleForm();
   }
   onSubmit(){
-    this.orderSubmitService.placeOrder(this.getSubmitForm().getRawValue());
+    let submitForm = this.getSubmitForm();
+    this.orderSubmitService.placeOrder(submitForm.getRawValue());
+    submitForm.reset();
   }
 
   onStrategyBuilder(){
