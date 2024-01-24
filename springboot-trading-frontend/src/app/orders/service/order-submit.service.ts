@@ -8,27 +8,32 @@ import {environmentDevelopment} from "../../../environments/environment.developm
 
 @Injectable({providedIn: "root"})
 export class OrderSubmitService {
-  private orderUrl = environmentDevelopment.apiUrl+'order/place-order';
-  private strategyUrl = environmentDevelopment.apiUrl+'order/place-strategy-order';
+  private orderUrl = environmentDevelopment.apiUrl + 'order/place-order';
+  private strategyUrl = environmentDevelopment.apiUrl + 'order/place-strategy-order';
 
   constructor(private store: Store, private http: HttpClient) {
   }
 
   placeOrder(req: []) {
-    const activeUrl = this.store.select(selectStrategyMode) ? this.strategyUrl : this.orderUrl;
-    console.log("Request: ")
-    console.log(req);
-    this.http.post<Order>(activeUrl, req).subscribe({
-      next:
-        response => {
-          this.store.dispatch(add({order: response}));
-          console.log("Response: ")
-          console.log(response);
-        }
-      , error:
-        err => {
-          console.log(err);
-        }
-    });
+    console.log(this.store.select(selectStrategyMode));
+    this.store.select(selectStrategyMode).subscribe(
+      strategyMode => {
+
+        console.log("Request: ")
+        console.log(req);
+        this.http.post<Order>(strategyMode ? this.strategyUrl : this.orderUrl, req).subscribe({
+          next:
+            response => {
+              this.store.dispatch(add({order: response}));
+              console.log("Response: ")
+              console.log(response);
+            }
+          , error:
+            err => {
+              console.log(err);
+            }
+        });
+      }
+    ).unsubscribe();
   }
 }
