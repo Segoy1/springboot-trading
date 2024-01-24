@@ -2,33 +2,27 @@ package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingdata.model.StrategyData;
 import de.segoy.springboottradingdata.model.entity.OrderData;
-import de.segoy.springboottradingibkr.client.service.order.OrderService;
+import de.segoy.springboottradingibkr.client.service.order.OrderPlacementService;
 import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyOrderDataBuilder;
-import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
     private final StrategyOrderDataBuilder strategyOrderDataBuilder;
-    private final OrderService orderService;
-    private final ResponseMapper responseMapper;
+    private final OrderPlacementService orderPlacementService;
     private final OrderCancelService orderCancelService;
     private final OpenOrdersService openOrdersService;
 
-    public OrderController(StrategyOrderDataBuilder strategyOrderDataBuilder, OrderService orderService,
-                           ResponseMapper responseMapper, OrderCancelService orderCancelService,
+    public OrderController(StrategyOrderDataBuilder strategyOrderDataBuilder, OrderPlacementService orderPlacementService,
+                           OrderCancelService orderCancelService,
                            OpenOrdersService openOrdersService) {
         this.strategyOrderDataBuilder = strategyOrderDataBuilder;
-        this.orderService = orderService;
-        this.responseMapper = responseMapper;
+        this.orderPlacementService = orderPlacementService;
         this.orderCancelService = orderCancelService;
         this.openOrdersService = openOrdersService;
     }
@@ -46,13 +40,13 @@ public class OrderController {
     //    curl -i -X POST 'http://localhost:8080/login' --data 'username=john&password=john'
     @PostMapping("/place-order")
     public void orderWithOrderObject(@RequestBody OrderData orderData) {
-        orderService.setIdAndPlaceOrder(orderData);
+        orderPlacementService.setIdAndPlaceOrder(orderData);
     }
 
     @PostMapping("/place-strategy-order")
     public void orderWithStrategyOrderObject(@RequestBody StrategyData strategyData) {
         strategyOrderDataBuilder.buildOrderWithStrategyData(strategyData).ifPresent(
-                orderService::setIdAndPlaceOrder
+                orderPlacementService::setIdAndPlaceOrder
         );
     }
 
@@ -69,7 +63,7 @@ public class OrderController {
     }
 
     @GetMapping("/open-orders")
-    public ResponseEntity<List<OrderData>> getOpenOrders() {
-        return responseMapper.mapResponse(openOrdersService.getOpenOrders());
+    public void requestOpenOrders() {
+        openOrdersService.requestOpenOrders();
     }
 }

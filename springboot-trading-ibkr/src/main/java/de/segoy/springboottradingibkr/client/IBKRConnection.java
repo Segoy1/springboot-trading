@@ -170,11 +170,7 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void openOrderEnd() {
-        twsMessageHandler.handleMessage(
-                TwsMessage.builder()
-                        .messageId(propertiesConfig.getOPEN_ORDERS_ID())
-                        .topic(kafkaConstantsConfig.getOPEN_ORDER_TOPIC())
-                        .message(EWrapperMsgGenerator.openOrderEnd()).build());
+        log.info(EWrapperMsgGenerator.openOrderEnd());
     }
 
     @Override

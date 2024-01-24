@@ -15,8 +15,7 @@ class OrderCancelServiceImpl implements OrderCancelService {
     private final ApiCaller<OrderData> orderCancelApiCaller;
 
     public OrderCancelServiceImpl(EClientSocket client, OrderDataRepository orderDataRepository,
-                                  @Qualifier("OrderCancelApiCaller") ApiCaller<OrderData> orderCancelApiCaller,
-                                  OrderCancelDeleteService orderCancelDeleteService) {
+                                  @Qualifier("OrderCancelApiCaller") ApiCaller<OrderData> orderCancelApiCaller) {
         this.client = client;
         this.orderDataRepository = orderDataRepository;
         this.orderCancelApiCaller = orderCancelApiCaller;

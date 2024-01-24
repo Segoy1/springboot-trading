@@ -5,13 +5,13 @@ import de.segoy.springboottradingdata.model.entity.OrderData;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderService {
+public class OrderPlacementService {
 
     private final OrderValidateAndPlacementService orderValidateAndPlacementService;
     private final PropertiesConfig propertiesConfig;
 
 
-    public OrderService(OrderValidateAndPlacementService orderValidateAndPlacementService, PropertiesConfig propertiesConfig) {
+    public OrderPlacementService(OrderValidateAndPlacementService orderValidateAndPlacementService, PropertiesConfig propertiesConfig) {
         this.orderValidateAndPlacementService = orderValidateAndPlacementService;
         this.propertiesConfig = propertiesConfig;
     }
