@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/market-data")
 public class LiveMarketDataController {
@@ -33,16 +31,16 @@ public class LiveMarketDataController {
         return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(ContractDataTemplates.SpxData()));
     }
     @GetMapping("/start")
-    public ResponseEntity<ContractData> startMarketData(@RequestBody ContractData contractData){
-        return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(contractData));
+    public void startMarketData(@RequestBody ContractData contractData){
+        startMarketDataService.requestLiveMarketDataForContractData(contractData);
     }
 
     @GetMapping("/stopAll")
-    public ResponseEntity<List<ContractData>> stopAllMarketData() {
-        return responseMapper.mapResponse(stopMarketDataService.stopAllMarketData());
+    public void stopAllMarketData() {
+        stopMarketDataService.stopAllMarketData();
     }
     @GetMapping("/stop")
-    public ResponseEntity<ContractData> stopMarketDatabyId(int id) {
-        return responseMapper.mapResponse(stopMarketDataService.stopMarketDataForContractId(id));
+    public void stopMarketDatabyId(int id) {
+        stopMarketDataService.stopMarketDataForContractId(id);
     }
 }
