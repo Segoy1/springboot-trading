@@ -17,6 +17,10 @@ export const set = createAction(
   '[Orders] Set',
   props<{orders: Order[]}>()
 );
+export const update = createAction(
+  '[Orders] Update',
+  props<{order: Order}>()
+)
 export const removeAll = createAction(
   '[Orders] RemoveAll'
 )
