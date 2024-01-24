@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = true;
   private userSubscription: Subscription;
 
-  constructor(private httpService: ConnectionService, private loginService: LoginService) {
+  constructor(private connectionService: ConnectionService, private loginService: LoginService) {
   }
 
   ngOnInit() {
@@ -37,23 +37,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  onConnect(connect: boolean) {
-    if (connect) {
-      this.httpService.getConnect().subscribe(
-        response => {
-          console.log(response)
-          this.isConnected = response;
-        },
-        (error) => {
-          console.log(error);
-        });
-    }
-    if (!connect) {
-      this.httpService.getDisconnect().subscribe((data) => {
-        console.log(data);
-        this.isConnected = data;
-      })
-    }
+  onConnect() {
+    this.connectionService.getConnect();
+    this.isConnected=true;
+  }
+
+  onDisconnect() {
+    this.connectionService.getDisconnect();
+    this.isConnected=false;
   }
 
   onLogout() {

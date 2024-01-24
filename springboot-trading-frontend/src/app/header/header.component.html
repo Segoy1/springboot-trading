@@ -22,8 +22,8 @@
           <li class="dropdown" appDropdown>
             <a style="cursor: pointer" class="dropdown-toggle" role="button">Manage <span class="caret"></span> </a>
             <ul class="dropdown-menu">
-              <li><a [ngClass]="{'disabled': isConnected}" (click)="onConnect(true)">Connect</a></li>
-              <li><a [ngClass]="{'disabled': !isConnected}" (click)="onConnect(false)">Disconnect</a></li>
+              <li><a [ngClass]="{'disabled': isConnected}" (click)="onConnect()">Connect</a></li>
+              <li><a [ngClass]="{'disabled': !isConnected}" (click)="onDisconnect()">Disconnect</a></li>
             </ul>
           </li>
         </ul>

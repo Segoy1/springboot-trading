@@ -15,9 +15,9 @@ export class ConnectionService {
   }
 
   getConnect() {
-    return this.http.get(this.connectUrl);
+    this.http.get(this.connectUrl);
   }
   getDisconnect(){
-    return this.http.get(this.disconnectUrl);
+    this.http.get(this.disconnectUrl);
   }
 }
