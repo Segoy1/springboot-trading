@@ -6,6 +6,7 @@ import {Position} from "../../../model/position.model";
 import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
 import {ProfitLossWebsocketService} from "../../service/profit-loss-websocket.service";
 import { Subscription} from "rxjs";
+import {RouterLink} from "@angular/router";
 
 @Component({
   standalone: true,
@@ -16,7 +17,8 @@ import { Subscription} from "rxjs";
     NotAvailablePipe,
     CurrencyPipe,
     NgIf,
-    NgClass
+    NgClass,
+    RouterLink
   ],
   styleUrl: './position-item.component.css',
   animations: [
