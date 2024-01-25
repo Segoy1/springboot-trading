@@ -6,10 +6,7 @@ import de.segoy.springboottradingibkr.client.service.marketdata.StartMarketDataS
 import de.segoy.springboottradingibkr.client.service.marketdata.StopMarketDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/market-data")
@@ -39,8 +36,9 @@ public class LiveMarketDataController {
     public void stopAllMarketData() {
         stopMarketDataService.stopAllMarketData();
     }
+
     @GetMapping("/stop")
-    public void stopMarketDatabyId(int id) {
+    public void stopMarketDatabyId(@RequestParam int id) {
         stopMarketDataService.stopMarketDataForContractId(id);
     }
 }
