@@ -3,5 +3,7 @@ export const environmentDevelopment = {
   apiUrl:'http://localhost:8080/',
   accountPnLTopic: 'accountPnL',
   positionsTopic: 'positions',
-  ordersTopic: 'order'
+  ordersTopic: 'order',
+  optionMarketDataTopic: 'optionMarket',
+  standardMarketDataTopic: 'standardMarketData'
 };
