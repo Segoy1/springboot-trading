@@ -21,7 +21,7 @@ class StartMarketDataApiCaller implements ApiCaller<ContractData> {
     }
 
     public void callApi(ContractData savedContract) {
-        client.reqMktData(savedContract.getContractId(),
+        client.reqMktData(savedContract.getId().intValue(),
                 contractDataToIBKRContract.convertContractData(savedContract),
                 propertiesConfig.getGenericTicks(),
                 false,

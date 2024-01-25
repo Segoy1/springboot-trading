@@ -31,8 +31,8 @@ public class LiveMarketDataController {
         return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(ContractDataTemplates.SpxData()));
     }
     @GetMapping("/start")
-    public void startMarketData(@RequestBody ContractData contractData){
-        startMarketDataService.requestLiveMarketDataForContractData(contractData);
+    public ResponseEntity<ContractData> startMarketData(@RequestBody ContractData contractData){
+        return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(contractData));
     }
 
     @GetMapping("/stopAll")
