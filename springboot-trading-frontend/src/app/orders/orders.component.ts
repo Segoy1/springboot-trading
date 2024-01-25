@@ -11,10 +11,8 @@ import {OpenOrderItemComponent} from "./open-order-item/open-order-item.componen
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
-import {set} from "../store/orders/orders.actions";
 import {selectOrders} from "../store/orders/orders.selector";
 import {environmentDevelopment} from "../../environments/environment.development";
-import {OpenOrdersWebsocketService} from "./service/open-orders-websocket.service";
 
 @Component({
   standalone: true,
