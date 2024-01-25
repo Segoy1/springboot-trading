@@ -1,1 +1,5 @@
-<p>market-data works!</p>
+<h2> Ticker Market Data: </h2>
+<app-standard-market-data-item *ngFor="let standardData of standardMarketData" [ticker]="standardData"></app-standard-market-data-item>
+<hr>
+<h2> Options Market Data: </h2>
+<app-option-market-data-item *ngFor="let optionData of optionMarketData" [optionTicker]="optionData"></app-option-market-data-item>

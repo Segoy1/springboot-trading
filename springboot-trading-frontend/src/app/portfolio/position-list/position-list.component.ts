@@ -33,6 +33,7 @@ export class PositionListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.positionsOpenCloseService.cancelPositions();
+    this.portfolioSub.unsubscribe();
   }
 
 }

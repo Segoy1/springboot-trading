@@ -27,7 +27,7 @@ public class LiveMarketDataController {
     public ResponseEntity<ContractData> startMarketDataTest(){
         return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(ContractDataTemplates.SpxData()));
     }
-    @GetMapping("/start")
+    @PostMapping("/start")
     public ResponseEntity<ContractData> startMarketData(@RequestBody ContractData contractData){
         return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(contractData));
     }
@@ -38,7 +38,7 @@ public class LiveMarketDataController {
     }
 
     @GetMapping("/stop")
-    public void stopMarketDatabyId(@RequestParam int id) {
+    public void stopMarketDatabyId(@RequestParam(name="id") int id) {
         stopMarketDataService.stopMarketDataForContractId(id);
     }
 }
