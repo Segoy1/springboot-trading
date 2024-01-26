@@ -23,25 +23,20 @@ import {OptionTicker} from "../model/market-data/option-ticker.model";
 export class MarketDataComponent implements OnInit, OnDestroy {
   standardMarketData: StandardTicker[];
   standardSub: Subscription;
-  optionMarketData: OptionTicker[];
-  optionSub: Subscription;
 
 
-  constructor(private standardMarketDataWebsocketService: StandardMarketDataWebsocketService,
-              private optionMarketDataWebsocketService: OptionMarketDataWebsocketService) {
+
+  constructor(private standardMarketDataWebsocketService: StandardMarketDataWebsocketService) {
   }
 
   ngOnInit() {
     this.standardSub = this.standardMarketDataWebsocketService.responseChangedSubject.subscribe(ticker => {
       this.standardMarketData = ticker;
     });
-    this.optionSub = this.optionMarketDataWebsocketService.responseChangedSubject.subscribe(ticker => {
-      this.optionMarketData = ticker;
-    });
+
   }
 
   ngOnDestroy() {
-    this.optionSub.unsubscribe();
     this.standardSub.unsubscribe();
   }
 }

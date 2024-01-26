@@ -26,11 +26,9 @@ import {
 export class PositionMarketDataComponent implements OnInit {
 
   standardTicker: StandardTicker;
-  optionTicker: OptionTicker;
 
   constructor(private route: ActivatedRoute,
-              private standardMarketDataWebsocketService: StandardMarketDataWebsocketService,
-              private optionMarketDataWebsocketService:OptionMarketDataWebsocketService) {
+              private standardMarketDataWebsocketService: StandardMarketDataWebsocketService) {
   }
 
   ngOnInit() {
@@ -40,13 +38,6 @@ export class PositionMarketDataComponent implements OnInit {
           this.standardTicker = ticker;
         })
     }
-    );
-    this.route.params.subscribe((params: Params) => {
-        this.optionMarketDataWebsocketService.getForContract(+params['id'])
-          .subscribe(ticker =>{
-            this.optionTicker = ticker;
-          })
-      }
     );
   }
 }
