@@ -18,7 +18,7 @@ public class IBKRContractToContractData {
                 .symbol(contract.symbol())
                 .securityType(contract.secType())
                 .currency(contract.currency())
-                .exchange(contract.exchange())
+                .exchange(contract.exchange()!=null? contract.exchange() : "SMART")
 
                 .right(contract.right())
                 .strike(BigDecimal.valueOf(contract.strike()))
