@@ -7,6 +7,7 @@ import {Pipe, PipeTransform} from "@angular/core";
 export class NotAvailablePipe implements PipeTransform{
 
   transform(value: any): any {
-    return value === null ? 'n/a' : value;
+    //randum magic number because I cant figure out to compare agains Number.maxValue
+    return value === null || value > 900000000000 ? 'n/a' : value;
   }
 }

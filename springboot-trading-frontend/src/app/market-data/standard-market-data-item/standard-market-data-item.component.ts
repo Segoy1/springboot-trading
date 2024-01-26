@@ -4,6 +4,7 @@ import {MarketDataOpenCloseService} from "../service/market-data-open-close.serv
 import {Contract} from "../../model/contract.model";
 import {RouterLinkActive} from "@angular/router";
 import {StandardTicker} from "../../model/market-data/standard-ticker.model";
+import {MarketDataFieldNamePipe} from "../../shared/market-data-field-name.pipe";
 
 @Component({
   selector: 'app-standard-market-data-item',
@@ -11,7 +12,8 @@ import {StandardTicker} from "../../model/market-data/standard-ticker.model";
   imports: [
     CurrencyPipe,
     RouterLinkActive,
-    NgForOf
+    NgForOf,
+    MarketDataFieldNamePipe
   ],
   templateUrl: './standard-market-data-item.component.html',
   styleUrl: './standard-market-data-item.component.css'

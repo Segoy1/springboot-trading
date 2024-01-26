@@ -13,7 +13,7 @@
           <h4 class="list-group-item-heading">{{contract.localSymbol}}</h4>
           <div class="row" *ngFor="let tick of ticker.data">
 
-          <p class="list-group-item-text col-xs-6">{{tick.field}} : {{tick.price | currency}}</p>
+          <p class="list-group-item-text col-xs-6">{{tick.field | fieldname}} : {{tick.price | currency}}</p>
           </div>
         </div>
       </div>
