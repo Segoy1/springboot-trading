@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 import {MarketDataOpenCloseService} from "../service/market-data-open-close.service";
 import {Contract} from "../../model/contract.model";
@@ -24,7 +24,7 @@ import {OptionMarketDataWebsocketService} from "../service/option-market-data-we
   templateUrl: './standard-market-data-item.component.html',
   styleUrl: './standard-market-data-item.component.css'
 })
-export class StandardMarketDataItemComponent implements OnInit, OnDestroy{
+export class StandardMarketDataItemComponent implements OnInit, OnDestroy, OnChanges {
   @Input() ticker: StandardTicker;
   contract: Contract;
   optionTicker: OptionTicker;
@@ -35,16 +35,26 @@ export class StandardMarketDataItemComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
+    this.setUp();
+  }
+
+  //Add Something like OnChange will have to see
+  ngOnChanges(changes: SimpleChanges) {
+   this.setUp();
+  }
+
+  onCancelMarketData() {
+    this.marketDataOpenCloseService.stopMarketData(this.ticker.tickerId);
+  }
+
+  ngOnDestroy() {
+    this.optionSub.unsubscribe();
+  }
+  private setUp(){
     this.contract = this.marketDataOpenCloseService.getContractById(this.ticker.tickerId);
 
     this.optionSub = this.optionMarketDataWebsocketService.getForContract(this.contract.id).subscribe(ticker => {
       this.optionTicker = ticker;
     });
-  }
-  onCancelMarketData(){
-    this.marketDataOpenCloseService.stopMarketData(this.ticker.tickerId);
-  }
-  ngOnDestroy() {
-    this.optionSub.unsubscribe();
   }
 }
