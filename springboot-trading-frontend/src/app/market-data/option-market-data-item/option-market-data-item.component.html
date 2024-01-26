@@ -13,12 +13,11 @@
           <h4 class="list-group-item-heading">{{contract.localSymbol}}</h4>
           <div class="row" *ngFor="let tick of optionTicker.data">
 
-            <p class="list-group-item-text col-lg-6">Field: {{tick.field}}</p>
-            <p class="list-group-item-text col-lg-6">Price: {{tick.optPrice}}</p>
-            <p class="list-group-item-text col-lg-6">Delta: {{tick.delta}}</p>
-            <p class="list-group-item-text col-lg-6">Gamma: {{tick.gamma}}</p>
-            <p class="list-group-item-text col-lg-6">Theta: {{tick.theta}}</p>
-            <p class="list-group-item-text col-lg-6">Implied Vol: {{tick.impliedVol}}</p>
+            <p class="list-group-item-text col-xs-3">{{tick.field}} : {{tick.optPrice | number: "1.0-2"}}</p>
+            <p class="list-group-item-text col-xs-2">&Delta;: {{tick.delta | number: "1.0-2" | notavailable}}</p>
+            <p class="list-group-item-text col-xs-2">&Gamma;: {{tick.gamma | number: "1.0-2" | notavailable}}</p>
+            <p class="list-group-item-text col-xs-2">&Theta;: {{tick.theta | number: "1.0-2" | notavailable}}</p>
+            <p class="list-group-item-text col-xs-3">I/V: {{tick.impliedVol | number: "1.0-2" | notavailable}}</p>
             <br>
           </div>
         </div>
