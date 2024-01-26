@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class StandardMarketData extends IBKRDataType{
     private int tickerId;
-    private int field;
+    private String field;
     private double price;
     private String attrib;
 }

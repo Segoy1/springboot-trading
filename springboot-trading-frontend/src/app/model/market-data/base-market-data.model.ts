@@ -1,4 +1,4 @@
 export interface BaseMarketData{
   tickerId: number;
-  field: number;
+  field: string;
 }

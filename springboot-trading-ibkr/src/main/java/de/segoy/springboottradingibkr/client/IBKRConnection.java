@@ -100,7 +100,12 @@ public class IBKRConnection implements EWrapper {
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
         kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),Integer.toString(tickerId),
-                StandardMarketData.builder().tickerId(tickerId).field(field).price(price).attrib(attrib.toString()).build());
+                StandardMarketData.builder()
+                        .tickerId(tickerId)
+                        .field(TickType.getField(field))
+                        .price(price)
+                        .attrib(attrib.toString())
+                        .build());
     }
 
     @Override
@@ -118,7 +123,7 @@ public class IBKRConnection implements EWrapper {
                 Integer.toString(tickerId),
                 OptionMarketData.builder()
                         .tickerId(tickerId)
-                        .field(field)
+                        .field(TickType.getField(field))
                         .tickAttrib(tickAttrib)
                         .impliedVol(impliedVol)
                         .delta(delta)

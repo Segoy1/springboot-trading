@@ -14,7 +14,7 @@ public class OptionMarketData extends IBKRDataType {
 
     //Resolve with  TickType.getField( field);
     //10 = bid 11= ask 12=last 13=model
-    private int field;
+    private String field;
     private int tickAttrib;
     private double impliedVol;
     private double delta;

@@ -5,7 +5,7 @@ export interface OptionMarketData extends BaseMarketData{
 
   //Resolve with  TickType.getField( field):
   //10 = bid 11= ask 12=last 13=model
-  field: number;
+  field: string;
   tickAttrib: number;
   impliedVol: number;
   delta: number;
