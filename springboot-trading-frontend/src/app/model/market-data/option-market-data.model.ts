@@ -1,4 +1,6 @@
-export interface OptionMarketData{
+import {BaseMarketData} from "./base-market-data.model";
+
+export interface OptionMarketData extends BaseMarketData{
   tickerId: number;
 
   //Resolve with  TickType.getField( field):

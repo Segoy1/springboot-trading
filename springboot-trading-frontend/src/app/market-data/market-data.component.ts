@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
-import {OptionMarketData} from "../model/option-market-data.model";
+import {OptionMarketData} from "../model/market-data/option-market-data.model";
 import {OptionMarketDataWebsocketService} from "./service/option-market-data-websocket.service";
 import {StandardMarketDataItemComponent} from "./standard-market-data-item/standard-market-data-item.component";
 import {OptionMarketDataItemComponent} from "./option-market-data-item/option-market-data-item.component";
 import {NgForOf} from "@angular/common";
-import {StandardTicker} from "../model/standard-ticker.model";
+import {StandardTicker} from "../model/market-data/standard-ticker.model";
 import {StandardMarketDataWebsocketService} from "./service/standard-market-data-websocket.service";
-import {OptionTicker} from "../model/option-ticker.model";
+import {OptionTicker} from "../model/market-data/option-ticker.model";
 
 @Component({
   standalone: true,

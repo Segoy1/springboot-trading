@@ -3,7 +3,7 @@ import {CurrencyPipe, NgForOf} from "@angular/common";
 import {MarketDataOpenCloseService} from "../service/market-data-open-close.service";
 import {Contract} from "../../model/contract.model";
 import {RouterLinkActive} from "@angular/router";
-import {StandardTicker} from "../../model/standard-ticker.model";
+import {StandardTicker} from "../../model/market-data/standard-ticker.model";
 
 @Component({
   selector: 'app-standard-market-data-item',

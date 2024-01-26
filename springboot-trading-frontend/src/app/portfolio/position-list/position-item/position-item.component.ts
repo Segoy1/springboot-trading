@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MarketDataOpenCloseService} from "../../../market-data/service/market-data-open-close.service";
 import {StandardMarketDataWebsocketService} from "../../../market-data/service/standard-market-data-websocket.service";
-import {StandardTicker} from "../../../model/standard-ticker.model";
+import {StandardTicker} from "../../../model/market-data/standard-ticker.model";
 
 @Component({
   standalone: true,

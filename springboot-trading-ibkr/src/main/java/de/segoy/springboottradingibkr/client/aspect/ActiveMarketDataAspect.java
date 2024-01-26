@@ -19,8 +19,8 @@ public class ActiveMarketDataAspect {
         propertiesConfig.addToActiveMarketData(id);
     }
 
-    @Before("bean(eClientSocket) && execution(* *(int, ..)) && args(id,..) && execution(* cancelMktData(int, ..))")
-    protected void removeFromActiveMarketData( int id){
-        propertiesConfig.removeFromActiveMarketData(id);
-    }
+//    @Before("bean(eClientSocket) && execution(* *(int, ..)) && args(id,..) && execution(* cancelMktData(int, ..))")
+//    protected void removeFromActiveMarketData( int id){
+//        propertiesConfig.removeFromActiveMarketData(id);
+//    }
 }

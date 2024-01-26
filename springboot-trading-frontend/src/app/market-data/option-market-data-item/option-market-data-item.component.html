@@ -14,11 +14,12 @@
           <div class="row" *ngFor="let tick of optionTicker.data">
 
             <p class="list-group-item-text col-lg-6">Field: {{tick.field}}</p>
-            <p class="list-group-item-text col-lg-6">Field: {{tick.optPrice}}</p>
-            <p class="list-group-item-text col-lg-6">Price: {{tick.delta}}</p>
-            <p class="list-group-item-text col-lg-6">Price: {{tick.gamma}}</p>
-            <p class="list-group-item-text col-lg-6">Price: {{tick.theta}}</p>
-            <p class="list-group-item-text col-lg-6">Price: {{tick.impliedVol}}</p>
+            <p class="list-group-item-text col-lg-6">Price: {{tick.optPrice}}</p>
+            <p class="list-group-item-text col-lg-6">Delta: {{tick.delta}}</p>
+            <p class="list-group-item-text col-lg-6">Gamma: {{tick.gamma}}</p>
+            <p class="list-group-item-text col-lg-6">Theta: {{tick.theta}}</p>
+            <p class="list-group-item-text col-lg-6">Implied Vol: {{tick.impliedVol}}</p>
+            <br>
           </div>
         </div>
       </div>

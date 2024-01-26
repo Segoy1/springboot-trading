@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {StandardTicker} from "../../model/standard-ticker.model";
+import {StandardTicker} from "../../model/market-data/standard-ticker.model";
 import {ActivatedRoute, Params} from "@angular/router";
 import {StandardMarketDataWebsocketService} from "../../market-data/service/standard-market-data-websocket.service";
 import {
   StandardMarketDataItemComponent
 } from "../../market-data/standard-market-data-item/standard-market-data-item.component";
 import {NgIf} from "@angular/common";
-import {OptionTicker} from "../../model/option-ticker.model";
+import {OptionTicker} from "../../model/market-data/option-ticker.model";
 import {OptionMarketDataWebsocketService} from "../../market-data/service/option-market-data-websocket.service";
 import {
   OptionMarketDataItemComponent

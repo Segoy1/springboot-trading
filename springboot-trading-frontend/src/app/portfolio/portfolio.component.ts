@@ -3,7 +3,7 @@ import {AccountComponent} from "./account/account.component";
 import {PositionListComponent} from "./position-list/position-list.component";
 import {ActivatedRoute, RouterOutlet} from "@angular/router";
 import {StandardMarketDataWebsocketService} from "../market-data/service/standard-market-data-websocket.service";
-import {StandardTicker} from "../model/standard-ticker.model";
+import {StandardTicker} from "../model/market-data/standard-ticker.model";
 
 @Component({
   standalone: true,
