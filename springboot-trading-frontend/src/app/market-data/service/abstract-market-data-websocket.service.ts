@@ -49,8 +49,10 @@ export abstract class AbstractMarketDataWebsocketService<Ticker extends BaseTick
 
   remove(tickerId: number){
     const index = this.contractTicks.findIndex(tick=> tick.tickerId ===tickerId);
+    if(index>-1){
     this.contractTicks.splice(index,1);
     this.responseChange();
+    }
   }
 
   responseChange() {

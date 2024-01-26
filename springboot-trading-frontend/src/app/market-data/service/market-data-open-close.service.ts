@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {environmentDevelopment} from "../../../environments/environment.development";
 import {HttpClient} from "@angular/common/http";
 import {Contract} from "../../model/contract.model";
+import {OptionMarketDataWebsocketService} from "./option-market-data-websocket.service";
+import {StandardMarketDataWebsocketService} from "./standard-market-data-websocket.service";
 
 @Injectable({providedIn: 'root'})
 export class MarketDataOpenCloseService {
@@ -12,7 +14,9 @@ export class MarketDataOpenCloseService {
   private contracts: Contract[] = [];
   private localStorageKey = 'openMarketDataCalls';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private optionMarketDataWebsocketService:OptionMarketDataWebsocketService,
+              private standardMarketDataWebsocketService:StandardMarketDataWebsocketService) {
   }
 
   startMarketData(contract: Contract) {
@@ -23,7 +27,8 @@ export class MarketDataOpenCloseService {
             this.contracts = [response];
           }
           this.contracts.push(response);
-          console.log(this.contracts);
+
+          //probably change to different service wich calls Contract Data via Rest
           localStorage.setItem(this.localStorageKey, JSON.stringify(this.contracts));
         }
       , error:
@@ -35,6 +40,9 @@ export class MarketDataOpenCloseService {
 
   stopMarketData(id: number) {
     this.http.get(this.marketDataStopUrl + '?id=' + id).subscribe();
+    this.standardMarketDataWebsocketService.remove(id);
+    this.optionMarketDataWebsocketService.remove(id);
+    //replace this with Calling Contracts like above
     const index = this.contracts.findIndex(contract => contract.id ===id);
     this.contracts.splice(index,1);
     localStorage.setItem(this.localStorageKey, JSON.stringify(this.contracts));
