@@ -1,12 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
-import {StandardMarketData} from "../model/standard-market-data.model";
-import {StandardMarketDataWebsocketService} from "./service/standard-market-data-websocket.service";
 import {OptionMarketData} from "../model/option-market-data.model";
 import {OptionMarketDataWebsocketService} from "./service/option-market-data-websocket.service";
 import {StandardMarketDataItemComponent} from "./standard-market-data-item/standard-market-data-item.component";
 import {OptionMarketDataItemComponent} from "./option-market-data-item/option-market-data-item.component";
 import {NgForOf} from "@angular/common";
+import {StandardTicker} from "../model/standard-ticker.model";
+import {StandardMarketDataWebsocketService} from "./service/standard-market-data-websocket.service";
+import {OptionTicker} from "../model/option-ticker.model";
 
 @Component({
   standalone: true,
@@ -20,9 +21,9 @@ import {NgForOf} from "@angular/common";
   styleUrl: './market-data.component.css'
 })
 export class MarketDataComponent implements OnInit, OnDestroy {
-  standardMarketData: StandardMarketData[];
+  standardMarketData: StandardTicker[];
   standardSub: Subscription;
-  optionMarketData: OptionMarketData[];
+  optionMarketData: OptionTicker[];
   optionSub: Subscription;
 
 
@@ -34,7 +35,7 @@ export class MarketDataComponent implements OnInit, OnDestroy {
     this.standardSub = this.standardMarketDataWebsocketService.responseChangedSubject.subscribe(ticker => {
       this.standardMarketData = ticker;
     });
-    this.optionSub = this.optionMarketDataWebsocketService.responseChangedSubject.subscribe(ticker=>{
+    this.optionSub = this.optionMarketDataWebsocketService.responseChangedSubject.subscribe(ticker => {
       this.optionMarketData = ticker;
     });
   }
@@ -43,5 +44,4 @@ export class MarketDataComponent implements OnInit, OnDestroy {
     this.optionSub.unsubscribe();
     this.standardSub.unsubscribe();
   }
-
 }

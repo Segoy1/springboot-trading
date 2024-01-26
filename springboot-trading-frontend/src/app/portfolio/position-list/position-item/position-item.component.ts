@@ -5,8 +5,11 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Position} from "../../../model/position.model";
 import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
 import {ProfitLossWebsocketService} from "../../service/profit-loss-websocket.service";
-import { Subscription} from "rxjs";
-import {RouterLink} from "@angular/router";
+import {Subscription} from "rxjs";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {MarketDataOpenCloseService} from "../../../market-data/service/market-data-open-close.service";
+import {StandardMarketDataWebsocketService} from "../../../market-data/service/standard-market-data-websocket.service";
+import {StandardTicker} from "../../../model/standard-ticker.model";
 
 @Component({
   standalone: true,
@@ -18,7 +21,6 @@ import {RouterLink} from "@angular/router";
     CurrencyPipe,
     NgIf,
     NgClass,
-    RouterLink
   ],
   styleUrl: './position-item.component.css',
   animations: [
@@ -45,7 +47,11 @@ export class PositionItemComponent implements OnInit {
   profitAndLossSub: Subscription;
   isDailyProfit = false
 
-  constructor(private profitLossWebsocketService: ProfitLossWebsocketService) {
+  constructor(private profitLossWebsocketService: ProfitLossWebsocketService,
+              private marketDataOpenCloseService: MarketDataOpenCloseService,
+              private standardMarketDataWebsocketService: StandardMarketDataWebsocketService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -59,5 +65,17 @@ export class PositionItemComponent implements OnInit {
 
   isPnLready() {
     return !!this.profitAndLoss;
+  }
+
+  onClick() {
+    let ticker : StandardTicker;
+    this.standardMarketDataWebsocketService.getForContract(this.position.contractData.id).subscribe((openCall)=>{
+      ticker = openCall;
+    })
+    if(!ticker){
+      this.marketDataOpenCloseService.startMarketData(this.position.contractData);
+    }
+
+    this.router.navigate([this.position.contractData.id], {relativeTo: this.route});
   }
 }

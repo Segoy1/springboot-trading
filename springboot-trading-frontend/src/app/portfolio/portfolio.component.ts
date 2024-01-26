@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
 import {AccountComponent} from "./account/account.component";
 import {PositionListComponent} from "./position-list/position-list.component";
-import {RouterOutlet} from "@angular/router";
+import {ActivatedRoute, RouterOutlet} from "@angular/router";
+import {StandardMarketDataWebsocketService} from "../market-data/service/standard-market-data-websocket.service";
+import {StandardTicker} from "../model/standard-ticker.model";
 
 @Component({
   standalone: true,

@@ -1,6 +1,6 @@
 export interface StandardMarketData{
-  tickerId: number
-  field: number
-  price: number
+  tickerId: number;
+  field: number;
+  price: number;
   attrib: string;
 }

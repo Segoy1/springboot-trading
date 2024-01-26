@@ -1,3 +1,23 @@
-<a class="list-group-item clearfix">
+<div class="row" style="margin-bottom: 10px">
+  <div class="col-xs-12">
 
-</a>
+  </div>
+  <button class="btn btn-danger pull-right top-right" type="button" (click)="onCancelMarketData()">X</button>
+  <div class="col-xs-12 list-group-item">
+    <a
+      style="cursor: pointer; border: transparent"
+      routerLinkActive="active"
+      class="list-group-item clearfix">
+      <div class="row">
+        <div class="pull-left">
+          <h4 class="list-group-item-heading">{{contract.localSymbol}}</h4>
+          <div class="row" *ngFor="let tick of ticker.data">
+
+          <p class="list-group-item-text col-lg-6">Field: {{tick.field}}</p>
+          <p class="list-group-item-text col-lg-6">Price: {{tick.price}}</p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

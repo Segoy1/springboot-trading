@@ -1,6 +1,6 @@
 <a  class="list-group-item clearfix"
     [@position]="state"
-    [routerLink]="[position.contractData.id]"
+    (click)="onClick()"
    style="cursor: pointer"
   [ngClass]="{'': !isPnLready(), 'green': isPnLready()&&isDailyProfit ,'red': isPnLready()&&!isDailyProfit}">
   <div>
