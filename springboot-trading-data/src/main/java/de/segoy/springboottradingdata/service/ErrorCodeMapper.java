@@ -12,6 +12,9 @@ public class ErrorCodeMapper {
 
     public Optional<ErrorMessage> mapError(ErrorMessage errorMessage) {
         switch (errorMessage.getErrorCode()) {
+            case 322:
+                //Duplicate Ticker Id for Market Data will be handled in Frontend
+                return Optional.of(errorMessage);
             case 502:
                 log.warn(errorMessage.getMessage());
                 break;
