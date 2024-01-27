@@ -38,7 +38,6 @@ export class StandardMarketDataItemComponent implements OnInit, OnDestroy, OnCha
     this.setUp();
   }
 
-  //Add Something like OnChange will have to see
   ngOnChanges(changes: SimpleChanges) {
    this.setUp();
   }
