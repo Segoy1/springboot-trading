@@ -20,7 +20,6 @@ import {MarketDataOpenCloseService} from "./market-data/service/market-data-open
 export class AppComponent implements OnInit{
 
   constructor(private loginService: LoginService,
-              private marketDataOpenCloseService:MarketDataOpenCloseService,
               private openOrderWebsocketService: OpenOrdersWebsocketService,
               private positionsWebsocketService: PositionsWebsocketService,
               private accountMarginWebsocketService:AccountMarginWebsocketService,
@@ -31,7 +30,6 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.loginService.autoLogin();
-    this.marketDataOpenCloseService.initContracts();
   }
 
 }

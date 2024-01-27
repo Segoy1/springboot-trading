@@ -42,6 +42,8 @@ public class ContractDataController {
                                                              @RequestParam(defaultValue = "0", name = "buyCallStrikeTwo") double buyCallStrikeTwo,
                                                              @RequestParam(defaultValue = "0", name = "sellCallStrikeTwo") double sellCallStrikeTwo) {
 
+        //TODO will have to implement solution to get combos like in Orders Controller
+
 
 
         Optional<ContractData> savedContract = strategyBuilderService.getComboLegContractData(contractData,  legMapService.mapLegs(buyPutStrike,
@@ -65,7 +67,6 @@ public class ContractDataController {
 
     @GetMapping
     public ResponseEntity<ContractData> getContractDataById(@RequestParam("id") long id) {
-
         return responseMapper.mapResponse(contractDataRepository.findById(id));
     }
 }

@@ -42,24 +42,5 @@ export class MarketDataOpenCloseService {
     this.http.get(this.marketDataStopUrl + '?id=' + id).subscribe();
     this.standardMarketDataWebsocketService.remove(id);
     this.optionMarketDataWebsocketService.remove(id);
-    //replace this with Calling Contracts like above
-    const index = this.contracts.findIndex(contract => contract.id ===id);
-    this.contracts.splice(index,1);
-    localStorage.setItem(this.localStorageKey, JSON.stringify(this.contracts));
   }
-
-
-  initContracts() {
-    this.contracts = JSON.parse(localStorage.getItem(this.localStorageKey));
-  }
-
-  getContracts() {
-    return this.contracts.slice();
-  }
-
-  getContractById(id: number) {
-    return this.contracts.find(contract => contract.id === id);
-
-  }
-
 }

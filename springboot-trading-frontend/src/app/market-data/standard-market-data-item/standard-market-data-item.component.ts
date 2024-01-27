@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
+import {AsyncPipe, CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 import {MarketDataOpenCloseService} from "../service/market-data-open-close.service";
 import {Contract} from "../../model/contract.model";
 import {RouterLinkActive} from "@angular/router";
@@ -9,6 +9,7 @@ import {OptionMarketDataItemComponent} from "../option-market-data-item/option-m
 import {OptionTicker} from "../../model/market-data/option-ticker.model";
 import {Subscription} from "rxjs";
 import {OptionMarketDataWebsocketService} from "../service/option-market-data-websocket.service";
+import {ContractDataRestService} from "../service/contract-data-rest.service";
 
 @Component({
   selector: 'app-standard-market-data-item',
@@ -19,7 +20,8 @@ import {OptionMarketDataWebsocketService} from "../service/option-market-data-we
     NgForOf,
     MarketDataFieldNamePipe,
     OptionMarketDataItemComponent,
-    NgIf
+    NgIf,
+    AsyncPipe
   ],
   templateUrl: './standard-market-data-item.component.html',
   styleUrl: './standard-market-data-item.component.css'
@@ -27,11 +29,13 @@ import {OptionMarketDataWebsocketService} from "../service/option-market-data-we
 export class StandardMarketDataItemComponent implements OnInit, OnDestroy, OnChanges {
   @Input() ticker: StandardTicker;
   contract: Contract;
+  contractSub: Subscription;
   optionTicker: OptionTicker;
   optionSub: Subscription;
 
   constructor(private marketDataOpenCloseService: MarketDataOpenCloseService,
-              private optionMarketDataWebsocketService: OptionMarketDataWebsocketService) {
+              private optionMarketDataWebsocketService: OptionMarketDataWebsocketService,
+              private contractDataRestService:ContractDataRestService) {
   }
 
   ngOnInit() {
@@ -50,9 +54,14 @@ export class StandardMarketDataItemComponent implements OnInit, OnDestroy, OnCha
     this.optionSub.unsubscribe();
   }
   private setUp(){
-    this.contract = this.marketDataOpenCloseService.getContractById(this.ticker.tickerId);
 
-    this.optionSub = this.optionMarketDataWebsocketService.getForContract(this.contract.id).subscribe(ticker => {
+    this.contractSub = this.contractDataRestService.getForId(this.ticker.tickerId).subscribe(contract=>
+    this.contract = contract);
+
+    this.contractDataRestService.requestContractData(this.ticker.tickerId);
+
+
+    this.optionSub = this.optionMarketDataWebsocketService.getForContract(this.ticker.tickerId).subscribe(ticker => {
       this.optionTicker = ticker;
     });
   }

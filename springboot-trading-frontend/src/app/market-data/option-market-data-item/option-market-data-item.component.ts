@@ -22,14 +22,8 @@ import {MarketDataFieldNamePipe} from "../../shared/market-data-field-name.pipe"
   templateUrl: './option-market-data-item.component.html',
   styleUrl: './option-market-data-item.component.css'
 })
-export class OptionMarketDataItemComponent implements OnInit {
+export class OptionMarketDataItemComponent{
   @Input() optionTicker: OptionTicker;
-  contract: Contract;
+  @Input() contract: Contract;
 
-  constructor(private marketDataOpenCloseService: MarketDataOpenCloseService) {
-  }
-
-  ngOnInit() {
-    this.contract = this.marketDataOpenCloseService.getContractById(this.optionTicker.tickerId);
-  }
 }
