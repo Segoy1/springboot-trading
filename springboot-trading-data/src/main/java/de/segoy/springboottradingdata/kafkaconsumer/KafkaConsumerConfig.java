@@ -38,7 +38,7 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
         return getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getGroupId());
     }
     @Bean
-    @Qualifier("RestResponseConsumerFactory")
+    @Qualifier("BackendConsumerFactory")
     ConsumerFactory<String, IBKRDataType> restResponseConsumerFactory(){
         return  getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getRestResponseGroupId());
     }

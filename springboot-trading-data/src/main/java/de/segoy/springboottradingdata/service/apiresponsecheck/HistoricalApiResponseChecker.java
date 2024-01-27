@@ -3,12 +3,10 @@ package de.segoy.springboottradingdata.service.apiresponsecheck;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
-import de.segoy.springboottradingdata.repository.message.ErrorMessageRepository;
+import de.segoy.springboottradingdata.service.ApiResponseErrorHandler;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -17,16 +15,15 @@ class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalD
     private final RepositoryRefreshService repositoryRefreshService;
     private final HistoricalDataRepository repository;
     private final PropertiesConfig propertiesConfig;
-    private final ErrorMessageRepository errorMessageRepository;
+    private final ApiResponseErrorHandler apiResponseErrorHandler;
 
     public HistoricalApiResponseChecker(RepositoryRefreshService repositoryRefreshService,
                                         HistoricalDataRepository historicalDataRepository,
-                                        PropertiesConfig propertiesConfig,
-                                        ErrorMessageRepository errorMessageRepository, ErrorMessageRepository errorMessageRepository1) {
+                                        PropertiesConfig propertiesConfig, ApiResponseErrorHandler apiResponseErrorHandler) {
         this.repositoryRefreshService = repositoryRefreshService;
         this.repository = historicalDataRepository;
         this.propertiesConfig = propertiesConfig;
-        this.errorMessageRepository = errorMessageRepository1;
+        this.apiResponseErrorHandler = apiResponseErrorHandler;
     }
 
     @Override
@@ -40,8 +37,7 @@ class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalD
         return repository.findAllByContractIdAndCreateDateAfter(id, propertiesConfig.getTwoSecondsAgo());
     }
     protected boolean notInRepositoryOrError(int id){
-        return repository.findById((long)id).isEmpty() && errorMessageRepository.findAllByMessageIdAndCreateDateIsAfter(id,
-                Timestamp.from(Instant.now().minusSeconds(5))).isEmpty();
+        return repository.findById((long)id).isEmpty() && !apiResponseErrorHandler.isErrorForId(id);
     }
 
 }
