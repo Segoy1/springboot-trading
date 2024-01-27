@@ -268,14 +268,12 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void error(String str) {
-        log.warn(EWrapperMsgGenerator.error(str));
         kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
                 ErrorMessage.builder().messageId(-1000).message(str).build());
     }
 
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
-        log.warn(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
         kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
                 Integer.toString(id),
                 ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(

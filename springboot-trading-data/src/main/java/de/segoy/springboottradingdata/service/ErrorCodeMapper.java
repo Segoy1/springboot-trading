@@ -1,9 +1,11 @@
 package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ErrorCodeMapper {
 
     //TODO get full list of error messages and handle them.
@@ -23,6 +25,7 @@ public class ErrorCodeMapper {
                 //Todo find out what this is
                 break;
             default:
+                log.info("Error: "+ errorMessage.getMessageId()+", Code: "+errorMessage.getErrorCode()+", message: "+ errorMessage.getMessage());
                 throw new RuntimeException("Error occured: " + errorMessage.getMessage());
 
         }
