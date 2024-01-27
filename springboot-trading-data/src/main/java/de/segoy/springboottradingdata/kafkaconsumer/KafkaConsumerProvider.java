@@ -13,7 +13,7 @@ public class KafkaConsumerProvider {
 
     private final ConsumerFactory<String, IBKRDataType> entityConsumerFactory;
 
-    public KafkaConsumerProvider(@Qualifier("RestResponseConsumerFactory") ConsumerFactory<String,
+    public KafkaConsumerProvider(@Qualifier("BackendConsumerFactory") ConsumerFactory<String,
             IBKRDataType> entityConsumerFactory) {
         this.entityConsumerFactory = entityConsumerFactory;
     }

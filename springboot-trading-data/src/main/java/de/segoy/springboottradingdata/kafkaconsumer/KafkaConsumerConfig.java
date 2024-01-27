@@ -39,7 +39,7 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
     }
     @Bean
     @Qualifier("BackendConsumerFactory")
-    ConsumerFactory<String, IBKRDataType> restResponseConsumerFactory(){
+    ConsumerFactory<String, IBKRDataType> backendResponseConsumerFactory(){
         return  getConsumerFactoryWithConsumerGroup(kafkaConstantsConfig.getRestResponseGroupId());
     }
 

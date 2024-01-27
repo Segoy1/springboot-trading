@@ -14,17 +14,19 @@ public class ErrorMessageKafkaConsumer {
     private final SimpMessagingTemplate messagingTemplate;
     private final ErrorCodeMapper errorCodeMapper;
 
-    public ErrorMessageKafkaConsumer(KafkaConstantsConfig kafkaConstantsConfig, SimpMessagingTemplate messagingTemplate, ErrorCodeMapper errorCodeMapper) {
+    public ErrorMessageKafkaConsumer(KafkaConstantsConfig kafkaConstantsConfig,
+                                     SimpMessagingTemplate messagingTemplate, ErrorCodeMapper errorCodeMapper) {
         this.kafkaConstantsConfig = kafkaConstantsConfig;
         this.messagingTemplate = messagingTemplate;
         this.errorCodeMapper = errorCodeMapper;
     }
 
     @KafkaListener(topics = "${spring.kafka.names.topic.errorMessage}")
-    public void consumeOptionMarketDataMessage(IBKRDataType message){
+    public void consumeOptionMarketDataMessage(IBKRDataType message) {
         ErrorMessage errorMessage = (ErrorMessage) message;
         String topic = kafkaConstantsConfig.getERROR_MESSAGE_TOPIC();
-        errorCodeMapper.mapError(errorMessage);
-        messagingTemplate.convertAndSend("/topic/"+ topic, message);
+        errorCodeMapper.mapError(errorMessage).ifPresent(handledErrorMessage -> {
+            messagingTemplate.convertAndSend("/topic/" + topic, handledErrorMessage);
+        });
     }
 }
