@@ -21,8 +21,6 @@ import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynch
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
-import de.segoy.springboottradingdata.service.messagehandler.ErrorMessageHandler;
-import de.segoy.springboottradingibkr.client.service.ErrorCodeHandler;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +38,9 @@ import java.util.Map.Entry;
 public class IBKRConnection implements EWrapper {
 
 
-    private final ErrorCodeHandler errorCodeHandler;
-
     private final PropertiesConfig propertiesConfig;
     private final KafkaConstantsConfig kafkaConstantsConfig;
 
-    private final ErrorMessageHandler errorMessageHandler;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate;
 
@@ -70,8 +65,7 @@ public class IBKRConnection implements EWrapper {
 
     @Autowired
     public IBKRConnection(
-            ErrorCodeHandler errorCodeHandler,
-            KafkaConstantsConfig kafkaConstantsConfig, ErrorMessageHandler errorMessageHandler,
+            KafkaConstantsConfig kafkaConstantsConfig,
             KafkaTemplate<String, String> kafkaTemplate,
             KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate,
             ConnectionDataRepository connectionDataRepository,
@@ -80,9 +74,8 @@ public class IBKRConnection implements EWrapper {
             HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
             PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
             OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator) {
-        this.errorCodeHandler = errorCodeHandler;
+
         this.kafkaConstantsConfig = kafkaConstantsConfig;
-        this.errorMessageHandler = errorMessageHandler;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaEntityTemplate = kafkaEntityTemplate;
         this.connectionDataRepository = connectionDataRepository;
@@ -99,7 +92,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),Integer.toString(tickerId),
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), Integer.toString(tickerId),
                 StandardMarketData.builder()
                         .tickerId(tickerId)
                         .field(TickType.getField(field))
@@ -275,17 +268,18 @@ public class IBKRConnection implements EWrapper {
 
     @Override
     public void error(String str) {
-        errorMessageHandler.handleError(ErrorMessage.builder().messageId(-1000).message(str).build());
+        log.warn(EWrapperMsgGenerator.error(str));
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
+                ErrorMessage.builder().messageId(-1000).message(str).build());
     }
 
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
-        // received error
-        errorMessageHandler.handleError(
+        log.warn(EWrapperMsgGenerator.error(id, errorCode, errorMsg, advancedOrderRejectJson));
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
+                Integer.toString(id),
                 ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
                         advancedOrderRejectJson).build());
-        faError = errorCodeHandler.isFaError(errorCode);
-        errorCodeHandler.handleDataReset(id, errorCode, m_mapRequestToMktDepthModel);
     }
 
     @Override
