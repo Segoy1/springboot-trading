@@ -16,8 +16,10 @@ public class ErrorCodeMapper {
                 log.warn(errorMessage.getMessage());
                 break;
             case 399:
+                log.warn("399:"+ errorMessage.getMessage());
                 break;
             case 10311:
+                log.warn("10311:"+ errorMessage.getMessage());
                 break;
             case 10185:
                 //not Subscribed to Account PNL, ignore
