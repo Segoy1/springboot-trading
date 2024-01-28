@@ -11,8 +11,6 @@ export class MarketDataOpenCloseService {
   private marketDataStartUrl = environmentDevelopment.apiUrl + 'market-data/start';
   private marketDataStopUrl = environmentDevelopment.apiUrl + 'market-data/stop';
   private marketDataStopAllUrl = environmentDevelopment.apiUrl + 'market-data/stopAll';
-  private contracts: Contract[] = [];
-  private localStorageKey = 'openMarketDataCalls';
 
   constructor(private http: HttpClient,
               private optionMarketDataWebsocketService:OptionMarketDataWebsocketService,
@@ -20,22 +18,7 @@ export class MarketDataOpenCloseService {
   }
 
   startMarketData(contract: Contract) {
-    this.http.post<Contract>(this.marketDataStartUrl, contract).subscribe({
-      next:
-        response => {
-          if(!this.contracts){
-            this.contracts = [response];
-          }
-          this.contracts.push(response);
-
-          //probably change to different service wich calls Contract Data via Rest
-          localStorage.setItem(this.localStorageKey, JSON.stringify(this.contracts));
-        }
-      , error:
-        err => {
-          console.log(err);
-        }
-    });
+    this.http.post<Contract>(this.marketDataStartUrl, contract).subscribe();
   }
 
   stopMarketData(id: number) {
