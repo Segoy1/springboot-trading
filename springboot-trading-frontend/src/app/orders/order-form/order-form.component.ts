@@ -114,11 +114,11 @@ export class OrderFormComponent implements OnInit {
   private marketDataNew(){
     let contractDataForm = new FormGroup({
       contractData: this.orderFormService.getSimpleForm().get('contractData'),
-      strategyLegs: new FormArray([])
+      strategyLegs: new FormArray<any>([])
     });
     this.strategyMode$.subscribe((strategyMode) => {
       if (strategyMode) {
-        contractDataForm.get('strategyLegs').setValue(this.orderFormService.getStrategyForm().get('strategyLegs').getRawValue());
+        contractDataForm.controls['strategyLegs'] = <FormArray>this.orderFormService.getStrategyForm().get('strategyLegs');
       }
       this.contractDataRestService.requestContractDataForOrder(contractDataForm.getRawValue())
         .subscribe(contract => {
