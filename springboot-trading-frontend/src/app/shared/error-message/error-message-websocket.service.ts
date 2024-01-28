@@ -11,6 +11,12 @@ export class ErrorMessageWebsocketService extends AbstractWebsocketService<Error
   }
 
   updateOrAdd(message: ErrorMessage) {
+    this.response.push(message);
+  }
+
+  remove(message: ErrorMessage){
+    const index = this.response.indexOf(message);
+    this.response.splice(index,1);
   }
 
 }

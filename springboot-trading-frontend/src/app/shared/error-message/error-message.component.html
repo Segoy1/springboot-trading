@@ -1,1 +1,6 @@
-<p>error-message works!</p>
+<div class="error-message">
+  <div class="row">
+    <p class="col-xs-10">{{'Error Code '+errorMessage.errorCode +': '+errorMessage.message}}</p>
+    <a class="col-xs-1 pull-right" style="color: #202020" (click)="onClose()">close X</a>
+  </div>
+</div>
