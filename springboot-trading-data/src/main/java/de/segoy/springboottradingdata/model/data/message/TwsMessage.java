@@ -1,14 +1,14 @@
 package de.segoy.springboottradingdata.model.data.message;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
 
 @Data
 @Builder
@@ -27,8 +27,6 @@ public class TwsMessage extends BaseMessage {
 
     private String topic;
 
-    @CreationTimestamp
-    private Timestamp createDate;
 
 //    public void add(Collection<String> lines) {
 //        for (String line : lines) {

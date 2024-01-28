@@ -4,9 +4,6 @@ import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
 
 @MappedSuperclass
 @Getter
@@ -16,7 +13,4 @@ public abstract class BaseMessage extends IBKRDataType {
 
     @Lob
     private String message;
-
-    @CreationTimestamp
-    private Timestamp createDate;
 }

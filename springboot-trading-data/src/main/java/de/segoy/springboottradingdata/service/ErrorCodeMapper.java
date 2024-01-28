@@ -13,7 +13,7 @@ public class ErrorCodeMapper {
     public Optional<ErrorMessage> mapError(ErrorMessage errorMessage) {
         switch (errorMessage.getErrorCode()) {
             case 322:
-                //Duplicate Ticker Id for Market Data will be handled in Frontend
+                //Duplicate Ticker ID for Market Data will be handled in Frontend
                 return Optional.of(errorMessage);
             case 502:
                 log.warn(errorMessage.getMessage());
@@ -31,7 +31,7 @@ public class ErrorCodeMapper {
             case 10186:
                 //not Subscribed to Single PNL, ignore
                 break;
-            case 2104, 2106, 2158:
+            case 2104, 2106, 2108, 2158:
                 //Messages on startup just stating Connection is OK.
                 log.info(errorMessage.getMessage());
                 break;

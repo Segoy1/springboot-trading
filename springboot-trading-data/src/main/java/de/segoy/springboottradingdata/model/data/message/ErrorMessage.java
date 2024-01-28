@@ -10,9 +10,7 @@ import lombok.*;
 public class ErrorMessage extends BaseMessage {
 
     private Integer messageId;
-
     private String message;
-
     private Integer errorCode;
     private String advancedOrderReject;
 }
