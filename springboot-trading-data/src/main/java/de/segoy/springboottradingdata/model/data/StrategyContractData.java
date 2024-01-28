@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.model.data;
 
 import de.segoy.springboottradingdata.model.Leg;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import lombok.*;
 
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StrategyData extends IBKRDataType {
+public class StrategyContractData extends IBKRDataType {
 
-    private OrderData orderData;
+    private ContractData contractData;
     private List<Leg> strategyLegs;
 }
