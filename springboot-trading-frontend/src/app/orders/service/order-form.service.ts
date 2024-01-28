@@ -99,15 +99,16 @@ export class OrderFormService {
     this.simpleOrderSubmitForm.get('contractData.strike').enable();
   }
 
-  getNextId(){
+  getNextId() {
     this.orderIdService.getNextValidId().subscribe({
       next:
-        (id)=>{
-          this.nextId=id;
+        (id) => {
+          this.nextId = id;
         }, error:
-        (error) =>{
+        (error) => {
           console.log(error);
-        }});
+        }
+    });
   }
 
 

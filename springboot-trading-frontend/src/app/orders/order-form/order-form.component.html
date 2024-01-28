@@ -1,184 +1,188 @@
-<div class="container">
-  <h3 class="media-heading">{{(editMode$| async)? 'Edit Order': 'Open Order'}}</h3>
-  <hr>
-  <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-8">
-      <form [formGroup]="getOrderForm()">
-        <div class="col-xs-12" style="margin-bottom: 20px">
-          <div class="row">
-            <div class="col-xs-2">
-              <label for="id">ID</label>
+<h3 class="media-heading">{{(editMode$| async) ? 'Edit Order' : 'Open Order'}}</h3>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="getOrderForm()">
+      <div class="col-xs-12" style="margin-bottom: 20px">
+        <div class="row">
+          <div class="col-xs-2">
+            <label for="id">ID</label>
+            <input
+              type="number"
+              id="id"
+              formControlName="id"
+              class="form-control">
+          </div>
+          <div class="col-xs-2">
+            <label for="action">Action</label>
+            <select
+              id="action"
+              formControlName="action"
+              class="form-control">
+              <option value="BUY">Buy</option>
+              <option value="SELL">Sell</option>
+            </select>
+          </div>
+          <div class="col-xs-2">
+            <label for="totalQuantity">Quantity</label>
+            <input
+              type="number"
+              id="totalQuantity"
+              formControlName="totalQuantity"
+              class="form-control">
+          </div>
+          <div class="col-xs-2">
+            <label for="orderType">Order Type</label>
+            <input
+              type="text"
+              id="orderType"
+              formControlName="orderType"
+              class="form-control">
+          </div>
+          <div class="col-xs-2">
+            <label for="limitPrice">Limit Price</label>
+            <input
+              type="number"
+              id="limitPrice"
+              formControlName="limitPrice"
+              class="form-control">
+          </div>
+          <div class="col-xs-2">
+            <label for="timeInForce">TIF</label>
+            <input
+              type="text"
+              id="timeInForce"
+              formControlName="timeInForce"
+              class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!--        CONTRACT DATA -->
+      <h4> Contract Data</h4>
+      <div formGroupName="contractData" class="row">
+        <div class="row">
+          <div class="col-xs-12" style="margin-bottom: 10px">
+            <div class="col-xs-3">
+              <label for="contractId">Contract Id</label>
               <input
                 type="number"
-                id="id"
-                formControlName="id"
+                id="contractId"
+                formControlName="contractId"
                 class="form-control">
             </div>
             <div class="col-xs-2">
-              <label for="action">Action</label>
-              <select
-                id="action"
-                formControlName="action"
-                class="form-control">
-                <option value="BUY">Buy</option>
-                <option value="SELL">Sell</option>
-              </select>
-            </div>
-            <div class="col-xs-2">
-              <label for="totalQuantity">Quantity</label>
-              <input
-                type="number"
-                id="totalQuantity"
-                formControlName="totalQuantity"
-                class="form-control">
-            </div>
-            <div class="col-xs-2">
-              <label for="orderType">Order Type</label>
+              <label for="symbol">Symbol</label>
               <input
                 type="text"
-                id="orderType"
-                formControlName="orderType"
+                id="symbol"
+                formControlName="symbol"
                 class="form-control">
             </div>
             <div class="col-xs-2">
-              <label for="limitPrice">Limit Price</label>
-              <input
-                type="number"
-                id="limitPrice"
-                formControlName="limitPrice"
-                class="form-control">
-            </div>
-            <div class="col-xs-2">
-              <label for="timeInForce">TIF</label>
+              <label for="securityType">Sec Type</label>
               <input
                 type="text"
-                id="timeInForce"
-                formControlName="timeInForce"
+                id="securityType"
+                formControlName="securityType"
+                class="form-control">
+            </div>
+            <div class="col-xs-2">
+              <label for="currency">Currency</label>
+              <input
+                type="text"
+                id="currency"
+                formControlName="currency"
+                class="form-control">
+            </div>
+            <div class="col-xs-3">
+              <label for="exchange">Exchange</label>
+              <input
+                type="text"
+                id="exchange"
+                formControlName="exchange"
                 class="form-control">
             </div>
           </div>
         </div>
 
-        <!--        CONTRACT DATA -->
-        <h4> Contract Data</h4>
-        <div formGroupName="contractData" class="row">
-          <div class="row">
-            <div class="col-xs-12" style="margin-bottom: 10px">
-              <div class="col-xs-3">
-                <label for="contractId">Contract Id</label>
-                <input
-                  type="number"
-                  id="contractId"
-                  formControlName="contractId"
-                  class="form-control">
-              </div>
-              <div class="col-xs-2">
-                <label for="symbol">Symbol</label>
-                <input
-                  type="text"
-                  id="symbol"
-                  formControlName="symbol"
-                  class="form-control">
-              </div>
-              <div class="col-xs-2">
-                <label for="securityType">Sec Type</label>
-                <input
-                  type="text"
-                  id="securityType"
-                  formControlName="securityType"
-                  class="form-control">
-              </div>
-              <div class="col-xs-2">
-                <label for="currency">Currency</label>
-                <input
-                  type="text"
-                  id="currency"
-                  formControlName="currency"
-                  class="form-control">
-              </div>
-              <div class="col-xs-3">
-                <label for="exchange">Exchange</label>
-                <input
-                  type="text"
-                  id="exchange"
-                  formControlName="exchange"
-                  class="form-control">
-              </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-offset-1 col-md-offset-1">
+            <h5>For Derivatives: </h5>
+            <div class="col-xs-3">
+              <label for="lastTradeDate">Last Trade Date</label>
+              <input
+                type="text"
+                id="lastTradeDate"
+                formControlName="lastTradeDate"
+                class="form-control">
             </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 col-sm-offset-1 col-md-offset-1">
-              <h5>For Derivatives: </h5>
-              <div class="col-xs-3">
-                <label for="lastTradeDate">Last Trade Date</label>
-                <input
-                  type="text"
-                  id="lastTradeDate"
-                  formControlName="lastTradeDate"
-                  class="form-control">
-              </div>
-              <div class="col-xs-2">
-                <label for="strike">Strike</label>
-                <input
-                  type="number"
-                  id="strike"
-                  formControlName="strike"
-                  class="form-control">
-              </div>
-              <div class="col-xs-2">
-                <label for="right">Put/Call</label>
-                <select
-                  id="right"
-                  formControlName="right"
-                  class="form-control">
+            <div class="col-xs-2">
+              <label for="strike">Strike</label>
+              <input
+                type="number"
+                id="strike"
+                formControlName="strike"
+                class="form-control">
+            </div>
+            <div class="col-xs-2">
+              <label for="right">Put/Call</label>
+              <select
+                id="right"
+                formControlName="right"
+                class="form-control">
                 <option value="None">None</option>
                 <option value="Call">Call</option>
                 <option value="Put">Put</option>
-                </select>
-              </div>
-              <div class="col-xs-3">
-                <label for="tradingClass">Trading Class</label>
-                <input
-                  type="text"
-                  id="tradingClass"
-                  formControlName="tradingClass"
-                  class="form-control">
-              </div>
-              <div class="col-xs-4">
-                <label for="localSymbol">Local Symbol</label>
-                <input
-                  type="text"
-                  id="localSymbol"
-                  formControlName="localSymbol"
-                  class="form-control">
-              </div>
+              </select>
             </div>
-          </div>
-
-          <router-outlet></router-outlet>
-
-          <hr>
-          <div class="row">
-            <div class="form-group col-xs-2">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="!isFormValid() || !isFormTouched()"
-                (click)="onSubmit()">{{(editMode$ | async)? 'Update Order': 'Place Order'}}</button>
+            <div class="col-xs-3">
+              <label for="tradingClass">Trading Class</label>
+              <input
+                type="text"
+                id="tradingClass"
+                formControlName="tradingClass"
+                class="form-control">
             </div>
-            <div class="form-group col-xs-2" *ngIf="!(editMode$ |async) && !(strategyMode$ | async)">
-              <button type="button" class="btn btn-default" (click)="onStrategyBuilder()">Strategy Builder</button>
-            </div>
-            <div class="form-group col-xs-2" *ngIf="strategyMode$ | async">
-              <button type="button" class="btn btn-default" (click)="onStandardOrder()">Standard Order</button>
-            </div>
-            <div class="form-group col-xs-2">
-              <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>
+            <div class="col-xs-4">
+              <label for="localSymbol">Local Symbol</label>
+              <input
+                type="text"
+                id="localSymbol"
+                formControlName="localSymbol"
+                class="form-control">
             </div>
           </div>
         </div>
-      </form>
-    </div>
+
+        <router-outlet></router-outlet>
+
+        <hr>
+        <div class="row">
+          <div class="form-group col-xs-2">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!isFormValid() || !isFormTouched()"
+              (click)="onSubmit()">{{(editMode$ | async) ? 'Update Order' : 'Place Order'}}</button>
+          </div>
+          <div class="form-group col-xs-2" *ngIf="!(editMode$ |async) && !(strategyMode$ | async)">
+            <button type="button" class="btn btn-default" (click)="onStrategyBuilder()">Strategy Builder</button>
+          </div>
+          <div class="form-group col-xs-2" *ngIf="strategyMode$ | async">
+            <button type="button" class="btn btn-default" (click)="onStandardOrder()">Standard Order</button>
+          </div>
+          <div class="form-group col-xs-2">
+            <button type="button" class="btn btn-danger" (click)="onCancel()">Reset</button>
+          </div>
+          <div class="form-group col-xs-2 col-xs-offset-2">
+            <button type="button" class="btn btn-default" (click)="onMarketData()">Market Data for Contract</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
+</div>
+<div class="col-xs-6">
+<app-order-market-data *ngIf="contract" [contract]="contract"></app-order-market-data>
 </div>

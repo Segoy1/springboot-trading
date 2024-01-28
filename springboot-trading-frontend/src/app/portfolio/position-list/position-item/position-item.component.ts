@@ -10,6 +10,7 @@ import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MarketDataOpenCloseService} from "../../../market-data/service/market-data-open-close.service";
 import {StandardMarketDataWebsocketService} from "../../../market-data/service/standard-market-data-websocket.service";
 import {StandardTicker} from "../../../model/market-data/standard-ticker.model";
+import {MarketDataService} from "../../../shared/market-data/market-data.service";
 
 @Component({
   standalone: true,
@@ -48,8 +49,7 @@ export class PositionItemComponent implements OnInit {
   isDailyProfit = false
 
   constructor(private profitLossWebsocketService: ProfitLossWebsocketService,
-              private marketDataOpenCloseService: MarketDataOpenCloseService,
-              private standardMarketDataWebsocketService: StandardMarketDataWebsocketService,
+              private marketDataService: MarketDataService,
               private router: Router,
               private route: ActivatedRoute) {
   }
@@ -68,14 +68,7 @@ export class PositionItemComponent implements OnInit {
   }
 
   onClick() {
-    let ticker : StandardTicker;
-    this.standardMarketDataWebsocketService.getForContract(this.position.contractData.id).subscribe((openCall)=>{
-      ticker = openCall;
-    })
-    if(!ticker){
-      this.marketDataOpenCloseService.startMarketData(this.position.contractData);
-    }
-
+    this.marketDataService.openMarketDataIfNew(this.position.contractData);
     this.router.navigate([this.position.contractData.id], {relativeTo: this.route});
   }
 }

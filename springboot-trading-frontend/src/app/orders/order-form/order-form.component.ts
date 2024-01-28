@@ -1,15 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router, RouterOutlet} from "@angular/router";
 import {OrderSubmitService} from "../service/order-submit.service";
-import {OrderIdService} from "../service/order-id.service";
 import {OrderFormService} from "../service/order-form.service";
-import {FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {Store} from "@ngrx/store";
 import {setEditMode} from "../../store/orders/modes/edit/orders-edit-mode.actions";
-import { Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {selectEditMode} from "../../store/orders/modes/edit/orders-edit-mode.selector";
 import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
+import {ContractDataRestService} from "../../market-data/service/contract-data-rest.service";
+import {OrderMarketDataComponent} from "./order-market-data/order-market-data.component";
+import {MarketDataService} from "../../shared/market-data/market-data.service";
+import {findOrder} from "../../store/orders/orders.selector";
+import {Contract} from "../../model/contract.model";
 
 @Component({
   standalone: true,
@@ -19,7 +23,8 @@ import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strat
     ReactiveFormsModule,
     RouterOutlet,
     NgIf,
-    AsyncPipe
+    AsyncPipe,
+    OrderMarketDataComponent
   ],
   styleUrl: './order-form.component.css'
 })
@@ -27,60 +32,102 @@ export class OrderFormComponent implements OnInit {
 
   strategyMode$: Observable<boolean>;
   editMode$: Observable<boolean>;
-  nextId:number;
+  contract: Contract;
 
   constructor(private route: ActivatedRoute,
               private orderSubmitService: OrderSubmitService,
-              private orderIdService: OrderIdService,
               private orderFormService: OrderFormService,
               private router: Router,
-              private store: Store) {
+              private store: Store,
+              private contractDataRestService: ContractDataRestService,
+              private marketDataService: MarketDataService) {
     this.editMode$ = store.select(selectEditMode);
     this.strategyMode$ = store.select(selectStrategyMode);
   }
+
   ngOnInit() {
 
     this.route.params
       .subscribe(
         (params: Params) => {
           this.orderFormService.id = +params['id'];
-          // this.orderFormService.editMode = params['id'] != null;
+          this.store.select(findOrder(+params['id'])).subscribe((order) => {
+            console.log(order.contractData);
+             this.contract = order.contractData;
+             })
           this.store.dispatch(setEditMode({editMode: params['id'] != null}));
           this.orderFormService.initForm();
         }
       )
   }
 
-  getOrderForm(){
+  getOrderForm() {
     return this.orderFormService.getSimpleForm();
   }
-  onSubmit(){
+
+  onSubmit() {
     let submitForm = this.getSubmitForm();
     this.orderSubmitService.placeOrder(submitForm.getRawValue());
     this.orderFormService.initForm();
   }
 
-  onStrategyBuilder(){
-    this.router.navigate(['strategy'],{relativeTo:this.route});
+  onStrategyBuilder() {
+    this.router.navigate(['strategy'], {relativeTo: this.route});
   }
+
   onStandardOrder() {
     this.orderFormService.switchFromStrategyToSimple();
-    this.router.navigate(['./'],{relativeTo:this.route});
+    this.router.navigate(['./'], {relativeTo: this.route});
   }
+
   onCancel() {
     this.getSubmitForm().reset();
   }
-  isFormValid(){
+
+  isFormValid() {
     return this.getSubmitForm().valid;
   }
-  isFormTouched(){
+
+  isFormTouched() {
     return this.getSubmitForm().touched;
   }
+
   getSubmitForm() {
     let submitForm: FormGroup;
-    this.strategyMode$.subscribe((strategyMode)=>{
+    this.strategyMode$.subscribe((strategyMode) => {
       submitForm = strategyMode ? this.orderFormService.getStrategyForm() : this.orderFormService.getSimpleForm();
     })
     return submitForm;
   }
+
+  onMarketData() {
+    this.store.select(selectEditMode)
+      .subscribe((isEditMode)=>
+      {
+        if(!isEditMode){
+          this.marketDataNew();
+        }
+      }
+    )
+
+  }
+  private marketDataNew(){
+    let contractDataForm = new FormGroup({
+      contractData: this.orderFormService.getSimpleForm().get('contractData'),
+      strategyLegs: new FormArray([])
+    });
+    this.strategyMode$.subscribe((strategyMode) => {
+      if (strategyMode) {
+        contractDataForm.get('strategyLegs').setValue(this.orderFormService.getStrategyForm().get('strategyLegs').getRawValue());
+      }
+      this.contractDataRestService.requestContractDataForOrder(contractDataForm.getRawValue())
+        .subscribe(contract => {
+            console.log(contract);
+            this.contract = contract
+            this.contractDataRestService.addContract(contract);
+          }
+        );
+    });
+  }
 }
+

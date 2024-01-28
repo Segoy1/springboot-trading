@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {
   StandardMarketDataItemComponent
@@ -6,6 +6,8 @@ import {
 import {StandardTicker} from "../../../model/market-data/standard-ticker.model";
 import {ActivatedRoute, Params} from "@angular/router";
 import {StandardMarketDataWebsocketService} from "../../../market-data/service/standard-market-data-websocket.service";
+import {Contract} from "../../../model/contract.model";
+import {MarketDataService} from "../../../shared/market-data/market-data.service";
 
 @Component({
   selector: 'app-order-market-data',
@@ -17,17 +19,25 @@ import {StandardMarketDataWebsocketService} from "../../../market-data/service/s
   templateUrl: './order-market-data.component.html',
   styleUrl: './order-market-data.component.css'
 })
-export class OrderMarketDataComponent {
-  @Input() id:number;
+export class OrderMarketDataComponent implements OnInit,OnChanges{
+  @Input() contract: Contract;
   standardTicker: StandardTicker;
 
-  constructor(private standardMarketDataWebsocketService: StandardMarketDataWebsocketService) {
+  constructor(private standardMarketDataWebsocketService: StandardMarketDataWebsocketService,
+              private marketDataService: MarketDataService) {
+  }
+  ngOnInit() {
+    this.setValues();
+  }
+  ngOnChanges(){
+    this.setValues();
   }
 
-  ngOnInit() {
-        this.standardMarketDataWebsocketService.getForContract(this.id)
-          .subscribe(ticker =>{
-            this.standardTicker = ticker;
-          })
-      }
+  private setValues() {
+    this.marketDataService.openMarketDataIfNew(this.contract);
+    this.standardMarketDataWebsocketService.getForContract(this.contract.id)
+      .subscribe(ticker => {
+        this.standardTicker = ticker;
+      })
+  }
 }
