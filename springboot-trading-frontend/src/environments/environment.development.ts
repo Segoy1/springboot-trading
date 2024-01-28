@@ -5,5 +5,6 @@ export const environmentDevelopment = {
   positionsTopic: 'positions',
   ordersTopic: 'order',
   optionMarketDataTopic: 'optionMarketData',
-  standardMarketDataTopic: 'standardMarketData'
+  standardMarketDataTopic: 'standardMarketData',
+  errorMessageTopic: 'errorMessage'
 };

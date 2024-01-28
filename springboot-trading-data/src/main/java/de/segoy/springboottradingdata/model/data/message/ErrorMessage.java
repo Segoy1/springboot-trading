@@ -1,11 +1,6 @@
 package de.segoy.springboottradingdata.model.data.message;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -13,18 +8,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorMessage extends BaseMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private Integer messageId;
 
-    @NotBlank
-    @Lob
     private String message;
-
-    @CreationTimestamp
-    private Timestamp createDate;
 
     private Integer errorCode;
     private String advancedOrderReject;

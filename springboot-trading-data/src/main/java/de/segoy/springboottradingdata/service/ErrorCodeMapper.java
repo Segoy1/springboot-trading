@@ -22,8 +22,9 @@ public class ErrorCodeMapper {
                 log.warn("399:"+ errorMessage.getMessage());
                 break;
             case 10311:
+                //Order will be directly Routed, no auto submit
                 log.warn("10311:"+ errorMessage.getMessage());
-                break;
+                return Optional.of(errorMessage);
             case 10185:
                 //not Subscribed to Account PNL, ignore
                 break;
