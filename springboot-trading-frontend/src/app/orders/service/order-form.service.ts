@@ -6,15 +6,18 @@ import {findOrder} from "../../store/orders/orders.selector";
 import {Order} from "../../model/order.model";
 import {setStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.actions";
 import {selectEditMode} from "../../store/orders/modes/edit/orders-edit-mode.selector";
+import {OrderIdService} from "./order-id.service";
 
 @Injectable({providedIn: "root"})
 export class OrderFormService {
   private simpleOrderSubmitForm: FormGroup;
   private strategySubmitForm: FormGroup;
   id: number;
+  nextId: number;
 
   constructor(private orderFormValidationService: OrderFormValidationService,
-              private store: Store) {
+              private store: Store,
+              private orderIdService: OrderIdService) {
   }
 
   initForm() {
@@ -26,6 +29,7 @@ export class OrderFormService {
           this.setFormValues(order);
         }).unsubscribe();
       } else {
+        this.getNextId();
         this.setFormValues();
       }
     }).unsubscribe();
@@ -53,7 +57,7 @@ export class OrderFormService {
       'comboLegs': comboLegs
     });
     this.simpleOrderSubmitForm = new FormGroup({
-      'id': new FormControl(order ? order.id : null),
+      'id': new FormControl(order ? order.id : this.nextId),
       'action': new FormControl<string>(order ? order.action : null, Validators.required),
       'totalQuantity': new FormControl<number>(order ? order.totalQuantity : null, Validators.required),
       'orderType': new FormControl<string>(order ? order.orderType : null, [Validators.required, this.validOrderTypes.bind(this)]),
@@ -93,6 +97,17 @@ export class OrderFormService {
     this.simpleOrderSubmitForm.get('contractData.lastTradeDate').removeValidators(Validators.required);
     this.simpleOrderSubmitForm.get('contractData.right').enable();
     this.simpleOrderSubmitForm.get('contractData.strike').enable();
+  }
+
+  getNextId(){
+    this.orderIdService.getNextValidId().subscribe({
+      next:
+        (id)=>{
+          this.nextId=id;
+        }, error:
+        (error) =>{
+          console.log(error);
+        }});
   }
 
 

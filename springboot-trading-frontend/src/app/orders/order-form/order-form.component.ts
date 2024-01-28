@@ -39,14 +39,7 @@ export class OrderFormComponent implements OnInit {
     this.strategyMode$ = store.select(selectStrategyMode);
   }
   ngOnInit() {
-    this.orderIdService.getNextValidId().subscribe({
-      next:
-    (id)=>{
-      this.nextId=id;
-    }, error:
-        (error) =>{
-        console.log(error);
-        }});
+
     this.route.params
       .subscribe(
         (params: Params) => {
@@ -64,7 +57,7 @@ export class OrderFormComponent implements OnInit {
   onSubmit(){
     let submitForm = this.getSubmitForm();
     this.orderSubmitService.placeOrder(submitForm.getRawValue());
-    submitForm.reset();
+    this.orderFormService.initForm();
   }
 
   onStrategyBuilder(){
