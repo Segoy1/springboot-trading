@@ -36,7 +36,7 @@ public class ErrorCodeMapper {
                 log.info(errorMessage.getMessage());
                 break;
             case 2150:
-                log.info("TODO clarify this message!: "+errorMessage.getMessage());
+                //Invalid Position derived from strategies: Ignore
                 break;
             default:
                 log.warn("Error: "+ errorMessage.getMessageId()+", Code: "+errorMessage.getErrorCode()+", message: "+ errorMessage.getMessage());
