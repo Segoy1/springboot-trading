@@ -37,6 +37,7 @@ public class ApiResponseErrorHandler {
         for (ConsumerRecord<String, IBKRDataType> record : records) {
             if (record.key().equals(Integer.toString(id))) {
                 errorCodeMapper.mapError((ErrorMessage) record.value());
+                consumer.close();
                 return true;
             }
 
