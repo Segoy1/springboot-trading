@@ -20,7 +20,7 @@ public class OrdersKafkaConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @KafkaListener(topics = "${spring.kafka.names.topic.orderData}")
+    @KafkaListener(topics = "${kafka.names.topic.orderData}")
     public void consumeMessage(IBKRDataType message){
         OrderData order = (OrderData) message;
         log.info("Order received: " + order.getId());

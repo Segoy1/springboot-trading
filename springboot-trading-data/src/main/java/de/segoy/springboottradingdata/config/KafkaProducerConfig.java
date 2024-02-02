@@ -57,67 +57,67 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.historicalData}")
+    @Qualifier("${kafka.names.topic.historicalData}")
     public NewTopic historicalTopic() {
         return topicHelper(kafkaConstantsConfig.getHISTORICAL_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.orderData}")
+    @Qualifier("${kafka.names.topic.orderData}")
     public NewTopic orderTopicString() {
         return topicHelper(kafkaConstantsConfig.getORDER_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.contractData}")
+    @Qualifier("${kafka.names.topic.contractData}")
     public NewTopic contractTopic() {
         return topicHelper(kafkaConstantsConfig.getCONTRACT_TOPIC());
     }
 
     @Bean
-    @Value("${spring.kafka.names.topic.errorMessage}")
+    @Value("${kafka.names.topic.errorMessage}")
     public NewTopic errorMessageTopic() {
         return topicHelper(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.positions}")
+    @Qualifier("${kafka.names.topic.positions}")
     public NewTopic positionsTopic() {
         return topicHelper(kafkaConstantsConfig.getPOSITION_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.openOrders}")
+    @Qualifier("${kafka.names.topic.openOrders}")
     public NewTopic openOrdersTopic() {
         return topicHelper(kafkaConstantsConfig.getOPEN_ORDER_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.accountSummary}")
+    @Qualifier("${kafka.names.topic.accountSummary}")
     public NewTopic accountSummaryTopic() {
         return topicHelper(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.accountPnL}")
+    @Qualifier("${kafka.names.topic.accountPnL}")
     public NewTopic accountPnLTopic() {
         return topicHelper(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.singlePnL}")
+    @Qualifier("${kafka.names.topic.singlePnL}")
     public NewTopic singlePnLTopic() {
         return topicHelper(kafkaConstantsConfig.getSINGLE_PNL_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.optionMarketData}")
+    @Qualifier("${kafka.names.topic.optionMarketData}")
     public NewTopic optionMarketDataTopic() {
         return topicHelper(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC());
     }
 
     @Bean
-    @Qualifier("${spring.kafka.names.topic.standardMarketData}")
+    @Qualifier("${kafka.names.topic.standardMarketData}")
     public NewTopic standardMarketData() {
         return topicHelper(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC());
     }

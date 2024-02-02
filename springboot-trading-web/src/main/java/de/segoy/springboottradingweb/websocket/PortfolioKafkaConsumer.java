@@ -20,7 +20,7 @@ public class PortfolioKafkaConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @KafkaListener(topics = "${spring.kafka.names.topic.positions}")
+    @KafkaListener(topics = "${kafka.names.topic.positions}")
     public void consumeMessage(IBKRDataType message){
         PositionData position = (PositionData) message;
         log.info("Message received: " + position.getId());

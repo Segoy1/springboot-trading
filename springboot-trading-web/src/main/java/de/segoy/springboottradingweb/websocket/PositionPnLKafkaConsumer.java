@@ -20,7 +20,7 @@ public class PositionPnLKafkaConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @KafkaListener(topics = "${spring.kafka.names.topic.singlePnL}")
+    @KafkaListener(topics = "${kafka.names.topic.singlePnL}")
     public void consumeMessage(IBKRDataType message){
         ProfitAndLossData pnl = (ProfitAndLossData) message;
       log.info("PNL Message received: " + pnl.getId());

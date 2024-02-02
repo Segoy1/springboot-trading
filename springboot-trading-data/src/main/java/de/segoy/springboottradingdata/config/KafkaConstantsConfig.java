@@ -10,44 +10,44 @@ import org.springframework.context.annotation.Configuration;
 public class KafkaConstantsConfig {
 
 
-    @Value("${spring.kafka.bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVERS;
 
-    @Value("${spring.kafka.consumer.group-id}")
+    @Value("${kafka.consumer.group.id}")
     private String groupId;
-    @Value("${spring.kafka.consumer.rest-group-id}")
+    @Value("${kafka.consumer.rest.group.id}")
     private String restResponseGroupId;
 
-    @Value("${spring.kafka.names.topic.accountSummary}")
+    @Value("${kafka.names.topic.accountSummary}")
     private String ACCOUNT_SUMMARY_TOPIC;
 
-    @Value("${spring.kafka.names.topic.historicalData}")
+    @Value("${kafka.names.topic.historicalData}")
     private String HISTORICAL_TOPIC;
 
-    @Value("${spring.kafka.names.topic.contractData}")
+    @Value("${kafka.names.topic.contractData}")
     private String CONTRACT_TOPIC;
 
-    @Value("${spring.kafka.names.topic.orderData}")
+    @Value("${kafka.names.topic.orderData}")
     private String ORDER_TOPIC;
 
-    @Value("${spring.kafka.names.topic.openOrders}")
+    @Value("${kafka.names.topic.openOrders}")
     private String OPEN_ORDER_TOPIC;
 
-    @Value("${spring.kafka.names.topic.positions}")
+    @Value("${kafka.names.topic.positions}")
     private String POSITION_TOPIC;
 
-    @Value("${spring.kafka.names.topic.errorMessage}")
+    @Value("${kafka.names.topic.errorMessage}")
     private String ERROR_MESSAGE_TOPIC;
 
-    @Value("${spring.kafka.names.topic.accountPnL}")
+    @Value("${kafka.names.topic.accountPnL}")
     private String ACCOUNT_PNL_TOPIC;
 
-    @Value("${spring.kafka.names.topic.singlePnL}")
+    @Value("${kafka.names.topic.singlePnL}")
     private String SINGLE_PNL_TOPIC;
 
-    @Value("${spring.kafka.names.topic.optionMarketData}")
+    @Value("${kafka.names.topic.optionMarketData}")
     private String OPTION_MARKET_DATA_TOPIC;
 
-    @Value("${spring.kafka.names.topic.standardMarketData}")
+    @Value("${kafka.names.topic.standardMarketData}")
     private String STANDARD_MARKET_DATA_TOPIC;
 }

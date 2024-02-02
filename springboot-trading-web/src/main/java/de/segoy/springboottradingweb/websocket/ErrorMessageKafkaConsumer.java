@@ -21,7 +21,7 @@ public class ErrorMessageKafkaConsumer {
         this.errorCodeMapper = errorCodeMapper;
     }
 
-    @KafkaListener(topics = "${spring.kafka.names.topic.errorMessage}")
+    @KafkaListener(topics = "${kafka.names.topic.errorMessage}")
     public void consumeOptionMarketDataMessage(IBKRDataType message) {
         ErrorMessage errorMessage = (ErrorMessage) message;
         String topic = kafkaConstantsConfig.getERROR_MESSAGE_TOPIC();
