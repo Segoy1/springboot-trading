@@ -8,6 +8,7 @@ import de.segoy.springboottradingdata.model.subtype.WhatToShowType;
 import de.segoy.springboottradingibkr.client.service.historicaldata.HistoricalDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +17,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("historical-data")
+@RequiredArgsConstructor
 public class HistoricalDataController {
 
     private final HistoricalDataService historicalDataService;
     private final ResponseMapper responseMapper;
-
-    public HistoricalDataController(HistoricalDataService historicalDataService, ResponseMapper responseMapper) {
-        this.historicalDataService = historicalDataService;
-        this.responseMapper = responseMapper;
-    }
 
     //TODO Error Handler who catches timeout with stopHistoricalData
     @GetMapping("/Test")

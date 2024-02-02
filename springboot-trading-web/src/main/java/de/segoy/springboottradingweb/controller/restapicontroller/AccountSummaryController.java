@@ -2,21 +2,19 @@ package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingibkr.client.service.accountsummary.AccountSummaryService;
 import de.segoy.springboottradingibkr.client.service.accountsummary.profitandloss.AccountPnLService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/account-summary")
+@RequiredArgsConstructor
 public class AccountSummaryController {
 
     private final AccountSummaryService accountSummaryService;
     private final AccountPnLService accountPnLService;
 
-    public AccountSummaryController(AccountSummaryService accountSummaryService, AccountPnLService accountPnLService) {
-        this.accountSummaryService = accountSummaryService;
-        this.accountPnLService = accountPnLService;
-    }
 
     @GetMapping
     public void getAccountSummary(){

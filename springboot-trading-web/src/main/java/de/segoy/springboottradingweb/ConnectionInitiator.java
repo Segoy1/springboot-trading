@@ -7,11 +7,13 @@ import de.segoy.springboottradingdata.model.data.message.TwsMessage;
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingibkr.client.service.EReaderHolder;
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ConnectionInitiator {
 
 
@@ -20,14 +22,6 @@ public class ConnectionInitiator {
     private final ConnectionDataRepository connectionDataRepository;
     private final EReaderHolder eReaderHolder;
     private final PropertiesConfig propertiesConfig;
-
-
-    public ConnectionInitiator(EClientSocket m_client, ConnectionDataRepository connectionDataRepository, EReaderHolder eReaderHolder, PropertiesConfig propertiesConfig) {
-        this.client = m_client;
-        this.connectionDataRepository = connectionDataRepository;
-        this.eReaderHolder = eReaderHolder;
-        this.propertiesConfig = propertiesConfig;
-    }
 
     public void connect(int port) {
         if (client.isConnected()) {

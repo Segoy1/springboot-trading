@@ -2,18 +2,16 @@ package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingweb.ConnectionInitiator;
 import de.segoy.springboottradingweb.SpringbootTradingApplication;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class ConnectionController {
 
     private final ConnectionInitiator connectionInitiator;
-
-    public ConnectionController(ConnectionInitiator connectionInitiator) {
-        this.connectionInitiator = connectionInitiator;
-    }
 
     @GetMapping("disconnect")
     public void disconnect(){

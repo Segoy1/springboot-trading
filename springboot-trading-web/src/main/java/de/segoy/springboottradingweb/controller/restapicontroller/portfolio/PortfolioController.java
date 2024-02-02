@@ -2,6 +2,7 @@ package de.segoy.springboottradingweb.controller.restapicontroller.portfolio;
 
 import de.segoy.springboottradingibkr.client.service.position.PositionService;
 import de.segoy.springboottradingibkr.client.service.position.profitandloss.PositionPnLService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,15 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/portfolio")
+@RequiredArgsConstructor
 public class PortfolioController {
 
     private final PositionService positionService;
     private final PositionPnLService positionPnLService;
-
-    public PortfolioController(PositionService positionService, PositionPnLService positionPnLService) {
-        this.positionService = positionService;
-        this.positionPnLService = positionPnLService;
-    }
 
     @GetMapping("/positions")
     public void getPortfolio(){

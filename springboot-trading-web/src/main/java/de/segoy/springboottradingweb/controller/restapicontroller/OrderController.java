@@ -6,26 +6,19 @@ import de.segoy.springboottradingibkr.client.service.order.OrderPlacementService
 import de.segoy.springboottradingibkr.client.service.order.openorders.OpenOrdersService;
 import de.segoy.springboottradingibkr.client.service.order.ordercancel.OrderCancelService;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyOrderDataBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final StrategyOrderDataBuilder strategyOrderDataBuilder;
     private final OrderPlacementService orderPlacementService;
     private final OrderCancelService orderCancelService;
     private final OpenOrdersService openOrdersService;
-
-    public OrderController(StrategyOrderDataBuilder strategyOrderDataBuilder, OrderPlacementService orderPlacementService,
-                           OrderCancelService orderCancelService,
-                           OpenOrdersService openOrdersService) {
-        this.strategyOrderDataBuilder = strategyOrderDataBuilder;
-        this.orderPlacementService = orderPlacementService;
-        this.orderCancelService = orderCancelService;
-        this.openOrdersService = openOrdersService;
-    }
 
     //    valid Test Statements:
 //    curl -X PUT http://localhost:8080/order/place-order
