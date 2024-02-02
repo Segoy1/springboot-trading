@@ -8,11 +8,13 @@ import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class ContractDataDatabaseSynchronizer {
 
     private final IBKRContractToContractData ibkrContractToContractData;
@@ -20,12 +22,6 @@ public class ContractDataDatabaseSynchronizer {
     private final ComboLegDataRepository comboLegDataRepository;
     private final ComboContractDataFinder comboContractDataFinder;
 
-    public ContractDataDatabaseSynchronizer(IBKRContractToContractData ibkrContractToContractData, ContractDataRepository contractDataRepository, ComboLegDataRepository comboLegDataRepository, ComboContractDataFinder comboContractDataFinder) {
-        this.ibkrContractToContractData = ibkrContractToContractData;
-        this.contractDataRepository = contractDataRepository;
-        this.comboLegDataRepository = comboLegDataRepository;
-        this.comboContractDataFinder = comboContractDataFinder;
-    }
 
     public ContractData findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong id, Contract contract){
         boolean isCombo = Types.SecType.BAG.name().equals(contract.getSecType());

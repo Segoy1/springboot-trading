@@ -2,17 +2,14 @@ package de.segoy.springboottradingibkr.client.service.position.profitandloss;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithId;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
-@Qualifier("SinglePnLCancelApiCaller")
+@Service("SinglePnLCancelApiCaller")
+@RequiredArgsConstructor
 class SinglePnLCancelApiCaller implements ApiCallerWithId {
-    private final EClientSocket client;
 
-    public SinglePnLCancelApiCaller(EClientSocket client) {
-        this.client = client;
-    }
+    private final EClientSocket client;
 
     @Override
     public void callApi(int id) {

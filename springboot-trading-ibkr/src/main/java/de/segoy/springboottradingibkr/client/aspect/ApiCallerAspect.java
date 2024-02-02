@@ -1,6 +1,7 @@
 package de.segoy.springboottradingibkr.client.aspect;
 
 import com.ib.client.EClientSocket;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,13 +11,11 @@ import org.springframework.stereotype.Service;
 @Aspect
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ApiCallerAspect {
 
     private final EClientSocket client;
 
-    public ApiCallerAspect(EClientSocket client) {
-        this.client = client;
-    }
 
     @Around("execution(public void callApi(..))")
     protected void checkIfConnected(ProceedingJoinPoint joinPoint) throws Throwable {

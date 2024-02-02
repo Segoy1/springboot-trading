@@ -5,27 +5,20 @@ import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.ApiResponseErrorHandler;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalData> {
 
     private final RepositoryRefreshService repositoryRefreshService;
     private final HistoricalDataRepository repository;
     private final PropertiesConfig propertiesConfig;
     private final ApiResponseErrorHandler apiResponseErrorHandler;
-
-    public HistoricalApiResponseChecker(RepositoryRefreshService repositoryRefreshService,
-                                        HistoricalDataRepository historicalDataRepository,
-                                        PropertiesConfig propertiesConfig, ApiResponseErrorHandler apiResponseErrorHandler) {
-        this.repositoryRefreshService = repositoryRefreshService;
-        this.repository = historicalDataRepository;
-        this.propertiesConfig = propertiesConfig;
-        this.apiResponseErrorHandler = apiResponseErrorHandler;
-    }
-
+    
     @Override
     public List<HistoricalData> checkForApiResponseAndUpdate(int id) {
         do{

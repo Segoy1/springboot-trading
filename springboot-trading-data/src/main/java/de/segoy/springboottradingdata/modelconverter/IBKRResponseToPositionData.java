@@ -4,20 +4,17 @@ import com.ib.client.Contract;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.OptionalLong;
 
 @Component
+@RequiredArgsConstructor
 public class IBKRResponseToPositionData {
 
-    private ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
-
-    public IBKRResponseToPositionData(ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer) {
-
-        this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
-    }
+    private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
 
     public PositionData convertAndPersistContract(String account, Contract contract, BigDecimal position,
                                                  double avgCost){

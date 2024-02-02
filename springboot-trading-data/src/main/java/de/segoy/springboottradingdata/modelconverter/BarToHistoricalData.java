@@ -3,16 +3,15 @@ package de.segoy.springboottradingdata.modelconverter;
 import com.ib.client.Bar;
 import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class BarToHistoricalData {
 
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
-    public BarToHistoricalData(IBKRTimeStampFormatter ibkrTimeStampFormatter) {
-        this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
-    }
 
     public HistoricalData convert(Bar bar){
         return HistoricalData.builder()

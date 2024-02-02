@@ -3,24 +3,20 @@ package de.segoy.springboottradingibkr.client.service.contract;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.OptionalLong;
 
 @Service
+@RequiredArgsConstructor
 public class UniqueContractDataProvider {
+
     private final ContractDataRepository contractDataRepository;
     private final ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
     private final ComboContractDataFinder comboContractDataFinder;
 
-    public UniqueContractDataProvider(ContractDataRepository contractDataRepository,
-                                      ContractDataCallAndResponseHandler contractDataCallAndResponseHandler,
-                                      ComboContractDataFinder comboContractDataFinder) {
-        this.contractDataRepository = contractDataRepository;
-        this.contractDataCallAndResponseHandler = contractDataCallAndResponseHandler;
-        this.comboContractDataFinder = comboContractDataFinder;
-    }
 
     public Optional<ContractData> getExistingContractDataOrCallApi(ContractData contractData) {
         //TODO extend for new Types that need to be used

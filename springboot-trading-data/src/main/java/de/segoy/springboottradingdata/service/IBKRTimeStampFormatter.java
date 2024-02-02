@@ -1,6 +1,7 @@
 package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +13,10 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class IBKRTimeStampFormatter {
 
     private final PropertiesConfig propertiesConfig;
-
-    public IBKRTimeStampFormatter(PropertiesConfig propertiesConfig) {
-        this.propertiesConfig = propertiesConfig;
-    }
 
     public String formatTimestampToDateAndTime(Timestamp timestamp) {
         return new SimpleDateFormat(propertiesConfig.getDateTimeFormat()).format(timestamp);

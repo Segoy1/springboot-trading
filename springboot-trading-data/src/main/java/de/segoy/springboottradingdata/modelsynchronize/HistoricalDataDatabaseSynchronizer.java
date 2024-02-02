@@ -5,20 +5,16 @@ import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.modelconverter.BarToHistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class HistoricalDataDatabaseSynchronizer {
 
     private final HistoricalDataRepository historicalDataRepository;
     private final BarToHistoricalData barToHistoricalData;
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
-
-    public HistoricalDataDatabaseSynchronizer(HistoricalDataRepository historicalDataRepository, BarToHistoricalData barToHistoricalData, IBKRTimeStampFormatter ibkrTimeStampFormatter) {
-        this.historicalDataRepository = historicalDataRepository;
-        this.barToHistoricalData = barToHistoricalData;
-        this.ibkrTimeStampFormatter = ibkrTimeStampFormatter;
-    }
 
     public HistoricalData findInDbOrSave(int id, Bar bar) {
         return historicalDataRepository.findFirstByContractIdAndTimeAndCount(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()), bar.count())

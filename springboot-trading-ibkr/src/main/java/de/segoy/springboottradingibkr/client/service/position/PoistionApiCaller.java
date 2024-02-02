@@ -2,18 +2,14 @@ package de.segoy.springboottradingibkr.client.service.position;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
-@Qualifier("PoistionApiCaller")
+@Service("PoistionApiCaller")
+@RequiredArgsConstructor
 class PoistionApiCaller implements ApiCallerWithoutParameter {
 
     private final EClientSocket client;
-
-    public PoistionApiCaller(EClientSocket client) {
-        this.client = client;
-    }
 
     @Override
     public void callApi() {

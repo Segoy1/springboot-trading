@@ -1,6 +1,7 @@
 package de.segoy.springboottradingdata.config;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerSerializer;
@@ -19,14 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
 public class KafkaProducerConfig {
 
     private final KafkaConstantsConfig kafkaConstantsConfig;
-
-    public KafkaProducerConfig(KafkaConstantsConfig kafkaConstantsConfig) {
-        this.kafkaConstantsConfig = kafkaConstantsConfig;
-    }
-
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {

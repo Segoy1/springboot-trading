@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.kafkaconsumer;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,13 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
 public class KafkaConsumerConfig {
 
-private final KafkaConstantsConfig kafkaConstantsConfig;
+    private final KafkaConstantsConfig kafkaConstantsConfig;
 
-    public KafkaConsumerConfig(KafkaConstantsConfig kafkaConstantsConfig) {
-        this.kafkaConstantsConfig = kafkaConstantsConfig;
-    }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<Integer, IBKRDataType> kafkaListenerContainerFactory() {
@@ -35,15 +34,16 @@ private final KafkaConstantsConfig kafkaConstantsConfig;
 
     @Bean
     @Qualifier("WebsocketConsumerFactory")
-    ConsumerFactory<Integer, IBKRDataType> websocketConsumerFactory(){
+    ConsumerFactory<Integer, IBKRDataType> websocketConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(getProps());
     }
+
     @Bean
     @Qualifier("BackendConsumerFactory")
-    ConsumerFactory<Integer, IBKRDataType> backendResponseConsumerFactory(){
-        Map<String, Object>props = getProps();
+    ConsumerFactory<Integer, IBKRDataType> backendResponseConsumerFactory() {
+        Map<String, Object> props = getProps();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getRestResponseGroupId());
-        return  new DefaultKafkaConsumerFactory<>(props);
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     private Map<String, Object> getProps() {

@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,13 +10,11 @@ import java.util.List;
 import java.util.OptionalLong;
 
 @Service
+@RequiredArgsConstructor
 public class ComboContractDataFinder {
 
     private final ContractDataRepository contractDataRepository;
 
-    public ComboContractDataFinder(ContractDataRepository contractDataRepository) {
-        this.contractDataRepository = contractDataRepository;
-    }
 
     public OptionalLong checkContractWithComboLegs(List<ComboLegData> comboLegs){
         final List<Long> oldContracts= new ArrayList<>();

@@ -3,11 +3,11 @@ package de.segoy.springboottradingibkr.client.service.accountsummary;
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithoutParameter;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
-@Qualifier("AccountSummaryApiCaller")
+@Component("AccountSummaryApiCaller")
+@RequiredArgsConstructor
 public class AccountSummaryApiCaller implements ApiCallerWithoutParameter {
 
     private final EClientSocket client;
@@ -15,10 +15,6 @@ public class AccountSummaryApiCaller implements ApiCallerWithoutParameter {
 
     public final static String GROUD_NAME = "All";
 
-    public AccountSummaryApiCaller(EClientSocket client, PropertiesConfig propertiesConfig) {
-        this.client = client;
-        this.propertiesConfig = propertiesConfig;
-    }
 
     @Override
     public void callApi() {

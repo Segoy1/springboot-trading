@@ -22,8 +22,8 @@ import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class IBKRConnection implements EWrapper {
 
 
@@ -56,38 +57,13 @@ public class IBKRConnection implements EWrapper {
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
     private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
-    private boolean faError;
     private final Map<Integer, String> faMap = new HashMap<>();
+
+    private boolean faError;
 
     private Account m_account;
     private Groups m_groupsDlg;
     private NewsArticle m_newsArticle;
-
-    @Autowired
-    public IBKRConnection(
-            KafkaConstantsConfig kafkaConstantsConfig,
-            KafkaTemplate<String, String> kafkaTemplate,
-            KafkaTemplate<Integer, IBKRDataType> kafkaEntityTemplate,
-            ConnectionDataRepository connectionDataRepository,
-            OrderStatusUpdateService orderStatusUpdateService,
-            ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer,
-            HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer,
-            PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer, PropertiesConfig propertiesConfig,
-            OrderWriteToDBService orderWriteToDBService, NextValidOrderIdGenerator nextValidOrderIdGenerator) {
-
-        this.kafkaConstantsConfig = kafkaConstantsConfig;
-        this.kafkaTemplate = kafkaTemplate;
-        this.kafkaEntityTemplate = kafkaEntityTemplate;
-        this.connectionDataRepository = connectionDataRepository;
-        this.orderStatusUpdateService = orderStatusUpdateService;
-        this.contractDataDatabaseSynchronizer = contractDataDatabaseSynchronizer;
-        this.historicalDataDatabaseSynchronizer = historicalDataDatabaseSynchronizer;
-        this.positionDataDatabaseSynchronizer = positionDataDatabaseSynchronizer;
-        this.propertiesConfig = propertiesConfig;
-
-        this.orderWriteToDBService = orderWriteToDBService;
-        this.nextValidOrderIdGenerator = nextValidOrderIdGenerator;
-    }
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
