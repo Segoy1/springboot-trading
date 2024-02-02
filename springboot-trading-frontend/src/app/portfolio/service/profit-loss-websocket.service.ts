@@ -2,12 +2,13 @@ import {Injectable} from "@angular/core";
 import {ProfitAndLoss} from "../../model/profit-and-loss.model";
 import {BehaviorSubject, map, Observable} from "rxjs";
 import {AbstractWebsocketService} from "../../shared/abstract-websocket.service";
+import {environment} from "../../../environments/environment.production";
 
 @Injectable({providedIn: "root"})
 export class ProfitLossWebsocketService extends AbstractWebsocketService<ProfitAndLoss>{
 
   constructor() {
-    super('singlePnL');
+    super(environment.singlePnLTopic);
   }
 
   updateOrAdd(pnl: ProfitAndLoss){
