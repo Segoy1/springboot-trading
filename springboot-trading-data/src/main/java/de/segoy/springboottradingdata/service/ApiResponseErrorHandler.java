@@ -18,7 +18,7 @@ public class ApiResponseErrorHandler {
 
 
     private final ErrorCodeMapper errorCodeMapper;
-    private final Consumer<String, IBKRDataType> consumer;
+    private final Consumer<Integer, IBKRDataType> consumer;
 
     public ApiResponseErrorHandler(KafkaConsumerProvider kafkaConsumerProvider,
                                    KafkaConstantsConfig kafkaConstantsConfig,
@@ -31,9 +31,9 @@ public class ApiResponseErrorHandler {
 
     public boolean isErrorForId(int id) {
 
-        ConsumerRecords<String, IBKRDataType> records = consumer.poll(Duration.ofMillis(100L));
-        for (ConsumerRecord<String, IBKRDataType> record : records) {
-            if (record.key().equals(Integer.toString(id))) {
+        ConsumerRecords<Integer, IBKRDataType> records = consumer.poll(Duration.ofMillis(100L));
+        for (ConsumerRecord<Integer, IBKRDataType> record : records) {
+            if (record.key().equals(id)) {
                 errorCodeMapper.mapError((ErrorMessage) record.value());
                 return true;
             }
