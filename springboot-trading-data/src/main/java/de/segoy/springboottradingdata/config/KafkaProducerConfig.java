@@ -104,22 +104,25 @@ public class KafkaProducerConfig {
     @Bean
     @Qualifier("${kafka.names.topic.singlePnL}")
     public NewTopic singlePnLTopic() {
-        return topicHelper(kafkaConstantsConfig.getSINGLE_PNL_TOPIC());
+        return compactTopicHelper(kafkaConstantsConfig.getSINGLE_PNL_TOPIC());
     }
 
     @Bean
     @Qualifier("${kafka.names.topic.optionMarketData}")
     public NewTopic optionMarketDataTopic() {
-        return topicHelper(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC());
+        return compactTopicHelper(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC());
     }
 
     @Bean
     @Qualifier("${kafka.names.topic.standardMarketData}")
     public NewTopic standardMarketData() {
-        return topicHelper(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC());
+        return compactTopicHelper(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC());
     }
 
     private NewTopic topicHelper(String topicName) {
         return TopicBuilder.name(topicName).build();
+    }
+    private NewTopic compactTopicHelper(String topicName){
+        return TopicBuilder.name(topicName).compact().build();
     }
 }
