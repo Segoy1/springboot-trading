@@ -121,12 +121,12 @@ public class KafkaProducerConfig {
     @Bean
     @Qualifier("${kafka.names.topic.streams.optionPositions}")
     public NewTopic optionsPositionsTopic(){
-        return compactTopicHelper(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC());
+        return topicHelper(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC());
     }
     @Bean
     @Qualifier("${kafka.names.topic.streams.aggregatePositions}")
     public NewTopic positionsAggregateTopic(){
-        return compactTopicHelper(kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC());
+        return TopicBuilder.name(kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC()).compact().partitions(2).build();
     }
 
     private NewTopic topicHelper(String topicName) {
