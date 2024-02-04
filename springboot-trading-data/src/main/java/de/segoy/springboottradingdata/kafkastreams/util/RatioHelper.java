@@ -7,6 +7,9 @@ public class RatioHelper {
 
     public Ratios getRatio(int aggregated, int received) {
         final int gcd = gcd(aggregated, received);
+        if(gcd == 0){
+            return new Ratios(0,0,0);
+        }
 
         return new Ratios(gcd, aggregated/gcd, received/gcd);
     }
