@@ -50,4 +50,10 @@ public class KafkaConstantsConfig {
 
     @Value("${kafka.names.topic.standardMarketData}")
     private String STANDARD_MARKET_DATA_TOPIC;
+
+    @Value("${kafka.names.topic.streams.optionPositions}")
+    private String OPTION_POSITIONS_TOPIC;
+
+    @Value("${kafka.names.topic.streams.aggregatePositions}")
+    private String POSITIONS_AGGREGATE_TOPIC;
 }

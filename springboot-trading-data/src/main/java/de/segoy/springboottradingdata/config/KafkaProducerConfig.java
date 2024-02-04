@@ -118,6 +118,16 @@ public class KafkaProducerConfig {
     public NewTopic standardMarketData() {
         return compactTopicHelper(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC());
     }
+    @Bean
+    @Qualifier("${kafka.names.topic.streams.optionPositions}")
+    public NewTopic optionsPositionsTopic(){
+        return compactTopicHelper(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC());
+    }
+    @Bean
+    @Qualifier("${kafka.names.topic.streams.aggregatePositions}")
+    public NewTopic positionsAggregateTopic(){
+        return compactTopicHelper(kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC());
+    }
 
     private NewTopic topicHelper(String topicName) {
         return TopicBuilder.name(topicName).build();
