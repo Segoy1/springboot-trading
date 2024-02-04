@@ -43,7 +43,7 @@ public class IBKRConnection implements EWrapper {
     private final KafkaConstantsConfig kafkaConstantsConfig;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KafkaTemplate<Integer, IBKRDataType> kafkaEntityTemplate;
+    private final KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate;
 
     private final ConnectionDataRepository connectionDataRepository;
     private final OrderStatusUpdateService orderStatusUpdateService;
@@ -68,7 +68,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), tickerId,
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), Integer.toString(tickerId),
                 StandardMarketData.builder()
                         .tickerId(tickerId)
                         .field(TickType.getField(field))
@@ -89,7 +89,7 @@ public class IBKRConnection implements EWrapper {
                                       double undPrice) {
         // received computation tick
         kafkaEntityTemplate.send(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
-                tickerId,
+                Integer.toString(tickerId),
                 OptionMarketData.builder()
                         .tickerId(tickerId)
                         .field(TickType.getField(field))
@@ -138,7 +138,7 @@ public class IBKRConnection implements EWrapper {
                             double mktCapPrice) {
         // received order status
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderId,
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(),  Integer.toString(orderId),
                 orderData);
 
         nextValidId(orderId + 1);
@@ -251,7 +251,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
         kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
-                id, ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
+                Integer.toString(id),
+                ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
                         advancedOrderRejectJson).build());
     }
 
@@ -375,7 +376,7 @@ public class IBKRConnection implements EWrapper {
                 ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
                 : kafkaConstantsConfig.getPOSITION_TOPIC();
         kafkaEntityTemplate.send(topic,
-                position.getContractData().getContractId(),
+                Integer.toString(position.getContractData().getContractId()),
                 position);
     }
 
@@ -387,7 +388,7 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void accountSummary(int reqId, String account, String tag, String value, String currency) {
         kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
-                reqId,
+                Integer.toString(reqId),
                 AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
     }
 
@@ -564,7 +565,7 @@ public class IBKRConnection implements EWrapper {
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
         ProfitAndLossData pnLData = ProfitAndLossData.builder().id((long) reqId).dailyPnL(dailyPnL).unrealizedPnL(
                 unrealizedPnL).realizedPnL(realizedPnL).build();
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), reqId, pnLData);
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(),  Integer.toString(reqId), pnLData);
 //        accountPnLDBSynchronizer.saveToDB(pnLData);
     }
 
@@ -572,7 +573,7 @@ public class IBKRConnection implements EWrapper {
     public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL,
                           double value) {
         kafkaEntityTemplate.send(kafkaConstantsConfig.getSINGLE_PNL_TOPIC(),
-                reqId,
+                Integer.toString(reqId),
                 ProfitAndLossData.builder()
                         .id((long) reqId)
                         .pos(pos.value())
@@ -649,7 +650,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderData.getId().intValue(), orderData);
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(),
+                Integer.toString(orderData.getId().intValue()), orderData);
     }
 
     @Override

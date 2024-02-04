@@ -37,7 +37,7 @@ public class KafkaStreamsConfig {
     KafkaStreamsConfiguration kafkaStreamsConfiguration(){
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
-        configProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Integer().getClass().getName());
+        configProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);
 
         configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-processing-app");
@@ -51,8 +51,9 @@ public class KafkaStreamsConfig {
         ObjectMapper mapper = new ObjectMapper();
         Serde<PositionData> positionDataSerde = new JsonSerde<>(PositionData.class, mapper);
 
-        final Consumed<Integer, PositionData> consumed = Consumed.with(Serdes.Integer(), positionDataSerde);
-        final KStream<Integer, PositionData> positions = streamsBuilder.stream(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC(), consumed);
+        final Consumed<String, PositionData> consumed = Consumed.with(Serdes.String(), positionDataSerde);
+        final KStream<String, PositionData> positions =
+                streamsBuilder.stream(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC(), consumed);
 
         KTable<String, PositionData> sortByTradingClassAndLastTradeDate =
                 positions

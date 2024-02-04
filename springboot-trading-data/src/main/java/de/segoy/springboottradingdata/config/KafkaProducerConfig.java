@@ -4,7 +4,6 @@ import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,16 +39,16 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<Integer, IBKRDataType> entityProducerFactory() {
+    public ProducerFactory<String, IBKRDataType> entityProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<Integer, IBKRDataType> kafkaEntityTemplate() {
+    public KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate() {
         return new KafkaTemplate<>(entityProducerFactory());
     }
 
