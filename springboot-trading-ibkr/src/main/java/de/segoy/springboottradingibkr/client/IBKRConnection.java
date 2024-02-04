@@ -371,7 +371,10 @@ public class IBKRConnection implements EWrapper {
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
         PositionData position = positionDataDatabaseSynchronizer.findInDbOrSave(account, contract, pos.value(),
                 avgCost);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getPOSITION_TOPIC(),
+        String topic = position.getContractData().getSecurityType().equals(Types.SecType.OPT)
+                ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
+                : kafkaConstantsConfig.getPOSITION_TOPIC();
+        kafkaEntityTemplate.send(topic,
                 position.getContractData().getContractId(),
                 position);
     }
