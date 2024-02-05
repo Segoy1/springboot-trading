@@ -63,6 +63,5 @@ public class ContractData extends IBKRDataType {
             joinColumns = @JoinColumn(name="contract_data_id"),
             inverseJoinColumns = @JoinColumn(name="combo_leg_id")
     )
-    @Singular
     private List<ComboLegData> comboLegs;
 }

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,7 +86,7 @@ class ContractDataCallAndResponseHandlerTest {
                 .includeExpired(false)
                 .comboLegsDescription("description goes here")
                 .strike(BigDecimal.valueOf(72))
-                .comboLeg(comboLegData).build();
+                .comboLegs(List.of(comboLegData)).build();
     }
 
 }
