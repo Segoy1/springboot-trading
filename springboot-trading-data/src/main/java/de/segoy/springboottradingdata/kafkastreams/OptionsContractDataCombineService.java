@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +18,10 @@ public class OptionsContractDataCombineService {
 
     private final RatioHelper ratioHelper;
 
+    /**
+     * @Param PositionData receivedPosition is the
+     *
+     **/
     public PositionData combinePositions(PositionData receivedPosition, PositionData aggregatedPosition) {
         if (aggregatedPosition.getAccount() == null) {
             return receivedPosition;
@@ -27,6 +32,7 @@ public class OptionsContractDataCombineService {
                 return receivedPosition;
             } else {
                 if (comboLegs.isEmpty()) {
+                    comboLegs = new ArrayList<>();
                     comboLegs.add(
                             ComboLegData.builder()
                                     .contractId(aggContract.getContractId())
@@ -34,11 +40,15 @@ public class OptionsContractDataCombineService {
                                     .action(sellOrBuy(aggregatedPosition.getPosition()))
                                     .ratio(1).build()
                     );
-                    aggContract.setContractId(null);
+                    //Remove Values for single Option data
                     aggContract.setComboLegsDescription(
                             aggContract.getTradingClass() + " " + aggContract.getLastTradeDate()
                                     + appendDescritpion(aggContract.getStrike(), aggContract.getRight(),
                                     aggregatedPosition.getPosition()));
+                    aggContract.setContractId(null);
+                    aggContract.setRight(null);
+                    aggContract.setExchange(null);
+                    aggContract.setStrike(null);
                 }
 
                 //Calculating Ratios
@@ -79,9 +89,7 @@ public class OptionsContractDataCombineService {
         ContractData receivedContract = receivedPosition.getContractData();
         comboLegs.stream().filter(
                         (comboLegData) ->
-                        {
-                            return comboLegData.getContractId().equals(receivedContract.getContractId());
-                        })
+                                comboLegData.getContractId().equals(receivedContract.getContractId()))
                 .findFirst().ifPresentOrElse(
                         comboLegData -> {
                             comboLegData.setRatio(ratios.received());
