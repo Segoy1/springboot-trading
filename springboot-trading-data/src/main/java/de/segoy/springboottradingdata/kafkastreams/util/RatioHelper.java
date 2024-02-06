@@ -17,7 +17,7 @@ public class RatioHelper {
     //Greatest Common Divisor, Euklid Formula
     private int gcd(int p, int q) {
         if (q == 0) return p;
-        else return gcd(q, p % q);
+        else return Math.abs(gcd(q, p % q));
     }
 
     public record Ratios(Integer gcd, Integer aggregated, Integer received){}

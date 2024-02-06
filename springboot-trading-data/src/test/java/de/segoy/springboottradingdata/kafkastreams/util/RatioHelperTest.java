@@ -58,4 +58,20 @@ class RatioHelperTest {
         assertEquals(0,ratios.received());
         assertEquals(0,ratios.aggregated());
     }
+    @Test
+    void getRatioForNegativeAggregate() {
+        RatioHelper.Ratios ratios = ratioHelper.getRatio(-2, 2);
+
+        assertEquals(2,ratios.gcd());
+        assertEquals(1,ratios.received());
+        assertEquals(-1,ratios.aggregated());
+    }
+    @Test
+    void getRatioForNegativeReceived() {
+        RatioHelper.Ratios ratios = ratioHelper.getRatio(2, -2);
+
+        assertEquals(2,ratios.gcd());
+        assertEquals(-1,ratios.received());
+        assertEquals(1,ratios.aggregated());
+    }
 }

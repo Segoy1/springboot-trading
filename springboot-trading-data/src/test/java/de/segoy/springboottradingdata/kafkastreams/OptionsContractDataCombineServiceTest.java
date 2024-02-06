@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.kafkastreams;
 
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,14 +23,17 @@ class OptionsContractDataCombineServiceTest {
 
     @Mock
     private RatioHelper ratioHelper;
+    @Mock
+    private PropertiesConfig propertiesConfig;
     @InjectMocks
     private OptionsContractDataCombineService optionsContractDataCombineService;
 
-    private PositionData buildInitial(){
+    private PositionData buildTwo(){
         return PositionData.builder()
                 .position(BigDecimal.valueOf(1))
                 .account("DU508")
                 .averageCost(10)
+                .totalCost(10)
                 .contractData(
                         ContractData.builder()
                                 .contractId(1)
@@ -43,7 +47,7 @@ class OptionsContractDataCombineServiceTest {
                 ).build();
     }
 
-    private PositionData buildAggregatedNew(){
+    private PositionData buildOne(){
         ContractData contractData1 = ContractData.builder()
                 .contractId(2)
                 .currency("USD")
@@ -52,32 +56,42 @@ class OptionsContractDataCombineServiceTest {
                 .multiplier("100")
                 .strike(BigDecimal.valueOf(100))
                 .exchange("SMART")
-                .tradingClass("SPXW").build();
+                .securityType(Types.SecType.OPT)
+                .tradingClass("SPXW")
+                .build();
 
         return PositionData.builder().position(BigDecimal.valueOf(2))
                 .account("DU508")
                 .averageCost(20)
+                .totalCost(40)
                 .contractData(contractData1).build();
     }
-    private PositionData buildAggreagatedWithCombo(){
-        ComboLegData leg1 = ComboLegData.builder()
-                .contractId(1)
-                .ratio(1)
-                .action(Types.Action.BUY)
-                .exchange("SMART").build();
-        ComboLegData leg2 = ComboLegData.builder()
-                .contractId(2)
-                .ratio(2)
-                .action(Types.Action.BUY)
-                .exchange("SMART").build();
-        return null;
+    private PositionData buildThirdContract(){
+        ContractData contractData =ContractData.builder().contractId(3)
+               .right(Types.Right.Put)
+               .currency("USD")
+               .exchange("SMART")
+               .lastTradeDate("20240216")
+               .multiplier("100")
+               .tradingClass("SPXW")
+               .strike(BigDecimal.valueOf(90))
+               .securityType(Types.SecType.OPT).build();
+
+        return PositionData.builder()
+                .position(BigDecimal.valueOf(-3))
+                .averageCost(-10)
+                .totalCost(-30)
+                .account("DU508")
+                .contractData(contractData).build();
+
+
     }
 
 
     @Test
     void combineAggregatedEmptyAndNewTestData() {
 
-        PositionData position = buildInitial();
+        PositionData position = buildTwo();
 
                 PositionData aggregate = optionsContractDataCombineService.combinePositions(position,
                 PositionData.builder().build());
@@ -88,8 +102,8 @@ class OptionsContractDataCombineServiceTest {
     @Test
     void testWithSamePositionUpdatedValues(){
 
-        PositionData positionData = buildInitial();
-        PositionData positionData2 = buildInitial();
+        PositionData positionData = buildTwo();
+        PositionData positionData2 = buildTwo();
         positionData2.setPosition(BigDecimal.valueOf(2));
 
         PositionData aggregate = optionsContractDataCombineService.combinePositions(positionData2, positionData);
@@ -98,13 +112,60 @@ class OptionsContractDataCombineServiceTest {
     }
     @Test
     void testWithNewPositionAndNoExistingCombo(){
+        when(propertiesConfig.getCOMBO_CONTRACT_ID()).thenReturn(999);
         when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
 
-        PositionData positionDataAgg = buildAggregatedNew();
-        PositionData positionDataRec = buildInitial();
+        PositionData positionDataAgg = buildOne();
+        PositionData positionDataRec = buildTwo();
 
         PositionData aggregate = optionsContractDataCombineService.combinePositions(positionDataRec, positionDataAgg);
 
         assertEquals(2, aggregate.getContractData().getComboLegs().size());
+        assertEquals(999,aggregate.getContractData().getContractId());
+        assertNull(aggregate.getContractData().getRight());
+        assertNull(aggregate.getContractData().getExchange());
+        assertNull(aggregate.getContractData().getStrike());
+        assertEquals(50, aggregate.getAverageCost());
+        assertEquals(Types.SecType.BAG, aggregate.getContractData().getSecurityType());
+        assertEquals(BigDecimal.ONE, aggregate.getPosition());
+        assertEquals(2, aggregate.getContractData().getComboLegs().get(0).getContractId());
+        assertEquals(2, aggregate.getContractData().getComboLegs().get(0).getRatio());
+        assertEquals("SMART", aggregate.getContractData().getComboLegs().get(0).getExchange());
+        assertEquals(Types.Action.BUY, aggregate.getContractData().getComboLegs().get(0).getAction());
+
+        assertEquals(1, aggregate.getContractData().getComboLegs().get(1).getContractId());
+        assertEquals(1, aggregate.getContractData().getComboLegs().get(1).getRatio());
+        assertEquals("SMART", aggregate.getContractData().getComboLegs().get(1).getExchange());
+        assertEquals(Types.Action.BUY, aggregate.getContractData().getComboLegs().get(1).getAction());
+    }
+
+    @Test
+    void testWithMultipleAndUpdatedMessages(){
+        when(propertiesConfig.getCOMBO_CONTRACT_ID()).thenReturn(999);
+        when(ratioHelper.getRatio(1,-3)).thenReturn(new RatioHelper.Ratios(1,1,-3));
+        when(ratioHelper.getRatio(1,2)).thenReturn(new RatioHelper.Ratios(1,1,2));
+        when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
+
+        PositionData positionData1 = buildOne();
+        PositionData positionData2 = buildTwo();
+        PositionData positionData3 = buildThirdContract();
+
+        PositionData aggregate1 = optionsContractDataCombineService.combinePositions(positionData3,
+                optionsContractDataCombineService.combinePositions(positionData2,
+                positionData1));
+
+        assertEquals(20,aggregate1.getAverageCost());
+
+
+        PositionData aggregate2 =
+                optionsContractDataCombineService.combinePositions(positionData1,
+                optionsContractDataCombineService.combinePositions(positionData3,
+                        optionsContractDataCombineService.combinePositions(positionData1,
+                        optionsContractDataCombineService.combinePositions(positionData2, aggregate1))));
+
+
+        assertEquals(3, aggregate2.getContractData().getComboLegs().size());
+        assertEquals(20, aggregate2.getAverageCost());
+
     }
 }
