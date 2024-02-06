@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,11 @@ public class OptionsContractDataCombineService {
     private final RatioHelper ratioHelper;
     private final PropertiesConfig propertiesConfig;
 
-    /**
-     * @Param PositionData receivedPosition is the
+    /** Aggregates all the Grouped Positions from the Kafka Topic into on Aggregated Position to handle Option
+     * Strategies properly. Is fairly messy and will need more specification in the future.
+     *
+     * @param receivedPosition the Event fetched from the topic being processed.
+     * @param aggregatedPosition the already aggregated and to be aggregated Combo Position
      **/
     public PositionData combinePositions(PositionData receivedPosition, PositionData aggregatedPosition) {
         if (aggregatedPosition.getAccount() == null) {
@@ -30,6 +34,8 @@ public class OptionsContractDataCombineService {
             if (receivedPosition.getContractData().getContractId()
                     .equals(aggregatedPosition.getContractData().getContractId())) {
                 return receivedPosition;
+
+
             } else {
                 List<ComboLegData> updatedComboLegs = new ArrayList<>();
 
@@ -39,6 +45,11 @@ public class OptionsContractDataCombineService {
                     transformContractDataOnFirstAggregation(aggregatedPosition, updatedComboLegs);
                 } else {
                     updatedComboLegs.addAll(aggContract.getComboLegs());
+                    aggContract.getComboLegs().forEach(leg->{
+                        if(leg.getRatio().equals(0)){
+                            updatedComboLegs.remove(leg);
+                        }
+                    });
                 }
 
                 //Calculating Ratios
@@ -49,26 +60,13 @@ public class OptionsContractDataCombineService {
 
                 updateRatiosOnComboLegs(updatedComboLegs, ratios);
 
+                aggregatedPosition.setPosition(BigDecimal.valueOf(ratios.gcd()));
+
                 //Sort out ComboLeg data and add to updated List
-                setOrUpdateComboLegData(receivedPosition, updatedComboLegs, ratios);
+                setOrUpdateComboLegDataAndCost(aggregatedPosition, receivedPosition, updatedComboLegs, ratios);
 
                 //Set updated ComboLegs
                 aggContract.setComboLegs(updatedComboLegs);
-
-                //Set ComboLeg Description
-                aggContract.setComboLegsDescription(
-                        aggregatedPosition.getContractData().getComboLegsDescription()
-                                + appendDescritpion(
-                                receivedPosition.getContractData().getStrike(),
-                                receivedPosition.getContractData().getRight(),
-                                receivedPosition.getPosition()));
-
-
-                //Setting Costs and Position
-                aggregatedPosition.setTotalCost(aggregatedPosition.getTotalCost() + receivedPosition.getTotalCost());
-                aggregatedPosition.setPosition(BigDecimal.valueOf(ratios.gcd()));
-                aggregatedPosition.setAverageCost(
-                        aggregatedPosition.getTotalCost() / aggregatedPosition.getPosition().doubleValue());
 
 
                 return aggregatedPosition;
@@ -89,42 +87,58 @@ public class OptionsContractDataCombineService {
                         .ratio(1).build()
         );
         //Remove Values for single Option data
-        aggContract.setComboLegsDescription(
-                aggContract.getTradingClass() + " " + aggContract.getLastTradeDate()
-                        + appendDescritpion(aggContract.getStrike(), aggContract.getRight(),
-                        aggregatedPosition.getPosition()));
         aggContract.setContractId(propertiesConfig.getCOMBO_CONTRACT_ID());
-        aggContract.setRight(null);
-        aggContract.setExchange(null);
+        aggContract.setRight(Types.Right.None);
+        aggContract.setExchange("");
         aggContract.setStrike(null);
         aggContract.setSecurityType(Types.SecType.BAG);
 
     }
 
-    private void setOrUpdateComboLegData(PositionData receivedPosition, List<ComboLegData> comboLegs,
-                                         RatioHelper.Ratios ratios) {
+    private void setOrUpdateComboLegDataAndCost(PositionData aggregatedPosition, PositionData receivedPosition,
+                                                List<ComboLegData> comboLegs,
+                                                RatioHelper.Ratios ratios) {
         ContractData receivedContract = receivedPosition.getContractData();
-        comboLegs.stream().filter(
+        Optional<ComboLegData> legOptional = comboLegs.stream().filter(
                         (comboLegData) ->
                                 comboLegData.getContractId().equals(receivedContract.getContractId()))
-                .findFirst().ifPresentOrElse(
-                        comboLegData -> {
-                            comboLegData.setRatio(ratios.received());
-                            comboLegData.setAction(sellOrBuy(receivedPosition.getPosition()));
-                        }, () -> {
-                            comboLegs.add(
-                                    ComboLegData.builder()
-                                            .contractId(receivedContract.getContractId())
-                                            .exchange(receivedContract.getExchange())
-                                            .action(sellOrBuy(receivedPosition.getPosition()))
-                                            .ratio(ratios.received())
-                                            .build()
-                            );
-                        });
+                .findFirst();
+        if (legOptional.isPresent()) {
+            comboLegs.remove(legOptional.get());
+            comboLegs.add(
+                    ComboLegData.builder()
+                            .ratio(ratios.received())
+                            .action(sellOrBuy(receivedPosition.getPosition()))
+                            .contractId(legOptional.get().getContractId())
+                            .exchange(legOptional.get().getExchange())
+                            .build()
+            );
+        } else {
+            comboLegs.add(
+                    ComboLegData.builder()
+                            .contractId(receivedContract.getContractId())
+                            .exchange(receivedContract.getExchange())
+                            .action(sellOrBuy(receivedPosition.getPosition()))
+                            .ratio(ratios.received())
+                            .build()
+            );
+            aggregatedPosition.getContractData().setComboLegsDescription(generateComboLegDescription(comboLegs));
+
+
+            //Setting Costs and Position
+            aggregatedPosition.setTotalCost(aggregatedPosition.getTotalCost() + receivedPosition.getTotalCost());
+            aggregatedPosition.setAverageCost(
+                    aggregatedPosition.getTotalCost() / aggregatedPosition.getPosition().doubleValue());
+
+        }
     }
 
-    private String appendDescritpion(BigDecimal strike, Types.Right right, BigDecimal position) {
-        return "\n" + strike + right + "/" + sellOrBuy(position);
+    private static String generateComboLegDescription(List<ComboLegData> comboLegs) {
+        StringBuilder description = new StringBuilder();
+        comboLegs.forEach(leg->{
+            description.append(leg.getContractId()).append(", ").append(leg.getRatio()).append(" | ");
+        });
+        return description.toString();
     }
 
     private void updateRatiosOnComboLegs(List<ComboLegData> legs, RatioHelper.Ratios ratios) {

@@ -122,8 +122,8 @@ class OptionsContractDataCombineServiceTest {
 
         assertEquals(2, aggregate.getContractData().getComboLegs().size());
         assertEquals(999,aggregate.getContractData().getContractId());
-        assertNull(aggregate.getContractData().getRight());
-        assertNull(aggregate.getContractData().getExchange());
+        assertEquals(Types.Right.None, aggregate.getContractData().getRight());
+        assertEquals("", aggregate.getContractData().getExchange());
         assertNull(aggregate.getContractData().getStrike());
         assertEquals(50, aggregate.getAverageCost());
         assertEquals(Types.SecType.BAG, aggregate.getContractData().getSecurityType());
@@ -143,8 +143,8 @@ class OptionsContractDataCombineServiceTest {
     void testWithMultipleAndUpdatedMessages(){
         when(propertiesConfig.getCOMBO_CONTRACT_ID()).thenReturn(999);
         when(ratioHelper.getRatio(1,-3)).thenReturn(new RatioHelper.Ratios(1,1,-3));
-        when(ratioHelper.getRatio(1,2)).thenReturn(new RatioHelper.Ratios(1,1,2));
         when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
+        when(ratioHelper.getRatio(1,1)).thenReturn(new RatioHelper.Ratios(1,1,1));
 
         PositionData positionData1 = buildOne();
         PositionData positionData2 = buildTwo();
