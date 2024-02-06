@@ -23,6 +23,7 @@ public class PositionDataDatabaseSynchronizer {
         return positionDataRepository.findFirstByContractData(positionData.getContractData()).map((dbPositionData) -> {
             dbPositionData.setPosition(positionData.getPosition());
             dbPositionData.setAverageCost(positionData.getAverageCost());
+            dbPositionData.setTotalCost(positionData.getTotalCost());
 
             //delete if Position is 0.
             if(dbPositionData.getPosition().equals(BigDecimal.ZERO)){

@@ -23,4 +23,6 @@ public class PositionData extends IBKRDataType {
     private ContractData contractData;
     private BigDecimal position;
     private double averageCost;
+
+    private double totalCost;
 }

@@ -24,6 +24,7 @@ public class IBKRResponseToPositionData {
         return PositionData.builder().account(account)
                 .position(position)
                 .contractData(contractData)
-                .averageCost(avgCost).build();
+                .averageCost(avgCost)
+                .totalCost(avgCost * position.doubleValue()).build();
     }
 }
