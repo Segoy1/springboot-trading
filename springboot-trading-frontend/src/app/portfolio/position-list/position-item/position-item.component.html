@@ -1,8 +1,8 @@
-<a  class="list-group-item clearfix"
-    [@position]="state"
-    (click)="onClick()"
+<a class="list-group-item clearfix"
+   [@position]="state"
+   (click)="onClick()"
    style="cursor: pointer"
-  [ngClass]="{'': !isPnLready(), 'green': isPnLready()&&isDailyProfit ,'red': isPnLready()&&!isDailyProfit}">
+   [ngClass]="{'': !isPnLready(), 'green': isPnLready()&&isDailyProfit ,'red': isPnLready()&&!isDailyProfit}">
   <div>
     <h4 style="color:white" class="list-group-item-heading">{{position.contractData.localSymbol}}</h4>
     <div class="col-xs-6">
@@ -15,14 +15,19 @@
     </div>
     <div class="col-xs-6" *ngIf="isPnLready()">
       <div class="row">
-        <p class="list-group-item-text">Daily: {{profitAndLoss.dailyPnL | number: "1.0-2" | notavailable}}</p>
+        <p class="list-group-item-text">Daily: {{daily | number: "1.0-2" | notavailable}}</p>
       </div>
       <div class="row">
-        <p class="list-group-item-text">Unrealized: {{profitAndLoss.unrealizedPnL | number: "1.0-2" | notavailable}}</p>
+        <p class="list-group-item-text">Unrealized: {{unrealized | number: "1.0-2" | notavailable}}</p>
       </div>
       <div class="row">
-        <p class="list-group-item-text">Market Value: {{profitAndLoss.currentValue | number: "1.0-2" | notavailable}}</p>
+        <p class="list-group-item-text">Market Value: {{marketValue | number: "1.0-2" | notavailable}}</p>
       </div>
     </div>
+    <app-combo-position-item *ngIf="position.contractData.comboLegs.length>0"
+                             [profitAndLoss]="profitAndLoss"
+                             [position]="position">
+
+    </app-combo-position-item>
   </div>
 </a>

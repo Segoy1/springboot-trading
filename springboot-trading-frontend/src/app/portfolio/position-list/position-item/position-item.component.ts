@@ -7,10 +7,8 @@ import {ProfitAndLoss} from "../../../model/profit-and-loss.model";
 import {ProfitLossWebsocketService} from "../../service/profit-loss-websocket.service";
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
-import {MarketDataOpenCloseService} from "../../../market-data/service/market-data-open-close.service";
-import {StandardMarketDataWebsocketService} from "../../../market-data/service/standard-market-data-websocket.service";
-import {StandardTicker} from "../../../model/market-data/standard-ticker.model";
 import {MarketDataService} from "../../../shared/market-data/market-data.service";
+import {ComboPositionItemComponent} from "./combo-position-item/combo-position-item.component";
 
 @Component({
   standalone: true,
@@ -22,6 +20,7 @@ import {MarketDataService} from "../../../shared/market-data/market-data.service
     CurrencyPipe,
     NgIf,
     NgClass,
+    ComboPositionItemComponent,
   ],
   styleUrl: './position-item.component.css',
   animations: [
@@ -42,11 +41,14 @@ import {MarketDataService} from "../../../shared/market-data/market-data.service
 })
 
 export class PositionItemComponent implements OnInit {
-  @Input() position: Position;
   state = 'exists';
-  profitAndLoss: ProfitAndLoss;
+  @Input() position: Position;
+  profitAndLoss: ProfitAndLoss[] = [];
   profitAndLossSub: Subscription;
-  isDailyProfit = false
+  isDailyProfit = false;
+  daily:number;
+  unrealized:number;
+  marketValue:number;
 
   constructor(private profitLossWebsocketService: ProfitLossWebsocketService,
               private marketDataService: MarketDataService,
@@ -55,16 +57,39 @@ export class PositionItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.profitAndLossSub = this.profitLossWebsocketService.getForPosition(this.position.contractData.contractId).subscribe((pnl) => {
-      if (pnl) {
-        this.profitAndLoss = pnl;
-        this.isDailyProfit = pnl.dailyPnL > 0;
-      }
-    })
+    const contractIds: number[] = [];
+
+    this.position.contractData.comboLegs.forEach(leg =>
+      contractIds.push(leg.contractId));
+    if (contractIds.length === 0) {
+      contractIds.push(this.position.contractData.contractId);
+    }
+    this.profitAndLossSub = this.profitLossWebsocketService.getForPosition(contractIds).subscribe((pnl) => {
+
+    let daily = 0;
+    let unrealized = 0;
+    let mkt = 0;
+      pnl.forEach(singlePnl => {
+        const index = this.profitAndLoss.findIndex((item) => singlePnl.id === item.id)
+        if (index > -1) {
+          this.profitAndLoss[index] = singlePnl;
+        } else {
+          this.profitAndLoss.push(singlePnl);
+        }
+        daily+=singlePnl.dailyPnL;
+        unrealized+=singlePnl.unrealizedPnL;
+        mkt+=singlePnl.currentValue;
+      });
+        this.daily = daily;
+        this.unrealized = unrealized;
+        this.marketValue = mkt;
+        this.isDailyProfit = daily>0;
+    });
+
   }
 
   isPnLready() {
-    return !!this.profitAndLoss;
+    return this.profitAndLoss.length>0;
   }
 
   onClick() {
