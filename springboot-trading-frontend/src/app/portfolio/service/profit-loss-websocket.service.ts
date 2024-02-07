@@ -28,5 +28,14 @@ export class ProfitLossWebsocketService extends AbstractWebsocketService<ProfitA
       return [];
     }));
   }
+  getForSinglePosition(id:number):Observable<ProfitAndLoss>{
+    return this.responseChangedSubject.pipe(map<ProfitAndLoss[], ProfitAndLoss>(profitLoss=>
+    {
+      if(profitLoss){
+        return profitLoss.filter(pnl=> pnl.id === id).pop();
+      }
+      return null;
+    }));
+  }
 
 }
