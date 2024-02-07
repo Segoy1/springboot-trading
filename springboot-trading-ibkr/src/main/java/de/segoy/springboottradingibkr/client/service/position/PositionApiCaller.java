@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service("PoistionApiCaller")
 @RequiredArgsConstructor
-class PoistionApiCaller implements ApiCallerWithoutParameter {
+class PositionApiCaller implements ApiCallerWithoutParameter {
 
     private final EClientSocket client;
 
