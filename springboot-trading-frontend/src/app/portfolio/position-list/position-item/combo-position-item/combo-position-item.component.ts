@@ -39,9 +39,6 @@ export class ComboPositionItemComponent implements OnInit, OnDestroy {
     });
     ids.forEach(id =>
       this.contractsSub = this.contractDataRestService.getContractData(id).subscribe(contract => {
-
-        console.log(contract);
-
         this.contracts.push(contract);
       }))
   }
@@ -65,8 +62,12 @@ export class ComboPositionItemComponent implements OnInit, OnDestroy {
   }
 
   getDisplayString(id: number) {
+    let response = ''
     const contract = this.getContract(id);
-    return contract.strike + " " + contract.right;
+    if(contract){
+    response = contract.strike + " " + contract.right;
+    }
+    return response;
   }
 
   ngOnDestroy() {
