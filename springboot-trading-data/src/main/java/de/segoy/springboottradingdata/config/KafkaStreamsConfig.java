@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.segoy.springboottradingdata.kafkastreams.OptionsContractDataCombineService;
+import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
 import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.Serde;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class KafkaStreamsConfig {
 
     private final KafkaConstantsConfig kafkaConstantsConfig;
-    private final OptionsContractDataCombineService optionsContractDataCombineService;
+    private final StreamOptionsContractDataCombineService streamOptionsContractDataCombineService;
 
     @Bean(name= KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     KafkaStreamsConfiguration kafkaStreamsConfiguration(){
@@ -39,6 +39,7 @@ public class KafkaStreamsConfig {
         configProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
         configProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         configProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);
+        configProps.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG,StreamsConfig.EXACTLY_ONCE_V2);
 
         configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-processing-app");
 
@@ -61,7 +62,7 @@ public class KafkaStreamsConfig {
                         .groupByKey()
                         .aggregate(
                                 ()-> PositionData.builder().build(),
-                                (key, newPos, aggregatedPos) ->optionsContractDataCombineService.combinePositions(newPos, aggregatedPos),
+                                (key, newPos, aggregatedPos) -> streamOptionsContractDataCombineService.combinePositions(newPos, aggregatedPos),
                                 Materialized.<String, PositionData, KeyValueStore<Bytes, byte[]>>as(kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC())
                                         .withKeySerde(Serdes.String())
                                         .withValueSerde(positionDataSerde)

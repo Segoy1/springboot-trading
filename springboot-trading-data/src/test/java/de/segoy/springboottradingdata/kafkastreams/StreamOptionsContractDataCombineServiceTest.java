@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OptionsContractDataCombineServiceTest {
+class StreamOptionsContractDataCombineServiceTest {
 
 
     @Mock
@@ -26,7 +26,7 @@ class OptionsContractDataCombineServiceTest {
     @Mock
     private PropertiesConfig propertiesConfig;
     @InjectMocks
-    private OptionsContractDataCombineService optionsContractDataCombineService;
+    private StreamOptionsContractDataCombineService streamOptionsContractDataCombineService;
 
     private PositionData buildTwo(){
         return PositionData.builder()
@@ -93,7 +93,7 @@ class OptionsContractDataCombineServiceTest {
 
         PositionData position = buildTwo();
 
-                PositionData aggregate = optionsContractDataCombineService.combinePositions(position,
+                PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(position,
                 PositionData.builder().build());
 
 
@@ -106,7 +106,7 @@ class OptionsContractDataCombineServiceTest {
         PositionData positionData2 = buildTwo();
         positionData2.setPosition(BigDecimal.valueOf(2));
 
-        PositionData aggregate = optionsContractDataCombineService.combinePositions(positionData2, positionData);
+        PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(positionData2, positionData);
 
         assertEquals(aggregate, positionData2);
     }
@@ -118,7 +118,7 @@ class OptionsContractDataCombineServiceTest {
         PositionData positionDataAgg = buildOne();
         PositionData positionDataRec = buildTwo();
 
-        PositionData aggregate = optionsContractDataCombineService.combinePositions(positionDataRec, positionDataAgg);
+        PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(positionDataRec, positionDataAgg);
 
         assertEquals(2, aggregate.getContractData().getComboLegs().size());
         assertEquals(999,aggregate.getContractData().getContractId());
@@ -150,18 +150,18 @@ class OptionsContractDataCombineServiceTest {
         PositionData positionData2 = buildTwo();
         PositionData positionData3 = buildThirdContract();
 
-        PositionData aggregate1 = optionsContractDataCombineService.combinePositions(positionData3,
-                optionsContractDataCombineService.combinePositions(positionData2,
+        PositionData aggregate1 = streamOptionsContractDataCombineService.combinePositions(positionData3,
+                streamOptionsContractDataCombineService.combinePositions(positionData2,
                 positionData1));
 
         assertEquals(20,aggregate1.getAverageCost());
 
 
         PositionData aggregate2 =
-                optionsContractDataCombineService.combinePositions(positionData1,
-                optionsContractDataCombineService.combinePositions(positionData3,
-                        optionsContractDataCombineService.combinePositions(positionData1,
-                        optionsContractDataCombineService.combinePositions(positionData2, aggregate1))));
+                streamOptionsContractDataCombineService.combinePositions(positionData1,
+                streamOptionsContractDataCombineService.combinePositions(positionData3,
+                        streamOptionsContractDataCombineService.combinePositions(positionData1,
+                        streamOptionsContractDataCombineService.combinePositions(positionData2, aggregate1))));
 
 
         assertEquals(3, aggregate2.getContractData().getComboLegs().size());

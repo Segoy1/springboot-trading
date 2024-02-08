@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class OptionsContractDataCombineService {
+public class StreamOptionsContractDataCombineService {
 
     private final RatioHelper ratioHelper;
     private final PropertiesConfig propertiesConfig;
