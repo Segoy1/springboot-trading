@@ -5,7 +5,7 @@
   <div class="col-xs-2">urlzd</div>
 </div>
 <div class="row" *ngFor="let comboLeg of position.contractData.comboLegs">
-  <div class="col-xs-3">{{comboLeg.contractId}}</div>
+  <div class="col-xs-3">{{getDisplayString(comboLeg.contractId)}}</div>
   <div class="col-xs-1">{{comboLeg.ratio}}</div>
   <div *ngIf="getPnl(comboLeg.contractId)">
     <div class="col-xs-2">{{getPnl(comboLeg.contractId).dailyPnL | number: "1.0-2" | notavailable}}</div>
