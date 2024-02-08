@@ -5,7 +5,7 @@ import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {ProfitLossWebsocketService} from "../../../service/profit-loss-websocket.service";
 import {NotAvailablePipe} from "../../../../shared/not-available.pipe";
-import {ContractDataIdResolverRestService} from "../../../service/contract-data-id-resolver-rest.service";
+import {ContractDataIdResolverRestService} from "../../../../shared/contract-data-id-resolver-rest.service";
 import {Contract} from "../../../../model/contract.model";
 
 @Component({
