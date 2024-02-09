@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.service;
+package de.segoy.springboottradingdata.errorhandling;
 
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,12 @@ public class ErrorCodeMapper {
 
     public Optional<ErrorMessage> mapError(ErrorMessage errorMessage) {
         switch (errorMessage.getErrorCode()) {
+            case 102:
+                return Optional.of(errorMessage);
             case 322:
+
                 //Duplicate Ticker ID for Market Data will be handled in Frontend
+
                 return Optional.of(errorMessage);
             case 502:
                 log.warn(errorMessage.getMessage());

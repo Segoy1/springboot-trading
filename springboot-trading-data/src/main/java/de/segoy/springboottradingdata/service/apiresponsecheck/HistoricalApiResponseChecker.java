@@ -3,7 +3,7 @@ package de.segoy.springboottradingdata.service.apiresponsecheck;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
-import de.segoy.springboottradingdata.service.ApiResponseErrorHandler;
+import de.segoy.springboottradingdata.errorhandling.ApiResponseErrorHandler;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
