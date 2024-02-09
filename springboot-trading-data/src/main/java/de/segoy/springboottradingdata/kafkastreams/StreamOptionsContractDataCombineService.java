@@ -90,7 +90,6 @@ public class StreamOptionsContractDataCombineService {
         aggContract.setContractId(propertiesConfig.getCOMBO_CONTRACT_ID());
         aggContract.setId(null);
         aggContract.setRight(Types.Right.None);
-        aggContract.setExchange("");
         aggContract.setStrike(null);
         aggContract.setSecurityType(Types.SecType.BAG);
 
@@ -107,7 +106,6 @@ public class StreamOptionsContractDataCombineService {
         if (legOptional.isPresent()) {
             comboLegs.remove(legOptional.get());
         } else {
-            aggregatedPosition.getContractData().setComboLegsDescription(generateComboLegDescription(comboLegs));
             //Setting Costs and Position
             aggregatedPosition.setTotalCost(aggregatedPosition.getTotalCost() + receivedPosition.getTotalCost());
             aggregatedPosition.setAverageCost(
@@ -122,6 +120,7 @@ public class StreamOptionsContractDataCombineService {
                         .ratio(ratios.received())
                         .build()
         );
+        aggregatedPosition.getContractData().setComboLegsDescription(generateComboLegDescription(comboLegs));
     }
 
     private static String generateComboLegDescription(List<ComboLegData> comboLegs) {
