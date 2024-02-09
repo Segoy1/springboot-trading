@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.service.contract;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
-import de.segoy.springboottradingdata.service.apiresponsecheck.OptionalApiResponseChecker;
+import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

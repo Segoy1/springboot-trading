@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.errorhandling;
+package de.segoy.springboottradingibkr.client.errorhandling;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.kafkaconsumer.KafkaConsumerProvider;

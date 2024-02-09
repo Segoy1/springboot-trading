@@ -1,4 +1,4 @@
-package de.segoy.springboottradingdata.service.apiresponsecheck;
+package de.segoy.springboottradingibkr.client.service;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
 

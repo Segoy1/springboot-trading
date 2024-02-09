@@ -8,7 +8,7 @@ import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("StartMarketDataApiCaller")
 @RequiredArgsConstructor
 class StartMarketDataApiCaller implements ApiCaller<ContractData> {
 

@@ -4,6 +4,7 @@ import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StartMarketDataService {
 
-    private final ApiCaller<ContractData> startMarketDataApiCaller;
+    private final  @Qualifier("StartMarketDataApiCaller") ApiCaller<ContractData> startMarketDataApiCaller;
     private final UniqueContractDataProvider uniqueContractDataProvider;
 
     public Optional<ContractData> requestLiveMarketDataForContractData(ContractData contractData) {

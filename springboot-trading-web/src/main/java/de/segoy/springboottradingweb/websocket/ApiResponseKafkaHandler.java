@@ -9,7 +9,7 @@ import de.segoy.springboottradingdata.model.data.StandardMarketData;
 import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
-import de.segoy.springboottradingdata.errorhandling.ErrorCodeMapper;
+import de.segoy.springboottradingibkr.client.errorhandling.ErrorCodeMapper;
 import de.segoy.springboottradingibkr.client.responsehandler.StreamsAggregatedPositionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

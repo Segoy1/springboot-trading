@@ -1,9 +1,10 @@
-package de.segoy.springboottradingdata.service.apiresponsecheck;
+package de.segoy.springboottradingibkr.client.service.contract;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
-import de.segoy.springboottradingdata.errorhandling.ApiResponseErrorHandler;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import de.segoy.springboottradingibkr.client.errorhandling.ApiResponseErrorHandler;
+import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
