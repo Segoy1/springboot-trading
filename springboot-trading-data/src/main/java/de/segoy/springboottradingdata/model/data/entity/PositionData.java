@@ -19,7 +19,7 @@ public class PositionData extends IBKRDataType {
     private Long id;
     private String account;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private ContractData contractData;
     private BigDecimal position;
     private double averageCost;

@@ -1,5 +1,6 @@
 package de.segoy.springboottradingweb.websocket;
 
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.model.data.AccountSummaryData;
 import de.segoy.springboottradingdata.model.data.OptionMarketData;
@@ -9,11 +10,13 @@ import de.segoy.springboottradingdata.model.data.entity.OrderData;
 import de.segoy.springboottradingdata.model.data.entity.PositionData;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.service.ErrorCodeMapper;
+import de.segoy.springboottradingibkr.client.responsehandler.StreamsAggregatedPositionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class ApiResponseKafkaHandler {
     private final KafkaConstantsConfig kafkaConstantsConfig;
     private final SimpMessagingTemplate messagingTemplate;
     private final ErrorCodeMapper errorCodeMapper;
+    private final StreamsAggregatedPositionHandler streamsAggregatedPositionHandler;
 
     @KafkaListener(groupId = "${kafka.consumer.group.id}", topics = "${kafka.names.topic.errorMessage}")
     public void consumeOptionMarketDataMessage(ErrorMessage errorMessage) {
@@ -72,8 +76,15 @@ public class ApiResponseKafkaHandler {
     }
 
     @KafkaListener(groupId = "${kafka.consumer.group.id}", topics = "${kafka.names.topic.positions}")
+    @Transactional
     public void consumeMessage(PositionData message) {
+        if (message.getContractData().getSecurityType().equals(Types.SecType.BAG)) {
+            log.info("Streamed Message received: " + message.getId());
+            PositionData savedPosition = streamsAggregatedPositionHandler.persistContractAndPositionData(message);
+            messagingTemplate.convertAndSend("/topic/" + kafkaConstantsConfig.getPOSITION_TOPIC(), savedPosition);
+        }else{
         log.info("Message received: " + message.getId());
         messagingTemplate.convertAndSend("/topic/" + kafkaConstantsConfig.getPOSITION_TOPIC(), message);
+        }
     }
 }

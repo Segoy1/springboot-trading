@@ -48,8 +48,6 @@ public class ContractDataDatabaseSynchronizer {
                 comboLegData.getContractId(),
                 comboLegData.getAction(),
                 comboLegData.getRatio(),
-                comboLegData.getExchange()).orElseGet(()->{
-            return comboLegDataRepository.save(comboLegData);
-        });
+                comboLegData.getExchange()).orElseGet(()-> comboLegDataRepository.save(comboLegData));
     }
 }
