@@ -1,7 +1,6 @@
 package de.segoy.springboottradingdata.kafkastreams;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class StreamOptionsContractDataCombineService {
 
     private final RatioHelper ratioHelper;
-    private final PropertiesConfig propertiesConfig;
 
     /**
      * Aggregates all the Grouped Positions from the Kafka Topic into on Aggregated Position to handle Option
@@ -66,6 +64,9 @@ public class StreamOptionsContractDataCombineService {
                 //Sort out ComboLeg data and add to updated List
                 setOrUpdateComboLegDataAndCost(aggregatedPosition, receivedPosition, updatedComboLegs, ratios);
 
+                //Set Contract Id to added up Contract Data Ids to be unique
+                setNewContractId(receivedPosition.getContractData(), aggregatedPosition.getContractData());
+
                 //Set updated ComboLegs
                 aggContract.setComboLegs(updatedComboLegs);
 
@@ -73,6 +74,10 @@ public class StreamOptionsContractDataCombineService {
 
             }
         }
+    }
+
+    private void setNewContractId(ContractData receivedContract,ContractData aggregatedContract) {
+        aggregatedContract.setContractId(aggregatedContract.getContractId()+ receivedContract.getContractId());
     }
 
     private void transformContractDataOnFirstAggregation(PositionData aggregatedPosition,
@@ -87,7 +92,6 @@ public class StreamOptionsContractDataCombineService {
                         .ratio(1).build()
         );
         //Remove Values for single Option data
-        aggContract.setContractId(propertiesConfig.getCOMBO_CONTRACT_ID());
         aggContract.setId(null);
         aggContract.setRight(Types.Right.None);
         aggContract.setStrike(null);

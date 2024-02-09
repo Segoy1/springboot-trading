@@ -37,10 +37,6 @@ public class PropertiesConfig {
     private String genericTicks;
 
     @Getter
-    @Value("${app.constants.combo.contract.id}")
-    private int COMBO_CONTRACT_ID;
-
-    @Getter
     @Value("${app.constants.positions.call.id}")
     private int POSITION_CALL_ID;
 
