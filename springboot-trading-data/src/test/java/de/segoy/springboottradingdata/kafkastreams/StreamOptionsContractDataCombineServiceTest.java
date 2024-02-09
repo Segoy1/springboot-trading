@@ -142,7 +142,7 @@ class StreamOptionsContractDataCombineServiceTest {
     @Test
     void testWithMultipleAndUpdatedMessages(){
         when(propertiesConfig.getCOMBO_CONTRACT_ID()).thenReturn(999);
-        when(ratioHelper.getRatio(1,-3)).thenReturn(new RatioHelper.Ratios(1,1,-3));
+        when(ratioHelper.getRatio(1,3)).thenReturn(new RatioHelper.Ratios(1,1,3));
         when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
         when(ratioHelper.getRatio(1,1)).thenReturn(new RatioHelper.Ratios(1,1,1));
 
