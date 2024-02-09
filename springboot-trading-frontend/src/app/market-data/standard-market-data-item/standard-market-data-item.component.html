@@ -9,7 +9,8 @@
       class="list-group-item clearfix">
       <button class="btn btn-danger pull-right top-right" type="button" (click)="onCancelMarketData()">X</button>
       <div class="row">
-        <h4 class="list-group-item-heading" *ngIf="contract">{{contract.lastTradeDate? contract.symbol + ' ' + contract.lastTradeDate: contract.symbol}}</h4>
+        <div *ngIf="contract">
+        <h4 class="list-group-item-heading">{{contract.lastTradeDate? contract.symbol + ' ' + contract.lastTradeDate: contract.symbol}}</h4>
         <div *ngFor="let comboLeg of contract.comboLegs">
           <div class="row">
             <app-combo-leg-data-display [comboLeg]="comboLeg"></app-combo-leg-data-display>
@@ -19,6 +20,7 @@
 
           <p class="list-group-item-text col-xs-6">{{tick.field | fieldname}} : {{tick.price | currency}}</p>
         </div>
+      </div>
       </div>
 
       <app-option-market-data-item *ngIf="optionTicker" [optionTicker]="optionTicker" [contract]="contract"></app-option-market-data-item>
