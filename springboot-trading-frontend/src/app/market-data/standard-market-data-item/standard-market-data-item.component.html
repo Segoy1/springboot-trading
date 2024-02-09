@@ -9,7 +9,12 @@
       class="list-group-item clearfix">
       <button class="btn btn-danger pull-right top-right" type="button" (click)="onCancelMarketData()">X</button>
       <div class="row">
-        <h4 class="list-group-item-heading" *ngIf="contract">{{contract.localSymbol? contract.localSymbol: contract.symbol+'-Combo'}}</h4>
+        <h4 class="list-group-item-heading" *ngIf="contract">{{contract.lastTradeDate? contract.symbol + ' ' + contract.lastTradeDate: contract.symbol}}</h4>
+        <div *ngFor="let comboLeg of contract.comboLegs">
+          <div class="row">
+            <app-combo-leg-data-display [comboLeg]="comboLeg"></app-combo-leg-data-display>
+          </div>
+        </div>
         <div class="row" *ngFor="let tick of ticker.data">
 
           <p class="list-group-item-text col-xs-6">{{tick.field | fieldname}} : {{tick.price | currency}}</p>

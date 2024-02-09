@@ -10,6 +10,7 @@ import {OptionTicker} from "../../model/market-data/option-ticker.model";
 import {Subscription} from "rxjs";
 import {OptionMarketDataWebsocketService} from "../service/option-market-data-websocket.service";
 import {ContractDataRestService} from "../service/contract-data-rest.service";
+import {ComboLegDataDisplayComponent} from "../../shared/combo-leg-data-display/combo-leg-data-display.component";
 
 @Component({
   selector: 'app-standard-market-data-item',
@@ -21,7 +22,8 @@ import {ContractDataRestService} from "../service/contract-data-rest.service";
     MarketDataFieldNamePipe,
     OptionMarketDataItemComponent,
     NgIf,
-    AsyncPipe
+    AsyncPipe,
+    ComboLegDataDisplayComponent
   ],
   templateUrl: './standard-market-data-item.component.html',
   styleUrl: './standard-market-data-item.component.css'
