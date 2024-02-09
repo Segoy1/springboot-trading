@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Contract} from "../../model/contract.model";
 import {environment} from "../../../environments/environment.production";
 import {BehaviorSubject, map, Observable} from "rxjs";
@@ -15,7 +15,8 @@ export class ContractDataRestService {
   }
 
   requestContractData(id: number) {
-    this.http.get<Contract>(this.url + '?id=' + id).subscribe(contract => {
+    let params = new HttpParams().set('id', id);
+    this.http.get<Contract>(this.url, {params: params}).subscribe(contract => {
       this.contracts.push(contract);
       this.contractChanged();
     })
@@ -24,7 +25,8 @@ export class ContractDataRestService {
   requestContractDataForOrder(req: { contractData: any, strategyLegs: any[] }) {
     return this.http.post<Contract>(this.url + this.comboPathSuffix, req);
   }
-  addContract(contract:Contract){
+
+  addContract(contract: Contract) {
     this.contracts.push(contract);
     this.contractChanged();
   }
