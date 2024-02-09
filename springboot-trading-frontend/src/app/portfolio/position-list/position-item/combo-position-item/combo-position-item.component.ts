@@ -1,12 +1,11 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ProfitAndLoss} from "../../../../model/profit-and-loss.model";
-import {Position} from "../../../../model/position.model";
 import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {ProfitLossWebsocketService} from "../../../service/profit-loss-websocket.service";
 import {NotAvailablePipe} from "../../../../shared/not-available.pipe";
-import {ContractDataIdResolverRestService} from "../../../../shared/contract-data-id-resolver-rest.service";
-import {Contract} from "../../../../model/contract.model";
+import {ComboLegDataDisplayComponent} from "../../../../shared/combo-leg-data-display/combo-leg-data-display.component";
+import {ComboLeg} from "../../../../model/comboleg.model";
 
 @Component({
   selector: 'app-combo-position-item',
@@ -15,32 +14,27 @@ import {Contract} from "../../../../model/contract.model";
     NgForOf,
     NgIf,
     DecimalPipe,
-    NotAvailablePipe
+    NotAvailablePipe,
+    ComboLegDataDisplayComponent
   ],
   templateUrl: './combo-position-item.component.html',
   styleUrl: './combo-position-item.component.css'
 })
 export class ComboPositionItemComponent implements OnInit, OnDestroy {
-  @Input() position: Position;
+  @Input() comboLegs: ComboLeg[];
   profitAndLossSub: Subscription;
   profitAndLoss: ProfitAndLoss[];
-  contracts: Contract[] = [];
-  contractsSub: Subscription;
 
-  constructor(private profitLossWebsocketService: ProfitLossWebsocketService,
-              private contractDataRestService: ContractDataIdResolverRestService) {
+  constructor(private profitLossWebsocketService: ProfitLossWebsocketService) {
   }
 
   ngOnInit() {
     const ids: number[] = []
-    this.position.contractData.comboLegs.forEach(leg => ids.push(leg.contractId))
+    this.comboLegs.forEach(leg => ids.push(leg.contractId))
     this.profitAndLossSub = this.profitLossWebsocketService.getForPosition(ids).subscribe((pnl) => {
       this.profitAndLoss = pnl;
     });
-    ids.forEach(id =>
-      this.contractsSub = this.contractDataRestService.getContractData(id).subscribe(contract => {
-        this.contracts.push(contract);
-      }))
+
   }
 
   getPnl(id: number) {
@@ -52,26 +46,7 @@ export class ComboPositionItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  getContract(id: number) {
-    const index = this.contracts.findIndex(contract => contract.contractId === id);
-    if (index > -1) {
-      return this.contracts[index];
-    } else {
-      return null;
-    }
-  }
-
-  getDisplayString(id: number) {
-    let response = ''
-    const contract = this.getContract(id);
-    if(contract){
-    response = contract.strike + " " + contract.right;
-    }
-    return response;
-  }
-
   ngOnDestroy() {
-    this.contractsSub.unsubscribe();
     this.profitAndLossSub.unsubscribe();
   }
 }
