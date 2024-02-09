@@ -19,11 +19,13 @@ public class ErrorCodeMapper {
         switch (errorMessage.getErrorCode()) {
             case 102:
                 return Optional.of(errorMessage);
+            case 300:
+                log.debug(errorMessage.getMessage());
+                break;
             case 322:
-
                 //Duplicate Ticker ID for Market Data will be handled in Frontend
                 stopAndStartMarketDataService.reinitiateApiCall(errorMessage.getMessageId());
-                return Optional.of(errorMessage);
+                break;
             case 502:
                 log.warn(errorMessage.getMessage());
                 break;
