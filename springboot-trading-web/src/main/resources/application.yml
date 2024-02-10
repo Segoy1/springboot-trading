@@ -1,0 +1,79 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+kafka:
+  names:
+    topic:
+      streams:
+        optionPositions: ibkr_option_positions
+        aggregatePositions: ibkr_positions_aggregate
+      singlePnL: ibkr_single_pnl
+      openOrders: ibkr_open_order
+      historicalData: ibkr_historical
+      orderData: ibkr_order
+      accountPnL: ibkr_account_pnl
+      contractData: ibkr_contract
+      errorMessage: ibkr_error_message
+      standardMarketData: ibkr_standard_market_data
+      optionMarketData: ibkr_option_market_data
+      accountSummary: ibkr_account_summary
+      positions: ibkr_positions
+  consumer:
+    group:
+      id: market_data_group
+    rest:
+      group:
+        id: rest_response_group
+  bootstrap-servers: 127.0.0.1:9092
+logging:
+  file:
+    path: ../logs
+app:
+  constants:
+    positions:
+      call:
+        id: '-20'
+    account:
+      summary:
+        id: '-40'
+    open:
+      orders:
+        id: '-30'
+    time:
+      millis: '000'
+  ibkr:
+    connectionId: '1'
+    isReaderStarted: 'false'
+    accountSummary:
+      tags:
+        BuyingPower: BuyingPower
+        NetLiquidation: NetLiquidation
+        AccruedCash: AccruedCash
+    dateTimeFormat: yyyyMMdd-HH:mm:ss
+    dateFormat: yyyyMMdd
+    nextValidOrderId: '1'
+    pnl:
+      accountId: '1000'
+    generic:
+      ticks: '100'
+spring:
+  jpa:
+    defer-datasource-initialization: 'true'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+kafka:
+  bootstrap-servers: dev.segoy.de:9092
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+kafka:
+  bootstrap-servers: segoy.de:9092
