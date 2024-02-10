@@ -3,7 +3,7 @@ package de.segoy.springboottradingibkr.client.service.order;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.model.data.entity.OrderData;
-import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
+import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 
@@ -23,9 +24,8 @@ class OrderValidateAndPlacementServiceTest {
     @Mock
     UniqueContractDataProvider uniqueContractDataProvider;
     @Mock
-    private OrderPlacementApiCaller orderPlacementApiCaller;
-    @Mock
-    private OptionalApiResponseChecker<OrderData> orderDataApiResponseChecker;
+    private ApiCaller<OrderData> orderPlacementApiCaller;
+
     @InjectMocks
     OrderValidateAndPlacementService orderValidateAndPlacementService;
 
@@ -45,8 +45,6 @@ class OrderValidateAndPlacementServiceTest {
         ContractData contractData = ContractData.builder().right(Types.Right.Call).build();
         OrderData orderData = OrderData.builder().id(1L).contractData(contractData).build();
         when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.of(ContractData.builder().id(2L).build()));
-        when(orderDataApiResponseChecker.checkForApiResponseAndUpdate(orderData.getId().intValue())).thenReturn(Optional.of(orderData));
-
 
         orderValidateAndPlacementService.validateAndPlaceOrder(orderData);
 

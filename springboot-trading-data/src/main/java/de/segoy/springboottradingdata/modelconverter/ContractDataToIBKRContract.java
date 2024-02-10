@@ -40,7 +40,7 @@ public class ContractDataToIBKRContract {
 
 
         List<ComboLeg> comboLegs = new ArrayList<>();
-        if (!contractData.getComboLegs().isEmpty()) {
+        if (contractData.getComboLegs() != null && !contractData.getComboLegs().isEmpty()) {
             contractData.getComboLegs().forEach(comboLegData -> {
                 ComboLeg leg = new ComboLeg();
                 leg.conid(comboLegData.getContractId());
