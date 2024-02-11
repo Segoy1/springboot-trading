@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   apiUrl: 'http://staging.segoy.de/',
   accountPnLTopic: 'ibkr_account_pnl',
   positionsTopic: 'ibkr_positions',
