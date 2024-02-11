@@ -1,6 +1,5 @@
-import {environment} from "../../../environments/environment.production";
 import {BehaviorSubject, map, Observable} from "rxjs";
-import {environmentDevelopment} from "../../../environments/environment.development";
+import {environment} from "../../../environments/environment";
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
 import {BaseTicker} from "../../model/market-data/base-ticker.model";
@@ -9,7 +8,7 @@ import {BaseMarketData} from "../../model/market-data/base-market-data.model";
 export abstract class AbstractMarketDataWebsocketService<Ticker extends BaseTicker, Data extends BaseMarketData> {
   protected contractTicks: Ticker[] = [];
   responseChangedSubject = new BehaviorSubject<Ticker[]>(null);
-  private url: string = environmentDevelopment.apiUrl+'websocket';
+  private url: string = environment.apiUrl+'websocket';
   client:any;
 
   constructor(topic: string) {

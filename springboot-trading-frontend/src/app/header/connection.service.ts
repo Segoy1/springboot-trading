@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {environmentDevelopment} from "../../environments/environment.development";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +8,8 @@ import {environmentDevelopment} from "../../environments/environment.development
 
 export class ConnectionService {
 
-  private connectUrl = environmentDevelopment.apiUrl+'connect';
-  private disconnectUrl = environmentDevelopment.apiUrl+'disconnect';
+  private connectUrl = environment.apiUrl+'connect';
+  private disconnectUrl = environment.apiUrl+'disconnect';
 
   constructor(private http: HttpClient) {
   }

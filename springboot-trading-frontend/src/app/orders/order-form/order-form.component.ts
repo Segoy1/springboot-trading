@@ -11,7 +11,6 @@ import {selectEditMode} from "../../store/orders/modes/edit/orders-edit-mode.sel
 import {selectStrategyMode} from "../../store/orders/modes/strategy/orders-strategy-mode.selector";
 import {ContractDataRestService} from "../../market-data/service/contract-data-rest.service";
 import {OrderMarketDataComponent} from "./order-market-data/order-market-data.component";
-import {MarketDataService} from "../../shared/market-data/market-data.service";
 import {findOrder} from "../../store/orders/orders.selector";
 import {Contract} from "../../model/contract.model";
 
@@ -39,8 +38,7 @@ export class OrderFormComponent implements OnInit {
               private orderFormService: OrderFormService,
               private router: Router,
               private store: Store,
-              private contractDataRestService: ContractDataRestService,
-              private marketDataService: MarketDataService) {
+              private contractDataRestService: ContractDataRestService) {
     this.editMode$ = store.select(selectEditMode);
     this.strategyMode$ = store.select(selectStrategyMode);
   }
@@ -52,7 +50,6 @@ export class OrderFormComponent implements OnInit {
         (params: Params) => {
           this.orderFormService.id = +params['id'];
           this.store.select(findOrder(+params['id'])).subscribe((order) => {
-            console.log(order.contractData);
              this.contract = order.contractData;
              })
           this.store.dispatch(setEditMode({editMode: params['id'] != null}));

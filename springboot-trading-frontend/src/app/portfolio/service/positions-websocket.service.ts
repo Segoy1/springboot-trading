@@ -1,15 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {Position} from "../../model/position.model";
-import {BehaviorSubject} from "rxjs";
-import {environmentDevelopment} from "../../../environments/environment.development";
+import {environment} from "../../../environments/environment";
 import {AbstractWebsocketService} from "../../shared/abstract-websocket.service";
 
 @Injectable({providedIn: "root"})
 export class PositionsWebsocketService extends AbstractWebsocketService<Position>{
 
   constructor() {
-    super(environmentDevelopment.positionsTopic);
+    super(environment.positionsTopic);
   }
 
   updateOrAdd(position: Position): void {

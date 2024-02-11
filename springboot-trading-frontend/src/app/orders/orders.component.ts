@@ -12,7 +12,7 @@ import {AsyncPipe, NgForOf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {Store} from "@ngrx/store";
 import {selectOrders} from "../store/orders/orders.selector";
-import {environmentDevelopment} from "../../environments/environment.development";
+import {environment} from "../../environments/environment";
 
 @Component({
   standalone: true,
@@ -30,7 +30,7 @@ export class OrdersComponent implements OnInit {
 
   openOrders: Observable<Order[]>;
   errorMessage: string;
-  private url: string = environmentDevelopment.apiUrl+'order/open-orders';
+  private url: string = environment.apiUrl+'order/open-orders';
 
   constructor(private http: HttpClient,
               private orderCancelService: OrderCancelService,

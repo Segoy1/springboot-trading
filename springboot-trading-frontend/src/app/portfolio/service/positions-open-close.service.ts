@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {environmentDevelopment} from "../../../environments/environment.development";
+import {environment} from "../../../environments/environment";
 
 @Injectable({providedIn: "root"})
 export class PositionsOpenCloseService {
 
 
-  private pnlUrl = environmentDevelopment.apiUrl+'portfolio/pnl';
-  private positionsUrl = environmentDevelopment.apiUrl+'portfolio/positions';
+  private pnlUrl = environment.apiUrl+'portfolio/pnl';
+  private positionsUrl = environment.apiUrl+'portfolio/positions';
   private cancelSuffix = '/cancel';
   private storageItemName = 'isPortfolioProfitLossCallOpen';
 

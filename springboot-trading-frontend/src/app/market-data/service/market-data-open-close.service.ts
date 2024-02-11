@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {environmentDevelopment} from "../../../environments/environment.development";
+import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Contract} from "../../model/contract.model";
 import {OptionMarketDataWebsocketService} from "./option-market-data-websocket.service";
@@ -8,9 +8,9 @@ import {StandardMarketDataWebsocketService} from "./standard-market-data-websock
 @Injectable({providedIn: 'root'})
 export class MarketDataOpenCloseService {
 
-  private marketDataStartUrl = environmentDevelopment.apiUrl + 'market-data/start';
-  private marketDataStopUrl = environmentDevelopment.apiUrl + 'market-data/stop';
-  private marketDataStopAllUrl = environmentDevelopment.apiUrl + 'market-data/stopAll';
+  private marketDataStartUrl = environment.apiUrl + 'market-data/start';
+  private marketDataStopUrl = environment.apiUrl + 'market-data/stop';
+  private marketDataStopAllUrl = environment.apiUrl + 'market-data/stopAll';
 
   constructor(private http: HttpClient,
               private optionMarketDataWebsocketService:OptionMarketDataWebsocketService,
