@@ -66,9 +66,9 @@ spring:
 spring:
   config:
     activate:
-      on-profile: development
+      on-profile: staging
 kafka:
-  bootstrap-servers: dev.segoy.de:9092
+  bootstrap-servers: staging.segoy.de/kafka
 
 ---
 spring:
