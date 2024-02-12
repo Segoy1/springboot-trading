@@ -31,7 +31,7 @@ class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalD
         return repository.findAllByContractIdAndCreateDateAfter(id, propertiesConfig.getTwoSecondsAgo());
     }
     protected boolean notInRepositoryOrError(int id){
-        return repository.findById((long)id).isEmpty() && !apiResponseErrorHandler.isErrorForId(id);
+        return repository.findAllByContractId(id).isEmpty() && !apiResponseErrorHandler.isErrorForId(id);
     }
 
 }

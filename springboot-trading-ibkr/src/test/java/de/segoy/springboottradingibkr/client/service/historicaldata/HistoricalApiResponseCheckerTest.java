@@ -4,17 +4,17 @@ import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class HistoricalApiResponseCheckerTest {
@@ -31,7 +31,7 @@ class HistoricalApiResponseCheckerTest {
         @InjectMocks
         private HistoricalApiResponseChecker historicalDataApiResponseChecker;
 
-    //    @Test
+        @Test
         void testOnFirstTry(){
             HistoricalData historicalData = HistoricalData.builder().id(2L).contractId(5).build();
             HistoricalData historicalData2 = HistoricalData.builder().id(1L).contractId(5).build();
@@ -39,11 +39,14 @@ class HistoricalApiResponseCheckerTest {
             data.add(historicalData2);
             data.add(historicalData);
 
+            Date date = Date.from(Instant.now());
             Set<Integer> callSet = new HashSet<>();
             callSet.add(5);
             callSet.add(3);
 
+            when(propertiesConfig.getTwoSecondsAgo()).thenReturn(date);
             when(repository.findAllByContractId(6)).thenReturn(data);
+            when(repository.findAllByContractIdAndCreateDateAfter(6, date)).thenReturn(data);
 
 
 
