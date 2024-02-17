@@ -17,14 +17,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy
 public class SpringbootTradingApplication {
 
-	public static final Integer LIVE_TRADING_PORT = 7496;
-	public static final Integer PAPER_TRADING_PORT = 7497;
+//	public static final Integer LIVE_TRADING_PORT = 7496;
+//	public static final Integer PAPER_TRADING_PORT = 7497;
+	public static final Integer DOCKER_TRADING_PORT = 8080;
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
 
 		ConnectionInitiator connection = context.getBean(ConnectionInitiator.class);
-		connection.connect(PAPER_TRADING_PORT);
+		connection.connect(DOCKER_TRADING_PORT);
 	}
 
 }
