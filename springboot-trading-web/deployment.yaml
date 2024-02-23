@@ -19,13 +19,15 @@ spec:
         - name: ibkr
           image: ghcr.io/extrange/ibkr # latest, stable, 10.21, 10.21.1p etc
           ports:
-            - "127.0.0.1:6080:6080" # noVNC browser access
-            - "127.0.0.1:8888:8888" # API access
+            - containerPort: 6080
+              name: noVNC
+            - containerPort: 8888
+              name: API
           ulimits:
             nofile: 10000 # See FAQ
           environment:
-            USERNAME: segoy321
-            PASSWORD: Chauncey12IB
+            USERNAME:  ${USERNAME}
+            PASSWORD: ${PASSWORD}
               # TWOFA_TIMEOUT_ACTION: restart
             GATEWAY_OR_TWS: tws
               #
