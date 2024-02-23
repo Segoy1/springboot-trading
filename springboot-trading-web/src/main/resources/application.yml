@@ -3,6 +3,7 @@ management:
     web:
       exposure:
         include: '*'
+
 kafka:
   names:
     topic:
@@ -60,6 +61,8 @@ app:
     generic:
       ticks: '100'
 spring:
+  kafka:
+    bootstrap-servers: 10.97.227.135:9092
   jpa:
     defer-datasource-initialization: 'true'
 server:

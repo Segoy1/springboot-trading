@@ -18,23 +18,28 @@ spec:
       containers:
         - name: ibkr
           image: ghcr.io/extrange/ibkr # latest, stable, 10.21, 10.21.1p etc
+          command: [ "sh", "-c", "ulimit -n 10000" ]
+          securityContext:
+            privileged: true
           ports:
             - containerPort: 6080
-              name: noVNC
+              name: no-vnc
             - containerPort: 8888
-              name: API
-          ulimits:
-            nofile: 10000 # See FAQ
-          environment:
-            USERNAME:  ${USERNAME}
-            PASSWORD: ${PASSWORD}
+              name: api
+          env:
+            - name: USERNAME
+              value:
+            - name: PASSWORD
+              value:
               # TWOFA_TIMEOUT_ACTION: restart
-            GATEWAY_OR_TWS: tws
-              #
+            - name: GATEWAY_OR_TWS
+              value: "tws"
               # Variables prefixed with IBC_ override IBCAlpha`s config.ini:
-            IBC_TradingMode: paper
-            IBC_ReadOnlyApi: no
+            - name: IBC_TradingMode
+              value: "paper"
+            - name: IBC_ReadOnlyApi
+              value: "no"
         - name: trading-app
-          image: segoy/trading-app
+          image: docker.io/segoy/trading-app
           ports:
-            - "8080:8080"
+            - containerPort: 8080
