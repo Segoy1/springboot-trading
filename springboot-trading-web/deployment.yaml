@@ -39,7 +39,7 @@ spec:
                   key: PASSWORD
               # TWOFA_TIMEOUT_ACTION: restart
             - name: GATEWAY_OR_TWS
-              value: "tws"
+              value: "gateway"
               # Variables prefixed with IBC_ override IBCAlpha`s config.ini:
             - name: IBC_TradingMode
               value: "paper"
