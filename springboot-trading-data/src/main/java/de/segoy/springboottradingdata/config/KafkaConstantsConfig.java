@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class KafkaConstantsConfig {
 
 
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVERS;
 
     @Value("${kafka.consumer.group.id}")

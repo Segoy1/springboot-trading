@@ -29,12 +29,14 @@ spec:
           env:
             - name: USERNAME
               valueFrom:
-                name: auth-secret
-                key: USERNAME
+                secretKeyRef:
+                  name: auth-secret
+                  key: USERNAME
             - name: PASSWORD
               valueFrom:
-                name: auth-secret
-                key: PASSWORD
+                secretKeyRef:
+                  name: auth-secret
+                  key: PASSWORD
               # TWOFA_TIMEOUT_ACTION: restart
             - name: GATEWAY_OR_TWS
               value: "tws"
@@ -48,6 +50,9 @@ spec:
           ports:
             # for localhost access: kubectl port-forward <trading-app-pod> 8080:8080 (first port is port in browser second is app port)
             - containerPort: 8080
+          env:
+            - name: SPRING_PROFILE
+              value: staging
 
 ---
 
