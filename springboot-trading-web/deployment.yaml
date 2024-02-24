@@ -18,9 +18,9 @@ spec:
       containers:
         - name: ibkr
           image: ghcr.io/extrange/ibkr # latest, stable, 10.21, 10.21.1p etc
-          command: [ "sh", "-c", "ulimit -n 10000" ]
-          securityContext:
-            privileged: true
+#          command: [ "sh", "-c", "ulimit -n 10000" ]
+#          securityContext:
+#            privileged: true
           ports:
             - containerPort: 6080
               name: no-vnc
@@ -28,9 +28,13 @@ spec:
               name: api
           env:
             - name: USERNAME
-              value:
+              valueFrom:
+                name: auth-secret
+                key: USERNAME
             - name: PASSWORD
-              value:
+              valueFrom:
+                name: auth-secret
+                key: PASSWORD
               # TWOFA_TIMEOUT_ACTION: restart
             - name: GATEWAY_OR_TWS
               value: "tws"
@@ -42,4 +46,36 @@ spec:
         - name: trading-app
           image: docker.io/segoy/trading-app
           ports:
+            # for localhost access: kubectl port-forward <trading-app-pod> 8080:8080 (first port is port in browser second is app port)
             - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: trading-app
+  name: trading-app-access
+  namespace: trading
+spec:
+  clusterIP: 10.108.250.42
+  clusterIPs:
+    - 10.108.250.42
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - nodePort: 32653
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: trading-app
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
+
