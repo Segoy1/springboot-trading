@@ -16,11 +16,20 @@ spec:
         app: trading-app
     spec:
       containers:
+        - name: trading-app
+          image: docker.io/segoy/trading-app
+          ports:
+            # for localhost access: kubectl port-forward <trading-app-pod> 8080:8080 (first port is port in browser second is app port)
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: staging
         - name: ibkr
           image: ghcr.io/extrange/ibkr # latest, stable, 10.21, 10.21.1p etc
-#          command: [ "sh", "-c", "ulimit -n 10000" ]
-#          securityContext:
-#            privileged: true
+#          command: ['/bin/sh']
+#          args: ['-c', 'sleep 10']
+          #          securityContext:
+          #            privileged: true
           ports:
             - containerPort: 6080
               name: no-vnc
@@ -45,14 +54,6 @@ spec:
               value: "paper"
             - name: IBC_ReadOnlyApi
               value: "no"
-        - name: trading-app
-          image: docker.io/segoy/trading-app
-          ports:
-            # for localhost access: kubectl port-forward <trading-app-pod> 8080:8080 (first port is port in browser second is app port)
-            - containerPort: 8080
-          env:
-            - name: SPRING_PROFILE
-              value: staging
 
 ---
 

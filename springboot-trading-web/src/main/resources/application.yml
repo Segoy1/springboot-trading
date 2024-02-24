@@ -62,7 +62,7 @@ app:
       ticks: '100'
 spring:
   kafka:
-    bootstrap-servers: 10.97.227.135:9092
+    bootstrap-servers: 127.0.0.1:9092
   jpa:
     defer-datasource-initialization: 'true'
 server:
