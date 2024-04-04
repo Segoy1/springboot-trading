@@ -31,7 +31,7 @@ public class IBKRTimeStampFormatter {
                 log.error("Parsing Exception of Date: " + timeString + "! Only Parse Date with Format yyyyMMdd");
                 return null;
             }
-        } else if(timeString.length()== 16){
+        } else if(timeString.length()== 17){
             String format = propertiesConfig.getDateTimeFormat();
             return Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(format).parse(timeString)));
         } else{
