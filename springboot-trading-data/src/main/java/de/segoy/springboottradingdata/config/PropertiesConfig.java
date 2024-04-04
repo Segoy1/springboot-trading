@@ -25,6 +25,10 @@ public class PropertiesConfig {
     private String dateFormat;
 
     @Getter
+    @Value("${app.ibkr.tradingPort}")
+    private int tradingPort;
+
+    @Getter
     @Value("${app.ibkr.connectionId}")
     private long connectionId;
 

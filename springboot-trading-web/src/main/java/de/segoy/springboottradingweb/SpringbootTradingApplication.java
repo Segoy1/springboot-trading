@@ -1,5 +1,6 @@
 package de.segoy.springboottradingweb;
 
+import de.segoy.springboottradingdata.config.PropertiesConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,15 +18,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy
 public class SpringbootTradingApplication {
 
-//	public static final Integer LIVE_TRADING_PORT = 7496;
-//	public static final Integer PAPER_TRADING_PORT = 7497;
-	public static final Integer DOCKER_TRADING_PORT = 8888;
-
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
 
+		PropertiesConfig propertiesConfig = context.getBean(PropertiesConfig.class);
 		ConnectionInitiator connection = context.getBean(ConnectionInitiator.class);
-		connection.connect(DOCKER_TRADING_PORT);
+		connection.connect(propertiesConfig.getTradingPort());
 	}
 
 }

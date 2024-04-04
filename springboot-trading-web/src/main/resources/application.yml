@@ -47,6 +47,7 @@ app:
       millis: '000'
   ibkr:
     connectionId: '1'
+    tradingPort: 7497
     isReaderStarted: 'false'
     accountSummary:
       tags:
@@ -74,6 +75,9 @@ spring:
       on-profile: staging
   kafka:
     bootstrap-servers: 10.97.227.135:9092
+app:
+  ibkr:
+    tradingPort: 8888
 
 
 ---
@@ -83,3 +87,8 @@ spring:
       on-profile: production
   kafka:
     bootstrap-servers: 10.97.227.135:9092
+app:
+  ibkr:
+    tradingPort: 7496
+
+
