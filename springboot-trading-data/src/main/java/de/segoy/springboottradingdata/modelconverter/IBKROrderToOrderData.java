@@ -13,7 +13,7 @@ public class IBKROrderToOrderData {
         OrderData orderData = OrderData.builder()
                 .id((long) order.orderId())
                 .action(order.action())
-                .totalQuantity(order.totalQuantity().value())
+                .totalQuantity(order.totalQuantity().value().stripTrailingZeros())
                 .orderType(order.orderType())
                 .timeInForce(order.tif())
                 .limitPrice(BigDecimal.valueOf(order.lmtPrice()))

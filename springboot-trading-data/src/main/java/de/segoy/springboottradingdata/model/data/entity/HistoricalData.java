@@ -29,7 +29,11 @@ public class HistoricalData extends IBKRDataType {
     private double low;
     private double close;
     private BigDecimal volume;
+
+    //number of trades
     private Integer count;
+
+    //weighted average price
     private BigDecimal wap;
 
     @CreationTimestamp

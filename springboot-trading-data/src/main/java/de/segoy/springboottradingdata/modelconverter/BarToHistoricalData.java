@@ -20,9 +20,9 @@ public class BarToHistoricalData {
                 .high(bar.high())
                 .low(bar.low())
                 .close(bar.close())
-                .volume(bar.volume().value())
+                .volume(bar.volume().value().stripTrailingZeros())
                 .count(bar.count())
-                .wap(bar.wap().value())
+                .wap(bar.wap().value().stripTrailingZeros())
                 .build();
     }
 }
