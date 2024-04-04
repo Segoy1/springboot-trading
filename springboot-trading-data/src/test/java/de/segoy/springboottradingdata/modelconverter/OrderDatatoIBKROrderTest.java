@@ -25,6 +25,9 @@ class OrderDatatoIBKROrderTest {
                         .totalQuantity(BigDecimal.valueOf(1))
                         .limitPrice(BigDecimal.valueOf(12))
                         .orderType(OrderType.LMT)
+                        .timeInForce(Types.TimeInForce.DAY)
+                        .auctionPrice(BigDecimal.ONE)
+                        .cashQuantity(BigDecimal.ONE)
                         .action(Types.Action.BUY).build());
 
     assertEquals(order.orderId(), 1);
@@ -32,6 +35,9 @@ class OrderDatatoIBKROrderTest {
     assertEquals(12, order.lmtPrice());
     assertEquals(OrderType.LMT, order.orderType());
     assertEquals(Types.Action.BUY, order.action());
+    assertEquals(1.0,order.auxPrice());
+    assertEquals(1.0,order.cashQty());
+    assertEquals(Types.TimeInForce.DAY,order.tif());
     }
 
 }
