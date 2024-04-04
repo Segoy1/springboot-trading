@@ -1,10 +1,10 @@
-package de.segoy.springboottradingdata.modelconverter;
+package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
-import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

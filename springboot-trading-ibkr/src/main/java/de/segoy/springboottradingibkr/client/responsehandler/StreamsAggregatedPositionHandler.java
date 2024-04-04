@@ -18,6 +18,6 @@ public class StreamsAggregatedPositionHandler {
         ContractData persistedContract =
                 uniqueContractDataProvider.getExistingContractDataOrCallApi(positionData.getContractData()).orElseThrow();
         positionData.setContractData(persistedContract);
-        return positionDataDatabaseSynchronizer.findInDbOrSave(positionData);
+        return positionDataDatabaseSynchronizer.updateInDbOrSave(positionData);
     }
 }

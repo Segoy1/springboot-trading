@@ -19,6 +19,6 @@ public class PositionResponseHandler {
     public PositionData transformResponseAndSynchronizeDB(String account, Contract contract, BigDecimal position, double avgCost){
         PositionData positionData = ibkrResponseToPositionData.convertAndPersistContract(account, contract, position,
                 avgCost);
-        return positionDataDatabaseSynchronizer.findInDbOrSave(positionData);
+        return positionDataDatabaseSynchronizer.updateInDbOrSave(positionData);
     }
 }
