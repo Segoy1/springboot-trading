@@ -25,7 +25,7 @@ public class ContractDataDatabaseSynchronizer {
 
     public ContractData findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong id, Contract contract){
         boolean isCombo = Types.SecType.BAG.name().equals(contract.getSecType());
-        if(contractDataRepository.findFirstByContractId(contract.conid()).isPresent() && !isCombo){
+        if(!isCombo && contractDataRepository.findFirstByContractId(contract.conid()).isPresent()){
             return contractDataRepository.findFirstByContractId(contract.conid()).get();
         } else {
             List<ComboLegData> comboLegs = new ArrayList<>();
