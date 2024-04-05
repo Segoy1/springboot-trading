@@ -1,4 +1,4 @@
-package de.segoy.springboottradingibkr.client.service.accountsummary;
+package de.segoy.springboottradingibkr.client.service.accountsummary.profitandloss;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
@@ -11,20 +11,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AccountSummaryCancelApiCallerTest {
+class AccountPnLCancelApiCallerTest {
 
     @Mock
     private EClientSocket client;
     @Mock
     private PropertiesConfig propertiesConfig;
     @InjectMocks
-    private AccountSummaryCancelApiCaller accountSummaryCancelApiCaller;
+    private AccountPnLCancelApiCaller accountPnLCancelApiCaller;
 
     @Test
     void testCancelCall(){
-        when(propertiesConfig.getACCOUNT_SUMMARY_ID()).thenReturn(1);
-        accountSummaryCancelApiCaller.callApi();
-        verify(client,times(1)).cancelAccountSummary(1);
+        when(propertiesConfig.getPnlAccountId()).thenReturn(1);
+        accountPnLCancelApiCaller.callApi();
+        verify(client,times(1)).cancelPnL(1);
     }
 
 }
