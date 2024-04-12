@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,37 @@ public class HistoricalDataController {
                 .contractData(ContractDataTemplates.SpxData())
                 .barSizeSetting(BarSizeSetting.get(barSize))
                 .backfillDuration(duration)
-                .backfillEndTime(Timestamp.valueOf("2023-12-08 09:00:00"))
+                .backfillEndTime(Timestamp.from(Instant.now()))
+                .whatToShow(WhatToShowType.TRADES)
+                .regularTradingHours(true)
+                .dateFormatStyle(2)
+                .keepUpToDate(false)
+                .build();
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
+        return responseMapper.mapResponse(historicalData);
+    }
+    @GetMapping("/25yearsSP")
+    public ResponseEntity<List<HistoricalData>> getLast25YearsofSP500() {
+        HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.SpxData())
+                .barSizeSetting(BarSizeSetting.ONE_DAY)
+                .backfillDuration("25 Y")
+                .backfillEndTime(Timestamp.from(Instant.now()))
+                .whatToShow(WhatToShowType.TRADES)
+                .regularTradingHours(true)
+                .dateFormatStyle(2)
+                .keepUpToDate(false)
+                .build();
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
+        return responseMapper.mapResponse(historicalData);
+    }
+    @GetMapping("/25yearsVIX")
+    public ResponseEntity<List<HistoricalData>> getLast25YearsofVIX() {
+        HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.VIXData())
+                .barSizeSetting(BarSizeSetting.ONE_DAY)
+                .backfillDuration("25 Y")
+                .backfillEndTime(Timestamp.from(Instant.now()))
                 .whatToShow(WhatToShowType.TRADES)
                 .regularTradingHours(true)
                 .dateFormatStyle(2)

@@ -41,7 +41,7 @@ class HistoricalDataApiResponseCheckerTest {
         callSet.add(5);
         callSet.add(3);
 
-        when(propertiesConfig.getTwoSecondsAgo()).thenReturn(date);
+        when(propertiesConfig.getFiveSecondsAgo()).thenReturn(date);
         when(repository.findAllByContractId(6)).thenReturn(data);
         when(repository.findAllByContractIdAndCreateDateAfter(6, date)).thenReturn(data);
 

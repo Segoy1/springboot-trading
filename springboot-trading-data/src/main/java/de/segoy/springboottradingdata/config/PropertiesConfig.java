@@ -92,7 +92,7 @@ public class PropertiesConfig {
     }
 
 
-    public Date getTwoSecondsAgo(){
-        return Date.from(Instant.now().minusSeconds(2L));
+    public Date getFiveSecondsAgo(){
+        return Date.from(Instant.now().minusSeconds(5L));
     }
 }

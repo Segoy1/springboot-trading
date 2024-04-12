@@ -21,4 +21,12 @@ public class ContractDataTemplates {
                 .exchange("OPRA")
                 .build();
     }
+    public static ContractData VIXData(){
+        return ContractData.builder()
+                .symbol("VIX")
+                .securityType(Types.SecType.IND)
+                .currency("USD")
+                .exchange("CBOE")
+                .build();
+    }
 }
