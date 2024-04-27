@@ -55,6 +55,37 @@ public class HistoricalDataController {
         List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalData);
     }
+    @GetMapping("/25yearsNASDAQ")
+    public ResponseEntity<List<HistoricalData>> getLast25YearsofNASDAQ() {
+        HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.NasDaqData())
+                .barSizeSetting(BarSizeSetting.ONE_DAY)
+                .backfillDuration("25 Y")
+                .backfillEndTime(Timestamp.from(Instant.now()))
+                .whatToShow(WhatToShowType.TRADES)
+                .regularTradingHours(true)
+                .dateFormatStyle(2)
+                .keepUpToDate(false)
+                .build();
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
+        return responseMapper.mapResponse(historicalData);
+    }
+    @GetMapping("/25yearsXOI")
+    public ResponseEntity<List<HistoricalData>> getLast25YearsofOilIndex() {
+        HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.XOIData())
+                .barSizeSetting(BarSizeSetting.ONE_DAY)
+                .backfillDuration("25 Y")
+                .backfillEndTime(Timestamp.from(Instant.now()))
+                .whatToShow(WhatToShowType.TRADES)
+                .regularTradingHours(true)
+                .dateFormatStyle(2)
+                .keepUpToDate(false)
+                .build();
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
+        return responseMapper.mapResponse(historicalData);
+    }
+
     @GetMapping("/25yearsVIX")
     public ResponseEntity<List<HistoricalData>> getLast25YearsofVIX() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
@@ -70,6 +101,22 @@ public class HistoricalDataController {
         List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalData);
     }
+    @GetMapping("/25yearsTLT")
+    public ResponseEntity<List<HistoricalData>> getLast25YearsofTLT() {
+        HistoricalDataSettings settings = HistoricalDataSettings.builder()
+                .contractData(ContractDataTemplates.TLTData())
+                .barSizeSetting(BarSizeSetting.ONE_DAY)
+                .backfillDuration("25 Y")
+                .backfillEndTime(Timestamp.from(Instant.now()))
+                .whatToShow(WhatToShowType.TRADES)
+                .regularTradingHours(true)
+                .dateFormatStyle(2)
+                .keepUpToDate(false)
+                .build();
+        List<HistoricalData> historicalData = historicalDataService.requestHistoricalData(settings);
+        return responseMapper.mapResponse(historicalData);
+    }
+
     @PutMapping
     public ResponseEntity<List<HistoricalData>> requestHistoricalData(@Valid @RequestBody HistoricalDataSettings settings){
         return responseMapper.mapResponse(historicalDataService.requestHistoricalData(settings));
