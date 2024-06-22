@@ -16,9 +16,9 @@ def custom_accuracy(y_true, y_pred, tolerance=0.002 * 20):
 
 batchSize = 64
 T = 120 
-epochs = 20 
+epochs = 300 
 learningRate = 0.0001
-lstm = 128 
+lstm = 64
 opt=RMSprop(learning_rate=learningRate)
 #multiplier to kind of normalize the data
 multi = 20
@@ -105,20 +105,31 @@ D = input_data.shape[1]
 N = len(input_data) - T # (e.g. if T=10 and you have 11 data points then you'd only have 1 sample)
 
 # normalize the inputs
-Ntrain = len(input_data) * 6 // 10
+Ntrain = len(input_data) * 7 // 10
 scaler = StandardScaler()
 scaler.fit(input_data[:Ntrain + T - 1])
 input_data = scaler.transform(input_data)
 
+
+
+
 # Setup X_train and Y_train
 X_train = np.zeros((Ntrain, T, D))
+
+noise_std = 0.1
+# Generate Gaussian noise with the same shape as the training data
+noise = np.random.normal(loc=0, scale=noise_std, size=X_train.shape)
+
+# Add the noise to the training data
+X_train = X_train + noise
+
 Y_train = np.zeros(Ntrain)
 
 for t in range(Ntrain):
   X_train[t, :, :] = input_data[t:t+T]
   #Y_train[t] = (targets[t+T])
   #Y_train[t] = (targets[t+T] > 0)
-  Y_train[t] = (np.abs(targets[t+T]) > (0.012 * multi))
+  Y_train[t] = (np.abs(targets[t+T]) > (0.007 * multi))
 
 # Setup X_test and Y_test
 X_test = np.zeros((N - Ntrain, T, D))
@@ -133,7 +144,7 @@ for u in range(N - Ntrain):
   #One of the following
   #Y_test[u] = (targets[t+T])
   #Y_test[u] = (targets[t+T] > 0)
-  Y_test[u] = (np.abs(targets[t+T]) > (0.012 * multi))
+  Y_test[u] = (np.abs(targets[t+T]) > (0.007 * multi))
 
 # make the RNN
 
@@ -195,6 +206,8 @@ diff = np.mean(np.abs(Y_test - pred)) / multi
 '''
 
 print("Actual Prediction Accuracy", diff )
+#print(np.sum(np.abs(Y_test) > 0.007 * multi  ), np.sum(Y_test))
+print(np.sum(Y_test == 1)/len(Y_test))
 
 
 # Plot accuracy per iteration
