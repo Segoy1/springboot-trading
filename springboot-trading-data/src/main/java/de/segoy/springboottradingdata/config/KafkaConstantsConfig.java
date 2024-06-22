@@ -17,6 +17,8 @@ public class KafkaConstantsConfig {
     private String groupId;
     @Value("${kafka.consumer.rest.group.id}")
     private String restResponseGroupId;
+    @Value("${kafka.consumer.start.group.id}")
+    private String startGroupId;
 
     @Value("${kafka.names.topic.accountSummary}")
     private String ACCOUNT_SUMMARY_TOPIC;

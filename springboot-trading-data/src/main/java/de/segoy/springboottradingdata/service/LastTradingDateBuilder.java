@@ -17,4 +17,7 @@ public class LastTradingDateBuilder {
     public String getDateStringFromToday(){
         return getDateStringFromDate(LocalDate.now());
     }
+    public int getDateIntFromToday(){
+        return Integer.parseInt(getDateStringFromToday());
+    }
 }

@@ -27,6 +27,9 @@ kafka:
     rest:
       group:
         id: rest_response_group
+    auto:
+      group:
+        id: auto_trade_group
 #  bootstrap-servers: 192.168.127.215:9092
 #  bootstrap-servers:   10.97.227.135:9092 moved to spring.kafka.bootstrap-servers because it is still used
 logging:
