@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LiveMarketData  extends IBKRDataType {
+public class LastPriceLiveMarketData extends IBKRDataType {
 
     @Id
     private Long tickerId;
