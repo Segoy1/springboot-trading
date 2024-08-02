@@ -49,6 +49,9 @@ app:
     time:
       millis: '000'
   ibkr:
+    spx:
+      ticker:
+        id: 3214
     connectionId: '1'
     tradingPort: 7497
     isReaderStarted: 'false'
@@ -81,6 +84,7 @@ spring:
 app:
   ibkr:
     tradingPort: 8888
+
 
 
 ---
