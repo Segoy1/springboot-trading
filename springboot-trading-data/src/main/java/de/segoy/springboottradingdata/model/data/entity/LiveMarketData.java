@@ -1,10 +1,11 @@
 package de.segoy.springboottradingdata.model.data.entity;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -15,10 +16,15 @@ import lombok.*;
 public class LiveMarketData  extends IBKRDataType {
 
     @Id
-    private int tickerId;
+    private Long tickerId;
 
     @OneToOne
     private ContractData contractData;
 
     private double lastPrice;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 }

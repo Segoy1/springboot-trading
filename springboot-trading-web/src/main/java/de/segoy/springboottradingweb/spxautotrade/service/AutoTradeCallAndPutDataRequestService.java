@@ -3,7 +3,7 @@ package de.segoy.springboottradingweb.spxautotrade.service;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.TradingConstants;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
-import de.segoy.springboottradingdata.service.LastTradingDateBuilder;
+import de.segoy.springboottradingdata.service.LastTradeDateBuilder;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class AutoTradeCallAndPutDataRequestService {
 
     private final AutoTradeMarketDataService autoTradeMarketDataService;
-    private final LastTradingDateBuilder lastTradingDateBuilder;
+    private final LastTradeDateBuilder lastTradeDateBuilder;
 
     public void getOptionContractsAndCallAPI(double price) {
         int strike = roundTo5(price);
@@ -27,7 +27,7 @@ public class AutoTradeCallAndPutDataRequestService {
                             .symbol(TradingConstants.SPX)
                             .exchange(TradingConstants.CBOE)
                             .currency(TradingConstants.USD)
-                            .lastTradeDate(lastTradingDateBuilder.getDateStringFromToday())
+                            .lastTradeDate(lastTradeDateBuilder.getDateStringFromToday())
                             .tradingClass(TradingConstants.SPXW);
             ContractData call = builder.strike(BigDecimal.valueOf(strike + strikediff)).right(Types.Right.Call).build();
             callMarketData(call);
@@ -40,7 +40,7 @@ public class AutoTradeCallAndPutDataRequestService {
     }
 
     private void callMarketData(ContractData contractData) {
-        autoTradeMarketDataService.requestLiveMarketDataForContractData(lastTradingDateBuilder.getDateIntFromToday(),
+        autoTradeMarketDataService.requestLiveMarketDataForContractData(lastTradeDateBuilder.getDateIntFromToday(),
                 contractData);
     }
 

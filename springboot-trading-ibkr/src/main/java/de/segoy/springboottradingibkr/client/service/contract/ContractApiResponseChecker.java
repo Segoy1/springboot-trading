@@ -7,6 +7,7 @@ import de.segoy.springboottradingibkr.client.errorhandling.ApiResponseErrorHandl
 import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ class ContractApiResponseChecker implements OptionalApiResponseChecker<ContractD
     private final RepositoryRefreshService repositoryRefreshService;
     private final ApiResponseErrorHandler apiResponseErrorHandler;
 
+    @Transactional
     public Optional<ContractData> checkForApiResponseAndUpdate(int id) {
         do{
             repositoryRefreshService.clearCacheAndWait(repository);

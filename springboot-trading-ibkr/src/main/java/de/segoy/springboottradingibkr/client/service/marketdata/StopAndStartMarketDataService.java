@@ -16,7 +16,7 @@ public class StopAndStartMarketDataService {
     private final StopMarketDataService stopMarketDataService;
 
     public void reinitiateApiCall(int id){
-        stopMarketDataService.stopMarketDataForContractId(id);
+        stopMarketDataService.stopMarketDataForTickerId(id);
         contractDataRepository.findById((long)id).ifPresent(
                 startMarketDataApiCaller::callApi);
     }

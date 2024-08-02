@@ -31,7 +31,7 @@ class StopAndStartMarketDataServiceTest {
         when(contractDataRepository.findById(100L)).thenReturn(Optional.of(contractData));
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
-        verify(stopMarketDataService, times(1)).stopMarketDataForContractId(100);
+        verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
         verify(startMarketDataApiCaller, times(1)).callApi(contractData);
     }
     @Test
@@ -40,7 +40,7 @@ class StopAndStartMarketDataServiceTest {
         when(contractDataRepository.findById(100L)).thenReturn(Optional.empty());
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
-        verify(stopMarketDataService, times(1)).stopMarketDataForContractId(100);
+        verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
         verify(startMarketDataApiCaller, never()).callApi(any(ContractData.class));
     }
 }

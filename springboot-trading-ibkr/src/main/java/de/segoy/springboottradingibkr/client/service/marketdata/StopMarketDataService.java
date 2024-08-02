@@ -19,7 +19,7 @@ public class StopMarketDataService {
     private final @Qualifier("StopMarketDataApiCaller") ApiCallerWithId stopMarketDataApiCaller;
     private final ContractDataRepository contractDataRepository;
 
-    public void stopMarketDataForContractId(int id) {
+    public void stopMarketDataForTickerId(int id) {
         contractDataRepository.findById((long) id).ifPresent((contractData) -> {
                     stopMarketDataApiCaller.callApi(id);
                 }

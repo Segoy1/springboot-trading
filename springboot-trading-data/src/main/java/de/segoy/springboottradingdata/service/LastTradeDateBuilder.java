@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LastTradingDateBuilder {
+public class LastTradeDateBuilder {
 
     public String getDateStringFromDate(LocalDate date){
         return  String.valueOf(date.getYear()) +date.getMonth() + date.getDayOfMonth();
