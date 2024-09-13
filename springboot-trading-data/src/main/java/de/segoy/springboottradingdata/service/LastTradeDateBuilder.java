@@ -12,7 +12,9 @@ import java.time.LocalDate;
 public class LastTradeDateBuilder {
 
     public String getDateStringFromDate(LocalDate date){
-        return  String.valueOf(date.getYear()) +date.getMonth() + date.getDayOfMonth();
+        int month = date.getMonth().getValue();
+        String monthAsString = month < 10 ? "0" + month : month + "";
+        return  date.getYear() + monthAsString + date.getDayOfMonth();
     }
     public String getDateStringFromToday(){
         return getDateStringFromDate(LocalDate.now());
