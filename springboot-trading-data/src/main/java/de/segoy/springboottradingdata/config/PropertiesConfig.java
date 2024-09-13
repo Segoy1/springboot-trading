@@ -29,6 +29,10 @@ public class PropertiesConfig {
     private int tradingPort;
 
     @Getter
+    @Value("${app.ibkr.spx.ticker.id}")
+    private int spxTickerId;
+
+    @Getter
     @Value("${app.ibkr.connectionId}")
     private long connectionId;
 

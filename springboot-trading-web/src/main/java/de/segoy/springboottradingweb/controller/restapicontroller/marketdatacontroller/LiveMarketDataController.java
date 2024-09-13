@@ -29,6 +29,6 @@ public class LiveMarketDataController {
 
     @GetMapping("/stop")
     public void stopMarketDatabyId(@RequestParam(name="id") int id) {
-        stopMarketDataService.stopMarketDataForContractId(id);
+        stopMarketDataService.stopMarketDataForTickerId(id);
     }
 }
