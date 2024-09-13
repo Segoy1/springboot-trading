@@ -11,15 +11,15 @@ import java.util.List;
 @Component
 public class KafkaConsumerProvider {
 
-    private final ConsumerFactory<Integer, IBKRDataType> entityConsumerFactory;
+    private final ConsumerFactory<String, IBKRDataType> entityConsumerFactory;
 
-    public KafkaConsumerProvider(@Qualifier("BackendConsumerFactory") ConsumerFactory<Integer,
+    public KafkaConsumerProvider(@Qualifier("BackendConsumerFactory") ConsumerFactory<String,
             IBKRDataType> entityConsumerFactory) {
         this.entityConsumerFactory = entityConsumerFactory;
     }
 
-    public Consumer<Integer, IBKRDataType> createConsumerWithSubscription(List<String> topic) {
-        Consumer<Integer, IBKRDataType> consumer = entityConsumerFactory.createConsumer();
+    public Consumer<String, IBKRDataType> createConsumerWithSubscription(List<String> topic) {
+        Consumer<String, IBKRDataType> consumer = entityConsumerFactory.createConsumer();
         consumer.subscribe(topic);
         return consumer;
     }

@@ -25,8 +25,8 @@ public class KafkaConsumerConfig {
 
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Integer, IBKRDataType> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<Integer, IBKRDataType> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(websocketConsumerFactory());
         return factory;
@@ -34,13 +34,13 @@ public class KafkaConsumerConfig {
 
     @Bean
     @Qualifier("WebsocketConsumerFactory")
-    ConsumerFactory<Integer, IBKRDataType> websocketConsumerFactory() {
+    ConsumerFactory<String, IBKRDataType> websocketConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(getProps());
     }
 
     @Bean
     @Qualifier("BackendConsumerFactory")
-    ConsumerFactory<Integer, IBKRDataType> backendResponseConsumerFactory() {
+    ConsumerFactory<String, IBKRDataType> backendResponseConsumerFactory() {
         Map<String, Object> props = getProps();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getRestResponseGroupId());
         return new DefaultKafkaConsumerFactory<>(props);

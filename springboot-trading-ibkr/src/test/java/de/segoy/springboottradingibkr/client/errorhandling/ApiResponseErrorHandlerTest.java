@@ -28,7 +28,7 @@ class ApiResponseErrorHandlerTest {
     @Mock
     private ErrorCodeMapper errorCodeMapper;
     @Mock
-    private Consumer<Integer, IBKRDataType> consumer;
+    private Consumer<String, IBKRDataType> consumer;
     @Mock
     private KafkaConsumerProvider kafkaConsumerProvider;
     @Mock
@@ -39,13 +39,13 @@ class ApiResponseErrorHandlerTest {
 
     @BeforeEach
     void setup(){
-        ConsumerRecord<Integer, IBKRDataType> r1 =
-                new ConsumerRecord<>("topic",1,1,1, ErrorMessage.builder().errorCode(1).build());
-        ConsumerRecord<Integer, IBKRDataType> r2 =
-                new ConsumerRecord<>("topic",1,2,2, ErrorMessage.builder().errorCode(2).build());
+        ConsumerRecord<String, IBKRDataType> r1 =
+                new ConsumerRecord<>("topic",1,1,"1", ErrorMessage.builder().errorCode(1).build());
+        ConsumerRecord<String, IBKRDataType> r2 =
+                new ConsumerRecord<>("topic",1,2,"2", ErrorMessage.builder().errorCode(2).build());
 
         TopicPartition part = new TopicPartition("topic",1);
-        ConsumerRecords<Integer, IBKRDataType> records = new ConsumerRecords<>(Map.of(part, List.of(r1,r2)));
+        ConsumerRecords<String, IBKRDataType> records = new ConsumerRecords<>(Map.of(part, List.of(r1,r2)));
 
 
         when(kafkaConsumerProvider.createConsumerWithSubscription(List.of("topic"))).thenReturn(consumer);
