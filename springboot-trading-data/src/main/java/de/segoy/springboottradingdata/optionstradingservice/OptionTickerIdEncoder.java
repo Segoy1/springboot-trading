@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OptionTickerIdEncoder {
 
-  IBKRTimeStampFormatter ibkrTimeStampFormatter;
+  private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
   /**
    * Encodes the Contract Data for options to a ticker Id where the the last 4 digits are the strike price
