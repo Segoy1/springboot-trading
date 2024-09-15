@@ -127,6 +127,16 @@ public class KafkaProducerConfig {
     public NewTopic positionsAggregateTopic(){
         return TopicBuilder.name(kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC()).compact().partitions(2).build();
     }
+    @Bean
+    @Qualifier("${kafka.names.topic.streams.aggregateOptionMarketData}")
+    public NewTopic optionMarketDataAggregateTopic(){
+        return TopicBuilder.name(kafkaConstantsConfig.getOPTION_MARKET_DATA_AGGREGATE_TOPIC()).compact().partitions(2).build();
+    }
+    @Bean
+    @Qualifier("${kafka.names.topic.streams.optionChainData}")
+    public NewTopic optionChaineDataTopic(){
+        return TopicBuilder.name(kafkaConstantsConfig.getOPTION_CHAIN_DATA_TOPIC()).compact().partitions(2).build();
+    }
 
     private NewTopic topicHelper(String topicName) {
         return TopicBuilder.name(topicName).build();

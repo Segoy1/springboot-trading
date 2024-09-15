@@ -2,6 +2,7 @@ package de.segoy.springboottradingweb.spxautotrade.service;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.TradingConstants;
+import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.service.LastTradeDateBuilder;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
@@ -16,9 +17,7 @@ public class AutoTradeCallAndPutDataRequestService {
 
     private final AutoTradeMarketDataService autoTradeMarketDataService;
     private final LastTradeDateBuilder lastTradeDateBuilder;
-    private static final int CALL_IDENTIFIER = 1;
-    private static final int PUT_IDENTIFIER = -1;
-    private static final int SPX_TODAY_TICKER_IDENTIFIER = 100000;
+
 
     public void getOptionContractsAndCallAPI(double price) {
         int strike = roundTo5(price);
@@ -32,10 +31,15 @@ public class AutoTradeCallAndPutDataRequestService {
                             .currency(TradingConstants.USD)
                             .lastTradeDate(lastTradeDateBuilder.getDateStringFromToday())
                             .tradingClass(TradingConstants.SPXW);
-            ContractData call = builder.strike(BigDecimal.valueOf(strike + strikediff)).right(Types.Right.Call).build();
-            callMarketData(call, SPX_TODAY_TICKER_IDENTIFIER + strike + CALL_IDENTIFIER);
-            ContractData put = builder.strike(BigDecimal.valueOf(strike - strikediff)).right(Types.Right.Put).build();
-            callMarketData(put, SPX_TODAY_TICKER_IDENTIFIER + strike + PUT_IDENTIFIER);
+            int callPrice = strike + strikediff;
+            ContractData call = builder.strike(BigDecimal.valueOf(callPrice)).right(Types.Right.Call).build();
+            callMarketData(call,
+                    AutoDayTradeConstants.SPX_TODAY_TICKER_IDENTIFIER + callPrice + AutoDayTradeConstants.CALL_TICKER_IDENTIFIER);
+
+            int putPrice = strike - strikediff;
+            ContractData put = builder.strike(BigDecimal.valueOf(putPrice)).right(Types.Right.Put).build();
+            callMarketData(put,
+                    AutoDayTradeConstants.SPX_TODAY_TICKER_IDENTIFIER + putPrice + AutoDayTradeConstants.PUT_TICKER_IDENTIFIER);
             strikediff += 5;
         }
         while (strikediff <= 100);
@@ -48,6 +52,6 @@ public class AutoTradeCallAndPutDataRequestService {
     }
 
     private int roundTo5(double price) {
-        return (int) Math.round((price / 5) * 5);
+        return (int) (Math.round((price / 5)) * 5);
     }
 }

@@ -20,7 +20,9 @@ import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSyn
 import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
+import de.segoy.springboottradingdata.service.TickerIDResolveService;
 import de.segoy.springboottradingibkr.client.responsehandler.PositionResponseHandler;
+import de.segoy.springboottradingibkr.client.service.livemarketdata.LastPriceLiveMarketDataCreateService;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,8 @@ public class IBKRConnection implements EWrapper {
     private final PositionResponseHandler positionResponseHandler;
     private final OrderWriteToDBService orderWriteToDBService;
     private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
+    private final LastPriceLiveMarketDataCreateService lastPriceLiveMarketDataCreateService;
+    private final TickerIDResolveService tickerIDResolveService;
 
 
     private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
@@ -66,8 +70,12 @@ public class IBKRConnection implements EWrapper {
     private NewsArticle m_newsArticle;
 
     @Override
+    @Transactional
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
+        if (TickType.getField(field).equals("lastPrice")) {
+            lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price);
+        }
         kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), Integer.toString(tickerId),
                 StandardMarketData.builder()
                         .tickerId(tickerId)
@@ -87,9 +95,10 @@ public class IBKRConnection implements EWrapper {
     public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta,
                                       double optPrice, double pvDividend, double gamma, double vega, double theta,
                                       double undPrice) {
+        String key = tickerIDResolveService.resolveTickerIdToString(tickerId);
         // received computation tick
         kafkaEntityTemplate.send(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
-                Integer.toString(tickerId),
+                key,
                 OptionMarketData.builder()
                         .tickerId(tickerId)
                         .field(TickType.getField(field))
@@ -138,7 +147,7 @@ public class IBKRConnection implements EWrapper {
                             double mktCapPrice) {
         // received order status
         OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(),  Integer.toString(orderId),
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), Integer.toString(orderId),
                 orderData);
 
         nextValidId(orderId + 1);
@@ -370,7 +379,8 @@ public class IBKRConnection implements EWrapper {
     @Override
     @Transactional
     public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        PositionData position = positionResponseHandler.transformResponseAndSynchronizeDB(account, contract, pos.value(),
+        PositionData position = positionResponseHandler.transformResponseAndSynchronizeDB(account, contract,
+                pos.value(),
                 avgCost);
         String topic = position.getContractData().getSecurityType().equals(Types.SecType.OPT)
                 ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
@@ -565,7 +575,7 @@ public class IBKRConnection implements EWrapper {
     public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
         ProfitAndLossData pnLData = ProfitAndLossData.builder().id((long) reqId).dailyPnL(dailyPnL).unrealizedPnL(
                 unrealizedPnL).realizedPnL(realizedPnL).build();
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(),  Integer.toString(reqId), pnLData);
+        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), Integer.toString(reqId), pnLData);
 //        accountPnLDBSynchronizer.saveToDB(pnLData);
     }
 

@@ -10,6 +10,8 @@ kafka:
       streams:
         optionPositions: ibkr_option_positions
         aggregatePositions: ibkr_positions_aggregate
+        aggregateOptionMarketData: ibkr_options_market_aggregate
+        optionChainData: ibkr_option_chain
       singlePnL: ibkr_single_pnl
       openOrders: ibkr_open_order
       historicalData: ibkr_historical

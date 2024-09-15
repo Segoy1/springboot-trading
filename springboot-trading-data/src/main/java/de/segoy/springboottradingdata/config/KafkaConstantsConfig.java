@@ -58,4 +58,11 @@ public class KafkaConstantsConfig {
 
     @Value("${kafka.names.topic.streams.aggregatePositions}")
     private String POSITIONS_AGGREGATE_TOPIC;
+
+    @Value("${kafka.names.topic.streams.aggregateOptionMarketData}")
+    private String OPTION_MARKET_DATA_AGGREGATE_TOPIC;
+
+    @Value("${kafka.names.topic.streams.optionChainData}")
+    private String OPTION_CHAIN_DATA_TOPIC;
+
 }
