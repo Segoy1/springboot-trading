@@ -29,8 +29,8 @@ public class TickerIDResolveService {
         && tickerID
             <= AutoDayTradeConstants.SPX_TODAY_TICKER_IDENTIFIER
                 + AutoDayTradeConstants.EXPECTED_MAX_VALUE_OF_SPX) {
-      tickerIDMap.put("Date", lastTradeDateBuilder.getDateStringFromToday());
-      tickerIDMap.put("Symbol", AutoDayTradeConstants.SPX);
+      tickerIDMap.put(AutoDayTradeConstants.DATE, lastTradeDateBuilder.getDateStringFromToday());
+      tickerIDMap.put(AutoDayTradeConstants.SYMBOL, AutoDayTradeConstants.SPX);
       tickerToStrikeAndOptionType(tickerIDMap, tickerID);
 
     } else {
@@ -43,12 +43,12 @@ public class TickerIDResolveService {
     int strikeWithPutCallInfo = tickerId - AutoDayTradeConstants.SPX_TODAY_TICKER_IDENTIFIER;
     if (strikeWithPutCallInfo % 5 == 1) {
       int callStrike = strikeWithPutCallInfo - AutoDayTradeConstants.CALL_TICKER_IDENTIFIER;
-      tickerIDMap.put("Strike", callStrike + "");
-      tickerIDMap.put("Action", AutoDayTradeConstants.CALL);
+      tickerIDMap.put(AutoDayTradeConstants.STRIKE, callStrike + "");
+      tickerIDMap.put(AutoDayTradeConstants.CALL_PUT, AutoDayTradeConstants.CALL);
     } else if (strikeWithPutCallInfo % 5 == 4) {
       int putStrike = strikeWithPutCallInfo - AutoDayTradeConstants.PUT_TICKER_IDENTIFIER;
-      tickerIDMap.put("Strike", putStrike + "");
-      tickerIDMap.put("Action", AutoDayTradeConstants.PUT);
+      tickerIDMap.put(AutoDayTradeConstants.STRIKE, putStrike + "");
+      tickerIDMap.put(AutoDayTradeConstants.CALL_PUT, AutoDayTradeConstants.PUT);
     } else {
       throw new RuntimeException("Invalid strike Price number");
     }

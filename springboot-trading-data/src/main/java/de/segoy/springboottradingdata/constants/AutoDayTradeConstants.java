@@ -10,6 +10,10 @@ public class AutoDayTradeConstants {
     public static final String SPX = "SPX";
     public static final String DELIMITER = "_";
     public static final String CHAIN_SAVE_FIELD = "modelOptComp";
+    public static final String DATE = "Date";
+    public static final String SYMBOL = "Symbol";
+    public static final String CALL_PUT = "Action";
+    public static final String STRIKE = "Strike";
 
     private AutoDayTradeConstants() {}
 }
