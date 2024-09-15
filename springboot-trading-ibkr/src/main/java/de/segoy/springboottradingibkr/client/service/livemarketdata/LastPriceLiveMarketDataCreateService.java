@@ -24,15 +24,11 @@ public class LastPriceLiveMarketDataCreateService {
 
   @Transactional
   public LastPriceLiveMarketData createLiveData(int tickerId, double price) {
-    ContractData contractData = null;
-    if (tickerId == propertiesConfig.getSpxTickerId()) {
+    ContractData contractData;
       contractData =
           contractDataRepository
               .findFirstBySymbolAndSecurityTypeAndCurrency("SPX", Types.SecType.IND, "USD")
               .orElseGet(() -> contractDataRepository.save(ContractDataTemplates.SpxOptionData()));
-    } else {
-      throw new RuntimeException("No, ContractData with tickerId: " + tickerId + " found!");
-    }
     LastPriceLiveMarketData lastPriceLiveMarketData =
         LastPriceLiveMarketData.builder()
             .tickerId((long) tickerId)

@@ -40,658 +40,824 @@ import java.util.Map.Entry;
 @RequiredArgsConstructor
 public class IBKRConnection implements EWrapper {
 
+  private final PropertiesConfig propertiesConfig;
+  private final KafkaConstantsConfig kafkaConstantsConfig;
 
-    private final PropertiesConfig propertiesConfig;
-    private final KafkaConstantsConfig kafkaConstantsConfig;
+  private final KafkaTemplate<String, String> kafkaTemplate;
+  private final KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate;
+  private final ConnectionDataRepository connectionDataRepository;
+  private final OrderStatusUpdateService orderStatusUpdateService;
+  private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
+  private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
+  private final PositionResponseHandler positionResponseHandler;
+  private final OrderWriteToDBService orderWriteToDBService;
+  private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
+  private final LastPriceLiveMarketDataCreateService lastPriceLiveMarketDataCreateService;
+  private final OptionTickerIdResolver optionTickerIdResolver;
 
-    private final ConnectionDataRepository connectionDataRepository;
-    private final OrderStatusUpdateService orderStatusUpdateService;
-    private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
-    private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
-    private final PositionResponseHandler positionResponseHandler;
-    private final OrderWriteToDBService orderWriteToDBService;
-    private final NextValidOrderIdGenerator nextValidOrderIdGenerator;
-    private final LastPriceLiveMarketDataCreateService lastPriceLiveMarketDataCreateService;
-    private final OptionTickerIdResolver optionTickerIdResolver;
+  private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
+  private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
+  private final Map<Integer, String> faMap = new HashMap<>();
 
-    private final Map<Integer, MktDepth> m_mapRequestToMktDepthModel = new HashMap<>();
-    private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
+  private boolean faError;
 
-    private final Map<Integer, String> faMap = new HashMap<>();
+  private Account m_account;
+  private Groups m_groupsDlg;
+  private NewsArticle m_newsArticle;
 
-    private boolean faError;
-
-    private Account m_account;
-    private Groups m_groupsDlg;
-    private NewsArticle m_newsArticle;
-
-    @Override
-    @Transactional
-    public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
-//        TickType.getField( field);
-        if (TickType.getField(field).equals("lastPrice") || TickType.getField(field).equals("close")) {
-            lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price);
-        }
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), Integer.toString(tickerId),
-                StandardMarketData.builder()
-                        .tickerId(tickerId)
-                        .field(TickType.getField(field))
-                        .price(price)
-                        .attrib(attrib.toString())
-                        .build());
+  @Override
+  @Transactional
+  public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
+    //        TickType.getField( field);
+    if ((TickType.getField(field).equals("lastPrice") || TickType.getField(field).equals("close"))
+        && tickerId == propertiesConfig.getSpxTickerId()) {
+      lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price);
     }
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),
+        Integer.toString(tickerId),
+        StandardMarketData.builder()
+            .tickerId(tickerId)
+            .field(TickType.getField(field))
+            .price(price)
+            .attrib(attrib.toString())
+            .build());
+  }
 
-    @Override
-    public void tickSize(int tickerId, int field, Decimal size) {
-        // received size tick
-        log.info(EWrapperMsgGenerator.tickSize(tickerId, field, size));
+  @Override
+  public void tickSize(int tickerId, int field, Decimal size) {
+    // received size tick
+    log.info(EWrapperMsgGenerator.tickSize(tickerId, field, size));
+  }
+
+  @Override
+  public void tickOptionComputation(
+      int tickerId,
+      int field,
+      int tickAttrib,
+      double impliedVol,
+      double delta,
+      double optPrice,
+      double pvDividend,
+      double gamma,
+      double vega,
+      double theta,
+      double undPrice) {
+    String key = optionTickerIdResolver.resolveTickerIdToString(tickerId);
+    // received computation tick
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
+        key,
+        OptionMarketData.builder()
+            .tickerId(tickerId)
+            .field(TickType.getField(field))
+            .tickAttrib(tickAttrib)
+            .impliedVol(impliedVol)
+            .delta(delta)
+            .optPrice(optPrice)
+            .pvDividend(pvDividend)
+            .gamma(gamma)
+            .vega(vega)
+            .theta(theta)
+            .undPrice(undPrice)
+            .build());
+  }
+
+  @Override
+  public void tickGeneric(int tickerId, int tickType, double value) {
+    // received generic tick
+    log.info(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
+  }
+
+  @Override
+  public void tickString(int tickerId, int tickType, String value) {
+    // received String tick
+    log.info(EWrapperMsgGenerator.tickString(tickerId, tickType, value));
+  }
+
+  @Override
+  public void tickSnapshotEnd(int reqId) {
+    kafkaTemplate.send("tick", EWrapperMsgGenerator.tickSnapshotEnd(reqId));
+  }
+
+  @Override
+  public void tickEFP(
+      int tickerId,
+      int tickType,
+      double basisPoints,
+      String formattedBasisPoints,
+      double impliedFuture,
+      int holdDays,
+      String futureLastTradeDate,
+      double dividendImpact,
+      double dividendsToLastTradeDate) {
+    // received EFP tick
+    log.info(
+        EWrapperMsgGenerator.tickEFP(
+            tickerId,
+            tickType,
+            basisPoints,
+            formattedBasisPoints,
+            impliedFuture,
+            holdDays,
+            futureLastTradeDate,
+            dividendImpact,
+            dividendsToLastTradeDate));
+  }
+
+  @Override
+  @Transactional
+  public void orderStatus(
+      int orderId,
+      String status,
+      Decimal filled,
+      Decimal remaining,
+      double avgFillPrice,
+      int permId,
+      int parentId,
+      double lastFillPrice,
+      int clientId,
+      String whyHeld,
+      double mktCapPrice) {
+    // received order status
+    OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getORDER_TOPIC(), Integer.toString(orderId), orderData);
+
+    nextValidId(orderId + 1);
+  }
+
+  @Override
+  @Transactional
+  public void openOrder(
+      int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
+    // populates DB On init and first Time Order is saved to DB when opened
+    OrderData orderData =
+        orderWriteToDBService.saveOrUpdateFullOrderDataToDb(
+            order, contract, orderState.getStatus());
+    kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderData);
+  }
+
+  @Override
+  public void openOrderEnd() {
+    log.info(EWrapperMsgGenerator.openOrderEnd());
+  }
+
+  @Override
+  @Transactional
+  public void contractDetails(int reqId, ContractDetails contractDetails) {
+    contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
+        OptionalLong.of(reqId), contractDetails.contract());
+  }
+
+  @Override
+  public void contractDetailsEnd(int reqId) {
+    log.info(EWrapperMsgGenerator.contractDetailsEnd(reqId));
+  }
+
+  @Override
+  public void scannerData(
+      int reqId,
+      int rank,
+      ContractDetails contractDetails,
+      String distance,
+      String benchmark,
+      String projection,
+      String legsStr) {
+    log.info(
+        EWrapperMsgGenerator.scannerData(
+            reqId, rank, contractDetails, distance, benchmark, projection, legsStr));
+  }
+
+  @Override
+  public void scannerDataEnd(int reqId) {
+    kafkaTemplate.send("tick", EWrapperMsgGenerator.scannerDataEnd(reqId));
+  }
+
+  @Override
+  public void bondContractDetails(int reqId, ContractDetails contractDetails) {
+    log.info(EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails));
+  }
+
+  @Override
+  public void execDetails(int reqId, Contract contract, Execution execution) {
+    log.info(EWrapperMsgGenerator.execDetails(reqId, contract, execution));
+  }
+
+  @Override
+  public void execDetailsEnd(int reqId) {
+    log.info(EWrapperMsgGenerator.execDetailsEnd(reqId));
+  }
+
+  @Override
+  public void updateMktDepth(
+      int tickerId, int position, int operation, int side, double price, Decimal size) {
+    MktDepth depthModel = m_mapRequestToMktDepthModel.get(tickerId);
+    if (depthModel != null) {
+      depthModel.updateMktDepth(tickerId, position, "", operation, side, price, size);
+    } else {
+      log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
     }
+  }
 
-    @Override
-    public void tickOptionComputation(int tickerId, int field, int tickAttrib, double impliedVol, double delta,
-                                      double optPrice, double pvDividend, double gamma, double vega, double theta,
-                                      double undPrice) {
-        String key = optionTickerIdResolver.resolveTickerIdToString(tickerId);
-        // received computation tick
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
-                key,
-                OptionMarketData.builder()
-                        .tickerId(tickerId)
-                        .field(TickType.getField(field))
-                        .tickAttrib(tickAttrib)
-                        .impliedVol(impliedVol)
-                        .delta(delta)
-                        .optPrice(optPrice)
-                        .pvDividend(pvDividend)
-                        .gamma(gamma)
-                        .vega(vega)
-                        .theta(theta)
-                        .undPrice(undPrice).build());
+  @Override
+  public void updateMktDepthL2(
+      int tickerId,
+      int position,
+      String marketMaker,
+      int operation,
+      int side,
+      double price,
+      Decimal size,
+      boolean isSmartDepth) {
+    MktDepth depthModel;
+
+    if (isSmartDepth) {
+      depthModel = m_mapRequestToSmartDepthModel.get(tickerId);
+    } else {
+      depthModel = m_mapRequestToMktDepthModel.get(tickerId);
     }
-
-    @Override
-    public void tickGeneric(int tickerId, int tickType, double value) {
-        // received generic tick
-        log.info(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
-
+    if (depthModel != null) {
+      depthModel.updateMktDepth(tickerId, position, marketMaker, operation, side, price, size);
+    } else {
+      log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
     }
+  }
 
-    @Override
-    public void tickString(int tickerId, int tickType, String value) {
-        // received String tick
-        log.info(EWrapperMsgGenerator.tickString(tickerId, tickType, value));
+  @Override
+  public void nextValidId(int orderId) {
+    nextValidOrderIdGenerator.generateAndSaveNextOrderId(orderId);
+  }
+
+  @Override
+  public void error(Exception e) {
+    // do not report exceptions if we initiated disconnect
+    if (!connectionDataRepository
+        .findById(propertiesConfig.getConnectionId())
+        .orElseThrow()
+        .getDisconnectInProgress()) {
+      String msg = EWrapperMsgGenerator.error(e);
+      log.error(msg);
     }
+  }
 
-    @Override
-    public void tickSnapshotEnd(int reqId) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickSnapshotEnd(reqId));
-    }
+  @Override
+  public void error(String str) {
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
+        ErrorMessage.builder().messageId(-1000).message(str).build());
+  }
 
-    @Override
-    public void tickEFP(int tickerId, int tickType, double basisPoints, String formattedBasisPoints,
-                        double impliedFuture, int holdDays, String futureLastTradeDate, double dividendImpact,
-                        double dividendsToLastTradeDate) {
-        // received EFP tick
-        log.info(EWrapperMsgGenerator.tickEFP(tickerId, tickType, basisPoints, formattedBasisPoints,
-                impliedFuture, holdDays, futureLastTradeDate, dividendImpact, dividendsToLastTradeDate));
-    }
+  @Override
+  public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
+        Integer.toString(id),
+        ErrorMessage.builder()
+            .messageId(id)
+            .errorCode(errorCode)
+            .message(errorMsg)
+            .advancedOrderReject(advancedOrderRejectJson)
+            .build());
+  }
 
-    @Override
-    @Transactional
-    public void orderStatus(int orderId, String status, Decimal filled, Decimal remaining, double avgFillPrice,
-                            int permId, int parentId, double lastFillPrice, int clientId, String whyHeld,
-                            double mktCapPrice) {
-        // received order status
-        OrderData orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), Integer.toString(orderId),
-                orderData);
+  @Override
+  @Transactional
+  public void connectionClosed() {
+    connectionDataRepository.setConnectFalseById(propertiesConfig.getConnectionId());
+    log.warn(EWrapperMsgGenerator.connectionClosed());
+  }
 
-        nextValidId(orderId + 1);
+  @Override
+  public void updateAccountValue(String key, String value, String currency, String accountName) {
+    m_account.updateAccountValue(key, value, currency, accountName);
+  }
 
-    }
+  @Override
+  public void updatePortfolio(
+      Contract contract,
+      Decimal position,
+      double marketPrice,
+      double marketValue,
+      double averageCost,
+      double unrealizedPNL,
+      double realizedPNL,
+      String accountName) {
+    m_account.updatePortfolio(
+        contract,
+        position,
+        marketPrice,
+        marketValue,
+        averageCost,
+        unrealizedPNL,
+        realizedPNL,
+        accountName);
+  }
 
-    @Override
-    @Transactional
-    public void openOrder(int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
-        //populates DB On init and first Time Order is saved to DB when opened
-        OrderData orderData =
-                orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract, orderState.getStatus());
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderData);
+  @Override
+  public void updateAccountTime(String timeStamp) {
+    m_account.updateAccountTime(timeStamp);
+  }
 
-    }
+  @Override
+  public void accountDownloadEnd(String accountName) {
+    m_account.accountDownloadEnd(accountName);
+    log.info(EWrapperMsgGenerator.accountDownloadEnd(accountName));
+  }
 
-    @Override
-    public void openOrderEnd() {
-        log.info(EWrapperMsgGenerator.openOrderEnd());
-    }
+  @Override
+  public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange) {
+    log.info(EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange));
+    // TODO replacement for JOptionPane
+  }
 
-    @Override
-    @Transactional
-    public void contractDetails(int reqId, ContractDetails contractDetails) {
-        contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.of(reqId),
-                contractDetails.contract());
-    }
+  @Override
+  public void managedAccounts(String accountsList) {
 
-    @Override
-    public void contractDetailsEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.contractDetailsEnd(reqId));
-    }
+    ConnectionData connectionData =
+        connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElseThrow();
+    connectionData.setIsFAAccount(true);
+    connectionData.setAccountList(accountsList);
+    connectionDataRepository.save(connectionData);
+    //        m_FAAcctCodes = accountsList;
+    log.info(EWrapperMsgGenerator.managedAccounts(accountsList));
+  }
 
-    @Override
-    public void scannerData(int reqId, int rank, ContractDetails contractDetails, String distance, String benchmark,
-                            String projection, String legsStr) {
-        log.info(EWrapperMsgGenerator.scannerData(reqId, rank, contractDetails, distance,
-                benchmark, projection, legsStr));
-    }
+  @Override
+  @Transactional
+  public void historicalData(int reqId, Bar bar) {
+    historicalDataDatabaseSynchronizer.findInDbOrSave(reqId, bar);
+  }
 
-    @Override
-    public void scannerDataEnd(int reqId) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.scannerDataEnd(reqId));
-    }
+  @Override
+  public void historicalDataEnd(int reqId, String startDate, String endDate) {
+    log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
+  }
 
-    @Override
-    public void bondContractDetails(int reqId, ContractDetails contractDetails) {
-        log.info(EWrapperMsgGenerator.bondContractDetails(reqId, contractDetails));
-    }
+  @Override
+  public void realtimeBar(
+      int reqId,
+      long time,
+      double open,
+      double high,
+      double low,
+      double close,
+      Decimal volume,
+      Decimal wap,
+      int count) {
+    // TODO: Index Ticker comes here
+    // MessageFormat: id=25 time = 1701887635 open=4565,62 high=4565,73 low=4565,62 close=4565,66
+    // volume=0 count=0
+    // WAP=0
+    kafkaTemplate.send(
+        "tickLifeBar",
+        EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count));
+  }
 
+  @Override
+  public void scannerParameters(String xml) {
+    displayXML(EWrapperMsgGenerator.SCANNER_PARAMETERS, xml);
+  }
 
-    @Override
-    public void execDetails(int reqId, Contract contract, Execution execution) {
-        log.info(EWrapperMsgGenerator.execDetails(reqId, contract, execution));
-    }
+  @Override
+  public void currentTime(long time) {
+    log.info(EWrapperMsgGenerator.currentTime(time));
+  }
 
-    @Override
-    public void execDetailsEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.execDetailsEnd(reqId));
-    }
+  @Override
+  public void fundamentalData(int reqId, String data) {
+    kafkaTemplate.send("tick", EWrapperMsgGenerator.fundamentalData(reqId, data));
+  }
 
-    @Override
-    public void updateMktDepth(int tickerId, int position, int operation, int side, double price, Decimal size) {
-        MktDepth depthModel = m_mapRequestToMktDepthModel.get(tickerId);
-        if (depthModel != null) {
-            depthModel.updateMktDepth(tickerId, position, "", operation, side, price, size);
-        } else {
-            log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
-        }
-    }
+  @Override
+  public void deltaNeutralValidation(int reqId, DeltaNeutralContract deltaNeutralContract) {
+    log.info(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract));
+  }
 
-    @Override
-    public void updateMktDepthL2(int tickerId, int position, String marketMaker, int operation, int side,
-                                 double price, Decimal size, boolean isSmartDepth) {
-        MktDepth depthModel;
+  private void displayXML(String title, String xml) {
+    log.info(title + "\n" + xml);
+    //        TODO display xml properly
+    //        m_TWS.addText(xml);
+  }
 
-        if (isSmartDepth) {
-            depthModel = m_mapRequestToSmartDepthModel.get(tickerId);
-        } else {
-            depthModel = m_mapRequestToMktDepthModel.get(tickerId);
-        }
-        if (depthModel != null) {
-            depthModel.updateMktDepth(tickerId, position, marketMaker, operation, side, price, size);
-        } else {
-            log.warn("cannot find dialog that corresponds to request id [" + tickerId + "]");
-        }
-    }
+  @Override
+  public void receiveFA(int faDataType, String xml) {
+    displayXML(
+        EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType),
+        xml);
+    //        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError);
+  }
 
-    @Override
-    public void nextValidId(int orderId) {
-        nextValidOrderIdGenerator.generateAndSaveNextOrderId(orderId);
-    }
+  @Override
+  public void marketDataType(int reqId, int marketDataType) {
+    kafkaTemplate.send("tick", EWrapperMsgGenerator.marketDataType(reqId, marketDataType));
+  }
 
-    @Override
-    public void error(Exception e) {
-        // do not report exceptions if we initiated disconnect
-        if (!connectionDataRepository.findById(
-                propertiesConfig.getConnectionId()).orElseThrow().getDisconnectInProgress()) {
-            String msg = EWrapperMsgGenerator.error(e);
-            log.error(msg);
-        }
-    }
+  @Override
+  public void commissionReport(CommissionReport commissionReport) {
+    log.info(EWrapperMsgGenerator.commissionReport(commissionReport));
+  }
 
-    @Override
-    public void error(String str) {
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
-                ErrorMessage.builder().messageId(-1000).message(str).build());
-    }
+  @Override
+  @Transactional
+  public void position(String account, Contract contract, Decimal pos, double avgCost) {
+    PositionData position =
+        positionResponseHandler.transformResponseAndSynchronizeDB(
+            account, contract, pos.value(), avgCost);
+    String topic =
+        position.getContractData().getSecurityType().equals(Types.SecType.OPT)
+            ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
+            : kafkaConstantsConfig.getPOSITION_TOPIC();
+    kafkaEntityTemplate.send(
+        topic, Integer.toString(position.getContractData().getContractId()), position);
+  }
 
-    @Override
-    public void error(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getERROR_MESSAGE_TOPIC(),
-                Integer.toString(id),
-                ErrorMessage.builder().messageId(id).errorCode(errorCode).message(errorMsg).advancedOrderReject(
-                        advancedOrderRejectJson).build());
-    }
+  @Override
+  public void positionEnd() {
+    log.info(EWrapperMsgGenerator.positionEnd());
+  }
 
-    @Override
-    @Transactional
-    public void connectionClosed() {
-        connectionDataRepository.setConnectFalseById(propertiesConfig.getConnectionId());
-        log.warn(EWrapperMsgGenerator.connectionClosed());
-    }
+  @Override
+  public void accountSummary(int reqId, String account, String tag, String value, String currency) {
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
+        Integer.toString(reqId),
+        AccountSummaryData.builder()
+            .account(account)
+            .tag(tag)
+            .amount(value)
+            .currency(currency)
+            .build());
+  }
 
-    @Override
-    public void updateAccountValue(String key, String value, String currency, String accountName) {
-        m_account.updateAccountValue(key, value, currency, accountName);
-    }
+  @Override
+  public void accountSummaryEnd(int reqId) {
+    log.info(EWrapperMsgGenerator.accountSummaryEnd(reqId));
+  }
 
-    @Override
-    public void updatePortfolio(Contract contract, Decimal position, double marketPrice, double marketValue,
-                                double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
-        m_account.updatePortfolio(contract, position, marketPrice, marketValue,
-                averageCost, unrealizedPNL, realizedPNL, accountName);
-    }
+  @Override
+  public void positionMulti(
+      int reqId, String account, String modelCode, Contract contract, Decimal pos, double avgCost) {
+    log.info(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost));
+  }
 
-    @Override
-    public void updateAccountTime(String timeStamp) {
-        m_account.updateAccountTime(timeStamp);
-    }
+  @Override
+  public void positionMultiEnd(int reqId) {
+    log.info(EWrapperMsgGenerator.positionMultiEnd(reqId));
+  }
 
-    @Override
-    public void accountDownloadEnd(String accountName) {
-        m_account.accountDownloadEnd(accountName);
-        log.info(EWrapperMsgGenerator.accountDownloadEnd(accountName));
-    }
+  @Override
+  public void accountUpdateMulti(
+      int reqId, String account, String modelCode, String key, String value, String currency) {
+    log.info(
+        EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency));
+  }
 
-    @Override
-    public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange) {
-        log.info(EWrapperMsgGenerator.updateNewsBulletin(msgId, msgType, message, origExchange));
-        //TODO replacement for JOptionPane
-    }
+  @Override
+  public void accountUpdateMultiEnd(int reqId) {
+    log.info(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId));
+  }
 
-    @Override
-    public void managedAccounts(String accountsList) {
+  @Override
+  public void verifyMessageAPI(String apiData) {
+    /* Empty */
+  }
 
-        ConnectionData connectionData = connectionDataRepository.findById(
-                propertiesConfig.getConnectionId()).orElseThrow();
-        connectionData.setIsFAAccount(true);
-        connectionData.setAccountList(accountsList);
-        connectionDataRepository.save(connectionData);
-//        m_FAAcctCodes = accountsList;
-        log.info(EWrapperMsgGenerator.managedAccounts(accountsList));
-    }
+  @Override
+  public void verifyCompleted(boolean isSuccessful, String errorText) {
+    /* Empty */
+  }
 
-    @Override
-    @Transactional
-    public void historicalData(int reqId, Bar bar) {
-        historicalDataDatabaseSynchronizer.findInDbOrSave(reqId, bar);
-    }
+  @Override
+  public void verifyAndAuthMessageAPI(String apiData, String xyzChallenge) {
+    /* Empty */
+  }
 
-    @Override
-    public void historicalDataEnd(int reqId, String startDate, String endDate) {
-        log.info(EWrapperMsgGenerator.historicalDataEnd(reqId, startDate, endDate));
-    }
+  @Override
+  public void verifyAndAuthCompleted(boolean isSuccessful, String errorText) {
+    /* Empty */
+  }
 
-    @Override
-    public void realtimeBar(int reqId, long time, double open, double high, double low, double close, Decimal volume,
-                            Decimal wap, int count) {
-        //TODO: Index Ticker comes here
-        //MessageFormat: id=25 time = 1701887635 open=4565,62 high=4565,73 low=4565,62 close=4565,66 volume=0 count=0
-        // WAP=0
-        kafkaTemplate.send("tickLifeBar",
-                EWrapperMsgGenerator.realtimeBar(reqId, time, open, high, low, close, volume, wap, count));
-    }
+  @Override
+  public void displayGroupList(int reqId, String groups) {
+    m_groupsDlg.displayGroupList(reqId, groups);
+  }
 
-    @Override
-    public void scannerParameters(String xml) {
-        displayXML(EWrapperMsgGenerator.SCANNER_PARAMETERS, xml);
-    }
+  @Override
+  public void displayGroupUpdated(int reqId, String contractInfo) {
+    m_groupsDlg.displayGroupUpdated(reqId, contractInfo);
+  }
 
-    @Override
-    public void currentTime(long time) {
-        log.info(EWrapperMsgGenerator.currentTime(time));
-    }
+  @Override
+  public void connectAck() {
+    //        if (m_client.isAsyncEConnect())
+    //            m_client.startAPI();
+  }
 
-    @Override
-    public void fundamentalData(int reqId, String data) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.fundamentalData(reqId, data));
-    }
+  @Override
+  public void securityDefinitionOptionalParameter(
+      int reqId,
+      String exchange,
+      int underlyingConId,
+      String tradingClass,
+      String multiplier,
+      Set<String> expirations,
+      Set<Double> strikes) {
+    log.info(
+        EWrapperMsgGenerator.securityDefinitionOptionalParameter(
+            reqId, exchange, underlyingConId, tradingClass, multiplier, expirations, strikes));
+  }
 
-    @Override
-    public void deltaNeutralValidation(int reqId, DeltaNeutralContract deltaNeutralContract) {
-        log.info(EWrapperMsgGenerator.deltaNeutralValidation(reqId, deltaNeutralContract));
-    }
+  @Override
+  public void securityDefinitionOptionalParameterEnd(int reqId) {
+    /* Empty */
+  }
 
-    private void displayXML(String title, String xml) {
-        log.info(title + "\n" + xml);
-//        TODO display xml properly
-//        m_TWS.addText(xml);
-    }
+  @Override
+  public void softDollarTiers(int reqId, SoftDollarTier[] tiers) {
+    log.info(EWrapperMsgGenerator.softDollarTiers(tiers));
+  }
 
-    @Override
-    public void receiveFA(int faDataType, String xml) {
-        displayXML(EWrapperMsgGenerator.FINANCIAL_ADVISOR + " " + EClientSocket.faMsgTypeName(faDataType), xml);
-//        faDataTypeHandler.handleFaDataType(faDataType, xml, faMap, faError);
-    }
+  @Override
+  public void familyCodes(FamilyCode[] familyCodes) {
+    log.info(EWrapperMsgGenerator.familyCodes(familyCodes));
+  }
 
-    @Override
-    public void marketDataType(int reqId, int marketDataType) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.marketDataType(reqId, marketDataType));
-    }
+  @Override
+  public void symbolSamples(int reqId, ContractDescription[] contractDescriptions) {
+    log.info(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions));
+  }
 
-    @Override
-    public void commissionReport(CommissionReport commissionReport) {
-        log.info(EWrapperMsgGenerator.commissionReport(commissionReport));
-    }
+  @Override
+  public void mktDepthExchanges(DepthMktDataDescription[] depthMktDataDescriptions) {
+    log.info(EWrapperMsgGenerator.mktDepthExchanges(depthMktDataDescriptions));
+  }
 
-    @Override
-    @Transactional
-    public void position(String account, Contract contract, Decimal pos, double avgCost) {
-        PositionData position = positionResponseHandler.transformResponseAndSynchronizeDB(account, contract,
-                pos.value(),
-                avgCost);
-        String topic = position.getContractData().getSecurityType().equals(Types.SecType.OPT)
-                ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
-                : kafkaConstantsConfig.getPOSITION_TOPIC();
-        kafkaEntityTemplate.send(topic,
-                Integer.toString(position.getContractData().getContractId()),
-                position);
-    }
+  @Override
+  public void tickNews(
+      int tickerId,
+      long timeStamp,
+      String providerCode,
+      String articleId,
+      String headline,
+      String extraData) {
+    log.info(
+        EWrapperMsgGenerator.tickNews(
+            tickerId, timeStamp, providerCode, articleId, headline, extraData));
+  }
 
-    @Override
-    public void positionEnd() {
-        log.info(EWrapperMsgGenerator.positionEnd());
-    }
+  @Override
+  public void smartComponents(int reqId, Map<Integer, Entry<String, Character>> theMap) {
+    log.info(EWrapperMsgGenerator.smartComponents(reqId, theMap));
+  }
 
-    @Override
-    public void accountSummary(int reqId, String account, String tag, String value, String currency) {
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
-                Integer.toString(reqId),
-                AccountSummaryData.builder().account(account).tag(tag).amount(value).currency(currency).build());
-    }
+  @Override
+  public void tickReqParams(
+      int tickerId, double minTick, String bboExchange, int snapshotPermissions) {
+    kafkaTemplate.send(
+        "tick",
+        EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions));
+  }
 
-    @Override
-    public void accountSummaryEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.accountSummaryEnd(reqId));
-    }
+  @Override
+  public void newsProviders(NewsProvider[] newsProviders) {
+    log.info(EWrapperMsgGenerator.newsProviders(newsProviders));
+  }
 
-    @Override
-    public void positionMulti(int reqId, String account, String modelCode, Contract contract, Decimal pos,
-                              double avgCost) {
-        log.info(EWrapperMsgGenerator.positionMulti(reqId, account, modelCode, contract, pos, avgCost));
-    }
-
-    @Override
-    public void positionMultiEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.positionMultiEnd(reqId));
-    }
-
-    @Override
-    public void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value,
-                                   String currency) {
-        log.info(EWrapperMsgGenerator.accountUpdateMulti(reqId, account, modelCode, key, value, currency));
-    }
-
-    @Override
-    public void accountUpdateMultiEnd(int reqId) {
-        log.info(EWrapperMsgGenerator.accountUpdateMultiEnd(reqId));
-    }
-
-    @Override
-    public void verifyMessageAPI(String apiData) { /* Empty */ }
-
-    @Override
-    public void verifyCompleted(boolean isSuccessful, String errorText) {  /* Empty */ }
-
-    @Override
-    public void verifyAndAuthMessageAPI(String apiData, String xyzChallenge) {  /* Empty */ }
-
-    @Override
-    public void verifyAndAuthCompleted(boolean isSuccessful, String errorText) {  /* Empty */ }
-
-    @Override
-    public void displayGroupList(int reqId, String groups) {
-        m_groupsDlg.displayGroupList(reqId, groups);
-    }
-
-    @Override
-    public void displayGroupUpdated(int reqId, String contractInfo) {
-        m_groupsDlg.displayGroupUpdated(reqId, contractInfo);
-    }
-
-    @Override
-    public void connectAck() {
-//        if (m_client.isAsyncEConnect())
-//            m_client.startAPI();
-    }
-
-
-    @Override
-    public void securityDefinitionOptionalParameter(int reqId, String exchange, int underlyingConId,
-                                                    String tradingClass, String multiplier, Set<String> expirations,
-                                                    Set<Double> strikes) {
+  @Override
+  public void newsArticle(int requestId, int articleType, String articleText) {
+    log.info(EWrapperMsgGenerator.newsArticle(requestId, articleType, articleText));
+    if (articleType == 1) {
+      String path = m_newsArticle.m_retPath;
+      try {
+        byte[] bytes = Base64.getDecoder().decode(articleText);
+        FileOutputStream fos = new FileOutputStream(path);
+        fos.write(bytes);
+        fos.close();
+        log.info("Binary/pdf article was saved to " + path);
+      } catch (IOException ex) {
         log.info(
-                EWrapperMsgGenerator.securityDefinitionOptionalParameter(reqId, exchange, underlyingConId, tradingClass,
-                        multiplier, expirations, strikes));
+            "Binary/pdf article was not saved to " + path + " due to error: " + ex.getMessage());
+      }
     }
+  }
 
-    @Override
-    public void securityDefinitionOptionalParameterEnd(int reqId) { /* Empty */ }
+  @Override
+  public void historicalNews(
+      int requestId, String time, String providerCode, String articleId, String headline) {
+    log.info(
+        EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline));
+  }
 
-    @Override
-    public void softDollarTiers(int reqId, SoftDollarTier[] tiers) {
-        log.info(EWrapperMsgGenerator.softDollarTiers(tiers));
+  @Override
+  public void historicalNewsEnd(int requestId, boolean hasMore) {
+    log.info(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore));
+  }
+
+  @Override
+  public void headTimestamp(int reqId, String headTimestamp) {
+    log.info(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp));
+  }
+
+  @Override
+  public void histogramData(int reqId, List<HistogramEntry> items) {
+    log.info(EWrapperMsgGenerator.histogramData(reqId, items));
+  }
+
+  @Override
+  @Transactional
+  public void historicalDataUpdate(int reqId, Bar bar) {
+    historicalData(reqId, bar);
+  }
+
+  @Override
+  public void rerouteMktDataReq(int reqId, int conId, String exchange) {
+    log.info(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange));
+  }
+
+  @Override
+  public void rerouteMktDepthReq(int reqId, int conId, String exchange) {
+    log.info(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange));
+  }
+
+  @Override
+  public void marketRule(int marketRuleId, PriceIncrement[] priceIncrements) {
+    log.info(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements));
+  }
+
+  @Override
+  public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
+    ProfitAndLossData pnLData =
+        ProfitAndLossData.builder()
+            .id((long) reqId)
+            .dailyPnL(dailyPnL)
+            .unrealizedPnL(unrealizedPnL)
+            .realizedPnL(realizedPnL)
+            .build();
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), Integer.toString(reqId), pnLData);
+    //        accountPnLDBSynchronizer.saveToDB(pnLData);
+  }
+
+  @Override
+  public void pnlSingle(
+      int reqId,
+      Decimal pos,
+      double dailyPnL,
+      double unrealizedPnL,
+      double realizedPnL,
+      double value) {
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getSINGLE_PNL_TOPIC(),
+        Integer.toString(reqId),
+        ProfitAndLossData.builder()
+            .id((long) reqId)
+            .pos(pos.value())
+            .dailyPnL(dailyPnL)
+            .unrealizedPnL(unrealizedPnL)
+            .realizedPnL(realizedPnL)
+            .currentValue(value)
+            .build());
+    //        accountPnLDBSynchronizer.saveToDB(pnLData);
+  }
+
+  @Override
+  public void historicalTicks(int reqId, List<HistoricalTick> ticks, boolean done) {
+    StringBuilder msg = new StringBuilder();
+
+    for (HistoricalTick tick : ticks) {
+      msg.append(
+          EWrapperMsgGenerator.historicalTick(reqId, tick.time(), tick.price(), tick.size()));
+      msg.append("\n");
     }
+    log.info(msg.toString());
+  }
 
-    @Override
-    public void familyCodes(FamilyCode[] familyCodes) {
-        log.info(EWrapperMsgGenerator.familyCodes(familyCodes));
+  @Override
+  public void historicalTicksBidAsk(int reqId, List<HistoricalTickBidAsk> ticks, boolean done) {
+    StringBuilder msg = new StringBuilder();
+
+    for (HistoricalTickBidAsk tick : ticks) {
+      msg.append(
+          EWrapperMsgGenerator.historicalTickBidAsk(
+              reqId,
+              tick.time(),
+              tick.tickAttribBidAsk(),
+              tick.priceBid(),
+              tick.priceAsk(),
+              tick.sizeBid(),
+              tick.sizeAsk()));
+      msg.append("\n");
     }
+    log.info(msg.toString());
+  }
 
-    @Override
-    public void symbolSamples(int reqId, ContractDescription[] contractDescriptions) {
-        log.info(EWrapperMsgGenerator.symbolSamples(reqId, contractDescriptions));
+  @Override
+  public void historicalTicksLast(int reqId, List<HistoricalTickLast> ticks, boolean done) {
+    StringBuilder msg = new StringBuilder();
+
+    for (HistoricalTickLast tick : ticks) {
+      msg.append(
+          EWrapperMsgGenerator.historicalTickLast(
+              reqId,
+              tick.time(),
+              tick.tickAttribLast(),
+              tick.price(),
+              tick.size(),
+              tick.exchange(),
+              tick.specialConditions()));
+      msg.append("\n");
     }
+    log.info(msg.toString());
+  }
 
+  @Override
+  public void tickByTickAllLast(
+      int reqId,
+      int tickType,
+      long time,
+      double price,
+      Decimal size,
+      TickAttribLast tickAttribLast,
+      String exchange,
+      String specialConditions) {
+    kafkaTemplate.send(
+        "tick",
+        EWrapperMsgGenerator.tickByTickAllLast(
+            reqId, tickType, time, price, size, tickAttribLast, exchange, specialConditions));
+  }
 
-    @Override
-    public void mktDepthExchanges(DepthMktDataDescription[] depthMktDataDescriptions) {
-        log.info(EWrapperMsgGenerator.mktDepthExchanges(depthMktDataDescriptions));
-    }
+  @Override
+  public void tickByTickBidAsk(
+      int reqId,
+      long time,
+      double bidPrice,
+      double askPrice,
+      Decimal bidSize,
+      Decimal askSize,
+      TickAttribBidAsk tickAttribBidAsk) {
+    kafkaTemplate.send(
+        "tick",
+        EWrapperMsgGenerator.tickByTickBidAsk(
+            reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk));
+  }
 
-    @Override
-    public void tickNews(int tickerId, long timeStamp, String providerCode, String articleId, String headline,
-                         String extraData) {
-        log.info(EWrapperMsgGenerator.tickNews(tickerId, timeStamp, providerCode, articleId, headline, extraData));
-    }
+  @Override
+  public void tickByTickMidPoint(int reqId, long time, double midPoint) {
+    kafkaTemplate.send("tick", EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint));
+  }
 
-    @Override
-    public void smartComponents(int reqId, Map<Integer, Entry<String, Character>> theMap) {
-        log.info(EWrapperMsgGenerator.smartComponents(reqId, theMap));
-    }
+  @Override
+  public void orderBound(long orderId, int apiClientId, int apiOrderId) {
+    log.info(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId));
+  }
 
-    @Override
-    public void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions) {
-        kafkaTemplate.send("tick",
-                EWrapperMsgGenerator.tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions));
-    }
+  @Override
+  public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
+    OrderData orderData =
+        orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
+    kafkaEntityTemplate.send(
+        kafkaConstantsConfig.getORDER_TOPIC(),
+        Integer.toString(orderData.getId().intValue()),
+        orderData);
+  }
 
-    @Override
-    public void newsProviders(NewsProvider[] newsProviders) {
-        log.info(EWrapperMsgGenerator.newsProviders(newsProviders));
-    }
+  @Override
+  public void completedOrdersEnd() {
+    log.info(EWrapperMsgGenerator.completedOrdersEnd());
+  }
 
-    @Override
-    public void newsArticle(int requestId, int articleType, String articleText) {
-        log.info(EWrapperMsgGenerator.newsArticle(requestId, articleType, articleText));
-        if (articleType == 1) {
-            String path = m_newsArticle.m_retPath;
-            try {
-                byte[] bytes = Base64.getDecoder().decode(articleText);
-                FileOutputStream fos = new FileOutputStream(path);
-                fos.write(bytes);
-                fos.close();
-                log.info("Binary/pdf article was saved to " + path);
-            } catch (IOException ex) {
-                log.info("Binary/pdf article was not saved to " + path + " due to error: " + ex.getMessage());
-            }
-        }
-    }
+  @Override
+  public void replaceFAEnd(int reqId, String text) {
+    log.info(EWrapperMsgGenerator.replaceFAEnd(reqId, text));
+  }
 
-    @Override
-    public void historicalNews(int requestId, String time, String providerCode, String articleId, String headline) {
-        log.info(EWrapperMsgGenerator.historicalNews(requestId, time, providerCode, articleId, headline));
-    }
+  @Override
+  public void wshMetaData(int reqId, String dataJson) {
+    log.info(EWrapperMsgGenerator.wshMetaData(reqId, dataJson));
+  }
 
-    @Override
-    public void historicalNewsEnd(int requestId, boolean hasMore) {
-        log.info(EWrapperMsgGenerator.historicalNewsEnd(requestId, hasMore));
-    }
+  @Override
+  public void wshEventData(int reqId, String dataJson) {
+    log.info(EWrapperMsgGenerator.wshEventData(reqId, dataJson));
+  }
 
-    @Override
-    public void headTimestamp(int reqId, String headTimestamp) {
-        log.info(EWrapperMsgGenerator.headTimestamp(reqId, headTimestamp));
-    }
+  @Override
+  public void historicalSchedule(
+      int reqId,
+      String startDateTime,
+      String endDateTime,
+      String timeZone,
+      List<HistoricalSession> sessions) {
+    log.info(
+        EWrapperMsgGenerator.historicalSchedule(
+            reqId, startDateTime, endDateTime, timeZone, sessions));
+  }
 
-    @Override
-    public void histogramData(int reqId, List<HistogramEntry> items) {
-        log.info(EWrapperMsgGenerator.histogramData(reqId, items));
-    }
-
-    @Override
-    @Transactional
-    public void historicalDataUpdate(int reqId, Bar bar) {
-        historicalData(reqId, bar);
-    }
-
-    @Override
-    public void rerouteMktDataReq(int reqId, int conId, String exchange) {
-        log.info(EWrapperMsgGenerator.rerouteMktDataReq(reqId, conId, exchange));
-    }
-
-    @Override
-    public void rerouteMktDepthReq(int reqId, int conId, String exchange) {
-        log.info(EWrapperMsgGenerator.rerouteMktDepthReq(reqId, conId, exchange));
-    }
-
-    @Override
-    public void marketRule(int marketRuleId, PriceIncrement[] priceIncrements) {
-        log.info(EWrapperMsgGenerator.marketRule(marketRuleId, priceIncrements));
-    }
-
-    @Override
-    public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
-        ProfitAndLossData pnLData = ProfitAndLossData.builder().id((long) reqId).dailyPnL(dailyPnL).unrealizedPnL(
-                unrealizedPnL).realizedPnL(realizedPnL).build();
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getACCOUNT_PNL_TOPIC(), Integer.toString(reqId), pnLData);
-//        accountPnLDBSynchronizer.saveToDB(pnLData);
-    }
-
-    @Override
-    public void pnlSingle(int reqId, Decimal pos, double dailyPnL, double unrealizedPnL, double realizedPnL,
-                          double value) {
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getSINGLE_PNL_TOPIC(),
-                Integer.toString(reqId),
-                ProfitAndLossData.builder()
-                        .id((long) reqId)
-                        .pos(pos.value())
-                        .dailyPnL(dailyPnL)
-                        .unrealizedPnL(unrealizedPnL)
-                        .realizedPnL(realizedPnL)
-                        .currentValue(value).build());
-//        accountPnLDBSynchronizer.saveToDB(pnLData);
-    }
-
-    @Override
-    public void historicalTicks(int reqId, List<HistoricalTick> ticks, boolean done) {
-        StringBuilder msg = new StringBuilder();
-
-        for (HistoricalTick tick : ticks) {
-            msg.append(EWrapperMsgGenerator.historicalTick(reqId, tick.time(), tick.price(), tick.size()));
-            msg.append("\n");
-        }
-        log.info(msg.toString());
-    }
-
-    @Override
-    public void historicalTicksBidAsk(int reqId, List<HistoricalTickBidAsk> ticks, boolean done) {
-        StringBuilder msg = new StringBuilder();
-
-        for (HistoricalTickBidAsk tick : ticks) {
-            msg.append(EWrapperMsgGenerator.historicalTickBidAsk(reqId, tick.time(), tick.tickAttribBidAsk(),
-                    tick.priceBid(), tick.priceAsk(), tick.sizeBid(),
-                    tick.sizeAsk()));
-            msg.append("\n");
-        }
-        log.info(msg.toString());
-    }
-
-    @Override
-    public void historicalTicksLast(int reqId, List<HistoricalTickLast> ticks, boolean done) {
-        StringBuilder msg = new StringBuilder();
-
-        for (HistoricalTickLast tick : ticks) {
-            msg.append(EWrapperMsgGenerator.historicalTickLast(reqId, tick.time(), tick.tickAttribLast(), tick.price(),
-                    tick.size(), tick.exchange(),
-                    tick.specialConditions()));
-            msg.append("\n");
-        }
-        log.info(msg.toString());
-    }
-
-    @Override
-    public void tickByTickAllLast(int reqId, int tickType, long time, double price, Decimal size,
-                                  TickAttribLast tickAttribLast, String exchange, String specialConditions) {
-        kafkaTemplate.send("tick",
-                EWrapperMsgGenerator.tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast, exchange,
-                        specialConditions));
-    }
-
-    @Override
-    public void tickByTickBidAsk(int reqId, long time, double bidPrice, double askPrice, Decimal bidSize,
-                                 Decimal askSize, TickAttribBidAsk tickAttribBidAsk) {
-        kafkaTemplate.send("tick",
-                EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize,
-                        tickAttribBidAsk));
-    }
-
-    @Override
-    public void tickByTickMidPoint(int reqId, long time, double midPoint) {
-        kafkaTemplate.send("tick", EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint));
-    }
-
-    @Override
-    public void orderBound(long orderId, int apiClientId, int apiOrderId) {
-        log.info(EWrapperMsgGenerator.orderBound(orderId, apiClientId, apiOrderId));
-    }
-
-    @Override
-    public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
-        OrderData orderData = orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
-        kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(),
-                Integer.toString(orderData.getId().intValue()), orderData);
-    }
-
-    @Override
-    public void completedOrdersEnd() {
-        log.info(EWrapperMsgGenerator.completedOrdersEnd());
-    }
-
-    @Override
-    public void replaceFAEnd(int reqId, String text) {
-        log.info(EWrapperMsgGenerator.replaceFAEnd(reqId, text));
-    }
-
-    @Override
-    public void wshMetaData(int reqId, String dataJson) {
-        log.info(EWrapperMsgGenerator.wshMetaData(reqId, dataJson));
-    }
-
-    @Override
-    public void wshEventData(int reqId, String dataJson) {
-        log.info(EWrapperMsgGenerator.wshEventData(reqId, dataJson));
-    }
-
-    @Override
-    public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone,
-                                   List<HistoricalSession> sessions) {
-        log.info(EWrapperMsgGenerator.historicalSchedule(reqId, startDateTime, endDateTime, timeZone, sessions));
-    }
-
-    @Override
-    public void userInfo(int reqId, String whiteBrandingId) {
-        log.info(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId));
-    }
+  @Override
+  public void userInfo(int reqId, String whiteBrandingId) {
+    log.info(EWrapperMsgGenerator.userInfo(reqId, whiteBrandingId));
+  }
 }

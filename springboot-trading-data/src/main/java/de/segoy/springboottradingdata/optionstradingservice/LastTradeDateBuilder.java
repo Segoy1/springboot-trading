@@ -17,6 +17,10 @@ public class LastTradeDateBuilder {
   public String getDateStringFromToday() {
     return ibkrTimeStampFormatter.formatTimestampToDate(Timestamp.valueOf(LocalDateTime.now()));
   }
+  public String getDateStringFromTomorrow() {
+    return ibkrTimeStampFormatter.formatTimestampToDate(Timestamp.valueOf(LocalDateTime.now().plusDays(1)));
+  }
+
 
   public int getDateIntFromToday() {
     return Integer.parseInt(getDateStringFromToday());
