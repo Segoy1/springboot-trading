@@ -58,7 +58,7 @@ public class ApiResponseKafkaHandler {
     @KafkaListener(groupId = "${kafka.consumer.group.id}", topics = "${kafka.names.topic.optionMarketData}")
     public void consumeOptionMarketDataMessage(OptionMarketData message) {
         String topic = kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC();
-        log.info("Tick: " + message.getTickerId() + message.getField());
+        log.info("Option Tick: " + message.getTickerId() + message.getField() + ": "+ message.getUndPrice());
         messagingTemplate.convertAndSend("/topic/" + topic, message);
     }
 

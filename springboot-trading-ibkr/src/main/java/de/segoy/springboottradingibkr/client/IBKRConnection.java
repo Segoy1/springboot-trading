@@ -73,7 +73,7 @@ public class IBKRConnection implements EWrapper {
     @Transactional
     public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
 //        TickType.getField( field);
-        if (TickType.getField(field).equals("lastPrice")) {
+        if (TickType.getField(field).equals("lastPrice") || TickType.getField(field).equals("close")) {
             lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price);
         }
         kafkaEntityTemplate.send(kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(), Integer.toString(tickerId),
