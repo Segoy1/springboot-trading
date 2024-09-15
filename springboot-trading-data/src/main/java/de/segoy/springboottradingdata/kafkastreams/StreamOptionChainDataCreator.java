@@ -1,40 +1,44 @@
 package de.segoy.springboottradingdata.kafkastreams;
 
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.model.data.OptionChainData;
 import de.segoy.springboottradingdata.model.data.OptionMarketData;
-import de.segoy.springboottradingdata.service.TickerIDResolveService;
+import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class StreamOptionChainDataCreator {
 
-  private final TickerIDResolveService tickerIDResolveService;
+  private final OptionTickerIdResolver optionTickerIdResolver;
 
-  public OptionChainData buildChain(
-      String key, OptionMarketData marketData, OptionChainData aggregatedChain) {
+  public OptionChainData buildChain(OptionMarketData marketData, OptionChainData aggregatedChain) {
+    OptionTickerIdResolver.OptionDetails optionDetails =
+        optionTickerIdResolver.resolveTickerIdToOptionDetails(marketData.getTickerId());
     if (aggregatedChain.getLastTradeDate() == null) {
-      aggregatedChain = createNewChain(key);
+      aggregatedChain = createNewChain(optionDetails);
     }
-    Map<String,String> optionDetails = tickerIDResolveService.resolveTickerIdToMap(marketData.getTickerId());
-//    marketData.
 
+    if (marketData.getField().equals(AutoDayTradeConstants.CHAIN_SAVE_FIELD)) {
+      if (optionDetails.right().equals(Types.Right.Call)) {
+        aggregatedChain.getCalls().put(optionDetails.strike(), marketData);
+      } else if (optionDetails.right().equals(Types.Right.Put)) {
+        aggregatedChain.getPuts().put(optionDetails.strike(), marketData);
+      }
+    }
 
     return aggregatedChain;
   }
 
-  private OptionChainData createNewChain(String key) {
-    String[] keyParts = key.split(AutoDayTradeConstants.DELIMITER);
+  private OptionChainData createNewChain(OptionTickerIdResolver.OptionDetails optionDetails) {
     return OptionChainData.builder()
-        .lastTradeDate(keyParts[0])
-        .symbol(keyParts[1])
-        .puts(new HashSet<>())
-        .calls(new HashSet<>())
+        .lastTradeDate(optionDetails.date())
+        .symbol(optionDetails.symbol().name())
+        .puts(new HashMap<>())
+        .calls(new HashMap<>())
         .build();
   }
 }

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AutoTradeOptionDataCollector {
+public class AutoTradeOptionChainCollector {
 
     private final LastTradeDateBuilder lastTradeDateBuilder;
 
-    @KafkaListener(groupId = "${kafka.consumer.auto.group.id}", topics = "${kafka.names.topic.optionMarketData}")
+    @KafkaListener(groupId = "${kafka.consumer.auto.group.id}", topics = "${kafka.names.topic.streams.optionChainData}")
     public void collectPutAndCallData(OptionMarketData message){
         if(message.getTickerId() == lastTradeDateBuilder.getDateIntFromToday()){
             log.info("Tick: " + message.getTickerId() + message.getField());

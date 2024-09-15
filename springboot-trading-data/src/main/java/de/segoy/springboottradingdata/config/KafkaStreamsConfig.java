@@ -109,7 +109,7 @@ public class KafkaStreamsConfig {
             .aggregate(
                 () -> OptionChainData.builder().build(),
                 (key, newOptionData, chainData) ->
-                    streamOptionChainDataCreator.buildChain(key, newOptionData, chainData),
+                    streamOptionChainDataCreator.buildChain(newOptionData, chainData),
                 Materialized.<String, OptionChainData, KeyValueStore<Bytes, byte[]>>as(
                         kafkaConstantsConfig.getOPTION_MARKET_DATA_AGGREGATE_TOPIC())
                     .withKeySerde(Serdes.String())

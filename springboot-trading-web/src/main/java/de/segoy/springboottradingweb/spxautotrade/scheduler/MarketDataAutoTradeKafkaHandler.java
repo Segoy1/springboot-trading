@@ -14,20 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class MarketDataAutoTradeKafkaHandler {
 
+  private final AutoTradeCallAndPutDataRequestService autoTradeOptionDataService;
+  private final LastPriceLiveMarketDataRepository lastPriceLiveMarketDataRepository;
+  private final PropertiesConfig propertiesConfig;
 
-    private final AutoTradeCallAndPutDataRequestService autoTradeOptionDataService;
-    private final LastPriceLiveMarketDataRepository lastPriceLiveMarketDataRepository;
-    private final PropertiesConfig propertiesConfig;
-
-
-//    @Scheduled(cron = "0 30 15 * * 1-5")
-    @Scheduled(cron = "*/30 * * * * *")
-    public void getOptionDataForDayTradeStrategy() {
-        LastPriceLiveMarketData liveData =
-
-                lastPriceLiveMarketDataRepository.findById((long) propertiesConfig.getSpxTickerId()).orElseThrow(
-                        () -> new RuntimeException(
-                                "No Live Data for SPX found"));
-        autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
-    }
+  //    @Scheduled(cron = "0 30 15 * * 1-5")
+  @Scheduled(cron = "*/30 * * * * *")
+  public void getOptionDataForDayTradeStrategy() {
+    LastPriceLiveMarketData liveData =
+        lastPriceLiveMarketDataRepository
+            .findById((long) propertiesConfig.getSpxTickerId())
+            .orElseThrow(() -> new RuntimeException("No Live Data for SPX found"));
+    autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
+  }
 }

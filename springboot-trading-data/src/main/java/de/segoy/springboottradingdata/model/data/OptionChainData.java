@@ -1,8 +1,7 @@
 package de.segoy.springboottradingdata.model.data;
 
+import java.util.Map;
 import lombok.*;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -13,6 +12,6 @@ public class OptionChainData  extends IBKRDataType{
 
     private String lastTradeDate;
     private String symbol;
-    private Set<OptionMarketData> calls;
-    private Set<OptionMarketData> puts;
+    private Map<Integer, OptionMarketData> calls;
+    private Map<Integer, OptionMarketData> puts;
 }

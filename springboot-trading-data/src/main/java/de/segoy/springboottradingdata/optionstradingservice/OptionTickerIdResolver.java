@@ -15,11 +15,10 @@ public class OptionTickerIdResolver {
 
   public record OptionDetails(String date, Symbol symbol, Integer strike, Types.Right right) {}
 
-  private final LastTradeDateBuilder lastTradeDateBuilder;
   private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
   public String resolveTickerIdToString(int tickerId) {
-    OptionDetails details = resolveTickerIdToMap(tickerId);
+    OptionDetails details = resolveTickerIdToOptionDetails(tickerId);
 
     return details.date
         + AutoDayTradeConstants.DELIMITER
@@ -30,7 +29,7 @@ public class OptionTickerIdResolver {
         + details.right;
   }
 
-  public OptionDetails resolveTickerIdToMap(int tickerId) {
+  public OptionDetails resolveTickerIdToOptionDetails(int tickerId) {
 
     Types.Right right = tickerId < 0 ? Types.Right.Put : Types.Right.Call;
 
@@ -40,8 +39,7 @@ public class OptionTickerIdResolver {
 
     Symbol symbol = resolveSymbol(tickerId);
 
-    return new OptionDetails(
-        lastTradeDate, symbol, strike, right);
+    return new OptionDetails(lastTradeDate, symbol, strike, right);
   }
 
   private String resolveDate(int tickerId) {
@@ -57,7 +55,7 @@ public class OptionTickerIdResolver {
         Timestamp.valueOf(LocalDate.now().atStartOfDay().plusDays(days)));
   }
 
-  private Symbol resolveSymbol(int tickerId){
+  private Symbol resolveSymbol(int tickerId) {
     int symbolValue = tickerId / AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER;
     return Symbol.fromValue(symbolValue);
   }
