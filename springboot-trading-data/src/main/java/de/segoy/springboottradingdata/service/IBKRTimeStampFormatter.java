@@ -18,6 +18,10 @@ public class IBKRTimeStampFormatter {
 
     private final PropertiesConfig propertiesConfig;
 
+    public String formatTimestampToDate(final Timestamp timestamp) {
+        return new SimpleDateFormat(propertiesConfig.getDateFormat()).format(timestamp);
+    }
+
     public String formatTimestampToDateAndTime(Timestamp timestamp) {
         return new SimpleDateFormat(propertiesConfig.getDateTimeFormat()).format(timestamp);
     }
