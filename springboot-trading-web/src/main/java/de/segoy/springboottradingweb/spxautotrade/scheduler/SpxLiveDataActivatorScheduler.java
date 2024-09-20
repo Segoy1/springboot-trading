@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class IronCondorScheduler {
+public class SpxLiveDataActivatorScheduler {
 
     private final PropertiesConfig propertiesConfig;
     private final AutoTradeMarketDataService autoTradeMarketDataService;

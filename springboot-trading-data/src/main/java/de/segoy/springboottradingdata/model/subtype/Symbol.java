@@ -10,7 +10,8 @@ public enum Symbol {
   GC(7),
   CL(8),
   NDX(9),
-  XOI(10);
+  XOI(10),
+  SPXW(11);
 
   final int numberValue;
 

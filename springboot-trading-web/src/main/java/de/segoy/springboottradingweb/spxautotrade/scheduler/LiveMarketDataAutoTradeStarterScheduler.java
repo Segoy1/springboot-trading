@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class MarketDataAutoTradeKafkaHandler {
+public class LiveMarketDataAutoTradeStarterScheduler {
 
   private final AutoTradeCallAndPutDataRequestService autoTradeOptionDataService;
   private final LastPriceLiveMarketDataRepository lastPriceLiveMarketDataRepository;
