@@ -13,27 +13,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class OptionTickerIdResolver {
 
-  public record OptionDetails(String date, Symbol symbol, Integer strike, Types.Right right) {}
+  public record OptionDetails(String date, Symbol symbol, Double strike, Types.Right right) {
+    @Override
+    public String toString() {
+      return date
+          + AutoDayTradeConstants.DELIMITER
+          + symbol
+          + AutoDayTradeConstants.DELIMITER
+          + strike
+          + AutoDayTradeConstants.DELIMITER
+          + right;
+    }
+  }
 
   private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
-
-  public String resolveTickerIdToString(int tickerId) {
-    OptionDetails details = resolveTickerIdToOptionDetails(tickerId);
-
-    return details.date
-        + AutoDayTradeConstants.DELIMITER
-        + details.symbol
-        + AutoDayTradeConstants.DELIMITER
-        + details.strike
-        + AutoDayTradeConstants.DELIMITER
-        + details.right;
-  }
 
   public OptionDetails resolveTickerIdToOptionDetails(int tickerId) {
 
     Types.Right right = tickerId < 0 ? Types.Right.Put : Types.Right.Call;
 
-    int strike = tickerId % AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER;
+    //TODO: when there are Fields that can have .5 Strikes check for symbol and adjust value accordingly
+    double strike = tickerId % AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER;
 
     String lastTradeDate = resolveDate(tickerId);
 

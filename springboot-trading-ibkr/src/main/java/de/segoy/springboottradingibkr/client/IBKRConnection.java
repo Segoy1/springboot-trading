@@ -105,13 +105,18 @@ public class IBKRConnection implements EWrapper {
       double vega,
       double theta,
       double undPrice) {
-    String key = optionTickerIdResolver.resolveTickerIdToString(tickerId);
+    OptionTickerIdResolver.OptionDetails details =
+        optionTickerIdResolver.resolveTickerIdToOptionDetails(tickerId);
     // received computation tick
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
-        key,
+        details.toString(),
         OptionMarketData.builder()
             .tickerId(tickerId)
+            .strike(details.strike())
+            .right(details.right())
+            .lastTradeDate(details.date())
+            .symbol(details.symbol())
             .field(TickType.getField(field))
             .tickAttrib(tickAttrib)
             .impliedVol(impliedVol)

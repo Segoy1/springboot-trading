@@ -1,5 +1,7 @@
 package de.segoy.springboottradingdata.model.data;
 
+import com.ib.client.Types;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import lombok.*;
 
 @Getter
@@ -11,6 +13,10 @@ public class OptionMarketData extends IBKRDataType {
 
 
     private int tickerId;
+    private double strike;
+    private Types.Right right;
+    private Symbol symbol;
+    private String lastTradeDate;
 
     //Resolve with  TickType.getField( field);
     //10 = bid 11= ask 12=last 13=model

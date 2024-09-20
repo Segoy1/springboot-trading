@@ -26,8 +26,7 @@ public class ContractDataController {
     public ResponseEntity<ContractData> ComboLegContractData(@RequestBody StrategyContractData strategyContractData) {
 
         Optional<ContractData> savedContract =
-                strategyBuilderService.getComboLegContractData(strategyContractData.getContractData(),
-                        strategyContractData.getStrategyLegs());
+                strategyBuilderService.getComboLegContractData(strategyContractData);
 
         return responseMapper.mapResponse(savedContract);
     }

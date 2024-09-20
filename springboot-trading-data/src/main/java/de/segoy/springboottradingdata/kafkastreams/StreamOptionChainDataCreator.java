@@ -3,9 +3,9 @@ package de.segoy.springboottradingdata.kafkastreams;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.model.data.OptionChainData;
+import de.segoy.springboottradingdata.model.data.OptionListData;
 import de.segoy.springboottradingdata.model.data.OptionMarketData;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
-import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +37,8 @@ public class StreamOptionChainDataCreator {
     return OptionChainData.builder()
         .lastTradeDate(optionDetails.date())
         .symbol(optionDetails.symbol().name())
-        .puts(new HashMap<>())
-        .calls(new HashMap<>())
+        .calls(new OptionListData())
+        .puts(new OptionListData())
         .build();
   }
 }
