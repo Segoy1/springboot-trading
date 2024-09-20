@@ -6,7 +6,7 @@ management:
 autotrade:
   delta: ${AUTOTRADE_DELTA_VALUE}
   orderLimitValue: ${AUTOTRADE_ORDER_LIMIT_VALUE}
-  spreadSize: ${AUTOTRADE_SPREAD_SIZE}}
+  spreadSize: ${AUTOTRADE_SPREAD_SIZE}
 kafka:
   names:
     topic:
