@@ -2,6 +2,7 @@ package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
+import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
@@ -27,7 +28,7 @@ class StartMarketDataApiCallerTest {
 
     @Test
     void testCallApi() {
-        ContractData data = ContractData.builder().id(1L).build();
+        ContractData data = ContractData.builder().id(1L).securityType(Types.SecType.STK).build();
         Contract contract = new Contract();
 
         when(contractDataToIBKRContract.convertContractData(data)).thenReturn(contract);

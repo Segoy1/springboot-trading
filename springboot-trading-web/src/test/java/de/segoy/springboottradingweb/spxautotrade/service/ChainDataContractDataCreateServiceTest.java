@@ -1,12 +1,16 @@
 package de.segoy.springboottradingweb.spxautotrade.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import de.segoy.springboottradingdata.model.data.OptionChainData;
 import de.segoy.springboottradingdata.model.data.OptionListData;
 import de.segoy.springboottradingdata.model.data.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
+import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,18 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ChainDataContractDataCreateServiceTest {
 
     @Mock
+    StrategyBuilderService strategyBuilderService;
+    @Mock
     TradeRuleSettingsConfig tradeRuleSettingsConfig;
     @InjectMocks
     private ChainDataContractDataCreateService chainDataContractDataCreateService;
 
     private OptionChainData testData;
-
-    @Test
-    void simpleNumbersTest(){
-        chainDataContractDataCreateService.createIronCondorContractData(testData);
-        
-        when(tradeRuleSettingsConfig.getDelta()).thenReturn(0.05);
-    }
 
     @BeforeEach
     void setUp() {
@@ -48,5 +47,13 @@ class ChainDataContractDataCreateServiceTest {
         testData = OptionChainData.builder().symbol(Symbol.SPX.name()).lastTradeDate("20240920").calls(calls).puts(puts).build();
 
     }
-  
+    @Test
+    void simpleNumbersTest(){
+        when(strategyBuilderService.getComboLegContractData(any())).thenReturn(Optional.of(ContractData.builder().build()));
+        when(tradeRuleSettingsConfig.getDelta()).thenReturn(0.05);
+        chainDataContractDataCreateService.createIronCondorContractData(testData);
+
+    }
+
+
 }
