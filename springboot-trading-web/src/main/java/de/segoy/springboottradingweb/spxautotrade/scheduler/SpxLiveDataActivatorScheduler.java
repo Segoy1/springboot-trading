@@ -14,13 +14,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SpxLiveDataActivatorScheduler {
 
-  private final PropertiesConfig propertiesConfig;
-  private final AutoTradeMarketDataService autoTradeMarketDataService;
+    private final PropertiesConfig propertiesConfig;
+    private final AutoTradeMarketDataService autoTradeMarketDataService;
 
-  @Scheduled(cron = "0 25 15 * * 1-5")
-  public void buy() {
-    ContractData spx = ContractDataTemplates.SpxData();
-    autoTradeMarketDataService.requestLiveMarketDataForContractData(
-        propertiesConfig.getSpxTickerId(), spx);
-  }
+
+    @Scheduled(cron = "0 25 15 * * 1-5")
+//    @Scheduled(cron = "*/10 * * * * *")
+    public void buy() {
+        ContractData spx = ContractDataTemplates.SpxData();
+        autoTradeMarketDataService.requestLiveMarketDataForContractData(propertiesConfig.getSpxTickerId(), spx);
+
+    }
+
 }

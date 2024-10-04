@@ -19,6 +19,7 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   private final PropertiesConfig propertiesConfig;
 
   @Scheduled(cron = "0 30 15 * * 1-5")
+  //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
     LastPriceLiveMarketData liveData =
         lastPriceLiveMarketDataRepository
