@@ -46,7 +46,7 @@ public class KafkaStreamsConfig {
     configProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);
     configProps.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
 
-    configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-processing-app");
+    configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-stream-process-app");
 
     return new KafkaStreamsConfiguration(configProps);
   }
@@ -86,7 +86,8 @@ public class KafkaStreamsConfig {
   public Topology processOptionsMarketDataForStrategy(StreamsBuilder streamsBuilder) {
     ObjectMapper mapper = new ObjectMapper();
     Serde<OptionMarketData> optionMarketDataSerde = new JsonSerde<>(OptionMarketData.class, mapper);
-    Serde<OptionChainData> optionChainDataSerde = new JsonSerde<>(OptionChainData.class, mapper);
+    Serde<OptionChainData> optionChainDataSerde =
+        new JsonSerde<>(OptionChainData.class, new ObjectMapper());
 
     final Consumed<String, OptionMarketData> consumed =
         Consumed.with(Serdes.String(), optionMarketDataSerde);
@@ -101,8 +102,8 @@ public class KafkaStreamsConfig {
                       Arrays.stream(key.split(AutoDayTradeConstants.DELIMITER)).toList();
                   if (keys.size() > 1) {
                     return keys.get(0) + AutoDayTradeConstants.DELIMITER + keys.get(1);
-                  } else{
-                      return key;
+                  } else {
+                    return key;
                   }
                 })
             .groupByKey()
@@ -115,7 +116,9 @@ public class KafkaStreamsConfig {
                     .withKeySerde(Serdes.String())
                     .withValueSerde(optionChainDataSerde));
 
-    sortByTradingClassAndLastTradeDate.toStream().to(kafkaConstantsConfig.getOPTION_CHAIN_DATA_TOPIC());
+    sortByTradingClassAndLastTradeDate
+        .toStream()
+        .to(kafkaConstantsConfig.getOPTION_CHAIN_DATA_TOPIC());
     return streamsBuilder.build();
   }
 }

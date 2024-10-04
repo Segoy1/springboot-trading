@@ -1,17 +1,20 @@
 package de.segoy.springboottradingdata.model.data;
 
+import lombok.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class OptionListData {
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+public class OptionListData extends IBKRDataType{
 
-    private final Map<Double, OptionMarketData> options;
+  private final Map<Double, OptionMarketData> options = new HashMap<>();
 
-    public OptionListData() {
-        options = new HashMap<>();
-    }
     public OptionListData(HashMap<Double, OptionMarketData> options) {
-        this.options = options;
+        this.options.putAll(options);
     }
 
     public void put(double strike, OptionMarketData option){
@@ -20,7 +23,7 @@ public class OptionListData {
     public OptionMarketData get(double strike){
         return options.get(strike);
     }
-    public Map<Double, Double> getDeltas(){
+    public Map<Double, Double> extractDeltas(){
         HashMap<Double,Double> deltas = new  HashMap<>();
         for(Map.Entry<Double, OptionMarketData> entry : options.entrySet()){
             deltas.put(entry.getKey(), entry.getValue().getDelta());
