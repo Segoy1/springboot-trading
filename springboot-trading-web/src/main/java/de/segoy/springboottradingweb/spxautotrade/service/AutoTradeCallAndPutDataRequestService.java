@@ -28,7 +28,7 @@ public class AutoTradeCallAndPutDataRequestService {
                             .symbol(Symbol.SPX.name())
                             .exchange(TradingConstants.CBOE)
                             .currency(TradingConstants.USD)
-                            .lastTradeDate(lastTradeDateBuilder.getDateStringFromTomorrow())
+                            .lastTradeDate(lastTradeDateBuilder.getDateStringFromToday())
                             .tradingClass(Symbol.SPXW.name());
             int callPrice = strike + strikediff;
             ContractData call = builder.strike(BigDecimal.valueOf(callPrice)).right(Types.Right.Call).build();
