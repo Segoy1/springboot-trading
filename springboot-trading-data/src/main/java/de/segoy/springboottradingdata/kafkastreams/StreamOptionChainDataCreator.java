@@ -16,27 +16,25 @@ public class StreamOptionChainDataCreator {
   private final OptionTickerIdResolver optionTickerIdResolver;
 
   public OptionChainData buildChain(OptionMarketData marketData, OptionChainData aggregatedChain) {
-    OptionTickerIdResolver.OptionDetails optionDetails =
-        optionTickerIdResolver.resolveTickerIdToOptionDetails(marketData.getTickerId());
     if (aggregatedChain.getLastTradeDate() == null) {
-      aggregatedChain = createNewChain(optionDetails);
+      aggregatedChain = createNewChain(marketData);
     }
 
     if (marketData.getField().equals(AutoDayTradeConstants.CHAIN_SAVE_FIELD)) {
-      if (optionDetails.right().equals(Types.Right.Call)) {
-        aggregatedChain.getCalls().put(optionDetails.strike(), marketData);
-      } else if (optionDetails.right().equals(Types.Right.Put)) {
-        aggregatedChain.getPuts().put(optionDetails.strike(), marketData);
+      if (marketData.getRight().equals(Types.Right.Call)) {
+        aggregatedChain.getCalls().put(marketData.getStrike(), marketData);
+      } else if (marketData.getRight().equals(Types.Right.Put)) {
+        aggregatedChain.getPuts().put(marketData.getStrike(), marketData);
       }
     }
 
     return aggregatedChain;
   }
 
-  private OptionChainData createNewChain(OptionTickerIdResolver.OptionDetails optionDetails) {
+  private OptionChainData createNewChain(OptionMarketData marketData) {
     return OptionChainData.builder()
-        .lastTradeDate(optionDetails.date())
-        .symbol(optionDetails.symbol().name())
+        .lastTradeDate(marketData.getLastTradeDate())
+        .symbol(marketData.getSymbol().name())
         .calls(new OptionListData())
         .puts(new OptionListData())
         .build();
