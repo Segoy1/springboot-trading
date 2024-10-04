@@ -33,7 +33,7 @@ public class OptionTickerIdResolver {
     Types.Right right = tickerId < 0 ? Types.Right.Put : Types.Right.Call;
 
     //TODO: when there are Fields that can have .5 Strikes check for symbol and adjust value accordingly
-    double strike = tickerId % AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER;
+    double strike = Math.abs(tickerId % AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER);
 
     String lastTradeDate = resolveDate(tickerId);
 
@@ -56,7 +56,7 @@ public class OptionTickerIdResolver {
   }
 
   private Symbol resolveSymbol(int tickerId) {
-    int symbolValue = tickerId / AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER;
+    int symbolValue = Math.abs(tickerId / AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER);
     return Symbol.fromValue(symbolValue);
   }
 }
