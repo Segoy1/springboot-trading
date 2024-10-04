@@ -3,6 +3,7 @@ package de.segoy.springboottradingdata.modelconverter;
 import com.ib.client.Contract;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public class IBKRContractToContractData {
     public ContractData convertIBKRContract(Contract contract) {
         ContractData contractData = ContractData.builder()
                 .contractId(contract.conid())
-                .symbol(contract.symbol())
+                .symbol(Symbol.valueOf(contract.symbol()))
                 .securityType(contract.secType())
                 .currency(contract.currency())
                 .exchange(contract.exchange()!=null? contract.exchange() : "SMART")

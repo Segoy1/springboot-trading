@@ -25,7 +25,7 @@ public class AutoTradeOptionChainCollector {
       topics = "${kafka.names.topic.streams.optionChainData}")
   public void processChainData(OptionChainData message) {
     if (message.getLastTradeDate().equals(lastTradeDateBuilder.getDateStringFromToday())
-        && message.getSymbol().equals(Symbol.SPX.name())) {
+        && message.getSymbol().equals(Symbol.SPX)) {
       ContractData contractData =
           chainDataContractDataCreateService.createIronCondorContractData(message);
       autoTradeMarketDataService.requestLiveMarketDataForContractData(

@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.model.data.entity;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -25,7 +26,7 @@ public class ContractData extends IBKRDataType {
     private Integer contractId; //ContractId From Call to IBKR Api
 
     @NotNull
-    private String symbol; //SPX
+    private Symbol symbol; //SPX
 
     @Enumerated(EnumType.STRING)
     @NotNull

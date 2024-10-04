@@ -3,6 +3,7 @@ package de.segoy.springboottradingibkr.client.service.contract;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
 import org.junit.jupiter.api.Test;
@@ -35,10 +36,10 @@ class UniqueContractDataProviderTest {
     @Test
     void testOPT(){
         ContractData contractData =
-                ContractData.builder().lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.OPT).build();
         ContractData returnData =
-                ContractData.builder().id(1L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                 Types.Right.Call).securityType(Types.SecType.OPT).build();
 
 
@@ -57,7 +58,7 @@ class UniqueContractDataProviderTest {
         assertThat(result.get()).isEqualTo(returnData);
 
         verify(contractDataRepository, times(1))
-                .findFirstByLastTradeDateAndSymbolAndStrikeAndRight(anyString(),anyString(),
+                .findFirstByLastTradeDateAndSymbolAndStrikeAndRight(anyString(),any(),
                         any(BigDecimal.class),any(Types.Right.class));
         verify(contractDataCallAndResponseHandler, times(1)).callContractDetailsFromAPI(contractData);
     }
@@ -66,10 +67,10 @@ class UniqueContractDataProviderTest {
         ComboLegData cl1 = ComboLegData.builder().build();
         ComboLegData cl2 = ComboLegData.builder().build();
         ContractData contractData =
-                ContractData.builder().lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
         ContractData returnData =
-                ContractData.builder().id(1L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
         when(comboContractDataFinder.checkContractWithComboLegs(contractData.getComboLegs())).thenReturn(OptionalLong.of(1L));
@@ -86,10 +87,10 @@ class UniqueContractDataProviderTest {
         ComboLegData cl1 = ComboLegData.builder().build();
         ComboLegData cl2 = ComboLegData.builder().build();
         ContractData contractData =
-                ContractData.builder().id(2L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(2L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
         ContractData returnData =
-                ContractData.builder().id(1L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
         when(comboContractDataFinder.checkContractWithComboLegs(contractData.getComboLegs())).thenReturn(OptionalLong.of(1L));
@@ -107,7 +108,7 @@ class UniqueContractDataProviderTest {
         ComboLegData cl1 = ComboLegData.builder().build();
         ComboLegData cl2 = ComboLegData.builder().build();
         ContractData contractData =
-                ContractData.builder().id(2L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(2L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
         when(contractDataRepository.findById(2L)).thenReturn(Optional.of(contractData));
@@ -122,10 +123,10 @@ class UniqueContractDataProviderTest {
         ComboLegData cl1 = ComboLegData.builder().build();
         ComboLegData cl2 = ComboLegData.builder().build();
         ContractData contractData =
-                ContractData.builder().lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
         ContractData returnData =
-                ContractData.builder().id(1L).lastTradeDate("20240405").symbol("SPX").strike(BigDecimal.valueOf(5170)).right(
+                ContractData.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
         when(comboContractDataFinder.checkContractWithComboLegs(contractData.getComboLegs())).thenReturn(OptionalLong.empty());
@@ -140,34 +141,34 @@ class UniqueContractDataProviderTest {
     @Test
     void testIndex(){
         ContractData contractData =
-                ContractData.builder().symbol("SPX").securityType(Types.SecType.IND).currency("USD").build();
+                ContractData.builder().symbol(Symbol.SPX).securityType(Types.SecType.IND).currency("USD").build();
         ContractData returnData =
-                ContractData.builder().id(1L).symbol("SPX").securityType(Types.SecType.IND).currency("USD").build();
+                ContractData.builder().id(1L).symbol(Symbol.SPX).securityType(Types.SecType.IND).currency("USD").build();
         indexOrStock(contractData, returnData);
 
     } @Test
     void testIndexPresent(){
         ContractData contractData =
-                ContractData.builder().symbol("SPX").securityType(Types.SecType.IND).currency("USD").build();
+                ContractData.builder().symbol(Symbol.SPX).securityType(Types.SecType.IND).currency("USD").build();
         ContractData returnData =
-                ContractData.builder().id(1L).symbol("SPX").securityType(Types.SecType.IND).currency("USD").build();
+                ContractData.builder().id(1L).symbol(Symbol.SPX).securityType(Types.SecType.IND).currency("USD").build();
         indexOrStockPresent(contractData);
     }
     @Test
     void testStock(){
         ContractData contractData =
-                ContractData.builder().symbol("SPX").securityType(Types.SecType.STK).currency("USD").build();
+                ContractData.builder().symbol(Symbol.SPX).securityType(Types.SecType.STK).currency("USD").build();
         ContractData returnData =
-                ContractData.builder().id(1L).symbol("SPX").securityType(Types.SecType.STK).currency("USD").build();
+                ContractData.builder().id(1L).symbol(Symbol.SPX).securityType(Types.SecType.STK).currency("USD").build();
 
         indexOrStock(contractData, returnData);
     }
     @Test
     void testStockPresent(){
         ContractData contractData =
-                ContractData.builder().symbol("SPX").securityType(Types.SecType.STK).currency("USD").build();
+                ContractData.builder().symbol(Symbol.SPX).securityType(Types.SecType.STK).currency("USD").build();
         ContractData returnData =
-                ContractData.builder().id(1L).symbol("SPX").securityType(Types.SecType.STK).currency("USD").build();
+                ContractData.builder().id(1L).symbol(Symbol.SPX).securityType(Types.SecType.STK).currency("USD").build();
         indexOrStockPresent(contractData);
     }
 
@@ -185,7 +186,7 @@ class UniqueContractDataProviderTest {
         assertThat(result.get()).isEqualTo(returnData);
 
         verify(contractDataRepository, times(1))
-                .findFirstBySymbolAndSecurityTypeAndCurrency(anyString(),
+                .findFirstBySymbolAndSecurityTypeAndCurrency(any(),
                         any(Types.SecType.class),anyString());
         verify(contractDataCallAndResponseHandler, times(1)).callContractDetailsFromAPI(contractData);
     }
@@ -200,7 +201,7 @@ class UniqueContractDataProviderTest {
         assertThat(result.get()).isEqualTo(contractData);
 
         verify(contractDataRepository, times(1))
-                .findFirstBySymbolAndSecurityTypeAndCurrency(anyString(),
+                .findFirstBySymbolAndSecurityTypeAndCurrency(any(),
                         any(Types.SecType.class),anyString());
         verify(contractDataCallAndResponseHandler, never()).callContractDetailsFromAPI(any(ContractData.class));
     }

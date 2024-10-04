@@ -4,6 +4,7 @@ import com.ib.client.Contract;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
 import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
@@ -91,7 +92,7 @@ class DatabaseSyncIBKRContractAndContractDataTest {
         legs.add(comboLeg);
         legs.add(comboLeg2);
 
-        return ContractData.builder().contractId(123).right(Types.Right.Call).symbol("SPX")
+        return ContractData.builder().contractId(123).right(Types.Right.Call).symbol(Symbol.SPX)
                 .securityType(Types.SecType.STK).currency("USD").lastTradeDate("20251111").exchange("SMART").multiplier("100")
                 .localSymbol("P BMW  20221216 72 M").tradingClass("SPXW").includeExpired(false).comboLegsDescription("description")
                 .strike(BigDecimal.valueOf(72)).comboLegs(legs).build();

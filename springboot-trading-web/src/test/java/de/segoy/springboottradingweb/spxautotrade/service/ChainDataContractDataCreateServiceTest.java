@@ -44,7 +44,7 @@ class ChainDataContractDataCreateServiceTest {
         puts.put(85,  OptionMarketData.builder().delta(-0.090).build());
         puts.put(80, OptionMarketData.builder().delta(-0.03).build());
 
-        testData = OptionChainData.builder().symbol(Symbol.SPX.name()).lastTradeDate("20240920").calls(calls).puts(puts).build();
+        testData = OptionChainData.builder().symbol(Symbol.SPX).lastTradeDate("20240920").calls(calls).puts(puts).build();
 
     }
     @Test

@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.repository;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
@@ -14,10 +15,10 @@ public interface ContractDataRepository  extends IBKRDataTypeRepository<Contract
     Optional<ContractData> findFirstByContractId(Integer id);
     List<ContractData> findByComboLegsDescriptionContains(String contractId);
 
-    Optional<ContractData> findFirstBySymbolAndSecurityTypeAndCurrency(String symbol, Types.SecType secType,
+    Optional<ContractData> findFirstBySymbolAndSecurityTypeAndCurrency(Symbol symbol, Types.SecType secType,
                                                                        String currency);
 
-    Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, String symbol, BigDecimal strike, Types.Right right);
+    Optional<ContractData> findFirstByLastTradeDateAndSymbolAndStrikeAndRight(String last, Symbol symbol, BigDecimal strike, Types.Right right);
 
 //    Optional<ContractData> findByLocalSymbol
 

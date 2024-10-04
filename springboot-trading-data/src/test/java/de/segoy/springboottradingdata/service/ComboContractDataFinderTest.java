@@ -3,6 +3,7 @@ package de.segoy.springboottradingdata.service;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +47,7 @@ class ComboContractDataFinderTest {
 
     @Test
     void testExistingContractForFirstThreeLegs() {
-        ContractData contractData = ContractData.builder().contractId(123).symbol("SPX").id(90000000L).build();
+        ContractData contractData = ContractData.builder().contractId(123).symbol(Symbol.SPX).id(90000000L).build();
         when(contractDataRepository.findByComboLegsDescriptionContains("1")).thenReturn(new ArrayList<>(List.of(contractData)));
         when(contractDataRepository.findByComboLegsDescriptionContains("2")).thenReturn(new ArrayList<>(List.of(contractData)));
         when(contractDataRepository.findByComboLegsDescriptionContains("3")).thenReturn(new ArrayList<>(List.of(contractData)));
@@ -63,10 +64,10 @@ class ComboContractDataFinderTest {
 
     @Test
     void testExisitingContractForAllLegs() {
-        ContractData contractData = ContractData.builder().contractId(123).symbol("SPX").id(90000000L).build();
-        ContractData contractData2 = ContractData.builder().contractId(1234).symbol("SPX").id(90000001L).build();
-        ContractData contractData3 = ContractData.builder().contractId(12345).symbol("SPX").id(90000002L).build();
-        ContractData contractData4 = ContractData.builder().contractId(123456).symbol("SPX").id(90000003L).build();
+        ContractData contractData = ContractData.builder().contractId(123).symbol(Symbol.SPX).id(90000000L).build();
+        ContractData contractData2 = ContractData.builder().contractId(1234).symbol(Symbol.SPX).id(90000001L).build();
+        ContractData contractData3 = ContractData.builder().contractId(12345).symbol(Symbol.SPX).id(90000002L).build();
+        ContractData contractData4 = ContractData.builder().contractId(123456).symbol(Symbol.SPX).id(90000003L).build();
         when(contractDataRepository.findByComboLegsDescriptionContains("1")).thenReturn(new ArrayList<>(List.of(contractData,contractData3,contractData4)));
         when(contractDataRepository.findByComboLegsDescriptionContains("2")).thenReturn(new ArrayList<>(List.of(contractData,contractData3)));
         when(contractDataRepository.findByComboLegsDescriptionContains("3")).thenReturn(new ArrayList<>(List.of(contractData,contractData2,contractData4)));
@@ -83,10 +84,10 @@ class ComboContractDataFinderTest {
     }
     @Test
     void testExistingContractsButNotMatching(){
-        ContractData contractData = ContractData.builder().contractId(123).symbol("SPX").id(90000000L).build();
-        ContractData contractData2 = ContractData.builder().contractId(1234).symbol("SPX").id(90000001L).build();
-        ContractData contractData3 = ContractData.builder().contractId(12345).symbol("SPX").id(90000002L).build();
-        ContractData contractData4 = ContractData.builder().contractId(123456).symbol("SPX").id(90000003L).build();
+        ContractData contractData = ContractData.builder().contractId(123).symbol(Symbol.SPX).id(90000000L).build();
+        ContractData contractData2 = ContractData.builder().contractId(1234).symbol(Symbol.SPX).id(90000001L).build();
+        ContractData contractData3 = ContractData.builder().contractId(12345).symbol(Symbol.SPX).id(90000002L).build();
+        ContractData contractData4 = ContractData.builder().contractId(123456).symbol(Symbol.SPX).id(90000003L).build();
         when(contractDataRepository.findByComboLegsDescriptionContains("1")).thenReturn(new ArrayList<>(List.of(contractData,contractData3,contractData4)));
         when(contractDataRepository.findByComboLegsDescriptionContains("2")).thenReturn(new ArrayList<>(List.of(contractData2,contractData3)));
         when(contractDataRepository.findByComboLegsDescriptionContains("3")).thenReturn(new ArrayList<>(List.of(contractData,contractData2,contractData3,contractData4)));

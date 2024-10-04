@@ -74,7 +74,7 @@ class KafkaStreamsConfigTest {
         PositionData.builder()
             .contractData(
                 ContractData.builder()
-                    .symbol(Symbol.SPX.name())
+                    .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(1)
@@ -84,7 +84,7 @@ class KafkaStreamsConfigTest {
         PositionData.builder()
             .contractData(
                 ContractData.builder()
-                    .symbol(Symbol.SPX.name())
+                    .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(2)
@@ -94,7 +94,7 @@ class KafkaStreamsConfigTest {
             PositionData.builder()
                     .contractData(
                             ContractData.builder()
-                                    .symbol(Symbol.SPX.name())
+                                    .symbol(Symbol.SPX)
                                     .lastTradeDate("20241004")
                                     .tradingClass("OPT")
                                     .contractId(3)

@@ -25,7 +25,7 @@ public class AutoTradeCallAndPutDataRequestService {
             ContractData.ContractDataBuilder builder =
                     ContractData.builder().securityType(Types
                                     .SecType.OPT)
-                            .symbol(Symbol.SPX.name())
+                            .symbol(Symbol.SPX)
                             .exchange(TradingConstants.CBOE)
                             .currency(TradingConstants.USD)
                             .lastTradeDate(lastTradeDateBuilder.getDateStringFromToday())

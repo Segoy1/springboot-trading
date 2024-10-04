@@ -3,6 +3,7 @@ package de.segoy.springboottradingibkr.client.service.contract;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,7 @@ class ContractDataCallAndResponseHandlerTest {
 
                 .contractId(123)
                 .right(Types.Right.Call)
-                .symbol("SPX")
+                .symbol(Symbol.SPX)
                 .currency("USD")
                 .exchange("SMART")
                 .lastTradeDate("20231117")

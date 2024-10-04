@@ -29,7 +29,7 @@ public class OptionTickerIdEncoder {
     Types.Right right = contractData.getRight();
     int strike = contractData.getStrike().intValue();
     String date = contractData.getLastTradeDate();
-    String symbol = contractData.getSymbol();
+    Symbol symbol = contractData.getSymbol();
 
       return (encodeSymbol(symbol) + encodeLastTradeDate(date)+ strike) * encodeRight(right);
   }
@@ -52,9 +52,8 @@ public class OptionTickerIdEncoder {
     return (int) days * AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER;
   }
 
-  private int encodeSymbol(String symbol) {
-    Symbol enumSymbol = Symbol.valueOf(symbol);
-    return enumSymbol.numberValue() * AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER;
+  private int encodeSymbol(Symbol symbol) {
+    return symbol.numberValue() * AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER;
   }
 
 }

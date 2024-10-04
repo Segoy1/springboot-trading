@@ -30,7 +30,7 @@ class IBKRContractToContractDataTest {
         ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
         assertEquals(contract.right(), Types.Right.Call);
         assertEquals(contract.secType(), Types.SecType.STK);
-        assertEquals("SPX", contractData.getSymbol());
+        assertEquals("SPX", contractData.getSymbol().name());
         assertEquals("USD", contractData.getCurrency());
         assertEquals("SMART", contractData.getExchange());
 //        assertTrue(contractData.isTouchedByApi());
@@ -65,7 +65,7 @@ class IBKRContractToContractDataTest {
         ContractData contractData = ibkrContractToContractData.convertIBKRContract(contract);
         assertEquals(contractData.getRight(), Types.Right.Call);
         assertEquals(contractData.getSecurityType(), Types.SecType.STK);
-        assertEquals("SPX", contractData.getSymbol());
+        assertEquals("SPX", contractData.getSymbol().name());
         assertEquals("USD", contractData.getCurrency());
         assertEquals("SMART", contractData.getExchange());
         assertEquals("20231117", contractData.getLastTradeDate());

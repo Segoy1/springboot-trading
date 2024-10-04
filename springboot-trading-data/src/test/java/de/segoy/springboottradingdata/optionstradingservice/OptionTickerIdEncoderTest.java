@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -20,54 +21,65 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OptionTickerIdEncoderTest {
 
   @Mock IBKRTimeStampFormatter ibkrTimeStampFormatter;
-  @InjectMocks
-  OptionTickerIdEncoder optionTickerIdEncoder;
+  @InjectMocks OptionTickerIdEncoder optionTickerIdEncoder;
 
   @Test
   void testOptionTickerIdEncoder_WithCall() {
     ContractData contractData =
-            ContractData.builder().right(Types.Right.Call).lastTradeDate("20260916").strike(BigDecimal.valueOf(5555)).symbol("SPX").build();
+        ContractData.builder()
+            .right(Types.Right.Call)
+            .lastTradeDate("20260916")
+            .strike(BigDecimal.valueOf(5555))
+            .symbol(Symbol.SPX)
+            .build();
     Timestamp date = Timestamp.valueOf(LocalDate.of(2026, 9, 16).atStartOfDay());
-    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916"))
-        .thenReturn(date);
+    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916")).thenReturn(date);
 
-    int days = (int)ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime());
-    int expected = 10005555+ (days* 10000);
+    int days =
+        (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
+    int expected = 10005555 + (days * 10000);
     int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
 
-
-    assertEquals(expected,result);
+    assertEquals(expected, result);
   }
 
   @Test
   void testOptionTickerIdEncoder_WithPut() {
     ContractData contractData =
-            ContractData.builder().right(Types.Right.Put).lastTradeDate("20260916").strike(BigDecimal.valueOf(553)).symbol("SPX").build();
+        ContractData.builder()
+            .right(Types.Right.Put)
+            .lastTradeDate("20260916")
+            .strike(BigDecimal.valueOf(553))
+            .symbol(Symbol.SPX)
+            .build();
     Timestamp date = Timestamp.valueOf(LocalDate.of(2026, 9, 16).atStartOfDay());
-    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916"))
-            .thenReturn(date);
+    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916")).thenReturn(date);
 
-    int days = (int)ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime());
-    int expected = (10000553+ (days* 10000))*-1;
+    int days =
+        (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
+    int expected = (10000553 + (days * 10000)) * -1;
     int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
 
-
-    assertEquals(expected,result);
+    assertEquals(expected, result);
   }
 
   @Test
   void testOptionTickerIdEncoder_WithPut_AndXOISymbol() {
     ContractData contractData =
-            ContractData.builder().right(Types.Right.Put).lastTradeDate("20260916").strike(BigDecimal.valueOf(553)).symbol("XOI").build();
+        ContractData.builder()
+            .right(Types.Right.Put)
+            .lastTradeDate("20260916")
+            .strike(BigDecimal.valueOf(553))
+            .symbol(Symbol.XOI)
+            .build();
     Timestamp date = Timestamp.valueOf(LocalDate.of(2026, 9, 16).atStartOfDay());
-    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916"))
-            .thenReturn(date);
+    when(ibkrTimeStampFormatter.formatStringToTimeStamp("20260916")).thenReturn(date);
 
-    int days = (int)ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime());
-    int expected = (100000553+ (days* 10000))*-1;
+    int days =
+        (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
+    int expected = (100000553 + (days * 10000)) * -1;
     int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
 
-
-    assertEquals(expected,result);
+    assertEquals(expected, result);
   }
 }

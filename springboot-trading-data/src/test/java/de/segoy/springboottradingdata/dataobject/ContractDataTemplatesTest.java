@@ -12,7 +12,7 @@ class ContractDataTemplatesTest {
         ContractData contractData = ContractDataTemplates.SpxData();
 
         assertEquals("IND",contractData.getSecurityType().getApiString());
-        assertEquals("SPX",contractData.getSymbol());
+        assertEquals("SPX",contractData.getSymbol().name());
         assertEquals("USD",contractData.getCurrency());
         assertEquals("CBOE",contractData.getExchange());
     }
@@ -22,7 +22,7 @@ class ContractDataTemplatesTest {
         ContractData contractData = ContractDataTemplates.SpxOptionData();
 
         assertEquals("IND",contractData.getSecurityType().getApiString());
-        assertEquals("SPX",contractData.getSymbol());
+        assertEquals("SPX",contractData.getSymbol().name());
         assertEquals("USD",contractData.getCurrency());
         assertEquals("OPRA",contractData.getExchange());
     }
