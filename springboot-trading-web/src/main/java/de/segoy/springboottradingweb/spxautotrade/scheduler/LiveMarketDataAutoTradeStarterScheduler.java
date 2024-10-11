@@ -17,14 +17,28 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   private final AutoTradeCallAndPutDataRequestService autoTradeOptionDataService;
   private final LastPriceLiveMarketDataRepository lastPriceLiveMarketDataRepository;
   private final PropertiesConfig propertiesConfig;
+  private final SpxLiveDataActivator spxLiveDataActivator;
 
   @Scheduled(cron = "0 30 15 * * 1-5")
   //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
-    LastPriceLiveMarketData liveData =
-        lastPriceLiveMarketDataRepository
-            .findById((long) propertiesConfig.getSpxTickerId())
-            .orElseThrow(() -> new RuntimeException("No Live Data for SPX found"));
-    autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
+      LastPriceLiveMarketData liveData = getLiveData();
+      autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
+
+  }
+
+  private LastPriceLiveMarketData getLiveData() {
+    return lastPriceLiveMarketDataRepository
+        .findById((long) propertiesConfig.getSpxTickerId())
+        .orElseGet(
+            () -> {
+              spxLiveDataActivator.getLiveMarketDataSPX();
+              try {
+                Thread.sleep(200);
+              } catch (Exception e) {
+                  log.warn("Timer.sleep got interrupted");
+              }
+                return getLiveData();
+            });
   }
 }
