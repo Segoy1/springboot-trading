@@ -46,7 +46,10 @@ public class KafkaStreamsConfig {
     configProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class);
     configProps.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
 
-    configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-stream-process-app");
+    String stateDir = System.getProperty("user.dir") + "/../tmp/kafka-streams-state";
+    configProps.put(StreamsConfig.STATE_DIR_CONFIG,stateDir);
+
+    configProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "trading-data-process-app");
 
     return new KafkaStreamsConfiguration(configProps);
   }
