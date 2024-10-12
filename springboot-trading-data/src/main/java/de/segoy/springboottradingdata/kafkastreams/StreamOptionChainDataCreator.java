@@ -2,9 +2,9 @@ package de.segoy.springboottradingdata.kafkastreams;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
-import de.segoy.springboottradingdata.model.data.OptionChainData;
-import de.segoy.springboottradingdata.model.data.OptionListData;
-import de.segoy.springboottradingdata.model.data.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

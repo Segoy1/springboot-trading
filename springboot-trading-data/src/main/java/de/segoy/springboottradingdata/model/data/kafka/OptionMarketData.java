@@ -1,6 +1,7 @@
-package de.segoy.springboottradingdata.model.data;
+package de.segoy.springboottradingdata.model.data.kafka;
 
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import lombok.*;
 

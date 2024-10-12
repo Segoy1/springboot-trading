@@ -1,5 +1,6 @@
-package de.segoy.springboottradingdata.model.data;
+package de.segoy.springboottradingdata.model.data.kafka;
 
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import lombok.*;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.Map;
 @Setter
 @Builder
 @AllArgsConstructor
-public class OptionListData extends IBKRDataType{
+public class OptionListData extends IBKRDataType {
 
   private final Map<Double, OptionMarketData> options = new HashMap<>();
 

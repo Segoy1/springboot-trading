@@ -3,9 +3,9 @@ package de.segoy.springboottradingweb.spxautotrade.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import de.segoy.springboottradingdata.model.data.OptionChainData;
-import de.segoy.springboottradingdata.model.data.OptionListData;
-import de.segoy.springboottradingdata.model.data.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.model.data.entity.ContractData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;

@@ -1,5 +1,6 @@
-package de.segoy.springboottradingdata.model.data;
+package de.segoy.springboottradingdata.model.data.kafka;
 
+import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfitAndLossData extends IBKRDataType{
+public class ProfitAndLossData extends IBKRDataType {
 
     @Id
     private Long id;
