@@ -18,20 +18,34 @@ public class OptionTickerIdEncoder {
   private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
   /**
-   * Encodes the Contract Data for options to a ticker Id where the the last 4 digits are the strike price
-   * 7th last to 5th last digits are the days from today (maximal 999 days from today) and the first 3 digits (maximal 214)
-   * Signify the symbol with its value determined in @{@link Symbol}
+   * Encodes the Contract Data for options to a ticker Id where the the last 4 digits are the strike
+   * price 7th last to 5th last digits are the days from today (maximal 999 days from today) and the
+   * first 3 digits (maximal 214) Signify the symbol with its value determined in @{@link Symbol}
    * negative value if it is a put positive if call
+   *
    * @param contractData
    * @return tickerId so the IBkR API can work with it
    */
   public int encodeOptionTickerId(ContractData contractData) {
-    Types.Right right = contractData.getRight();
-    int strike = contractData.getStrike().intValue();
-    String date = contractData.getLastTradeDate();
-    Symbol symbol = contractData.getSymbol();
+    return encode(
+        contractData.getRight(),
+        contractData.getStrike().intValue(),
+        contractData.getLastTradeDate(),
+        contractData.getSymbol());
+  }
 
-      return (encodeSymbol(symbol) + encodeLastTradeDate(date)+ strike) * encodeRight(right);
+  public int encodeOptionTickerId(OptionTickerIdResolver.OptionDetails details) {
+    int strike;
+    if (details.strike() % 1 == 0) {
+      strike = details.strike().intValue();
+    } else {
+      strike = Double.valueOf(details.strike() * 10).intValue();
+    }
+    return encode(details.right(), strike, details.date(), details.symbol());
+  }
+
+  private int encode(Types.Right right, int strike, String date, Symbol symbol) {
+    return (encodeSymbol(symbol) + encodeLastTradeDate(date) + strike) * encodeRight(right);
   }
 
   private int encodeRight(Types.Right right) {
@@ -47,13 +61,13 @@ public class OptionTickerIdEncoder {
 
   private int encodeLastTradeDate(String lastTradeDate) {
     Timestamp date = ibkrTimeStampFormatter.formatStringToTimeStamp(lastTradeDate);
-//    return (int)Duration.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime()).get(ChronoUnit.DAYS);
-    long days =  ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime());
+    //    return
+    // (int)Duration.between(LocalDate.now().atStartOfDay(),date.toLocalDateTime()).get(ChronoUnit.DAYS);
+    long days = ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
     return (int) days * AutoDayTradeConstants.LAST_TRADE_DATE_TICKER_MULTIPLIER;
   }
 
   private int encodeSymbol(Symbol symbol) {
     return symbol.numberValue() * AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER;
   }
-
 }

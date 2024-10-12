@@ -30,6 +30,9 @@ public class OptionListData extends IBKRDataType{
         }
         return deltas;
     }
+    public int size(){
+        return options.size();
+    }
     public Map.Entry<Double, OptionMarketData> findClosestToDelta(double delta){
         return options.entrySet()
                 .stream()

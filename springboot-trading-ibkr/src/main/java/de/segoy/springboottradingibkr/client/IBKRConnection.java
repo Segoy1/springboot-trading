@@ -88,7 +88,6 @@ public class IBKRConnection implements EWrapper {
   @Override
   public void tickSize(int tickerId, int field, Decimal size) {
     // received size tick
-    log.info(EWrapperMsgGenerator.tickSize(tickerId, field, size));
   }
 
   @Override
@@ -132,13 +131,11 @@ public class IBKRConnection implements EWrapper {
   @Override
   public void tickGeneric(int tickerId, int tickType, double value) {
     // received generic tick
-    log.info(EWrapperMsgGenerator.tickGeneric(tickerId, tickType, value));
   }
 
   @Override
   public void tickString(int tickerId, int tickType, String value) {
     // received String tick
-    log.info(EWrapperMsgGenerator.tickString(tickerId, tickType, value));
   }
 
   @Override
@@ -158,17 +155,6 @@ public class IBKRConnection implements EWrapper {
       double dividendImpact,
       double dividendsToLastTradeDate) {
     // received EFP tick
-    log.info(
-        EWrapperMsgGenerator.tickEFP(
-            tickerId,
-            tickType,
-            basisPoints,
-            formattedBasisPoints,
-            impliedFuture,
-            holdDays,
-            futureLastTradeDate,
-            dividendImpact,
-            dividendsToLastTradeDate));
   }
 
   @Override
