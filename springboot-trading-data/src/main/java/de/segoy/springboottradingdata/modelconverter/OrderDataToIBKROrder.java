@@ -2,13 +2,13 @@ package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Decimal;
 import com.ib.client.Order;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderDataToIBKROrder {
 
-    public Order convertOrderData(OrderData orderData) {
+    public Order convertOrderData(OrderDataDBO orderData) {
         Order order = new Order();
 
         order.orderId(orderData.getId().intValue());

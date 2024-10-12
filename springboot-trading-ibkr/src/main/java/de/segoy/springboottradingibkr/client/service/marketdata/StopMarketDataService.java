@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithId;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,8 @@ public class StopMarketDataService {
     }
 
     //TODO does not work this way anymore maybe
-    public List<ContractData> stopAllMarketData() {
-        List<ContractData> active = new ArrayList<>();
+    public List<ContractDataDBO> stopAllMarketData() {
+        List<ContractDataDBO> active = new ArrayList<>();
         propertiesConfig.getActiveMarketData().forEach((id) -> {
             stopMarketDataApiCaller.callApi(id);
             active.addAll(contractDataRepository.findAllByContractId(id));

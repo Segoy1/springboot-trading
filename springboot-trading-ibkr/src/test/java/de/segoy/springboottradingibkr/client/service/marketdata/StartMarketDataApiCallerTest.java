@@ -4,7 +4,7 @@ import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class StartMarketDataApiCallerTest {
 
     @Test
     void testCallApi() {
-        ContractData data = ContractData.builder().id(1L).securityType(Types.SecType.STK).build();
+        ContractDataDBO data = ContractDataDBO.builder().id(1L).securityType(Types.SecType.STK).build();
         Contract contract = new Contract();
 
         when(contractDataToIBKRContract.convertContractData(data)).thenReturn(contract);

@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
@@ -15,20 +15,20 @@ import java.util.Optional;
 public class ContractDataCallAndResponseHandler {
 
     private final ContractDataRepository contractDataRepository;
-    private final OptionalApiResponseChecker<ContractData> contractDataApiResponseChecker;
-    private final ApiCaller<ContractData> contractDataApiCaller;
+    private final OptionalApiResponseChecker<ContractDataDBO> contractDataApiResponseChecker;
+    private final ApiCaller<ContractDataDBO> contractDataApiCaller;
 
 
-    public Optional<ContractData> callContractDetailsFromAPI(ContractData contractData) {
+    public Optional<ContractDataDBO> callContractDetailsFromAPI(ContractDataDBO contractDataDBO) {
         //ugly: having to increment by 2 because I am too stupid to do it properly
-        int nextId = getNextId(contractData);
-        contractData.setId((long) nextId);
-        contractDataApiCaller.callApi(contractData);
+        int nextId = getNextId(contractDataDBO);
+        contractDataDBO.setId((long) nextId);
+        contractDataApiCaller.callApi(contractDataDBO);
         return contractDataApiResponseChecker.checkForApiResponseAndUpdate(nextId);
     }
 
 
-    private int getNextId(ContractData contractData) {
-        return contractData.getId() != null ? contractData.getId().intValue() : contractDataRepository.nextValidId() + 1;
+    private int getNextId(ContractDataDBO contractDataDBO) {
+        return contractDataDBO.getId() != null ? contractDataDBO.getId().intValue() : contractDataRepository.nextValidId() + 1;
     }
 }

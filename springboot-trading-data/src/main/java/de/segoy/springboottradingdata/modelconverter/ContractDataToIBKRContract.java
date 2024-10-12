@@ -2,7 +2,7 @@ package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.ComboLeg;
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,27 +11,27 @@ import java.util.List;
 @Component
 public class ContractDataToIBKRContract {
 
-    public Contract convertContractData(ContractData contractData) {
+    public Contract convertContractData(ContractDataDBO contractDataDBO) {
         Contract contract = new Contract();
 
 
         //NotBlankFields
-        contract.symbol(contractData.getSymbol().name());
-        contract.secType(contractData.getSecurityType().toString());
-        contract.currency(contractData.getCurrency());
-        contract.exchange(contractData.getExchange());
+        contract.symbol(contractDataDBO.getSymbol().name());
+        contract.secType(contractDataDBO.getSecurityType().toString());
+        contract.currency(contractDataDBO.getCurrency());
+        contract.exchange(contractDataDBO.getExchange());
 
 
-        contract.includeExpired(contractData.isIncludeExpired());
-        contract.conid(contractData.getContractId()==null?0:contractData.getContractId());
+        contract.includeExpired(contractDataDBO.isIncludeExpired());
+        contract.conid(contractDataDBO.getContractId()==null?0: contractDataDBO.getContractId());
 
         //Null Values translating to emptyString making things nullsafe
-        contract.comboLegsDescrip(contractData.getComboLegsDescription());
-        contract.right(contractData.getRight()==null?"":contractData.getRight().toString());
-        contract.lastTradeDateOrContractMonth(contractData.getLastTradeDate()==null?"":contractData.getLastTradeDate());
-        contract.multiplier(contractData.getMultiplier()==null?"":contractData.getMultiplier());
-        contract.localSymbol(contractData.getLocalSymbol()==null?"":contractData.getLocalSymbol());
-        contract.tradingClass(contractData.getTradingClass()==null?"":contractData.getTradingClass());
+        contract.comboLegsDescrip(contractDataDBO.getComboLegsDescription());
+        contract.right(contractDataDBO.getRight()==null?"": contractDataDBO.getRight().toString());
+        contract.lastTradeDateOrContractMonth(contractDataDBO.getLastTradeDate()==null?"": contractDataDBO.getLastTradeDate());
+        contract.multiplier(contractDataDBO.getMultiplier()==null?"": contractDataDBO.getMultiplier());
+        contract.localSymbol(contractDataDBO.getLocalSymbol()==null?"": contractDataDBO.getLocalSymbol());
+        contract.tradingClass(contractDataDBO.getTradingClass()==null?"": contractDataDBO.getTradingClass());
 
         contract.secIdType("");
         contract.secId("");
@@ -40,8 +40,8 @@ public class ContractDataToIBKRContract {
 
 
         List<ComboLeg> comboLegs = new ArrayList<>();
-        if (contractData.getComboLegs() != null && !contractData.getComboLegs().isEmpty()) {
-            contractData.getComboLegs().forEach(comboLegData -> {
+        if (contractDataDBO.getComboLegs() != null && !contractDataDBO.getComboLegs().isEmpty()) {
+            contractDataDBO.getComboLegs().forEach(comboLegData -> {
                 ComboLeg leg = new ComboLeg();
                 leg.conid(comboLegData.getContractId());
                 leg.ratio(comboLegData.getRatio());
@@ -52,8 +52,8 @@ public class ContractDataToIBKRContract {
             contract.comboLegs(comboLegs);
         }
 
-        if(contractData.getStrike()!=null){
-        contract.strike(contractData.getStrike().doubleValue());
+        if(contractDataDBO.getStrike()!=null){
+        contract.strike(contractDataDBO.getStrike().doubleValue());
         }
 
         return contract;

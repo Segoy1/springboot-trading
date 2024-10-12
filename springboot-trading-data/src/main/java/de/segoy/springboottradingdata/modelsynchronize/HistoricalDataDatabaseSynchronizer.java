@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Bar;
-import de.segoy.springboottradingdata.model.data.entity.HistoricalData;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalDataDBO;
 import de.segoy.springboottradingdata.modelconverter.BarToHistoricalData;
 import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
@@ -16,12 +16,12 @@ public class HistoricalDataDatabaseSynchronizer {
     private final BarToHistoricalData barToHistoricalData;
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
-    public HistoricalData findInDbOrSave(int id, Bar bar) {
+    public HistoricalDataDBO findInDbOrSave(int id, Bar bar) {
         return historicalDataRepository.findFirstByContractIdAndTimeAndCount(id, ibkrTimeStampFormatter.formatStringToTimeStamp(bar.time()), bar.count())
                 .orElseGet(() -> {
-                    HistoricalData newHistoricalData = barToHistoricalData.convert(bar);
-                    newHistoricalData.setContractId(id);
-                    return historicalDataRepository.save(newHistoricalData);
+                    HistoricalDataDBO newHistoricalDataDBO = barToHistoricalData.convert(bar);
+                    newHistoricalDataDBO.setContractId(id);
+                    return historicalDataRepository.save(newHistoricalDataDBO);
                 });
     }
 }

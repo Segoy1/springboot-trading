@@ -2,7 +2,7 @@ package de.segoy.springboottradingibkr.client.strategybuilder;
 
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
 import de.segoy.springboottradingdata.model.data.StrategyOrderData;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +14,17 @@ public class StrategyOrderDataBuilder {
 
   private final StrategyBuilderService strategyBuilderService;
 
-  public Optional<OrderData> buildOrderWithStrategyData(StrategyOrderData strategyOrderData) {
+  public Optional<OrderDataDBO> buildOrderWithStrategyData(StrategyOrderData strategyOrderData) {
     return strategyBuilderService
         .getComboLegContractData(
             StrategyContractData.builder()
-                .contractData(strategyOrderData.getOrderData().getContractData())
+                .contractDataDBO(strategyOrderData.getOrderData().getContractDataDBO())
                 .strategyLegs(strategyOrderData.getStrategyLegs())
                 .build())
         .map(
             contractData -> {
-              OrderData orderData = strategyOrderData.getOrderData();
-              orderData.setContractData(contractData);
+              OrderDataDBO orderData = strategyOrderData.getOrderData();
+              orderData.setContractDataDBO(contractData);
               return orderData;
             });
   }

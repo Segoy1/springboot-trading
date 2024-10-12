@@ -1,6 +1,8 @@
 package de.segoy.springboottradingdata.config;
 
-import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaDataType;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -14,9 +16,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, IBKRDataType> entityProducerFactory() {
+    public ProducerFactory<String, KafkaDataType> entityProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConstantsConfig.getBOOTSTRAP_SERVERS());
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -48,7 +47,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, IBKRDataType> kafkaEntityTemplate() {
+    public KafkaTemplate<String, KafkaDataType> kafkaEntityTemplate() {
         return new KafkaTemplate<>(entityProducerFactory());
     }
 

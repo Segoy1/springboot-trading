@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller;
 
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
@@ -23,9 +23,9 @@ public class ContractDataController {
     private final ResponseMapper responseMapper;
 
     @PostMapping("/combo")
-    public ResponseEntity<ContractData> ComboLegContractData(@RequestBody StrategyContractData strategyContractData) {
+    public ResponseEntity<ContractDataDBO> ComboLegContractData(@RequestBody StrategyContractData strategyContractData) {
 
-        Optional<ContractData> savedContract =
+        Optional<ContractDataDBO> savedContract =
                 strategyBuilderService.getComboLegContractData(strategyContractData);
 
         return responseMapper.mapResponse(savedContract);
@@ -33,18 +33,18 @@ public class ContractDataController {
 
 
     @PostMapping("/single")
-    public ResponseEntity<ContractData> saveContractData(@RequestBody ContractData contractData) {
-        Optional<ContractData> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(
-                contractData);
+    public ResponseEntity<ContractDataDBO> saveContractData(@RequestBody ContractDataDBO contractDataDBO) {
+        Optional<ContractDataDBO> savedContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(
+                contractDataDBO);
         return responseMapper.mapResponse(savedContract);
     }
 
     @GetMapping
-    public ResponseEntity<ContractData> getContractDataById(@RequestParam("id") long id) {
+    public ResponseEntity<ContractDataDBO> getContractDataById(@RequestParam("id") long id) {
         return responseMapper.mapResponse(contractDataRepository.findById(id));
     }
     @GetMapping("/contract-id")
-    public ResponseEntity<ContractData> getContractDataByContractId(@RequestParam("id") int id) {
+    public ResponseEntity<ContractDataDBO> getContractDataByContractId(@RequestParam("id") int id) {
         return responseMapper.mapResponse(contractDataRepository.findFirstByContractId(id));
     }
 }

@@ -1,7 +1,9 @@
 package de.segoy.springboottradingdata.kafkaconsumer;
 
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
-import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaDataType;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -14,9 +16,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Configuration
 @RequiredArgsConstructor
 public class KafkaConsumerConfig {
@@ -25,8 +24,8 @@ public class KafkaConsumerConfig {
 
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, IBKRDataType> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaDataType> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaDataType> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(websocketConsumerFactory());
         return factory;
@@ -34,13 +33,13 @@ public class KafkaConsumerConfig {
 
     @Bean
     @Qualifier("WebsocketConsumerFactory")
-    ConsumerFactory<String, IBKRDataType> websocketConsumerFactory() {
+    ConsumerFactory<String, KafkaDataType> websocketConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(getProps());
     }
 
     @Bean
     @Qualifier("BackendConsumerFactory")
-    ConsumerFactory<String, IBKRDataType> backendResponseConsumerFactory() {
+    ConsumerFactory<String, KafkaDataType> backendResponseConsumerFactory() {
         Map<String, Object> props = getProps();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConstantsConfig.getRestResponseGroupId());
         return new DefaultKafkaConsumerFactory<>(props);

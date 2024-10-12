@@ -3,8 +3,8 @@ package de.segoy.springboottradingdata.service;
 import com.ib.client.Contract;
 import com.ib.client.Order;
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
@@ -23,12 +23,12 @@ public class OrderWriteToDBService {
 
 
 
-    public OrderData saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
-        ContractData contractData = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
+    public OrderDataDBO saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
+        ContractDataDBO contractDataDBO = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
                 OptionalLong.empty(), contract);
-        OrderData orderData = ibkrOrderToOrderData.convertOrder(order);
+        OrderDataDBO orderData = ibkrOrderToOrderData.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
-        orderData.setContractData(contractData);
+        orderData.setContractDataDBO(contractDataDBO);
         return orderDataRepository.save(orderData);
     }
 }

@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
 import lombok.RequiredArgsConstructor;
@@ -20,44 +20,44 @@ public class UniqueContractDataProvider {
 
 
     @Transactional
-    public Optional<ContractData> getExistingContractDataOrCallApi(ContractData contractData) {
+    public Optional<ContractDataDBO> getExistingContractDataOrCallApi(ContractDataDBO contractDataDBO) {
         //TODO extend for new Types that need to be used
-        return switch (contractData.getSecurityType()) {
-            case OPT -> getOptionContractData(contractData);
-            case STK, IND -> getIndexOrStockData(contractData);
-            case BAG -> getComboLegOptionData(contractData);
+        return switch (contractDataDBO.getSecurityType()) {
+            case OPT -> getOptionContractData(contractDataDBO);
+            case STK, IND -> getIndexOrStockData(contractDataDBO);
+            case BAG -> getComboLegOptionData(contractDataDBO);
             default -> Optional.empty();
         };
     }
 
-    private Optional<ContractData> getComboLegOptionData(ContractData contractData) {
-        if (contractData.getId() != null
-                && contractDataRepository.findById(contractData.getId()).isPresent()) {
-            return contractDataRepository.findById(contractData.getId());
+    private Optional<ContractDataDBO> getComboLegOptionData(ContractDataDBO contractDataDBO) {
+        if (contractDataDBO.getId() != null
+                && contractDataRepository.findById(contractDataDBO.getId()).isPresent()) {
+            return contractDataRepository.findById(contractDataDBO.getId());
         }
-        OptionalLong id = comboContractDataFinder.checkContractWithComboLegs(contractData.getComboLegs());
+        OptionalLong id = comboContractDataFinder.checkContractWithComboLegs(contractDataDBO.getComboLegs());
         if (id.isPresent()) {
             return contractDataRepository.findById(id.getAsLong());
         }
-        return Optional.of(contractDataRepository.save(contractData));
+        return Optional.of(contractDataRepository.save(contractDataDBO));
     }
 
-    private Optional<ContractData> getIndexOrStockData(ContractData contractData) {
-        Optional<ContractData> contractOpt =
-                contractDataRepository.findFirstBySymbolAndSecurityTypeAndCurrency(contractData.getSymbol(),
-                        contractData.getSecurityType(),
-                        contractData.getCurrency());
+    private Optional<ContractDataDBO> getIndexOrStockData(ContractDataDBO contractDataDBO) {
+        Optional<ContractDataDBO> contractOpt =
+                contractDataRepository.findFirstBySymbolAndSecurityTypeAndCurrency(contractDataDBO.getSymbol(),
+                        contractDataDBO.getSecurityType(),
+                        contractDataDBO.getCurrency());
         return contractOpt.isPresent() ? contractOpt : contractDataCallAndResponseHandler.callContractDetailsFromAPI(
-                contractData);
+                contractDataDBO);
     }
 
-    private Optional<ContractData> getOptionContractData(ContractData contractData) {
-        Optional<ContractData> contractOpt = contractDataRepository.findFirstByLastTradeDateAndSymbolAndStrikeAndRight(
-                contractData.getLastTradeDate(),
-                contractData.getSymbol(),
-                contractData.getStrike(),
-                contractData.getRight());
+    private Optional<ContractDataDBO> getOptionContractData(ContractDataDBO contractDataDBO) {
+        Optional<ContractDataDBO> contractOpt = contractDataRepository.findFirstByLastTradeDateAndSymbolAndStrikeAndRight(
+                contractDataDBO.getLastTradeDate(),
+                contractDataDBO.getSymbol(),
+                contractDataDBO.getStrike(),
+                contractDataDBO.getRight());
         return contractOpt.isPresent() ? contractOpt : contractDataCallAndResponseHandler.callContractDetailsFromAPI(
-                contractData);
+                contractDataDBO);
     }
 }

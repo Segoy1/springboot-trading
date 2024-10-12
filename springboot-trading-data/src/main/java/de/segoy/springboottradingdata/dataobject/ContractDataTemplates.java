@@ -1,13 +1,13 @@
 package de.segoy.springboottradingdata.dataobject;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 
 public class ContractDataTemplates {
 
-  public static ContractData SpxData() {
-    return ContractData.builder()
+  public static ContractDataDBO SpxData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.SPX)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -15,8 +15,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData NasDaqData() {
-    return ContractData.builder()
+  public static ContractDataDBO NasDaqData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.NDX)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -24,8 +24,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData XOIData() {
-    return ContractData.builder()
+  public static ContractDataDBO XOIData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.XOI)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -33,8 +33,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData SpxOptionData() {
-    return ContractData.builder()
+  public static ContractDataDBO SpxOptionData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.SPX)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -42,8 +42,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData VIXData() {
-    return ContractData.builder()
+  public static ContractDataDBO VIXData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.VIX)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -51,8 +51,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData TLTData() {
-    return ContractData.builder()
+  public static ContractDataDBO TLTData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.TLT)
         .securityType(Types.SecType.STK)
         .currency("USD")
@@ -60,8 +60,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData GCData() {
-    return ContractData.builder()
+  public static ContractDataDBO GCData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.GC)
         .securityType(Types.SecType.IND)
         .currency("USD")
@@ -69,8 +69,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractData CLData() {
-    return ContractData.builder()
+  public static ContractDataDBO CLData() {
+    return ContractDataDBO.builder()
         .symbol(Symbol.CL)
         .securityType(Types.SecType.IND)
         .currency("USD")

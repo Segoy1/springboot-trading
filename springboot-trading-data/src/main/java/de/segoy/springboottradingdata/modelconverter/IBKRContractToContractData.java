@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Contract;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +13,8 @@ import java.util.List;
 @Component
 public class IBKRContractToContractData {
 
-    public ContractData convertIBKRContract(Contract contract) {
-        ContractData contractData = ContractData.builder()
+    public ContractDataDBO convertIBKRContract(Contract contract) {
+        ContractDataDBO contractDataDBO = ContractDataDBO.builder()
                 .contractId(contract.conid())
                 .symbol(Symbol.valueOf(contract.symbol()))
                 .securityType(contract.secType())
@@ -31,9 +31,9 @@ public class IBKRContractToContractData {
                 .comboLegsDescription(contract.comboLegsDescrip())
                 .build();
 
-        List<ComboLegData> legs = new ArrayList<>();
+        List<ComboLegDataDBO> legs = new ArrayList<>();
         contract.comboLegs().forEach(comboLeg -> {
-        ComboLegData leg = ComboLegData.builder()
+        ComboLegDataDBO leg = ComboLegDataDBO.builder()
                 .contractId(comboLeg.conid())
                 .exchange(comboLeg.exchange())
                 .ratio(comboLeg.ratio())
@@ -42,10 +42,10 @@ public class IBKRContractToContractData {
             legs.add(leg);
         });
 
-        contractData.setComboLegs(legs);
+        contractDataDBO.setComboLegs(legs);
         //Builder from Super Class not inherited
 //        contractData.setTouchedByApi(true);
 
-        return contractData;
+        return contractDataDBO;
     }
 }

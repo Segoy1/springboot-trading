@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelconverter;
 
 import com.ib.client.Order;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 @Component
 public class IBKROrderToOrderData {
 
-    public OrderData convertOrder(Order order) {
-        OrderData orderData = OrderData.builder()
+    public OrderDataDBO convertOrder(Order order) {
+        OrderDataDBO orderData = OrderDataDBO.builder()
                 .id((long) order.orderId())
                 .action(order.action())
                 .totalQuantity(order.totalQuantity().value().stripTrailingZeros())

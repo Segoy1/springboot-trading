@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithExistingOrderAndInvalidStatus(){
         Long id = 1L;
         String status = "default";
-        OrderData orderData = OrderData.builder().id(id).status(OrderStatus.get(status)).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(id).status(OrderStatus.get(status)).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
 
@@ -42,7 +42,7 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithExistingOrderAndValidStatus(){
         Long id = 1L;
         String status = "PreSubmitted";
-        OrderData orderData = OrderData.builder().id(id).status(OrderStatus.get(status)).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(id).status(OrderStatus.get(status)).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
 
@@ -55,7 +55,7 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithNotOrder(){
         Long id = 1L;
         String status = "unknown";
-        OrderData orderData = OrderData.builder().id(id).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(id).build();
 
         when(orderDataRepository.findById(id)).thenReturn(Optional.empty());
 

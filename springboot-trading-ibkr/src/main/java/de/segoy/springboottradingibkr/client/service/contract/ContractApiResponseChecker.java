@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.IBKRDataTypeRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingibkr.client.errorhandling.ApiResponseErrorHandler;
@@ -13,14 +13,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-class ContractApiResponseChecker implements OptionalApiResponseChecker<ContractData> {
+class ContractApiResponseChecker implements OptionalApiResponseChecker<ContractDataDBO> {
 
-    private final IBKRDataTypeRepository<ContractData> repository;
+    private final IBKRDataTypeRepository<ContractDataDBO> repository;
     private final RepositoryRefreshService repositoryRefreshService;
     private final ApiResponseErrorHandler apiResponseErrorHandler;
 
     @Transactional
-    public Optional<ContractData> checkForApiResponseAndUpdate(int id) {
+    public Optional<ContractDataDBO> checkForApiResponseAndUpdate(int id) {
         do{
             repositoryRefreshService.clearCacheAndWait(repository);
         }

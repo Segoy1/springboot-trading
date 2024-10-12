@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb.spxautotrade.scheduler;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class SpxLiveDataActivator {
 
 
     public void getLiveMarketDataSPX() {
-        ContractData spx = ContractDataTemplates.SpxData();
+        ContractDataDBO spx = ContractDataTemplates.SpxData();
         autoTradeMarketDataService.requestLiveMarketDataForContractData(propertiesConfig.getSpxTickerId(), spx);
 
     }

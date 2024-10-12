@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import java.math.BigDecimal;
@@ -25,8 +25,8 @@ class OptionTickerIdEncoderTest {
 
   @Test
   void testOptionTickerIdEncoder_WithCall() {
-    ContractData contractData =
-        ContractData.builder()
+    ContractDataDBO contractDataDBO =
+        ContractDataDBO.builder()
             .right(Types.Right.Call)
             .lastTradeDate("20260916")
             .strike(BigDecimal.valueOf(5555))
@@ -38,15 +38,15 @@ class OptionTickerIdEncoderTest {
     int days =
         (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
     int expected = 10005555 + (days * 10000);
-    int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
+    int result = optionTickerIdEncoder.encodeOptionTickerId(contractDataDBO);
 
     assertEquals(expected, result);
   }
 
   @Test
   void testOptionTickerIdEncoder_WithPut() {
-    ContractData contractData =
-        ContractData.builder()
+    ContractDataDBO contractDataDBO =
+        ContractDataDBO.builder()
             .right(Types.Right.Put)
             .lastTradeDate("20260916")
             .strike(BigDecimal.valueOf(553))
@@ -58,15 +58,15 @@ class OptionTickerIdEncoderTest {
     int days =
         (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
     int expected = (10000553 + (days * 10000)) * -1;
-    int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
+    int result = optionTickerIdEncoder.encodeOptionTickerId(contractDataDBO);
 
     assertEquals(expected, result);
   }
 
   @Test
   void testOptionTickerIdEncoder_WithPut_AndXOISymbol() {
-    ContractData contractData =
-        ContractData.builder()
+    ContractDataDBO contractDataDBO =
+        ContractDataDBO.builder()
             .right(Types.Right.Put)
             .lastTradeDate("20260916")
             .strike(BigDecimal.valueOf(553))
@@ -78,7 +78,7 @@ class OptionTickerIdEncoderTest {
     int days =
         (int) ChronoUnit.DAYS.between(LocalDate.now().atStartOfDay(), date.toLocalDateTime());
     int expected = (100000553 + (days * 10000)) * -1;
-    int result = optionTickerIdEncoder.encodeOptionTickerId(contractData);
+    int result = optionTickerIdEncoder.encodeOptionTickerId(contractDataDBO);
 
     assertEquals(expected, result);
   }

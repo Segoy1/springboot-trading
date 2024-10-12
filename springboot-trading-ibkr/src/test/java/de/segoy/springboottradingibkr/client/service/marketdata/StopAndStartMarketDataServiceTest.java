@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +26,13 @@ class StopAndStartMarketDataServiceTest {
 
     @Test
     void testReinitiateApiCall() {
-        ContractData contractData = ContractData.builder().build();
+        ContractDataDBO contractDataDBO = ContractDataDBO.builder().build();
 
-        when(contractDataRepository.findById(100L)).thenReturn(Optional.of(contractData));
+        when(contractDataRepository.findById(100L)).thenReturn(Optional.of(contractDataDBO));
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
         verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
-        verify(startMarketDataApiCaller, times(1)).callApi(contractData);
+        verify(startMarketDataApiCaller, times(1)).callApi(contractDataDBO);
     }
     @Test
     void testReinitiateApiCallAbsentData() {
@@ -41,6 +41,6 @@ class StopAndStartMarketDataServiceTest {
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
         verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
-        verify(startMarketDataApiCaller, never()).callApi(any(ContractData.class));
+        verify(startMarketDataApiCaller, never()).callApi(any(ContractDataDBO.class));
     }
 }

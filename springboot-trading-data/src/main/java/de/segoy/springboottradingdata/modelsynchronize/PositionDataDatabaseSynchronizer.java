@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
-import de.segoy.springboottradingdata.model.data.entity.PositionData;
+import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
 import de.segoy.springboottradingdata.repository.PositionDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,11 @@ public class PositionDataDatabaseSynchronizer {
     private final PositionDataRepository positionDataRepository;
 
 
-    public PositionData updateInDbOrSave(PositionData positionData) {
-        return positionDataRepository.findFirstByContractData(positionData.getContractData()).map((dbPositionData) -> {
-            dbPositionData.setPosition(positionData.getPosition());
-            dbPositionData.setAverageCost(positionData.getAverageCost());
-            dbPositionData.setTotalCost(positionData.getTotalCost());
+    public PositionDataDBO updateInDbOrSave(PositionDataDBO positionDataDBO) {
+        return positionDataRepository.findFirstByContractDataDBO(positionDataDBO.getContractDataDBO()).map((dbPositionData) -> {
+            dbPositionData.setPosition(positionDataDBO.getPosition());
+            dbPositionData.setAverageCost(positionDataDBO.getAverageCost());
+            dbPositionData.setTotalCost(positionDataDBO.getTotalCost());
 
             //delete if Position is 0.
             if(dbPositionData.getPosition().equals(BigDecimal.ZERO)){
@@ -26,6 +26,6 @@ public class PositionDataDatabaseSynchronizer {
                 return dbPositionData;
             }
             return positionDataRepository.save(dbPositionData);
-        }).orElseGet(()-> positionDataRepository.save(positionData));
+        }).orElseGet(()-> positionDataRepository.save(positionDataDBO));
     }
 }

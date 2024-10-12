@@ -1,10 +1,10 @@
 package de.segoy.springboottradingdata.repository;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
-import de.segoy.springboottradingdata.model.data.entity.PositionData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
 import java.util.Optional;
 
-public interface PositionDataRepository extends IBKRDataTypeRepository<PositionData> {
+public interface PositionDataRepository extends IBKRDataTypeRepository<PositionDataDBO> {
 
-    Optional<PositionData> findFirstByContractData(ContractData contractData);
+    Optional<PositionDataDBO> findFirstByContractDataDBO(ContractDataDBO contractDataDBO);
 }

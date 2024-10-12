@@ -16,7 +16,7 @@ public class PositionPnLService {
 
     public void getPortfolioPnL(){
         positionDataRepository.findAll().forEach((positionData)->{
-            getSinglePnL(positionData.getContractData().getContractId());
+            getSinglePnL(positionData.getContractDataDBO().getContractId());
         });
     }
     public void getSinglePnL(int id){
@@ -24,7 +24,7 @@ public class PositionPnLService {
     }
     public void cancelPortfolioPnL(){
         positionDataRepository.findAll().forEach((positionData)->{
-            cancelSinglePnL(positionData.getContractData().getContractId());
+            cancelSinglePnL(positionData.getContractDataDBO().getContractId());
         });
     }
     public void cancelSinglePnL(int id){

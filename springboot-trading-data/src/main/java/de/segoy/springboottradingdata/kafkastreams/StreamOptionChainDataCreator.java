@@ -2,9 +2,9 @@ package de.segoy.springboottradingdata.kafkastreams;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
-import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
-import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class StreamOptionChainDataCreator {
 
   private final OptionTickerIdResolver optionTickerIdResolver;
 
-  public OptionChainData buildChain(OptionMarketData marketData, OptionChainData aggregatedChain) {
+  public KafkaOptionChainData buildChain(KafkaOptionMarketData marketData, KafkaOptionChainData aggregatedChain) {
     if (aggregatedChain.getLastTradeDate() == null) {
       aggregatedChain = createNewChain(marketData);
     }
@@ -31,12 +31,12 @@ public class StreamOptionChainDataCreator {
     return aggregatedChain;
   }
 
-  private OptionChainData createNewChain(OptionMarketData marketData) {
-    return OptionChainData.builder()
+  private KafkaOptionChainData createNewChain(KafkaOptionMarketData marketData) {
+    return KafkaOptionChainData.builder()
         .lastTradeDate(marketData.getLastTradeDate())
         .symbol(marketData.getSymbol())
-        .puts(new OptionListData())
-        .calls(new OptionListData())
+        .puts(new KafkaOptionListData())
+        .calls(new KafkaOptionListData())
         .build();
   }
 }

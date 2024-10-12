@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ class StartMarketDataServiceTest {
 
     @Test
     void testRequestLiveMarketDataForContractDataPresent(){
-        ContractData contractData = ContractData.builder().build();
-        ContractData returnedData = ContractData.builder().id(1L).build();
-        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.of(returnedData));
+        ContractDataDBO contractDataDBO = ContractDataDBO.builder().build();
+        ContractDataDBO returnedData = ContractDataDBO.builder().id(1L).build();
+        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDataDBO)).thenReturn(Optional.of(returnedData));
 
-        Optional<ContractData> result = startMarketDataService.requestLiveMarketDataForContractData(contractData);
+        Optional<ContractDataDBO> result = startMarketDataService.requestLiveMarketDataForContractData(contractDataDBO);
 
         assertEquals(Optional.of(returnedData), result);
 
@@ -37,14 +37,14 @@ class StartMarketDataServiceTest {
     }
     @Test
     void testRequestLiveMarketDataForContractDataAbsent(){
-        ContractData contractData = ContractData.builder().build();
-        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractData)).thenReturn(Optional.empty());
+        ContractDataDBO contractDataDBO = ContractDataDBO.builder().build();
+        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDataDBO)).thenReturn(Optional.empty());
 
-        Optional<ContractData> result = startMarketDataService.requestLiveMarketDataForContractData(contractData);
+        Optional<ContractDataDBO> result = startMarketDataService.requestLiveMarketDataForContractData(contractDataDBO);
 
         assertEquals(Optional.empty(), result);
 
-        verify(startMarketDataApiCaller, never()).callApi(any(ContractData.class));
+        verify(startMarketDataApiCaller, never()).callApi(any(ContractDataDBO.class));
     }
 
 }

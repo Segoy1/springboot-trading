@@ -3,8 +3,8 @@ package de.segoy.springboottradingdata.service;
 import com.ib.client.Contract;
 import com.ib.client.Order;
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
@@ -38,20 +38,20 @@ class OrderWriteToDBServiceTest {
 
         Order order = new Order();
         Contract contract = new Contract();
-        ContractData contractData = ContractData.builder().build();
-        OrderData orderData = OrderData.builder().build();
+        ContractDataDBO contractDataDBO = ContractDataDBO.builder().build();
+        OrderDataDBO orderData = OrderDataDBO.builder().build();
 
         when(contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
-                OptionalLong.empty(), contract)).thenReturn(contractData);
+                OptionalLong.empty(), contract)).thenReturn(contractDataDBO);
         when(ibkrOrderToOrderData.convertOrder(order)).thenReturn(orderData);
         when(orderDataRepository.save(orderData)).thenReturn(orderData);
 
-        OrderData result = orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract,
+        OrderDataDBO result = orderWriteToDBService.saveOrUpdateFullOrderDataToDb(order, contract,
                 OrderStatus.Filled.toString());
 
 
         assertEquals(OrderStatus.Filled, result.getStatus());
-        assertEquals(contractData, result.getContractData());
+        assertEquals(contractDataDBO, result.getContractDataDBO());
 
         verify(contractDataDatabaseSynchronizer,times(1)).findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
                 OptionalLong.empty(), contract);

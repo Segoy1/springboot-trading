@@ -4,7 +4,7 @@ import com.ib.client.Decimal;
 import com.ib.client.Order;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ class OrderDatatoIBKROrderTest {
         orderDatatoIBKROrder = new OrderDataToIBKROrder();
 
         Order order = orderDatatoIBKROrder.convertOrderData(
-                OrderData.builder()
+                OrderDataDBO.builder()
                         .id(1L)
                         .totalQuantity(BigDecimal.valueOf(1))
                         .limitPrice(BigDecimal.valueOf(12))

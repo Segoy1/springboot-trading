@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class StopAndStartMarketDataService {
 
     private final ContractDataRepository contractDataRepository;
-    private final  @Qualifier("StartMarketDataApiCaller") ApiCaller<ContractData> startMarketDataApiCaller;
+    private final  @Qualifier("StartMarketDataApiCaller") ApiCaller<ContractDataDBO> startMarketDataApiCaller;
     private final StopMarketDataService stopMarketDataService;
 
     public void reinitiateApiCall(int id){

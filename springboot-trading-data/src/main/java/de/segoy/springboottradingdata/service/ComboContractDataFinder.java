@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
-import de.segoy.springboottradingdata.model.data.entity.ComboLegData;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
 import de.segoy.springboottradingdata.repository.ContractDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,9 @@ public class ComboContractDataFinder {
     private final ContractDataRepository contractDataRepository;
 
 
-    public OptionalLong checkContractWithComboLegs(List<ComboLegData> comboLegs){
+    public OptionalLong checkContractWithComboLegs(List<ComboLegDataDBO> comboLegs){
         final List<Long> oldContracts= new ArrayList<>();
-        for(ComboLegData comboLeg : comboLegs){
+        for(ComboLegDataDBO comboLeg : comboLegs){
             List<Long> contracts = new ArrayList<>();
             contractDataRepository.findByComboLegsDescriptionContains(comboLeg.getContractId().toString()).forEach((contractData)->{
                 contracts.add(contractData.getId());

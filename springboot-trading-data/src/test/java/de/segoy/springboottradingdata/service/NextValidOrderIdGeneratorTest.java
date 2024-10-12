@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class NextValidOrderIdGeneratorTest {
 
     @Test
     void testGenerateNextOrderIdFromOrder(){
-        OrderData orderData = OrderData.builder().id(20L).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(20L).build();
 
         when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L,21L);
@@ -38,7 +38,7 @@ class NextValidOrderIdGeneratorTest {
     }
     @Test
     void testGenerateNextOrderIdFromProperties(){
-        OrderData orderData = OrderData.builder().id(18L).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(18L).build();
 
         when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L);
@@ -49,7 +49,7 @@ class NextValidOrderIdGeneratorTest {
     }
     @Test
     void testGenerateNextOrderIdFromParsedId(){
-        OrderData orderData = OrderData.builder().id(20L).build();
+        OrderDataDBO orderData = OrderDataDBO.builder().id(20L).build();
 
         when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L, 42L);

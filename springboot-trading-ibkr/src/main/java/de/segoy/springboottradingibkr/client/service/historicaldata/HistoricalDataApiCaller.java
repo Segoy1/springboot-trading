@@ -17,8 +17,8 @@ class HistoricalDataApiCaller implements ApiCaller<HistoricalDataSettings> {
     private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
     public void callApi(HistoricalDataSettings settings) {
-        client.reqHistoricalData(settings.getContractData().getContractId(),
-                contractDataToIBKRContract.convertContractData(settings.getContractData()),
+        client.reqHistoricalData(settings.getContractDataDBO().getContractId(),
+                contractDataToIBKRContract.convertContractData(settings.getContractDataDBO()),
                 ibkrTimeStampFormatter.formatTimestampToDateAndTime(settings.getBackfillEndTime()),
                 settings.getBackfillDuration(),
                 settings.getBarSizeSetting().getValue(),

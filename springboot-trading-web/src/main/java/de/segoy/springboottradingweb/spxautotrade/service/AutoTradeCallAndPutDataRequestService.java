@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb.spxautotrade.service;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.TradingConstants;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingibkr.client.service.marketdata.StartMarketDataService;
@@ -22,8 +22,8 @@ public class AutoTradeCallAndPutDataRequestService {
         int strike = roundTo5(price);
         int strikediff = 5;
         do {
-            ContractData.ContractDataBuilder builder =
-                    ContractData.builder().securityType(Types
+            ContractDataDBO.ContractDataDBOBuilder builder =
+                    ContractDataDBO.builder().securityType(Types
                                     .SecType.OPT)
                             .symbol(Symbol.SPX)
                             .exchange(TradingConstants.CBOE)
@@ -31,11 +31,11 @@ public class AutoTradeCallAndPutDataRequestService {
                             .lastTradeDate(lastTradeDateBuilder.getDateStringFromToday())
                             .tradingClass(Symbol.SPXW.name());
             int callPrice = strike + strikediff;
-            ContractData call = builder.strike(BigDecimal.valueOf(callPrice)).right(Types.Right.Call).build();
+            ContractDataDBO call = builder.strike(BigDecimal.valueOf(callPrice)).right(Types.Right.Call).build();
             callMarketData(call);
 
             int putPrice = strike - strikediff;
-            ContractData put = builder.strike(BigDecimal.valueOf(putPrice)).right(Types.Right.Put).build();
+            ContractDataDBO put = builder.strike(BigDecimal.valueOf(putPrice)).right(Types.Right.Put).build();
             callMarketData(put);
             strikediff += 5;
         }
@@ -43,8 +43,8 @@ public class AutoTradeCallAndPutDataRequestService {
 
     }
 
-    private void callMarketData(ContractData contractData) {
-        startMarketDataService.requestLiveMarketDataForContractData(contractData);
+    private void callMarketData(ContractDataDBO contractDataDBO) {
+        startMarketDataService.requestLiveMarketDataForContractData(contractDataDBO);
     }
 
     private int roundTo5(double price) {

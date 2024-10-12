@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.order.orderupdate;
 
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class OrderUpdateService {
 
     private final OrderDataRepository orderDataRepository;
-    private final @Qualifier("OrderPlacementApiCaller") ApiCaller<OrderData> orderPlacementApiCaller;
+    private final @Qualifier("OrderPlacementApiCaller") ApiCaller<OrderDataDBO> orderPlacementApiCaller;
 
     public void updateOrderLimitPrice(Long id, BigDecimal price) {
         callApiAndGetResponse(orderDataRepository.findById(id).map((orderData) -> {
@@ -31,7 +31,7 @@ public class OrderUpdateService {
     }
 
 
-    private void callApiAndGetResponse(OrderData updatedOrderData) {
+    private void callApiAndGetResponse(OrderDataDBO updatedOrderData) {
         orderPlacementApiCaller.callApi(updatedOrderData);
     }
 }

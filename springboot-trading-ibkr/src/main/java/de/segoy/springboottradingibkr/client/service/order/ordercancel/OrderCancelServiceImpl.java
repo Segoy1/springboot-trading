@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.order.ordercancel;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import de.segoy.springboottradingdata.repository.OrderDataRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ class OrderCancelServiceImpl implements OrderCancelService {
 
     private final EClientSocket client;
     private final OrderDataRepository orderDataRepository;
-    private final @Qualifier("OrderCancelApiCaller") ApiCaller<OrderData> orderCancelApiCaller;
+    private final @Qualifier("OrderCancelApiCaller") ApiCaller<OrderDataDBO> orderCancelApiCaller;
 
     @Override
     public void cancelOrderbyId(Long id) {
-        OrderData orderData = orderDataRepository.findById(id).orElseThrow();
+        OrderDataDBO orderData = orderDataRepository.findById(id).orElseThrow();
         orderCancelApiCaller.callApi(orderData);
 
     }

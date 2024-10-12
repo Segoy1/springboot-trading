@@ -1,9 +1,14 @@
 package de.segoy.springboottradingibkr.client.errorhandling;
 
+import static org.mockito.Mockito.when;
+
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.kafkaconsumer.KafkaConsumerProvider;
-import de.segoy.springboottradingdata.model.data.IBKRDataType;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaDataType;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -14,13 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.when;
-
-
 //Hard To Test always Throws Errors because of Constructor
 @ExtendWith(MockitoExtension.class)
 class ApiResponseErrorHandlerTest {
@@ -28,7 +26,7 @@ class ApiResponseErrorHandlerTest {
     @Mock
     private ErrorCodeMapper errorCodeMapper;
     @Mock
-    private Consumer<String, IBKRDataType> consumer;
+    private Consumer<String, KafkaDataType> consumer;
     @Mock
     private KafkaConsumerProvider kafkaConsumerProvider;
     @Mock
@@ -39,13 +37,13 @@ class ApiResponseErrorHandlerTest {
 
     @BeforeEach
     void setup(){
-        ConsumerRecord<String, IBKRDataType> r1 =
+        ConsumerRecord<String, KafkaDataType> r1 =
                 new ConsumerRecord<>("topic",1,1,"1", ErrorMessage.builder().errorCode(1).build());
-        ConsumerRecord<String, IBKRDataType> r2 =
+        ConsumerRecord<String, KafkaDataType> r2 =
                 new ConsumerRecord<>("topic",1,2,"2", ErrorMessage.builder().errorCode(2).build());
 
         TopicPartition part = new TopicPartition("topic",1);
-        ConsumerRecords<String, IBKRDataType> records = new ConsumerRecords<>(Map.of(part, List.of(r1,r2)));
+        ConsumerRecords<String, KafkaDataType> records = new ConsumerRecords<>(Map.of(part, List.of(r1,r2)));
 
 
         when(kafkaConsumerProvider.createConsumerWithSubscription(List.of("topic"))).thenReturn(consumer);

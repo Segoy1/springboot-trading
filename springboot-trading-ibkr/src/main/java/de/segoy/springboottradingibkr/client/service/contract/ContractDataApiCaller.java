@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
 import com.ib.client.EClientSocket;
-import de.segoy.springboottradingdata.model.data.entity.ContractData;
+import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-class ContractDataApiCaller implements ApiCaller<ContractData> {
+class ContractDataApiCaller implements ApiCaller<ContractDataDBO> {
 
     private final ContractDataToIBKRContract contractDataToIBKRContract;
     private final EClientSocket client;
@@ -24,10 +24,11 @@ class ContractDataApiCaller implements ApiCaller<ContractData> {
     /**
      * Sets Active Api Call Flag for Id and calls the IBKR Api.
      *
-     * @param contractData DB object to be converted to ib.Contract to call API
+     * @param contractDataDBO DB object to be converted to ib.Contract to call API
      */
     @Override
-    public void callApi(ContractData contractData) {
-        client.reqContractDetails(contractData.getId().intValue(), contractDataToIBKRContract.convertContractData(contractData));
+    public void callApi(ContractDataDBO contractDataDBO) {
+        client.reqContractDetails(
+                contractDataDBO.getId().intValue(), contractDataToIBKRContract.convertContractData(contractDataDBO));
     }
 }

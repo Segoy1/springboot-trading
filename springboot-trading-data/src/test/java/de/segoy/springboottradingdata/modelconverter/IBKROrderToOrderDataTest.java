@@ -4,7 +4,7 @@ import com.ib.client.Decimal;
 import com.ib.client.Order;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.OrderData;
+import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ class IBKROrderToOrderDataTest {
         Order order = createTestOrder();
         order.orderType(OrderType.LMT);
         order.lmtPrice(10.95);
-        OrderData data = ibkrOrderToOrderData.convertOrder(order);
+        OrderDataDBO data = ibkrOrderToOrderData.convertOrder(order);
 
         assertEquals(1, data.getId());
         assertEquals(Types.Action.BUY, data.getAction());
@@ -54,7 +54,7 @@ class IBKROrderToOrderDataTest {
 
         Order order = createTestOrder();
         order.orderType(OrderType.MKT);
-        OrderData data = ibkrOrderToOrderData.convertOrder(order);
+        OrderDataDBO data = ibkrOrderToOrderData.convertOrder(order);
 
         assertEquals(1, data.getId());
         assertEquals(Types.Action.BUY, data.getAction());
