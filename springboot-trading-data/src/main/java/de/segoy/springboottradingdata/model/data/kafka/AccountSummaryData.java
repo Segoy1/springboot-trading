@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaAccountSummaryData extends KafkaDataType {
+public class AccountSummaryData extends KafkaDataType {
 
     @Id
     private Long id;

@@ -8,11 +8,11 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaOptionChainData extends KafkaDataType {
+public class OptionChainData extends KafkaDataType {
 
   private Long lastTradeDate;
   private Symbol symbol;
-  private KafkaOptionListData calls;
-  private KafkaOptionListData puts;
+  private OptionListData calls;
+  private OptionListData puts;
   
 }

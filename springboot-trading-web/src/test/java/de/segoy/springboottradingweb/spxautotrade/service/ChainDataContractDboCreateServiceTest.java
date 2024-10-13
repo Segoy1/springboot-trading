@@ -4,9 +4,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
@@ -25,24 +25,24 @@ class ChainDataContractDboCreateServiceTest {
   @Mock TradeRuleSettingsConfig tradeRuleSettingsConfig;
   @InjectMocks private ChainDataContractDataCreateService chainDataContractDataCreateService;
 
-  private KafkaOptionChainData testData;
+  private OptionChainData testData;
 
   @BeforeEach
   void setUp() {
-    KafkaOptionListData calls = new KafkaOptionListData();
-    calls.put(100, KafkaOptionMarketData.builder().delta(0.045).build());
-    calls.put(101, KafkaOptionMarketData.builder().delta(0.055).build());
-    calls.put(102, KafkaOptionMarketData.builder().delta(0.090).build());
-    calls.put(103, KafkaOptionMarketData.builder().delta(0.03).build());
+    OptionListData calls = new OptionListData();
+    calls.put(100, OptionMarketData.builder().delta(0.045).build());
+    calls.put(101, OptionMarketData.builder().delta(0.055).build());
+    calls.put(102, OptionMarketData.builder().delta(0.090).build());
+    calls.put(103, OptionMarketData.builder().delta(0.03).build());
 
-    KafkaOptionListData puts = new KafkaOptionListData();
-    puts.put(95, KafkaOptionMarketData.builder().delta(-0.042).build());
-    puts.put(90, KafkaOptionMarketData.builder().delta(-0.053).build());
-    puts.put(85, KafkaOptionMarketData.builder().delta(-0.090).build());
-    puts.put(80, KafkaOptionMarketData.builder().delta(-0.03).build());
+    OptionListData puts = new OptionListData();
+    puts.put(95, OptionMarketData.builder().delta(-0.042).build());
+    puts.put(90, OptionMarketData.builder().delta(-0.053).build());
+    puts.put(85, OptionMarketData.builder().delta(-0.090).build());
+    puts.put(80, OptionMarketData.builder().delta(-0.03).build());
 
     testData =
-        KafkaOptionChainData.builder()
+        OptionChainData.builder()
             .symbol(Symbol.SPX)
             .lastTradeDate(20240920L)
             .calls(calls)

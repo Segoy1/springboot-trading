@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaComboLegData extends KafkaDataType {
+public class ComboLegData extends KafkaDataType {
   private Integer contractId;
   private Integer ratio;
   private Types.Action action; // BUY/SELL/SSHORT/SSHORTX

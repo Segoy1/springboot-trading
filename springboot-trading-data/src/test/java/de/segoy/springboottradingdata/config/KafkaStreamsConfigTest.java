@@ -11,9 +11,9 @@ import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,10 +131,10 @@ class KafkaStreamsConfigTest {
     Topology topology = streamsConfig.processOptionsMarketDataForStrategy(new StreamsBuilder());
 
     testDriver = new TopologyTestDriver(topology, props);
-    TestInputTopic<String, KafkaOptionMarketData> inputTopic = getInputMarketDataTopic();
-    TestOutputTopic<String, KafkaOptionChainData> outputTopic = getOutputMarketDataTopic();
+    TestInputTopic<String, OptionMarketData> inputTopic = getInputMarketDataTopic();
+    TestOutputTopic<String, OptionChainData> outputTopic = getOutputMarketDataTopic();
 
-    List<KafkaOptionMarketData> options = getOptionMarketData();
+    List<OptionMarketData> options = getOptionMarketData();
     options.forEach(
         option ->
             inputTopic.pipeInput(
@@ -145,22 +145,22 @@ class KafkaStreamsConfigTest {
                     + option.getStrike(),
                 option));
 
-    List<KafkaOptionChainData> actual = outputTopic.readValuesToList();
+    List<OptionChainData> actual = outputTopic.readValuesToList();
     assertThat(actual).isNotNull().hasSize(4);
     assertThat(actual.get(3).getCalls().get(1).getStrike()).isEqualTo(1);
     assertThat(actual.get(3).getCalls().get(2).getStrike()).isEqualTo(2);
   }
 
-  private static List<KafkaOptionMarketData> getOptionMarketData() {
-    KafkaOptionMarketData opt1 =
-        KafkaOptionMarketData.builder().strike(1).symbol(Symbol.SPX).lastTradeDate("20241004").build();
-    KafkaOptionMarketData opt2 =
-        KafkaOptionMarketData.builder().strike(2).symbol(Symbol.SPX).lastTradeDate("20241004").build();
-    KafkaOptionMarketData opt3 =
-        KafkaOptionMarketData.builder().strike(3).symbol(Symbol.SPX).lastTradeDate("20241004").build();
-    KafkaOptionMarketData opt4 =
-        KafkaOptionMarketData.builder().strike(4).symbol(Symbol.SPX).lastTradeDate("20241004").build();
-    List<KafkaOptionMarketData> options = List.of(opt1, opt2, opt3, opt4);
+  private static List<OptionMarketData> getOptionMarketData() {
+    OptionMarketData opt1 =
+        OptionMarketData.builder().strike(1).symbol(Symbol.SPX).lastTradeDate("20241004").build();
+    OptionMarketData opt2 =
+        OptionMarketData.builder().strike(2).symbol(Symbol.SPX).lastTradeDate("20241004").build();
+    OptionMarketData opt3 =
+        OptionMarketData.builder().strike(3).symbol(Symbol.SPX).lastTradeDate("20241004").build();
+    OptionMarketData opt4 =
+        OptionMarketData.builder().strike(4).symbol(Symbol.SPX).lastTradeDate("20241004").build();
+    List<OptionMarketData> options = List.of(opt1, opt2, opt3, opt4);
     return options;
   }
 
@@ -178,16 +178,16 @@ class KafkaStreamsConfigTest {
         IBKR_OPTION_POSITIONS, Serdes.String().serializer(), positionSerde.serializer());
   }
 
-  private TestOutputTopic<String, KafkaOptionChainData> getOutputMarketDataTopic() {
+  private TestOutputTopic<String, OptionChainData> getOutputMarketDataTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<KafkaOptionChainData> optionChainDataSerde = new JsonSerde<>(KafkaOptionChainData.class, mapper);
+    Serde<OptionChainData> optionChainDataSerde = new JsonSerde<>(OptionChainData.class, mapper);
     return testDriver.createOutputTopic(
         IBKR_OPTION_CHAIN, Serdes.String().deserializer(), optionChainDataSerde.deserializer());
   }
 
-  private TestInputTopic<String, KafkaOptionMarketData> getInputMarketDataTopic() {
+  private TestInputTopic<String, OptionMarketData> getInputMarketDataTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<KafkaOptionMarketData> optionMarketDataSerde = new JsonSerde<>(KafkaOptionMarketData.class, mapper);
+    Serde<OptionMarketData> optionMarketDataSerde = new JsonSerde<>(OptionMarketData.class, mapper);
     return testDriver.createInputTopic(
         IBKR_OPTION_MARKET_DATA, Serdes.String().serializer(), optionMarketDataSerde.serializer());
   }
@@ -195,10 +195,10 @@ class KafkaStreamsConfigTest {
   private StreamOptionChainDataCreator mockStreamOptionChainDataCreator() {
     return new StreamOptionChainDataCreator() {
       @Override
-      public KafkaOptionChainData buildChain(
-              KafkaOptionMarketData marketData, KafkaOptionChainData aggregatedChain) {
+      public OptionChainData buildChain(
+              OptionMarketData marketData, OptionChainData aggregatedChain) {
         if (aggregatedChain.getCalls() == null) {
-          aggregatedChain.setCalls(new KafkaOptionListData());
+          aggregatedChain.setCalls(new OptionListData());
           aggregatedChain.setSymbol(marketData.getSymbol());
         }
         aggregatedChain.getCalls().put(marketData.getStrike(), marketData);

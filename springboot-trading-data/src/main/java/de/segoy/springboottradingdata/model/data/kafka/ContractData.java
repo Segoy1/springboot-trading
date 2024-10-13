@@ -13,7 +13,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaContractData extends KafkaDataType {
+public class ContractData extends KafkaDataType {
 
   private Integer contractId; // ContractId From Call to IBKR Api
   @NotNull private Symbol symbol; // SPX
@@ -33,6 +33,6 @@ public class KafkaContractData extends KafkaDataType {
   private boolean includeExpired; // can not be set to true for orders
   private String comboLegsDescription; // received in open order version 14 and up for all combos
 
-  private List<KafkaComboLegData> comboLegs;
+  private List<ComboLegData> comboLegs;
 
 }

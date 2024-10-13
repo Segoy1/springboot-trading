@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaOrderData extends KafkaDataType{
+public class OrderData extends KafkaDataType{
 
     private Long id;
 
@@ -28,6 +28,6 @@ public class KafkaOrderData extends KafkaDataType{
     private BigDecimal cashQuantity;
     private Boolean usePriceManagementAlgorithm;
     
-    private KafkaContractData contractData;
+    private ContractData contractData;
     private OrderStatus status;
 }

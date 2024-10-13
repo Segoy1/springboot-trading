@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaStandardMarketData extends KafkaDataType {
+public class StandardMarketData extends KafkaDataType {
     private int tickerId;
     private String field;
     private double price;

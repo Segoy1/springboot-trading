@@ -4,7 +4,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaDataType;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdEncoder;
@@ -45,8 +45,8 @@ public class TestStreamDataController {
     }
   }
 
-  private KafkaOptionMarketData createTestData(String date, Types.Right right, double strike) {
-    return KafkaOptionMarketData.builder()
+  private OptionMarketData createTestData(String date, Types.Right right, double strike) {
+    return OptionMarketData.builder()
         .tickerId(tickerIdEncoder.encodeOptionTickerId(new OptionTickerIdResolver.OptionDetails(date,Symbol.SPX,
                 strike,right)))
         .lastTradeDate(date)

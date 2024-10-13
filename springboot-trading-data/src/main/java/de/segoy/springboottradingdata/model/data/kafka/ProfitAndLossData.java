@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaProfitAndLossData extends KafkaDataType {
+public class ProfitAndLossData extends KafkaDataType {
 
     @Id
     private Long id;

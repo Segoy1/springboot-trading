@@ -77,7 +77,7 @@ public class IBKRConnection implements EWrapper {
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),
         Integer.toString(tickerId),
-        KafkaStandardMarketData.builder()
+        StandardMarketData.builder()
             .tickerId(tickerId)
             .field(TickType.getField(field))
             .price(price)
@@ -109,7 +109,7 @@ public class IBKRConnection implements EWrapper {
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(),
         details.toString(),
-        KafkaOptionMarketData.builder()
+        OptionMarketData.builder()
             .tickerId(tickerId)
             .strike(details.strike())
             .right(details.right())
@@ -474,7 +474,7 @@ public class IBKRConnection implements EWrapper {
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC(),
         Integer.toString(reqId),
-        KafkaAccountSummaryData.builder()
+        AccountSummaryData.builder()
             .account(account)
             .tag(tag)
             .amount(value)
@@ -679,8 +679,8 @@ public class IBKRConnection implements EWrapper {
 
   @Override
   public void pnl(int reqId, double dailyPnL, double unrealizedPnL, double realizedPnL) {
-    KafkaProfitAndLossData pnLData =
-        KafkaProfitAndLossData.builder()
+    ProfitAndLossData pnLData =
+        ProfitAndLossData.builder()
             .id((long) reqId)
             .dailyPnL(dailyPnL)
             .unrealizedPnL(unrealizedPnL)
@@ -702,7 +702,7 @@ public class IBKRConnection implements EWrapper {
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getSINGLE_PNL_TOPIC(),
         Integer.toString(reqId),
-        KafkaProfitAndLossData.builder()
+        ProfitAndLossData.builder()
             .id((long) reqId)
             .pos(pos.value())
             .dailyPnL(dailyPnL)

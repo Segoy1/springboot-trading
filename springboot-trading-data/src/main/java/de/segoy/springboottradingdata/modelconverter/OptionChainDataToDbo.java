@@ -3,8 +3,8 @@ package de.segoy.springboottradingdata.modelconverter;
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionListDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionMarketDataDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
 import de.segoy.springboottradingdata.repository.OptionListRepository;
 import de.segoy.springboottradingdata.repository.OptionMarketDataRepository;
@@ -25,31 +25,31 @@ public class OptionChainDataToDbo {
   private final OptionChainRepository optionChainRepository;
 
   @Transactional
-  public OptionChainDbo convert(KafkaOptionChainData kafkaOptionChainData) {
-    List<OptionMarketDataDbo> callList = mapToList(kafkaOptionChainData.getCalls().getOptions());
-    List<OptionMarketDataDbo> putList = mapToList(kafkaOptionChainData.getPuts().getOptions());
+  public OptionChainDbo convert(OptionChainData optionChainData) {
+    List<OptionMarketDataDbo> callList = mapToList(optionChainData.getCalls().getOptions());
+    List<OptionMarketDataDbo> putList = mapToList(optionChainData.getPuts().getOptions());
     OptionListDbo callsDBO =
         optionListRepository.save(
             OptionListDbo.builder()
-                .id(kafkaOptionChainData.getLastTradeDate())
+                .id(optionChainData.getLastTradeDate())
                 .optionList(callList)
                 .build());
     OptionListDbo putsDBO =
         optionListRepository.save(
             OptionListDbo.builder()
-                .id(kafkaOptionChainData.getLastTradeDate() * -1)
+                .id(optionChainData.getLastTradeDate() * -1)
                 .optionList(putList)
                 .build());
     return optionChainRepository.save(
         OptionChainDbo.builder()
-            .lastTradeDate(kafkaOptionChainData.getLastTradeDate())
-            .symbol(kafkaOptionChainData.getSymbol())
+            .lastTradeDate(optionChainData.getLastTradeDate())
+            .symbol(optionChainData.getSymbol())
             .calls(callsDBO)
             .puts(putsDBO)
             .build());
   }
 
-  private List<OptionMarketDataDbo> mapToList(Map<Double, KafkaOptionMarketData> map) {
+  private List<OptionMarketDataDbo> mapToList(Map<Double, OptionMarketData> map) {
     List<OptionMarketDataDbo> list = new ArrayList<>();
     map.forEach(
         (key, value) -> {
@@ -58,7 +58,7 @@ public class OptionChainDataToDbo {
     return list;
   }
 
-  private OptionMarketDataDbo toOptionMarketDataDBO(KafkaOptionMarketData optionMarketData) {
+  private OptionMarketDataDbo toOptionMarketDataDBO(OptionMarketData optionMarketData) {
     return optionMarketDataRepository.save(
         OptionMarketDataDbo.builder()
             .tickerId((long) optionMarketData.getTickerId())

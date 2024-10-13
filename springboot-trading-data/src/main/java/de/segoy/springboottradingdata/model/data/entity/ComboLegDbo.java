@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.model.data.entity;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaComboLegData;
+import de.segoy.springboottradingdata.model.data.kafka.ComboLegData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +26,8 @@ public class ComboLegDbo {
     private Types.Action action; // BUY/SELL/SSHORT/SSHORTX
     private String exchange;
 
-    public KafkaComboLegData toKafkaComboLegData() {
-        return KafkaComboLegData.builder()
+    public ComboLegData toKafkaComboLegData() {
+        return ComboLegData.builder()
                 .contractId(contractId)
                 .ratio(ratio)
                 .action(action)

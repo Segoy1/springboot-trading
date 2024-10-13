@@ -8,23 +8,23 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-public class KafkaOptionListData extends KafkaDataType {
+public class OptionListData extends KafkaDataType {
 
-  private final Map<Double, KafkaOptionMarketData> options = new HashMap<>();
+  private final Map<Double, OptionMarketData> options = new HashMap<>();
 
-    public KafkaOptionListData(HashMap<Double, KafkaOptionMarketData> options) {
+    public OptionListData(HashMap<Double, OptionMarketData> options) {
         this.options.putAll(options);
     }
 
-    public void put(double strike, KafkaOptionMarketData option){
+    public void put(double strike, OptionMarketData option){
         options.put(strike, option);
     }
-    public KafkaOptionMarketData get(double strike){
+    public OptionMarketData get(double strike){
         return options.get(strike);
     }
     public Map<Double, Double> extractDeltas(){
         HashMap<Double,Double> deltas = new  HashMap<>();
-        for(Map.Entry<Double, KafkaOptionMarketData> entry : options.entrySet()){
+        for(Map.Entry<Double, OptionMarketData> entry : options.entrySet()){
             deltas.put(entry.getKey(), entry.getValue().getDelta());
         }
         return deltas;
@@ -32,7 +32,7 @@ public class KafkaOptionListData extends KafkaDataType {
     public int size(){
         return options.size();
     }
-    public Map.Entry<Double, KafkaOptionMarketData> findClosestToDelta(double delta){
+    public Map.Entry<Double, OptionMarketData> findClosestToDelta(double delta){
         return options.entrySet()
                 .stream()
                 .min((entry1, entry2) -> {

@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.model.data.entity;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaContractData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaPositionData;
+import de.segoy.springboottradingdata.model.data.kafka.ContractData;
+import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,11 +30,11 @@ public class PositionDbo extends IBKRDataType {
 
   private double totalCost;
 
-  public KafkaPositionData toKafkaPositionData() {
-    KafkaContractData kafkaContractData = contractDBO.toKafkaContractData();
-    return KafkaPositionData.builder()
+  public PositionData toKafkaPositionData() {
+    ContractData contractData = contractDBO.toKafkaContractData();
+    return PositionData.builder()
         .account(account)
-        .contractData(kafkaContractData)
+        .contractData(contractData)
         .position(position)
         .averageCost(averageCost)
         .totalCost(totalCost)

@@ -5,7 +5,7 @@ import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.Leg;
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
 import jakarta.transaction.Transactional;
@@ -26,10 +26,10 @@ public class ChainDataContractDataCreateService {
   private final StrategyBuilderService strategyBuilderService;
 
   @Transactional
-  public ContractDbo createIronCondorContractData(KafkaOptionChainData kafkaOptionChainData) {
+  public ContractDbo createIronCondorContractData(OptionChainData optionChainData) {
     List<Leg> legs = new ArrayList<>();
     double callShortStrike =
-        kafkaOptionChainData
+        optionChainData
             .getCalls()
             .findClosestToDelta(tradeRuleSettingsConfig.getDelta())
             .getKey();
@@ -39,7 +39,7 @@ public class ChainDataContractDataCreateService {
     legs.add(createLeg(Types.Right.Call, Types.Action.BUY, callLongStrike));
 
     double putShortStrike =
-        kafkaOptionChainData
+        optionChainData
             .getPuts()
             .findClosestToDelta(tradeRuleSettingsConfig.getDelta())
             .getKey();
@@ -49,7 +49,7 @@ public class ChainDataContractDataCreateService {
     legs.add(createLeg(Types.Right.Put, Types.Action.BUY, putLongStrike));
 
     ContractDbo contract = ContractDataTemplates.SPXWComboData();
-    contract.setLastTradeDate(String.valueOf(kafkaOptionChainData.getLastTradeDate()));
+    contract.setLastTradeDate(String.valueOf(optionChainData.getLastTradeDate()));
     StrategyContractData strategyContractData =
         StrategyContractData.builder().contractDBO(contract).strategyLegs(legs).build();
     return strategyBuilderService.getComboLegContractData(strategyContractData).orElseThrow();

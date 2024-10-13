@@ -2,9 +2,9 @@ package de.segoy.springboottradingdata.modelconverter;
 
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionListDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class DboToOptionChainData {
 
     @Transactional
-    public KafkaOptionChainData toOptionChainData(OptionChainDbo optionChainDbo) {
-        return KafkaOptionChainData.builder()
+    public OptionChainData toOptionChainData(OptionChainDbo optionChainDbo) {
+        return OptionChainData.builder()
                 .lastTradeDate(optionChainDbo.getLastTradeDate())
                 .symbol(optionChainDbo.getSymbol())
                 .calls(transformList(optionChainDbo.getCalls()))
@@ -21,8 +21,8 @@ public class DboToOptionChainData {
                 .build();
     }
 
-    private KafkaOptionListData transformList(OptionListDbo optionList) {
-        KafkaOptionListData listData = new KafkaOptionListData();
+    private OptionListData transformList(OptionListDbo optionList) {
+        OptionListData listData = new OptionListData();
 
         optionList
                 .getOptionList()
@@ -30,7 +30,7 @@ public class DboToOptionChainData {
                         (option) -> {
                             listData.put(
                                     option.getStrike(),
-                                    KafkaOptionMarketData.builder()
+                                    OptionMarketData.builder()
                                             .tickerId(option.getTickerId().intValue())
                                             .strike(option.getStrike())
                                             .right(option.getRight())

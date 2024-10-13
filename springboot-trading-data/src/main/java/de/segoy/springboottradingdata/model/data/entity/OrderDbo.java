@@ -4,8 +4,8 @@ import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaContractData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOrderData;
+import de.segoy.springboottradingdata.model.data.kafka.ContractData;
+import de.segoy.springboottradingdata.model.data.kafka.OrderData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,9 +43,9 @@ public class OrderDbo extends IBKRDataType {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public KafkaOrderData toKafkaOrderData(){
-        KafkaContractData contract = contractDBO.toKafkaContractData();
-        return KafkaOrderData.builder()
+    public OrderData toKafkaOrderData(){
+        ContractData contract = contractDBO.toKafkaContractData();
+        return OrderData.builder()
                 .id(id)
                 .action(action)
                 .totalQuantity(totalQuantity)

@@ -2,7 +2,7 @@ package de.segoy.springboottradingweb.spxautotrade.scheduler;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.modelconverter.DboToOptionChainData;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
@@ -29,7 +29,7 @@ public class AutoTradeStrategyMarketDataRequestService {
 
   @Transactional
   public void createStrategyFromOptionChain() {
-    KafkaOptionChainData chainData = dboToOptionChainData.toOptionChainData(findFromRepo());
+    OptionChainData chainData = dboToOptionChainData.toOptionChainData(findFromRepo());
 
     ContractDbo contractDBO =
         chainDataContractDataCreateService.createIronCondorContractData(chainData);

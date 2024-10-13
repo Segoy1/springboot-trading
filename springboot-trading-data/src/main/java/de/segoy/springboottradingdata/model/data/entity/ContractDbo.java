@@ -2,8 +2,8 @@ package de.segoy.springboottradingdata.model.data.entity;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaComboLegData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaContractData;
+import de.segoy.springboottradingdata.model.data.kafka.ComboLegData;
+import de.segoy.springboottradingdata.model.data.kafka.ContractData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -70,12 +70,12 @@ public class ContractDbo extends IBKRDataType {
     private List<ComboLegDbo> comboLegs;
 
 
-    public KafkaContractData toKafkaContractData() {
-        List<KafkaComboLegData> legs = new ArrayList<>();
+    public ContractData toKafkaContractData() {
+        List<ComboLegData> legs = new ArrayList<>();
         if (comboLegs != null && !comboLegs.isEmpty()) {
             comboLegs.forEach((leg) -> legs.add(leg.toKafkaComboLegData()));
         }
-        return KafkaContractData.builder()
+        return ContractData.builder()
                 .contractId(contractId)
                 .symbol(symbol)
                 .securityType(securityType)

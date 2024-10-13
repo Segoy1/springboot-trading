@@ -5,8 +5,8 @@ import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionChainDataCreator;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
 import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.Serde;
@@ -88,16 +88,16 @@ public class KafkaStreamsConfig {
   @Bean
   public Topology processOptionsMarketDataForStrategy(StreamsBuilder streamsBuilder) {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<KafkaOptionMarketData> optionMarketDataSerde = new JsonSerde<>(KafkaOptionMarketData.class, mapper);
-    Serde<KafkaOptionChainData> optionChainDataSerde =
-        new JsonSerde<>(KafkaOptionChainData.class, new ObjectMapper());
+    Serde<OptionMarketData> optionMarketDataSerde = new JsonSerde<>(OptionMarketData.class, mapper);
+    Serde<OptionChainData> optionChainDataSerde =
+        new JsonSerde<>(OptionChainData.class, new ObjectMapper());
 
-    final Consumed<String, KafkaOptionMarketData> consumed =
+    final Consumed<String, OptionMarketData> consumed =
         Consumed.with(Serdes.String(), optionMarketDataSerde);
-    final KStream<String, KafkaOptionMarketData> options =
+    final KStream<String, OptionMarketData> options =
         streamsBuilder.stream(kafkaConstantsConfig.getOPTION_MARKET_DATA_TOPIC(), consumed);
 
-    KTable<String, KafkaOptionChainData> sortByTradingClassAndLastTradeDate =
+    KTable<String, OptionChainData> sortByTradingClassAndLastTradeDate =
         options
             .selectKey(
                 (key, value) -> {
@@ -111,10 +111,10 @@ public class KafkaStreamsConfig {
                 })
             .groupByKey()
             .aggregate(
-                () -> KafkaOptionChainData.builder().build(),
+                () -> OptionChainData.builder().build(),
                 (key, newOptionData, chainData) ->
                     streamOptionChainDataCreator.buildChain(newOptionData, chainData),
-                Materialized.<String, KafkaOptionChainData, KeyValueStore<Bytes, byte[]>>as(
+                Materialized.<String, OptionChainData, KeyValueStore<Bytes, byte[]>>as(
                         kafkaConstantsConfig.getOPTION_MARKET_DATA_AGGREGATE_TOPIC())
                     .withKeySerde(Serdes.String())
                     .withValueSerde(optionChainDataSerde));

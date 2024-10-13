@@ -8,11 +8,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaPositionData extends KafkaDataType{
+public class PositionData extends KafkaDataType{
 
     private String account;
 
-    private KafkaContractData contractData;
+    private ContractData contractData;
     private BigDecimal position;
     private double averageCost;
 

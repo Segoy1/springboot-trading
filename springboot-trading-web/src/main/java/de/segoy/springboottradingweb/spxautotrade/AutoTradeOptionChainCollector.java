@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.spxautotrade;
 
-import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
+import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.modelconverter.OptionChainDataToDbo;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
@@ -19,7 +19,7 @@ public class AutoTradeOptionChainCollector {
   @KafkaListener(
       groupId = "${kafka.consumer.auto.group.id}",
       topics = "${kafka.names.topic.streams.optionChainData}")
-  public void processChainData(KafkaOptionChainData message) {
+  public void processChainData(OptionChainData message) {
     if (message.getLastTradeDate().equals(lastTradeDateBuilder.getDateLongFromToday())
         && message.getSymbol().equals(Symbol.SPX)) {
       optionChainDataToDBO.convert(message);

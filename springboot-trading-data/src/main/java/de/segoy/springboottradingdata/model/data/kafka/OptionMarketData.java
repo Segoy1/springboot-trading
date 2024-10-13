@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaOptionMarketData extends KafkaDataType {
+public class OptionMarketData extends KafkaDataType {
 
 
     private int tickerId;
