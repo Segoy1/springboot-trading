@@ -1,4 +1,4 @@
-package de.segoy.springboottradingweb.spxautotrade.scheduler;
+package de.segoy.springboottradingweb.spxautotrade.service;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;

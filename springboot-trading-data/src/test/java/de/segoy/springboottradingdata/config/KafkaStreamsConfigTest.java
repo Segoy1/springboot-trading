@@ -8,15 +8,13 @@ import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionChainDataCreator;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
 import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
-import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
-import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -195,8 +193,7 @@ class KafkaStreamsConfigTest {
   }
 
   private StreamOptionChainDataCreator mockStreamOptionChainDataCreator() {
-    return new StreamOptionChainDataCreator(
-        new OptionTickerIdResolver(new IBKRTimeStampFormatter(new PropertiesConfig()))) {
+    return new StreamOptionChainDataCreator() {
       @Override
       public KafkaOptionChainData buildChain(
               KafkaOptionMarketData marketData, KafkaOptionChainData aggregatedChain) {

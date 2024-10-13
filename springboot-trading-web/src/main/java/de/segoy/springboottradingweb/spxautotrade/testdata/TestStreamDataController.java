@@ -3,10 +3,12 @@ package de.segoy.springboottradingweb.spxautotrade.testdata;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.KafkaConstantsConfig;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
-import de.segoy.springboottradingdata.model.data.IBKRDataType;
-import de.segoy.springboottradingdata.model.data.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaDataType;
+import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
+import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdEncoder;
+import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestStreamDataController {
 
-  private final KafkaTemplate<String, IBKRDataType> kafkaTemplate;
+  private final KafkaTemplate<String, KafkaDataType> kafkaTemplate;
   private final KafkaConstantsConfig kafkaConstantsConfig;
   private final LastTradeDateBuilder lastTradeDateBuilder;
+  private final OptionTickerIdEncoder tickerIdEncoder;
 
   @GetMapping("/chainTestData")
   public void testData() {
@@ -42,8 +45,10 @@ public class TestStreamDataController {
     }
   }
 
-  private OptionMarketData createTestData(String date, Types.Right right, double strike) {
-    return OptionMarketData.builder()
+  private KafkaOptionMarketData createTestData(String date, Types.Right right, double strike) {
+    return KafkaOptionMarketData.builder()
+        .tickerId(tickerIdEncoder.encodeOptionTickerId(new OptionTickerIdResolver.OptionDetails(date,Symbol.SPX,
+                strike,right)))
         .lastTradeDate(date)
         .symbol(Symbol.SPX)
         .field(AutoDayTradeConstants.CHAIN_SAVE_FIELD)

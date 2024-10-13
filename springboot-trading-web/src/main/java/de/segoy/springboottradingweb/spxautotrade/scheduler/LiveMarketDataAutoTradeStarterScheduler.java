@@ -5,6 +5,7 @@ import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataD
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeCallAndPutDataRequestService;
+import de.segoy.springboottradingweb.spxautotrade.service.SpxLiveDataActivator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,12 +21,14 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   private final PropertiesConfig propertiesConfig;
   private final SpxLiveDataActivator spxLiveDataActivator;
   private final RepositoryRefreshService repositoryRefreshService;
+  private final AutoTradeStrategyMarketDataRequestService autoTradeStrategyMarketDataRequestService;
 
   @Scheduled(cron = "0 30 15 * * 1-5")
   //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
       LastPriceLiveMarketDataDBO liveData = getLiveData();
       autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
+      autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain();
 
   }
 

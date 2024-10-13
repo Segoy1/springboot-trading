@@ -10,8 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 public class KafkaOptionChainData extends KafkaDataType {
 
-    private String lastTradeDate;
-    private Symbol symbol;
-    private KafkaOptionListData calls;
-    private KafkaOptionListData puts;
+  private Long lastTradeDate;
+  private Symbol symbol;
+  private KafkaOptionListData calls;
+  private KafkaOptionListData puts;
+  
 }

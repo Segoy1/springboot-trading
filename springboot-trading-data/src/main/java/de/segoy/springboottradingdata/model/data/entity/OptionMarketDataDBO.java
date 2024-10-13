@@ -3,8 +3,7 @@ package de.segoy.springboottradingdata.model.data.entity;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,8 +16,13 @@ public class OptionMarketDataDBO extends IBKRDataType {
 
     @Id
     private Long tickerId;
+
     private double strike;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trade_right")
     private Types.Right right;
+
+    @Enumerated(EnumType.STRING)
     private Symbol symbol;
     private String lastTradeDate;
 

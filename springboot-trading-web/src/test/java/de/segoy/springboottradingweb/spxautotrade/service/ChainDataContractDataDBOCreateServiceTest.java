@@ -21,39 +21,40 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ChainDataContractDataDBOCreateServiceTest {
 
-    @Mock
-    StrategyBuilderService strategyBuilderService;
-    @Mock
-    TradeRuleSettingsConfig tradeRuleSettingsConfig;
-    @InjectMocks
-    private ChainDataContractDataCreateService chainDataContractDataCreateService;
+  @Mock StrategyBuilderService strategyBuilderService;
+  @Mock TradeRuleSettingsConfig tradeRuleSettingsConfig;
+  @InjectMocks private ChainDataContractDataCreateService chainDataContractDataCreateService;
 
-    private KafkaOptionChainData testData;
+  private KafkaOptionChainData testData;
 
-    @BeforeEach
-    void setUp() {
-        KafkaOptionListData calls = new KafkaOptionListData();
-        calls.put(100, KafkaOptionMarketData.builder().delta(0.045).build());
-        calls.put(101, KafkaOptionMarketData.builder().delta(0.055).build());
-        calls.put(102, KafkaOptionMarketData.builder().delta(0.090).build());
-        calls.put(103, KafkaOptionMarketData.builder().delta(0.03).build());
+  @BeforeEach
+  void setUp() {
+    KafkaOptionListData calls = new KafkaOptionListData();
+    calls.put(100, KafkaOptionMarketData.builder().delta(0.045).build());
+    calls.put(101, KafkaOptionMarketData.builder().delta(0.055).build());
+    calls.put(102, KafkaOptionMarketData.builder().delta(0.090).build());
+    calls.put(103, KafkaOptionMarketData.builder().delta(0.03).build());
 
-        KafkaOptionListData puts = new KafkaOptionListData();
-        puts.put(95, KafkaOptionMarketData.builder().delta(-0.042).build());
-        puts.put(90, KafkaOptionMarketData.builder().delta(-0.053).build());
-        puts.put(85,  KafkaOptionMarketData.builder().delta(-0.090).build());
-        puts.put(80, KafkaOptionMarketData.builder().delta(-0.03).build());
+    KafkaOptionListData puts = new KafkaOptionListData();
+    puts.put(95, KafkaOptionMarketData.builder().delta(-0.042).build());
+    puts.put(90, KafkaOptionMarketData.builder().delta(-0.053).build());
+    puts.put(85, KafkaOptionMarketData.builder().delta(-0.090).build());
+    puts.put(80, KafkaOptionMarketData.builder().delta(-0.03).build());
 
-        testData = KafkaOptionChainData.builder().symbol(Symbol.SPX).lastTradeDate("20240920").calls(calls).puts(puts).build();
+    testData =
+        KafkaOptionChainData.builder()
+            .symbol(Symbol.SPX)
+            .lastTradeDate(20240920L)
+            .calls(calls)
+            .puts(puts)
+            .build();
+  }
 
-    }
-    @Test
-    void simpleNumbersTest(){
-        when(strategyBuilderService.getComboLegContractData(any())).thenReturn(Optional.of(ContractDataDBO.builder().build()));
-        when(tradeRuleSettingsConfig.getDelta()).thenReturn(0.05);
-        chainDataContractDataCreateService.createIronCondorContractData(testData);
-
-    }
-
-
+  @Test
+  void simpleNumbersTest() {
+    when(strategyBuilderService.getComboLegContractData(any()))
+        .thenReturn(Optional.of(ContractDataDBO.builder().build()));
+    when(tradeRuleSettingsConfig.getDelta()).thenReturn(0.05);
+    chainDataContractDataCreateService.createIronCondorContractData(testData);
+  }
 }

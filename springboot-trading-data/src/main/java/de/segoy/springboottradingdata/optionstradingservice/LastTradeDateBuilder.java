@@ -33,4 +33,7 @@ public class LastTradeDateBuilder {
   public int getDateIntFromToday() {
     return Integer.parseInt(getDateStringFromToday());
   }
+  public long getDateLongFromToday() {
+    return Long.parseLong(getDateStringFromToday());
+  }
 }
