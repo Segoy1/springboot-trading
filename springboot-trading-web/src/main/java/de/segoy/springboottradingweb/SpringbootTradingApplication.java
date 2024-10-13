@@ -1,6 +1,7 @@
 package de.segoy.springboottradingweb;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import de.segoy.springboottradingweb.spxautotrade.scheduler.LiveMarketDataAutoTradeStarterScheduler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,6 +27,10 @@ public class SpringbootTradingApplication {
 		PropertiesConfig propertiesConfig = context.getBean(PropertiesConfig.class);
 		ConnectionInitiator connection = context.getBean(ConnectionInitiator.class);
 		connection.connect(propertiesConfig.getTradingPort());
+
+		//Test only
+		LiveMarketDataAutoTradeStarterScheduler liveMarketDataAutoTradeStarterScheduler = context.getBean(LiveMarketDataAutoTradeStarterScheduler.class);
+		liveMarketDataAutoTradeStarterScheduler.getOptionDataForDayTradeStrategy();
 	}
 
 }

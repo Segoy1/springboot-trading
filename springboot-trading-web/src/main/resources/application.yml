@@ -58,7 +58,7 @@ app:
       ticker:
         id: 3214
     connectionId: '1'
-    tradingPort: 7497
+    tradingPort: 7496
     isReaderStarted: 'false'
     accountSummary:
       tags:
