@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.historicaldata;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.HistoricalDataDBO;
-import de.segoy.springboottradingdata.repository.HistoricalDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
+import de.segoy.springboottradingdata.repository.HistoricalRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingibkr.client.errorhandling.ApiResponseErrorHandler;
 import de.segoy.springboottradingibkr.client.service.ListApiResponseChecker;
@@ -13,15 +13,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalDataDBO> {
+class HistoricalApiResponseChecker implements ListApiResponseChecker<HistoricalDbo> {
 
     private final RepositoryRefreshService repositoryRefreshService;
-    private final HistoricalDataRepository repository;
+    private final HistoricalRepository repository;
     private final PropertiesConfig propertiesConfig;
     private final ApiResponseErrorHandler apiResponseErrorHandler;
     
     @Override
-    public List<HistoricalDataDBO> checkForApiResponseAndUpdate(int id) {
+    public List<HistoricalDbo> checkForApiResponseAndUpdate(int id) {
         do{
         repositoryRefreshService.clearCacheAndWait(repository);
         }

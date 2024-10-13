@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.spxautotrade.scheduler;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataDbo;
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeCallAndPutDataRequestService;
@@ -26,13 +26,13 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   @Scheduled(cron = "0 30 15 * * 1-5")
   //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
-      LastPriceLiveMarketDataDBO liveData = getLiveData();
+      LastPriceLiveMarketDataDbo liveData = getLiveData();
       autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
       autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain();
 
   }
 
-  private LastPriceLiveMarketDataDBO getLiveData() {
+  private LastPriceLiveMarketDataDbo getLiveData() {
     return lastPriceLiveMarketDataRepository
         .findById((long) propertiesConfig.getSpxTickerId())
         .orElseGet(

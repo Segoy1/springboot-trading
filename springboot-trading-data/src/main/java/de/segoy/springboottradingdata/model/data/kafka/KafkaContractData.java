@@ -1,14 +1,10 @@
 package de.segoy.springboottradingdata.model.data.kafka;
 
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -39,27 +35,4 @@ public class KafkaContractData extends KafkaDataType {
 
   private List<KafkaComboLegData> comboLegs;
 
-  @Transactional
-  public ContractDataDBO toContractDataDBO() {
-    List<ComboLegDataDBO> legs = new ArrayList<>();
-    if (comboLegs != null) {
-      comboLegs.forEach((leg) -> legs.add(leg.toDBComboLegData()));
-    }
-    return ContractDataDBO.builder()
-        .contractId(contractId)
-        .symbol(symbol)
-        .securityType(securityType)
-        .currency(currency)
-        .exchange(exchange)
-        .lastTradeDate(lastTradeDate)
-        .strike(strike)
-        .right(right)
-        .multiplier(multiplier)
-        .localSymbol(localSymbol)
-        .tradingClass(tradingClass)
-        .includeExpired(includeExpired)
-        .comboLegsDescription(comboLegsDescription)
-        .comboLegs(legs)
-        .build();
-  }
 }

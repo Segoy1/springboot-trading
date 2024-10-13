@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import jakarta.transaction.Transactional;
@@ -14,13 +14,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StartMarketDataService {
 
-    private final  @Qualifier("StartMarketDataApiCaller") ApiCaller<ContractDataDBO> startMarketDataApiCaller;
+    private final  @Qualifier("StartMarketDataApiCaller") ApiCaller<ContractDbo> startMarketDataApiCaller;
     private final UniqueContractDataProvider uniqueContractDataProvider;
 
     @Transactional
-    public Optional<ContractDataDBO> requestLiveMarketDataForContractData(ContractDataDBO contractDataDBO) {
-        Optional<ContractDataDBO> savedContractOptional = uniqueContractDataProvider.getExistingContractDataOrCallApi(
-                contractDataDBO);
+    public Optional<ContractDbo> requestLiveMarketDataForContractData(ContractDbo contractDBO) {
+        Optional<ContractDbo> savedContractOptional = uniqueContractDataProvider.getExistingContractDataOrCallApi(
+                contractDBO);
         savedContractOptional.ifPresent(startMarketDataApiCaller::callApi);
         return savedContractOptional;
     }

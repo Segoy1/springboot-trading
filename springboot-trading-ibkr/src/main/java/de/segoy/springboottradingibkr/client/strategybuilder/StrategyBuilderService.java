@@ -2,9 +2,9 @@ package de.segoy.springboottradingibkr.client.strategybuilder;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.repository.ComboLegRepository;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import de.segoy.springboottradingdata.model.Leg;
 import jakarta.transaction.Transactional;
@@ -19,58 +19,58 @@ import java.util.*;
 public class StrategyBuilderService {
 
     private final UniqueContractDataProvider uniqueContractDataProvider;
-    private final ComboLegDataRepository comboLegDataRepository;
+    private final ComboLegRepository comboLegRepository;
 
     @Transactional
-    public Optional<ContractDataDBO> getComboLegContractData(StrategyContractData strategyContractData) {
-        ContractDataDBO contractDataDBO = strategyContractData.getContractDataDBO();
+    public Optional<ContractDbo> getComboLegContractData(StrategyContractData strategyContractData) {
+        ContractDbo contractDBO = strategyContractData.getContractDBO();
         try {
-            contractDataDBO.setComboLegs(legListBuilder(contractDataDBO, strategyContractData.getStrategyLegs()));
-            setComboLegsDescription(contractDataDBO);
-            return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDataDBO);
+            contractDBO.setComboLegs(legListBuilder(contractDBO, strategyContractData.getStrategyLegs()));
+            setComboLegsDescription(contractDBO);
+            return uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDBO);
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
     }
 
-    private void setComboLegsDescription(ContractDataDBO contractDataDBO) {
+    private void setComboLegsDescription(ContractDbo contractDBO) {
         StringBuilder description= new StringBuilder();
-        for(ComboLegDataDBO leg: contractDataDBO.getComboLegs()){
+        for(ComboLegDbo leg: contractDBO.getComboLegs()){
             description.append(leg.getContractId()).append(" | ");
         }
-        contractDataDBO.setComboLegsDescription(description.toString());
+        contractDBO.setComboLegsDescription(description.toString());
     }
 
-    private List<ComboLegDataDBO> legListBuilder(ContractDataDBO contractDataDBO, List<Leg> legs) {
-        List<ComboLegDataDBO> legData = new ArrayList<>();
+    private List<ComboLegDbo> legListBuilder(ContractDbo contractDBO, List<Leg> legs) {
+        List<ComboLegDbo> legData = new ArrayList<>();
 
         legs.forEach((leg) -> {
-            ContractDataDBO legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(
-                    contractDataDBO, leg)).orElseThrow();
+            ContractDbo legContract = uniqueContractDataProvider.getExistingContractDataOrCallApi(singleLegBuilder(
+                    contractDBO, leg)).orElseThrow();
             legData.add(buildComboLegData(legContract, leg));
         });
         return legData;
     }
 
-    private ComboLegDataDBO buildComboLegData(ContractDataDBO contractDataDBOBuyPut, Leg leg) {
-           return     ComboLegDataDBO.builder()
-                .contractId(contractDataDBOBuyPut.getContractId())
+    private ComboLegDbo buildComboLegData(ContractDbo contractDboBuyPut, Leg leg) {
+           return     ComboLegDbo.builder()
+                .contractId(contractDboBuyPut.getContractId())
                 .ratio(leg.getRatio())
                 .action(leg.getAction())
-                .exchange(contractDataDBOBuyPut.getExchange())
+                .exchange(contractDboBuyPut.getExchange())
                 .build();
     }
 
-    private ContractDataDBO singleLegBuilder(ContractDataDBO contractDataDBO, Leg leg) {
-        return ContractDataDBO.builder()
-                .symbol(contractDataDBO.getSymbol())
+    private ContractDbo singleLegBuilder(ContractDbo contractDBO, Leg leg) {
+        return ContractDbo.builder()
+                .symbol(contractDBO.getSymbol())
                 .securityType(Types.SecType.OPT)
-                .currency(contractDataDBO.getCurrency())
-                .exchange(contractDataDBO.getExchange())
-                .tradingClass(contractDataDBO.getTradingClass())
+                .currency(contractDBO.getCurrency())
+                .exchange(contractDBO.getExchange())
+                .tradingClass(contractDBO.getTradingClass())
                 .strike(BigDecimal.valueOf(leg.getStrike()))
                 .right(leg.getRight())
-                .lastTradeDate(contractDataDBO.getLastTradeDate())
+                .lastTradeDate(contractDBO.getLastTradeDate())
                 .build();
     }
 }

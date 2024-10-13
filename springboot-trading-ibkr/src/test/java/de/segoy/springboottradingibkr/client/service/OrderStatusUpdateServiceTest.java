@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service;
 
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
+import de.segoy.springboottradingdata.repository.OrderRepository;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 class OrderStatusUpdateServiceTest {
 
     @Mock
-    OrderDataRepository orderDataRepository;
+    OrderRepository orderRepository;
     @InjectMocks
     OrderStatusUpdateService orderStatusUpdateService;
 
@@ -28,9 +28,9 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithExistingOrderAndInvalidStatus(){
         Long id = 1L;
         String status = "default";
-        OrderDataDBO orderData = OrderDataDBO.builder().id(id).status(OrderStatus.get(status)).build();
+        OrderDbo orderData = OrderDbo.builder().id(id).status(OrderStatus.get(status)).build();
 
-        when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
+        when(orderRepository.findById(id)).thenReturn(Optional.of(orderData));
 
         orderStatusUpdateService.updateOrderStatus(id.intValue(), status);
 
@@ -42,9 +42,9 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithExistingOrderAndValidStatus(){
         Long id = 1L;
         String status = "PreSubmitted";
-        OrderDataDBO orderData = OrderDataDBO.builder().id(id).status(OrderStatus.get(status)).build();
+        OrderDbo orderData = OrderDbo.builder().id(id).status(OrderStatus.get(status)).build();
 
-        when(orderDataRepository.findById(id)).thenReturn(Optional.of(orderData));
+        when(orderRepository.findById(id)).thenReturn(Optional.of(orderData));
 
         orderStatusUpdateService.updateOrderStatus(id.intValue(), status);
 
@@ -55,9 +55,9 @@ class OrderStatusUpdateServiceTest {
     void testStatusUpdateWithNotOrder(){
         Long id = 1L;
         String status = "unknown";
-        OrderDataDBO orderData = OrderDataDBO.builder().id(id).build();
+        OrderDbo orderData = OrderDbo.builder().id(id).build();
 
-        when(orderDataRepository.findById(id)).thenReturn(Optional.empty());
+        when(orderRepository.findById(id)).thenReturn(Optional.empty());
 
         Exception e = assertThrows(NoSuchElementException.class, () -> {
             orderStatusUpdateService.updateOrderStatus(id.intValue(), status);

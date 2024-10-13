@@ -2,9 +2,9 @@ package de.segoy.springboottradingweb;
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ConnectionDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ConnectionDbo;
 import de.segoy.springboottradingdata.model.data.message.TwsMessage;
-import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.repository.ConnectionRepository;
 import de.segoy.springboottradingibkr.client.service.EReaderHolder;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ConnectionInitiator {
 
     private final Integer LAST_CLIENT_ID = 0;
     private final EClientSocket client;
-    private final ConnectionDataRepository connectionDataRepository;
+    private final ConnectionRepository connectionRepository;
     private final EReaderHolder eReaderHolder;
     private final PropertiesConfig propertiesConfig;
 
@@ -30,7 +30,7 @@ public class ConnectionInitiator {
         client.eConnect("", port, 0);
 
         if (client.isConnected()) {
-            ConnectionDataDBO connectionDataDBO = ConnectionDataDBO.builder()
+            ConnectionDbo connectionDBO = ConnectionDbo.builder()
                     .id(propertiesConfig.getConnectionId())
                     .ipAddress("")
                     .port(port)
@@ -46,7 +46,7 @@ public class ConnectionInitiator {
                             client.serverVersion() + " at " +
                             client.getTwsConnectionTime()).build();
             log.info(msg.getMessage());
-            connectionDataRepository.save(connectionDataDBO);
+            connectionRepository.save(connectionDBO);
             eReaderHolder.startReader();
         }else{
             throw new RuntimeException("Connection to Tws Failed!!");
@@ -54,17 +54,17 @@ public class ConnectionInitiator {
     }
 
     @PreDestroy
-    public ConnectionDataDBO disconnect(){
-        ConnectionDataDBO connectionDataDBO =
-                connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElse(ConnectionDataDBO.builder().build());
-        connectionDataDBO.setDisconnectInProgress(true);
-        ConnectionDataDBO processingConnectionDataDBO = connectionDataRepository.save(connectionDataDBO);
+    public ConnectionDbo disconnect(){
+        ConnectionDbo connectionDBO =
+                connectionRepository.findById(propertiesConfig.getConnectionId()).orElse(ConnectionDbo.builder().build());
+        connectionDBO.setDisconnectInProgress(true);
+        ConnectionDbo processingConnectionDbo = connectionRepository.save(connectionDBO);
 
         client.eDisconnect();
 
-        processingConnectionDataDBO.setConnected(false);
-        processingConnectionDataDBO.setDisconnectInProgress(false);
-        return connectionDataRepository.save(processingConnectionDataDBO);
+        processingConnectionDbo.setConnected(false);
+        processingConnectionDbo.setDisconnectInProgress(false);
+        return connectionRepository.save(processingConnectionDbo);
 
     }
 }

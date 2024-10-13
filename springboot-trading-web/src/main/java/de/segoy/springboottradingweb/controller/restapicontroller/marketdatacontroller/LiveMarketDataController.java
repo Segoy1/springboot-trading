@@ -1,6 +1,6 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingibkr.client.service.marketdata.StartMarketDataService;
 import de.segoy.springboottradingibkr.client.service.marketdata.StopMarketDataService;
 import de.segoy.springboottradingweb.service.ResponseMapper;
@@ -18,8 +18,8 @@ public class LiveMarketDataController {
     private final ResponseMapper responseMapper;
 
     @PostMapping("/start")
-    public ResponseEntity<ContractDataDBO> startMarketData(@RequestBody ContractDataDBO contractDataDBO){
-        return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(contractDataDBO));
+    public ResponseEntity<ContractDbo> startMarketData(@RequestBody ContractDbo contractDBO){
+        return responseMapper.mapResponse(startMarketDataService.requestLiveMarketDataForContractData(contractDBO));
     }
 
     @GetMapping("/stopAll")

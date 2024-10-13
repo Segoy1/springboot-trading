@@ -4,7 +4,7 @@ import com.ib.client.Types;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.Leg;
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
 import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
@@ -26,7 +26,7 @@ public class ChainDataContractDataCreateService {
   private final StrategyBuilderService strategyBuilderService;
 
   @Transactional
-  public ContractDataDBO createIronCondorContractData(KafkaOptionChainData kafkaOptionChainData) {
+  public ContractDbo createIronCondorContractData(KafkaOptionChainData kafkaOptionChainData) {
     List<Leg> legs = new ArrayList<>();
     double callShortStrike =
         kafkaOptionChainData
@@ -48,10 +48,10 @@ public class ChainDataContractDataCreateService {
     double putLongStrike = putShortStrike - tradeRuleSettingsConfig.getSpreadSize();
     legs.add(createLeg(Types.Right.Put, Types.Action.BUY, putLongStrike));
 
-    ContractDataDBO contract = ContractDataTemplates.SPXWComboData();
+    ContractDbo contract = ContractDataTemplates.SPXWComboData();
     contract.setLastTradeDate(String.valueOf(kafkaOptionChainData.getLastTradeDate()));
     StrategyContractData strategyContractData =
-        StrategyContractData.builder().contractDataDBO(contract).strategyLegs(legs).build();
+        StrategyContractData.builder().contractDBO(contract).strategyLegs(legs).build();
     return strategyBuilderService.getComboLegContractData(strategyContractData).orElseThrow();
   }
 

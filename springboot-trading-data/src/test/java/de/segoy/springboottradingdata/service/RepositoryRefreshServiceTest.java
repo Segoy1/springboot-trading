@@ -1,6 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.repository.ContractRepository;
 import jakarta.persistence.Cache;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -20,7 +20,7 @@ class RepositoryRefreshServiceTest {
     @Mock
     private EntityManagerFactory entityManagerFactory;
     @Mock
-    private ContractDataRepository contractDataRepository;
+    private ContractRepository contractRepository;
     @Mock
     private Cache cache;
     @InjectMocks
@@ -33,12 +33,12 @@ class RepositoryRefreshServiceTest {
         when(entityManager.getEntityManagerFactory()).thenReturn(entityManagerFactory);
         when(entityManagerFactory.getCache()).thenReturn(cache);
 
-        repositoryRefreshService.clearCacheAndWait(contractDataRepository);
+        repositoryRefreshService.clearCacheAndWait(contractRepository);
 
 
         verify(entityManager,times(1)).getEntityManagerFactory();
         verify(entityManagerFactory, times(1)).getCache();
-        verify(cache, times(1)).evict(contractDataRepository.getClass());
+        verify(cache, times(1)).evict(contractRepository.getClass());
         verify(entityManager,times(1)).clear();
     }
 }

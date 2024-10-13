@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.contract;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.repository.ContractRepository;
 import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
 import lombok.RequiredArgsConstructor;
@@ -14,21 +14,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ContractDataCallAndResponseHandler {
 
-    private final ContractDataRepository contractDataRepository;
-    private final OptionalApiResponseChecker<ContractDataDBO> contractDataApiResponseChecker;
-    private final ApiCaller<ContractDataDBO> contractDataApiCaller;
+    private final ContractRepository contractRepository;
+    private final OptionalApiResponseChecker<ContractDbo> contractDataApiResponseChecker;
+    private final ApiCaller<ContractDbo> contractDataApiCaller;
 
 
-    public Optional<ContractDataDBO> callContractDetailsFromAPI(ContractDataDBO contractDataDBO) {
+    public Optional<ContractDbo> callContractDetailsFromAPI(ContractDbo contractDBO) {
         //ugly: having to increment by 2 because I am too stupid to do it properly
-        int nextId = getNextId(contractDataDBO);
-        contractDataDBO.setId((long) nextId);
-        contractDataApiCaller.callApi(contractDataDBO);
+        int nextId = getNextId(contractDBO);
+        contractDBO.setId((long) nextId);
+        contractDataApiCaller.callApi(contractDBO);
         return contractDataApiResponseChecker.checkForApiResponseAndUpdate(nextId);
     }
 
 
-    private int getNextId(ContractDataDBO contractDataDBO) {
-        return contractDataDBO.getId() != null ? contractDataDBO.getId().intValue() : contractDataRepository.nextValidId() + 1;
+    private int getNextId(ContractDbo contractDBO) {
+        return contractDBO.getId() != null ? contractDBO.getId().intValue() : contractRepository.nextValidId() + 1;
     }
 }

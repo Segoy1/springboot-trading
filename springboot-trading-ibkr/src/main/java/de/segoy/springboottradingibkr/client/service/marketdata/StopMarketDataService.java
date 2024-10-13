@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.repository.ContractRepository;
 import de.segoy.springboottradingibkr.client.service.ApiCallerWithId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,10 +17,10 @@ public class StopMarketDataService {
 
     private final PropertiesConfig propertiesConfig;
     private final @Qualifier("StopMarketDataApiCaller") ApiCallerWithId stopMarketDataApiCaller;
-    private final ContractDataRepository contractDataRepository;
+    private final ContractRepository contractRepository;
 
     public void stopMarketDataForTickerId(int id) {
-        contractDataRepository.findById((long) id).ifPresent((contractData) -> {
+        contractRepository.findById((long) id).ifPresent((contractData) -> {
                     stopMarketDataApiCaller.callApi(id);
                 }
         );
@@ -28,11 +28,11 @@ public class StopMarketDataService {
     }
 
     //TODO does not work this way anymore maybe
-    public List<ContractDataDBO> stopAllMarketData() {
-        List<ContractDataDBO> active = new ArrayList<>();
+    public List<ContractDbo> stopAllMarketData() {
+        List<ContractDbo> active = new ArrayList<>();
         propertiesConfig.getActiveMarketData().forEach((id) -> {
             stopMarketDataApiCaller.callApi(id);
-            active.addAll(contractDataRepository.findAllByContractId(id));
+            active.addAll(contractRepository.findAllByContractId(id));
         });
         return active;
     }

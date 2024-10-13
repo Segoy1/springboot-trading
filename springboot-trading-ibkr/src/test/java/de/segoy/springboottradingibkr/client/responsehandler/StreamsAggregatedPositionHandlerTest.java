@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.responsehandler;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import org.junit.jupiter.api.Test;
@@ -28,18 +28,18 @@ class StreamsAggregatedPositionHandlerTest {
 
     @Test
     void testError(){
-        ContractDataDBO contractDataDBOOld = ContractDataDBO.builder().contractId(1).build();
-        PositionDataDBO positionDataDBO = PositionDataDBO.builder().contractDataDBO(contractDataDBOOld).build();
-        ContractDataDBO contractDataDBONew = ContractDataDBO.builder().contractId(2).build();
+        ContractDbo contractDboOld = ContractDbo.builder().contractId(1).build();
+        PositionDbo positionDBO = PositionDbo.builder().contractDBO(contractDboOld).build();
+        ContractDbo contractDboNew = ContractDbo.builder().contractId(2).build();
 
-        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDataDBOOld))
+        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDboOld))
                 .thenReturn(Optional.empty());
 
 
 
         Exception e =
                 assertThrows(RuntimeException.class, ()->{
-                        streamsAggregatedPositionHandler.persistContractAndPositionData(positionDataDBO);
+                        streamsAggregatedPositionHandler.persistContractAndPositionData(positionDBO);
                         });
 
         assertThat(e.getMessage()).isEqualTo("No value present");
@@ -47,16 +47,16 @@ class StreamsAggregatedPositionHandlerTest {
     }
     @Test
     void testPersist(){
-        ContractDataDBO contractDataDBOOld = ContractDataDBO.builder().contractId(1).build();
-        PositionDataDBO positionDataDBO = PositionDataDBO.builder().contractDataDBO(contractDataDBOOld).build();
-        ContractDataDBO contractDataDBONew = ContractDataDBO.builder().contractId(2).build();
+        ContractDbo contractDboOld = ContractDbo.builder().contractId(1).build();
+        PositionDbo positionDBO = PositionDbo.builder().contractDBO(contractDboOld).build();
+        ContractDbo contractDboNew = ContractDbo.builder().contractId(2).build();
 
-        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDataDBOOld))
-                .thenReturn(Optional.of(contractDataDBONew));
-        when(positionDataDatabaseSynchronizer.updateInDbOrSave(positionDataDBO)).thenReturn(positionDataDBO);
-        PositionDataDBO result = streamsAggregatedPositionHandler.persistContractAndPositionData(positionDataDBO);
+        when(uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDboOld))
+                .thenReturn(Optional.of(contractDboNew));
+        when(positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO)).thenReturn(positionDBO);
+        PositionDbo result = streamsAggregatedPositionHandler.persistContractAndPositionData(positionDBO);
 
-        assertThat(result.getContractDataDBO().getContractId()).isEqualTo(2);
+        assertThat(result.getContractDBO().getContractId()).isEqualTo(2);
     }
 
 }

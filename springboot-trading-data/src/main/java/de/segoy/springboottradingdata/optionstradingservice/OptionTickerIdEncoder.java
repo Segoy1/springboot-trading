@@ -2,7 +2,7 @@ package de.segoy.springboottradingdata.optionstradingservice;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import java.sql.Timestamp;
@@ -23,15 +23,15 @@ public class OptionTickerIdEncoder {
    * first 3 digits (maximal 214) Signify the symbol with its value determined in @{@link Symbol}
    * negative value if it is a put positive if call
    *
-   * @param contractDataDBO
+   * @param contractDBO
    * @return tickerId so the IBkR API can work with it
    */
-  public int encodeOptionTickerId(ContractDataDBO contractDataDBO) {
+  public int encodeOptionTickerId(ContractDbo contractDBO) {
     return encode(
-        contractDataDBO.getRight(),
-        contractDataDBO.getStrike().intValue(),
-        contractDataDBO.getLastTradeDate(),
-        contractDataDBO.getSymbol());
+        contractDBO.getRight(),
+        contractDBO.getStrike().intValue(),
+        contractDBO.getLastTradeDate(),
+        contractDBO.getSymbol());
   }
 
   public int encodeOptionTickerId(OptionTickerIdResolver.OptionDetails details) {

@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.historicaldata;
 
-import de.segoy.springboottradingdata.model.data.entity.HistoricalDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
 import de.segoy.springboottradingdata.model.data.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.ListApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HistoricalResponseListService {
 
-    private final ListApiResponseChecker<HistoricalDataDBO> historicalDataApiResponseChecker;
+    private final ListApiResponseChecker<HistoricalDbo> historicalDataApiResponseChecker;
     private final ApiCaller<HistoricalDataSettings> historicalDataApiCaller;
 
 
@@ -22,9 +22,9 @@ public class HistoricalResponseListService {
      *
      * @param settings Settings for the Historical Data
      */
-    public List<HistoricalDataDBO> getResponseList(HistoricalDataSettings settings) {
+    public List<HistoricalDbo> getResponseList(HistoricalDataSettings settings) {
 
         historicalDataApiCaller.callApi(settings);
-        return historicalDataApiResponseChecker.checkForApiResponseAndUpdate(settings.getContractDataDBO().getContractId());
+        return historicalDataApiResponseChecker.checkForApiResponseAndUpdate(settings.getContractDBO().getContractId());
     }
 }

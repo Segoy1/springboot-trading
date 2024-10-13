@@ -1,7 +1,7 @@
 package de.segoy.springboottradingweb.controller.restapicontroller.marketdatacontroller;
 
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
-import de.segoy.springboottradingdata.model.data.entity.HistoricalDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
 import de.segoy.springboottradingdata.model.data.HistoricalDataSettings;
 import de.segoy.springboottradingdata.model.subtype.BarSizeSetting;
 import de.segoy.springboottradingdata.model.subtype.WhatToShowType;
@@ -26,9 +26,9 @@ public class HistoricalDataController {
 
     //TODO Error Handler who catches timeout with stopHistoricalData
     @GetMapping("/Test")
-    public ResponseEntity<List<HistoricalDataDBO>> testHistoricalData(@RequestParam(name = "barSize")String barSize, @RequestParam(name = "duration")String duration) {
+    public ResponseEntity<List<HistoricalDbo>> testHistoricalData(@RequestParam(name = "barSize")String barSize, @RequestParam(name = "duration")String duration) {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.SpxData())
+                .contractDBO(ContractDataTemplates.SpxData())
                 .barSizeSetting(BarSizeSetting.get(barSize))
                 .backfillDuration(duration)
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -37,13 +37,13 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
     @GetMapping("/25yearsSP")
-    public ResponseEntity<List<HistoricalDataDBO>> getLast25YearsofSP500() {
+    public ResponseEntity<List<HistoricalDbo>> getLast25YearsofSP500() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.SpxData())
+                .contractDBO(ContractDataTemplates.SpxData())
                 .barSizeSetting(BarSizeSetting.ONE_DAY)
                 .backfillDuration("25 Y")
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -52,13 +52,13 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
     @GetMapping("/25yearsNASDAQ")
-    public ResponseEntity<List<HistoricalDataDBO>> getLast25YearsofNASDAQ() {
+    public ResponseEntity<List<HistoricalDbo>> getLast25YearsofNASDAQ() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.NasDaqData())
+                .contractDBO(ContractDataTemplates.NasDaqData())
                 .barSizeSetting(BarSizeSetting.ONE_DAY)
                 .backfillDuration("25 Y")
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -67,13 +67,13 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
     @GetMapping("/25yearsXOI")
-    public ResponseEntity<List<HistoricalDataDBO>> getLast25YearsofOilIndex() {
+    public ResponseEntity<List<HistoricalDbo>> getLast25YearsofOilIndex() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.XOIData())
+                .contractDBO(ContractDataTemplates.XOIData())
                 .barSizeSetting(BarSizeSetting.ONE_DAY)
                 .backfillDuration("25 Y")
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -82,14 +82,14 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
 
     @GetMapping("/25yearsVIX")
-    public ResponseEntity<List<HistoricalDataDBO>> getLast25YearsofVIX() {
+    public ResponseEntity<List<HistoricalDbo>> getLast25YearsofVIX() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.VIXData())
+                .contractDBO(ContractDataTemplates.VIXData())
                 .barSizeSetting(BarSizeSetting.ONE_DAY)
                 .backfillDuration("25 Y")
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -98,13 +98,13 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
     @GetMapping("/25yearsTLT")
-    public ResponseEntity<List<HistoricalDataDBO>> getLast25YearsofTLT() {
+    public ResponseEntity<List<HistoricalDbo>> getLast25YearsofTLT() {
         HistoricalDataSettings settings = HistoricalDataSettings.builder()
-                .contractDataDBO(ContractDataTemplates.TLTData())
+                .contractDBO(ContractDataTemplates.TLTData())
                 .barSizeSetting(BarSizeSetting.ONE_DAY)
                 .backfillDuration("25 Y")
                 .backfillEndTime(Timestamp.from(Instant.now()))
@@ -113,12 +113,12 @@ public class HistoricalDataController {
                 .dateFormatStyle(2)
                 .keepUpToDate(false)
                 .build();
-        List<HistoricalDataDBO> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
+        List<HistoricalDbo> historicalDatumDBOS = historicalDataService.requestHistoricalData(settings);
         return responseMapper.mapResponse(historicalDatumDBOS);
     }
 
     @PutMapping
-    public ResponseEntity<List<HistoricalDataDBO>> requestHistoricalData(@Valid @RequestBody HistoricalDataSettings settings){
+    public ResponseEntity<List<HistoricalDbo>> requestHistoricalData(@Valid @RequestBody HistoricalDataSettings settings){
         return responseMapper.mapResponse(historicalDataService.requestHistoricalData(settings));
     }
 }

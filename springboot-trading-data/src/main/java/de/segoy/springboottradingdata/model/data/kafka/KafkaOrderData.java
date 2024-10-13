@@ -3,12 +3,8 @@ package de.segoy.springboottradingdata.model.data.kafka;
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
-import lombok.*;
-
 import java.math.BigDecimal;
-
+import lombok.*;
 
 @Getter
 @Setter
@@ -34,21 +30,4 @@ public class KafkaOrderData extends KafkaDataType{
     
     private KafkaContractData contractData;
     private OrderStatus status;
-
-    public OrderDataDBO toKOrderDataDBO(){
-        ContractDataDBO contract = contractData.toContractDataDBO();
-        return OrderDataDBO.builder()
-                .id(id)
-                .action(action)
-                .totalQuantity(totalQuantity)
-                .orderType(orderType)
-                .limitPrice(limitPrice)
-                .auctionPrice(auctionPrice)
-                .timeInForce(timeInForce)
-                .cashQuantity(cashQuantity)
-                .usePriceManagementAlgorithm(usePriceManagementAlgorithm)
-                .contractDataDBO(contract)
-                .status(status)
-                .build();
-    }
 }

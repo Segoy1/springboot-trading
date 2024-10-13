@@ -1,7 +1,7 @@
 package de.segoy.springboottradingibkr.client.service.marketdata;
 
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.repository.ContractRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 class StopAndStartMarketDataServiceTest {
 
     @Mock
-    private ContractDataRepository contractDataRepository;
+    private ContractRepository contractRepository;
     @Mock
     private StartMarketDataApiCaller startMarketDataApiCaller;
     @Mock
@@ -26,21 +26,21 @@ class StopAndStartMarketDataServiceTest {
 
     @Test
     void testReinitiateApiCall() {
-        ContractDataDBO contractDataDBO = ContractDataDBO.builder().build();
+        ContractDbo contractDBO = ContractDbo.builder().build();
 
-        when(contractDataRepository.findById(100L)).thenReturn(Optional.of(contractDataDBO));
+        when(contractRepository.findById(100L)).thenReturn(Optional.of(contractDBO));
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
         verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
-        verify(startMarketDataApiCaller, times(1)).callApi(contractDataDBO);
+        verify(startMarketDataApiCaller, times(1)).callApi(contractDBO);
     }
     @Test
     void testReinitiateApiCallAbsentData() {
 
-        when(contractDataRepository.findById(100L)).thenReturn(Optional.empty());
+        when(contractRepository.findById(100L)).thenReturn(Optional.empty());
         stopAndStartMarketDataService.reinitiateApiCall(100);
 
         verify(stopMarketDataService, times(1)).stopMarketDataForTickerId(100);
-        verify(startMarketDataApiCaller, never()).callApi(any(ContractDataDBO.class));
+        verify(startMarketDataApiCaller, never()).callApi(any(ContractDbo.class));
     }
 }

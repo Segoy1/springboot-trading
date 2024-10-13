@@ -2,13 +2,13 @@ package de.segoy.springboottradingdata.dataobject;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.TradingConstants;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 
 public class ContractDataTemplates {
 
-  public static ContractDataDBO SpxData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo SpxData() {
+    return ContractDbo.builder()
         .symbol(Symbol.SPX)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -16,8 +16,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO NasDaqData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo NasDaqData() {
+    return ContractDbo.builder()
         .symbol(Symbol.NDX)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -25,8 +25,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO XOIData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo XOIData() {
+    return ContractDbo.builder()
         .symbol(Symbol.XOI)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -34,8 +34,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO SpxOptionData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo SpxOptionData() {
+    return ContractDbo.builder()
         .symbol(Symbol.SPX)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -43,8 +43,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO VIXData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo VIXData() {
+    return ContractDbo.builder()
         .symbol(Symbol.VIX)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -52,8 +52,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO TLTData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo TLTData() {
+    return ContractDbo.builder()
         .symbol(Symbol.TLT)
         .securityType(Types.SecType.STK)
         .currency(TradingConstants.USD)
@@ -61,8 +61,8 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO GCData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo GCData() {
+    return ContractDbo.builder()
         .symbol(Symbol.GC)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
@@ -70,16 +70,16 @@ public class ContractDataTemplates {
         .build();
   }
 
-  public static ContractDataDBO CLData() {
-    return ContractDataDBO.builder()
+  public static ContractDbo CLData() {
+    return ContractDbo.builder()
         .symbol(Symbol.CL)
         .securityType(Types.SecType.IND)
         .currency(TradingConstants.USD)
         .exchange("NYMEX")
         .build();
   }
-  public static ContractDataDBO SPXWComboData(){
-    return ContractDataDBO.builder()
+  public static ContractDbo SPXWComboData(){
+    return ContractDbo.builder()
             .symbol(Symbol.SPX)
             .securityType(Types.SecType.BAG)
             .currency(TradingConstants.USD)

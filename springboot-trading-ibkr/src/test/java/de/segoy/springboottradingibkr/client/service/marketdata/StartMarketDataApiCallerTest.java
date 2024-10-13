@@ -4,8 +4,8 @@ import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.modelconverter.ContractDataToIBKRContract;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.modelconverter.ContractDboToIBKRContract;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ class StartMarketDataApiCallerTest {
     @Mock
     private EClientSocket client;
     @Mock
-    private ContractDataToIBKRContract contractDataToIBKRContract;
+    private ContractDboToIBKRContract contractDboToIBKRContract;
     @Mock
     private PropertiesConfig propertiesConfig;
     @InjectMocks
@@ -28,10 +28,10 @@ class StartMarketDataApiCallerTest {
 
     @Test
     void testCallApi() {
-        ContractDataDBO data = ContractDataDBO.builder().id(1L).securityType(Types.SecType.STK).build();
+        ContractDbo data = ContractDbo.builder().id(1L).securityType(Types.SecType.STK).build();
         Contract contract = new Contract();
 
-        when(contractDataToIBKRContract.convertContractData(data)).thenReturn(contract);
+        when(contractDboToIBKRContract.convertContractData(data)).thenReturn(contract);
         when(propertiesConfig.getGenericTicks()).thenReturn("200, 102");
 
         startMarketDataApiCaller.callApi(data);
@@ -39,7 +39,7 @@ class StartMarketDataApiCallerTest {
         verify(client, times(1))
                 .reqMktData(1, contract, "200, 102",
                         false, false, null);
-        verify(contractDataToIBKRContract, times(1)).convertContractData(data);
+        verify(contractDboToIBKRContract, times(1)).convertContractData(data);
         verify(propertiesConfig, times(1)).getGenericTicks();
     }
 }

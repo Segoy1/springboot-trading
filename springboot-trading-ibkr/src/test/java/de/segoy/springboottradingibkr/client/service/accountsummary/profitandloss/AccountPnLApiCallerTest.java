@@ -2,8 +2,8 @@ package de.segoy.springboottradingibkr.client.service.accountsummary.profitandlo
 
 import com.ib.client.EClientSocket;
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.ConnectionDataDBO;
-import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ConnectionDbo;
+import de.segoy.springboottradingdata.repository.ConnectionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,16 +23,16 @@ class AccountPnLApiCallerTest {
     @Mock
     private PropertiesConfig propertiesConfig;
     @Mock
-    private ConnectionDataRepository connectionDataRepository;
+    private ConnectionRepository connectionRepository;
     @InjectMocks
     private AccountPnLApiCaller accountPnLApiCaller;
 
     @Test
     void testApiCall(){
-        ConnectionDataDBO connectionDataDBO = ConnectionDataDBO.builder().accountList("A").build();
+        ConnectionDbo connectionDBO = ConnectionDbo.builder().accountList("A").build();
         when(propertiesConfig.getConnectionId()).thenReturn(1L);
         when(propertiesConfig.getPnlAccountId()).thenReturn(2);
-        when(connectionDataRepository.findById(1L)).thenReturn(Optional.of(connectionDataDBO));
+        when(connectionRepository.findById(1L)).thenReturn(Optional.of(connectionDBO));
 
         accountPnLApiCaller.callApi();
 

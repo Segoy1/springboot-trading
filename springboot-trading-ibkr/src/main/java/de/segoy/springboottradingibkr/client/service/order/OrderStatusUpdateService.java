@@ -1,8 +1,8 @@
 package de.segoy.springboottradingibkr.client.service.order;
 
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
+import de.segoy.springboottradingdata.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderStatusUpdateService {
 
-    private final OrderDataRepository orderDataRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderDataDBO updateOrderStatus(int orderId, String status) {
-        OrderDataDBO orderData = orderDataRepository.findById((long) orderId).orElseThrow();
+    public OrderDbo updateOrderStatus(int orderId, String status) {
+        OrderDbo orderData = orderRepository.findById((long) orderId).orElseThrow();
         if (OrderStatus.get(status).equals(OrderStatus.Cancelled) ||
                 OrderStatus.get(status).equals(OrderStatus.ApiCancelled)) {
-            orderDataRepository.delete(orderData);
+            orderRepository.delete(orderData);
             return orderData;
         } else {
             orderData.setStatus(OrderStatus.get(status));
-            return orderDataRepository.save(orderData);
+            return orderRepository.save(orderData);
         }
     }
 }

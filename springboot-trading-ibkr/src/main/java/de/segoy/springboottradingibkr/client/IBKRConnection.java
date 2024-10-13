@@ -10,15 +10,15 @@ import de.segoy.springboottradingdata.model.adopted.Account;
 import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
-import de.segoy.springboottradingdata.model.data.entity.ConnectionDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ConnectionDbo;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
+import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.model.data.kafka.*;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
-import de.segoy.springboottradingdata.repository.ConnectionDataRepository;
+import de.segoy.springboottradingdata.repository.ConnectionRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.responsehandler.PositionResponseHandler;
@@ -45,7 +45,7 @@ public class IBKRConnection implements EWrapper {
   private final KafkaTemplate<String, String> kafkaTemplate;
   private final KafkaTemplate<String, KafkaDataType> kafkaEntityTemplate;
 
-  private final ConnectionDataRepository connectionDataRepository;
+  private final ConnectionRepository connectionRepository;
   private final OrderStatusUpdateService orderStatusUpdateService;
   private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
   private final HistoricalDataDatabaseSynchronizer historicalDataDatabaseSynchronizer;
@@ -172,7 +172,7 @@ public class IBKRConnection implements EWrapper {
       String whyHeld,
       double mktCapPrice) {
     // received order status
-    OrderDataDBO orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
+    OrderDbo orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getORDER_TOPIC(), Integer.toString(orderId), orderData.toKafkaOrderData());
 
@@ -184,7 +184,7 @@ public class IBKRConnection implements EWrapper {
   public void openOrder(
       int orderId, Contract contract, com.ib.client.Order order, OrderState orderState) {
     // populates DB On init and first Time Order is saved to DB when opened
-    OrderDataDBO orderData =
+    OrderDbo orderData =
         orderWriteToDBService.saveOrUpdateFullOrderDataToDb(
             order, contract, orderState.getStatus());
     kafkaEntityTemplate.send(kafkaConstantsConfig.getORDER_TOPIC(), orderData.toKafkaOrderData());
@@ -284,7 +284,7 @@ public class IBKRConnection implements EWrapper {
   @Override
   public void error(Exception e) {
     // do not report exceptions if we initiated disconnect
-    if (!connectionDataRepository
+    if (!connectionRepository
         .findById(propertiesConfig.getConnectionId())
         .orElseThrow()
         .getDisconnectInProgress()) {
@@ -316,7 +316,7 @@ public class IBKRConnection implements EWrapper {
   @Override
   @Transactional
   public void connectionClosed() {
-    connectionDataRepository.setConnectFalseById(propertiesConfig.getConnectionId());
+    connectionRepository.setConnectFalseById(propertiesConfig.getConnectionId());
     log.warn(EWrapperMsgGenerator.connectionClosed());
   }
 
@@ -366,11 +366,11 @@ public class IBKRConnection implements EWrapper {
   @Override
   public void managedAccounts(String accountsList) {
 
-    ConnectionDataDBO connectionDataDBO =
-        connectionDataRepository.findById(propertiesConfig.getConnectionId()).orElseThrow();
-    connectionDataDBO.setIsFAAccount(true);
-    connectionDataDBO.setAccountList(accountsList);
-    connectionDataRepository.save(connectionDataDBO);
+    ConnectionDbo connectionDBO =
+        connectionRepository.findById(propertiesConfig.getConnectionId()).orElseThrow();
+    connectionDBO.setIsFAAccount(true);
+    connectionDBO.setAccountList(accountsList);
+    connectionRepository.save(connectionDBO);
     //        m_FAAcctCodes = accountsList;
     log.info(EWrapperMsgGenerator.managedAccounts(accountsList));
   }
@@ -453,15 +453,15 @@ public class IBKRConnection implements EWrapper {
   @Override
   @Transactional
   public void position(String account, Contract contract, Decimal pos, double avgCost) {
-    PositionDataDBO position =
+    PositionDbo position =
         positionResponseHandler.transformResponseAndSynchronizeDB(
             account, contract, pos.value(), avgCost);
     String topic =
-        position.getContractDataDBO().getSecurityType().equals(Types.SecType.OPT)
+        position.getContractDBO().getSecurityType().equals(Types.SecType.OPT)
             ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
             : kafkaConstantsConfig.getPOSITION_TOPIC();
     kafkaEntityTemplate.send(
-        topic, Integer.toString(position.getContractDataDBO().getContractId()), position.toKafkaPositionData());
+        topic, Integer.toString(position.getContractDBO().getContractId()), position.toKafkaPositionData());
   }
 
   @Override
@@ -806,12 +806,12 @@ public class IBKRConnection implements EWrapper {
 
   @Override
   public void completedOrder(Contract contract, com.ib.client.Order order, OrderState orderState) {
-    OrderDataDBO orderDataDBO =
+    OrderDbo orderDBO =
         orderStatusUpdateService.updateOrderStatus(order.orderId(), orderState.getStatus());
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getORDER_TOPIC(),
-        Integer.toString(orderDataDBO.getId().intValue()),
-        orderDataDBO.toKafkaOrderData());
+        Integer.toString(orderDBO.getId().intValue()),
+        orderDBO.toKafkaOrderData());
   }
 
   @Override

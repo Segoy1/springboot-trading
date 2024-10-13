@@ -2,11 +2,11 @@ package de.segoy.springboottradingdata.modelsynchronize;
 
 import com.ib.client.Contract;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.modelconverter.IBKRContractToContractData;
-import de.segoy.springboottradingdata.repository.ComboLegDataRepository;
-import de.segoy.springboottradingdata.repository.ContractDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.modelconverter.IBKRToContractDbo;
+import de.segoy.springboottradingdata.repository.ComboLegRepository;
+import de.segoy.springboottradingdata.repository.ContractRepository;
 import de.segoy.springboottradingdata.service.ComboContractDataFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,37 +17,37 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ContractDataDatabaseSynchronizer {
 
-    private final IBKRContractToContractData ibkrContractToContractData;
-    private final ContractDataRepository contractDataRepository;
-    private final ComboLegDataRepository comboLegDataRepository;
+    private final IBKRToContractDbo ibkrToContractDbo;
+    private final ContractRepository contractRepository;
+    private final ComboLegRepository comboLegRepository;
     private final ComboContractDataFinder comboContractDataFinder;
 
 
-    public ContractDataDBO findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong id, Contract contract){
+    public ContractDbo findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong id, Contract contract){
         boolean isCombo = Types.SecType.BAG.name().equals(contract.getSecType());
-        if(!isCombo && contractDataRepository.findFirstByContractId(contract.conid()).isPresent()){
-            return contractDataRepository.findFirstByContractId(contract.conid()).get();
+        if(!isCombo && contractRepository.findFirstByContractId(contract.conid()).isPresent()){
+            return contractRepository.findFirstByContractId(contract.conid()).get();
         } else {
-            List<ComboLegDataDBO> comboLegs = new ArrayList<>();
-            ContractDataDBO newContractDataDBO = ibkrContractToContractData.convertIBKRContract(contract);
+            List<ComboLegDbo> comboLegs = new ArrayList<>();
+            ContractDbo newContractDbo = ibkrToContractDbo.convertIBKRContract(contract);
 
             if(isCombo){
-            newContractDataDBO.getComboLegs().forEach(
+            newContractDbo.getComboLegs().forEach(
                     (comboLeg)-> {
                     comboLegs.add(saveComboLegIfNotExistent(comboLeg));
                     });
-            newContractDataDBO.setComboLegs(comboLegs);
+            newContractDbo.setComboLegs(comboLegs);
             id = id.isPresent()?id:comboContractDataFinder.checkContractWithComboLegs(comboLegs);
             }
-            id.ifPresent(newContractDataDBO::setId);
-            return contractDataRepository.save(newContractDataDBO);
+            id.ifPresent(newContractDbo::setId);
+            return contractRepository.save(newContractDbo);
         }
     }
-    private ComboLegDataDBO saveComboLegIfNotExistent(ComboLegDataDBO comboLegDataDBO){
-       return comboLegDataRepository.findFirstByContractIdAndActionAndRatioAndExchange(
-                comboLegDataDBO.getContractId(),
-                comboLegDataDBO.getAction(),
-                comboLegDataDBO.getRatio(),
-                comboLegDataDBO.getExchange()).orElseGet(()-> comboLegDataRepository.save(comboLegDataDBO));
+    private ComboLegDbo saveComboLegIfNotExistent(ComboLegDbo comboLegDBO){
+       return comboLegRepository.findFirstByContractIdAndActionAndRatioAndExchange(
+                comboLegDBO.getContractId(),
+                comboLegDBO.getAction(),
+                comboLegDBO.getRatio(),
+                comboLegDBO.getExchange()).orElseGet(()-> comboLegRepository.save(comboLegDBO));
     }
 }

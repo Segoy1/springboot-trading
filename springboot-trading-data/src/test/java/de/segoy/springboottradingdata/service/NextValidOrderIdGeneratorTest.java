@@ -1,8 +1,8 @@
 package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
+import de.segoy.springboottradingdata.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,15 +20,15 @@ class NextValidOrderIdGeneratorTest {
     @Mock
     private PropertiesConfig propertiesConfig;
     @Mock
-    private OrderDataRepository orderDataRepository;
+    private OrderRepository orderRepository;
     @InjectMocks
     private NextValidOrderIdGenerator nextValidOrderIdGenerator;
 
     @Test
     void testGenerateNextOrderIdFromOrder(){
-        OrderDataDBO orderData = OrderDataDBO.builder().id(20L).build();
+        OrderDbo orderData = OrderDbo.builder().id(20L).build();
 
-        when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
+        when(orderRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L,21L);
 
         Long result = nextValidOrderIdGenerator.generateAndSaveNextOrderId(18);
@@ -38,9 +38,9 @@ class NextValidOrderIdGeneratorTest {
     }
     @Test
     void testGenerateNextOrderIdFromProperties(){
-        OrderDataDBO orderData = OrderDataDBO.builder().id(18L).build();
+        OrderDbo orderData = OrderDbo.builder().id(18L).build();
 
-        when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
+        when(orderRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L);
 
         nextValidOrderIdGenerator.generateAndSaveNextOrderId(18);
@@ -49,9 +49,9 @@ class NextValidOrderIdGeneratorTest {
     }
     @Test
     void testGenerateNextOrderIdFromParsedId(){
-        OrderDataDBO orderData = OrderDataDBO.builder().id(20L).build();
+        OrderDbo orderData = OrderDbo.builder().id(20L).build();
 
-        when(orderDataRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
+        when(orderRepository.findTopByOrderByIdDesc()).thenReturn(Optional.of(orderData));
         when(propertiesConfig.getNextValidOrderId()).thenReturn(19L, 42L);
 
         Long result = nextValidOrderIdGenerator.generateAndSaveNextOrderId(42);

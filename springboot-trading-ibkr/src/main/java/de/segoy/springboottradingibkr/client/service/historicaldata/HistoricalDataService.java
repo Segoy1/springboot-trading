@@ -1,6 +1,6 @@
 package de.segoy.springboottradingibkr.client.service.historicaldata;
 
-import de.segoy.springboottradingdata.model.data.entity.HistoricalDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
 import de.segoy.springboottradingdata.model.data.HistoricalDataSettings;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class HistoricalDataService {
     private final HistoricalResponseListService historicalResponseListService;
 
 
-    public List<HistoricalDataDBO> requestHistoricalData(HistoricalDataSettings settings) {
-        return uniqueContractDataProvider.getExistingContractDataOrCallApi(settings.getContractDataDBO())
+    public List<HistoricalDbo> requestHistoricalData(HistoricalDataSettings settings) {
+        return uniqueContractDataProvider.getExistingContractDataOrCallApi(settings.getContractDBO())
                 .map((uniqueContractData) -> {
-                    settings.setContractDataDBO(uniqueContractData);
+                    settings.setContractDBO(uniqueContractData);
                     return historicalResponseListService.getResponseList(settings);
                 }).orElseGet(ArrayList::new);
     }

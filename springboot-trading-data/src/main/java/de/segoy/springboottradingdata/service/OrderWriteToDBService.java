@@ -3,11 +3,11 @@ package de.segoy.springboottradingdata.service;
 import com.ib.client.Contract;
 import com.ib.client.Order;
 import com.ib.client.OrderStatus;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
-import de.segoy.springboottradingdata.modelconverter.IBKROrderToOrderData;
-import de.segoy.springboottradingdata.repository.OrderDataRepository;
+import de.segoy.springboottradingdata.modelconverter.IBKRToOrderDbo;
+import de.segoy.springboottradingdata.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +17,18 @@ import java.util.OptionalLong;
 @RequiredArgsConstructor
 public class OrderWriteToDBService {
 
-    private final OrderDataRepository orderDataRepository;
-    private final IBKROrderToOrderData ibkrOrderToOrderData;
+    private final OrderRepository orderRepository;
+    private final IBKRToOrderDbo ibkrToOrderDbo;
     private final ContractDataDatabaseSynchronizer contractDataDatabaseSynchronizer;
 
 
 
-    public OrderDataDBO saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
-        ContractDataDBO contractDataDBO = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
+    public OrderDbo saveOrUpdateFullOrderDataToDb(Order order, Contract contract, String orderStatus) {
+        ContractDbo contractDBO = contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
                 OptionalLong.empty(), contract);
-        OrderDataDBO orderData = ibkrOrderToOrderData.convertOrder(order);
+        OrderDbo orderData = ibkrToOrderDbo.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
-        orderData.setContractDataDBO(contractDataDBO);
-        return orderDataRepository.save(orderData);
+        orderData.setContractDBO(contractDBO);
+        return orderRepository.save(orderData);
     }
 }

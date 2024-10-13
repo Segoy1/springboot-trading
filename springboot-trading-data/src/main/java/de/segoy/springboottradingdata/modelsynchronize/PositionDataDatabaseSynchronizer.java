@@ -1,7 +1,7 @@
 package de.segoy.springboottradingdata.modelsynchronize;
 
-import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
-import de.segoy.springboottradingdata.repository.PositionDataRepository;
+import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
+import de.segoy.springboottradingdata.repository.PositionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,21 +11,21 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class PositionDataDatabaseSynchronizer {
 
-    private final PositionDataRepository positionDataRepository;
+    private final PositionRepository positionRepository;
 
 
-    public PositionDataDBO updateInDbOrSave(PositionDataDBO positionDataDBO) {
-        return positionDataRepository.findFirstByContractDataDBO(positionDataDBO.getContractDataDBO()).map((dbPositionData) -> {
-            dbPositionData.setPosition(positionDataDBO.getPosition());
-            dbPositionData.setAverageCost(positionDataDBO.getAverageCost());
-            dbPositionData.setTotalCost(positionDataDBO.getTotalCost());
+    public PositionDbo updateInDbOrSave(PositionDbo positionDBO) {
+        return positionRepository.findFirstByContractDBO(positionDBO.getContractDBO()).map((dbPositionData) -> {
+            dbPositionData.setPosition(positionDBO.getPosition());
+            dbPositionData.setAverageCost(positionDBO.getAverageCost());
+            dbPositionData.setTotalCost(positionDBO.getTotalCost());
 
             //delete if Position is 0.
             if(dbPositionData.getPosition().equals(BigDecimal.ZERO)){
-                positionDataRepository.delete(dbPositionData);
+                positionRepository.delete(dbPositionData);
                 return dbPositionData;
             }
-            return positionDataRepository.save(dbPositionData);
-        }).orElseGet(()-> positionDataRepository.save(positionDataDBO));
+            return positionRepository.save(dbPositionData);
+        }).orElseGet(()-> positionRepository.save(positionDBO));
     }
 }

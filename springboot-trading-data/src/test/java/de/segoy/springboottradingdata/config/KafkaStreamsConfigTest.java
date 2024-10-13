@@ -8,9 +8,9 @@ import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionChainDataCreator;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.ContractDataDBO;
-import de.segoy.springboottradingdata.model.data.entity.PositionDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
+import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionChainData;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionListData;
 import de.segoy.springboottradingdata.model.data.kafka.KafkaOptionMarketData;
@@ -68,30 +68,30 @@ class KafkaStreamsConfigTest {
   @Test
   void testPositionData() {
 
-    PositionDataDBO p1 =
-        PositionDataDBO.builder()
-            .contractDataDBO(
-                ContractDataDBO.builder()
+    PositionDbo p1 =
+        PositionDbo.builder()
+            .contractDBO(
+                ContractDbo.builder()
                     .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(1)
                     .build())
             .build();
-    PositionDataDBO p2 =
-        PositionDataDBO.builder()
-            .contractDataDBO(
-                ContractDataDBO.builder()
+    PositionDbo p2 =
+        PositionDbo.builder()
+            .contractDBO(
+                ContractDbo.builder()
                     .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(2)
                     .build())
             .build();
-    PositionDataDBO p3 =
-            PositionDataDBO.builder()
-                    .contractDataDBO(
-                            ContractDataDBO.builder()
+    PositionDbo p3 =
+            PositionDbo.builder()
+                    .contractDBO(
+                            ContractDbo.builder()
                                     .symbol(Symbol.SPX)
                                     .lastTradeDate("20241004")
                                     .tradingClass("OPT")
@@ -106,19 +106,19 @@ class KafkaStreamsConfigTest {
     Topology topology = streamsConfig.processOptionsContractData(new StreamsBuilder());
 
     testDriver = new TopologyTestDriver(topology, props);
-    TestInputTopic<String, PositionDataDBO> inputTopic = getInputPositionTopic();
-    TestOutputTopic<String, PositionDataDBO> outputTopic = getOutputPositionTopic();
-    List<PositionDataDBO> positions = List.of(p1, p2, p3);
+    TestInputTopic<String, PositionDbo> inputTopic = getInputPositionTopic();
+    TestOutputTopic<String, PositionDbo> outputTopic = getOutputPositionTopic();
+    List<PositionDbo> positions = List.of(p1, p2, p3);
     positions.forEach(
         position ->
-            inputTopic.pipeInput(position.getContractDataDBO().getContractId() + "", position));
+            inputTopic.pipeInput(position.getContractDBO().getContractId() + "", position));
 
     long queue = outputTopic.getQueueSize();
-    List<PositionDataDBO> actual = outputTopic.readValuesToList();
+    List<PositionDbo> actual = outputTopic.readValuesToList();
     assertThat(queue).isEqualTo(3);
     assertThat(actual).isNotNull();
     assertThat(actual).hasSize(3);
-    assertThat(actual.get(2).getContractDataDBO().getComboLegs()).hasSize(3);
+    assertThat(actual.get(2).getContractDBO().getComboLegs()).hasSize(3);
   }
 
   @Test
@@ -164,16 +164,16 @@ class KafkaStreamsConfigTest {
     return options;
   }
 
-  private TestOutputTopic<String, PositionDataDBO> getOutputPositionTopic() {
+  private TestOutputTopic<String, PositionDbo> getOutputPositionTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<PositionDataDBO> positionSerde = new JsonSerde<>(PositionDataDBO.class, mapper);
+    Serde<PositionDbo> positionSerde = new JsonSerde<>(PositionDbo.class, mapper);
     return testDriver.createOutputTopic(
         IBKR_POSITIONS, Serdes.String().deserializer(), positionSerde.deserializer());
   }
 
-  private TestInputTopic<String, PositionDataDBO> getInputPositionTopic() {
+  private TestInputTopic<String, PositionDbo> getInputPositionTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<PositionDataDBO> positionSerde = new JsonSerde<>(PositionDataDBO.class, mapper);
+    Serde<PositionDbo> positionSerde = new JsonSerde<>(PositionDbo.class, mapper);
     return testDriver.createInputTopic(
         IBKR_OPTION_POSITIONS, Serdes.String().serializer(), positionSerde.serializer());
   }
@@ -210,21 +210,21 @@ class KafkaStreamsConfigTest {
   private StreamOptionsContractDataCombineService mockStreamOptionChainDataCombineService() {
     return new StreamOptionsContractDataCombineService(new RatioHelper()) {
       @Override
-      public PositionDataDBO combinePositions(
-              PositionDataDBO receivedPosition, PositionDataDBO aggregatedPosition) {
-        if (aggregatedPosition.getContractDataDBO() == null) {
-          aggregatedPosition.setContractDataDBO(
-              ContractDataDBO.builder()
-                  .symbol(receivedPosition.getContractDataDBO().getSymbol())
+      public PositionDbo combinePositions(
+              PositionDbo receivedPosition, PositionDbo aggregatedPosition) {
+        if (aggregatedPosition.getContractDBO() == null) {
+          aggregatedPosition.setContractDBO(
+              ContractDbo.builder()
+                  .symbol(receivedPosition.getContractDBO().getSymbol())
                   .comboLegs(new ArrayList<>())
                   .build());
         }
         aggregatedPosition
-            .getContractDataDBO()
+            .getContractDBO()
             .getComboLegs()
             .add(
-                ComboLegDataDBO.builder()
-                    .contractId(receivedPosition.getContractDataDBO().getContractId())
+                ComboLegDbo.builder()
+                    .contractId(receivedPosition.getContractDBO().getContractId())
                     .build());
         return aggregatedPosition;
       }

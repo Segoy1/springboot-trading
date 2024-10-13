@@ -4,7 +4,7 @@ import com.ib.client.Decimal;
 import com.ib.client.Order;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
-import de.segoy.springboottradingdata.model.data.entity.OrderDataDBO;
+import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OrderDatatoIBKROrderTest {
 
-    private OrderDataToIBKROrder orderDatatoIBKROrder;
+    private OrderDboToIBKR orderDatatoIBKROrderDboToIBKR;
 
     @Test
     void testConvertLimitOrder() {
-        orderDatatoIBKROrder = new OrderDataToIBKROrder();
+        orderDatatoIBKROrderDboToIBKR = new OrderDboToIBKR();
 
-        Order order = orderDatatoIBKROrder.convertOrderData(
-                OrderDataDBO.builder()
+        Order order = orderDatatoIBKROrderDboToIBKR.convertOrderData(
+                OrderDbo.builder()
                         .id(1L)
                         .totalQuantity(BigDecimal.valueOf(1))
                         .limitPrice(BigDecimal.valueOf(12))
