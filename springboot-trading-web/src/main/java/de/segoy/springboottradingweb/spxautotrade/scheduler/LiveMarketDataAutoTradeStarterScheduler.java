@@ -5,6 +5,7 @@ import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataD
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeCallAndPutDataRequestService;
+import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeStrategyMarketDataRequestService;
 import de.segoy.springboottradingweb.spxautotrade.service.SpxLiveDataActivator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

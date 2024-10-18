@@ -1,4 +1,4 @@
-package de.segoy.springboottradingweb.spxautotrade.scheduler;
+package de.segoy.springboottradingweb.spxautotrade.service;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
@@ -7,8 +7,6 @@ import de.segoy.springboottradingdata.modelconverter.DboToOptionChainData;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
-import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeChainDataStopLiveDataService;
-import de.segoy.springboottradingweb.spxautotrade.service.ChainDataContractDataCreateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
