@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class AutoTradeStrategyMarketDataRequestService {
 
   private final LastTradeDateBuilder lastTradeDateBuilder;
-  private final ChainDataContractDataCreateService chainDataContractDataCreateService;
+  private final StrategyFromChainDataCreator strategyFromChainDataCreator;
   private final AutoTradeMarketDataService autoTradeMarketDataService;
   private final AutoTradeChainDataStopLiveDataService autoTradeChainDataStopLiveDataService;
   private final OptionChainRepository optionChainRepository;
@@ -30,7 +30,7 @@ public class AutoTradeStrategyMarketDataRequestService {
     OptionChainData chainData = dboToOptionChainData.toOptionChainData(findFromRepo());
 
     ContractDbo contractDBO =
-        chainDataContractDataCreateService.createIronCondorContractData(chainData);
+        strategyFromChainDataCreator.createIronCondorContractData(chainData);
     autoTradeMarketDataService.requestLiveMarketDataForContractData(
         Integer.parseInt(contractDBO.getLastTradeDate()), contractDBO);
     log.info("Requested MarketData for: " + contractDBO.getComboLegsDescription());

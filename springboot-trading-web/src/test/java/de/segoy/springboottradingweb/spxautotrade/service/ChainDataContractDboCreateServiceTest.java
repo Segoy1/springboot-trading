@@ -23,7 +23,7 @@ class ChainDataContractDboCreateServiceTest {
 
   @Mock StrategyBuilderService strategyBuilderService;
   @Mock TradeRuleSettingsConfig tradeRuleSettingsConfig;
-  @InjectMocks private ChainDataContractDataCreateService chainDataContractDataCreateService;
+  @InjectMocks private StrategyFromChainDataCreator strategyFromChainDataCreator;
 
   private OptionChainData testData;
 
@@ -55,6 +55,6 @@ class ChainDataContractDboCreateServiceTest {
     when(strategyBuilderService.getComboLegContractData(any()))
         .thenReturn(Optional.of(ContractDbo.builder().build()));
     when(tradeRuleSettingsConfig.getDelta()).thenReturn(0.05);
-    chainDataContractDataCreateService.createIronCondorContractData(testData);
+    strategyFromChainDataCreator.createIronCondorContractData(testData);
   }
 }

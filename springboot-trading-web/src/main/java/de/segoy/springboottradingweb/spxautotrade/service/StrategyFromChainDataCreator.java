@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ChainDataContractDataCreateService {
+public class StrategyFromChainDataCreator {
 
   private final TradeRuleSettingsConfig tradeRuleSettingsConfig;
   private final StrategyBuilderService strategyBuilderService;
