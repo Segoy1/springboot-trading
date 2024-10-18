@@ -16,7 +16,7 @@ public class LastTradeDateBuilder {
   private final IBKRTimeStampFormatter ibkrTimeStampFormatter;
 
   public String getDateStringFromToday() {
-    if (LocalDate.now().getDayOfWeek().getValue() < 5) {
+    if (LocalDate.now().getDayOfWeek().getValue() <= 5) {
       return ibkrTimeStampFormatter.formatTimestampToDate(Timestamp.valueOf(LocalDateTime.now()));
     } else {
       // Test Code for weekends

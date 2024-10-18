@@ -1,42 +1,45 @@
 package de.segoy.springboottradingibkr.client.service.livemarketdata;
 
-import com.ib.client.Types;
-import de.segoy.springboottradingdata.config.PropertiesConfig;
-import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
+import com.ib.client.TickType;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataDbo;
-import de.segoy.springboottradingdata.model.subtype.Symbol;
-import de.segoy.springboottradingdata.repository.ContractRepository;
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LastPriceLiveMarketDataCreateService {
 
-  private final PropertiesConfig propertiesConfig;
   private final LastPriceLiveMarketDataRepository lastPriceLiveMarketDataRepository;
-  private final ContractRepository contractRepository;
+  private final TickerIdToContractService tickerIdToContractService;
 
   @Transactional
-  public LastPriceLiveMarketDataDbo createLiveData(int tickerId, double price) {
-    ContractDbo contractDBO;
-      contractDBO =
-          contractRepository
-              .findFirstBySymbolAndSecurityTypeAndCurrency(Symbol.SPX, Types.SecType.IND, "USD")
-              .orElseGet(() -> contractRepository.save(ContractDataTemplates.SpxOptionData()));
+  public LastPriceLiveMarketDataDbo createLiveData(int tickerId, double price, TickType tick) {
     LastPriceLiveMarketDataDbo lastPriceLiveMarketDataDbo =
-        LastPriceLiveMarketDataDbo.builder()
-            .tickerId((long) tickerId)
-            .lastPrice(price)
-            .contractDBO(contractDBO)
-            .createDate(new Date(Instant.now().toEpochMilli()))
-            .build();
+        lastPriceLiveMarketDataRepository
+            .findById((long) tickerId)
+            .orElseGet(
+                () -> {
+                  ContractDbo contractDBO = tickerIdToContractService.resolveTickerId(tickerId);
+                  return LastPriceLiveMarketDataDbo.builder()
+                      .contractDBO(contractDBO)
+                      .tickerId((long) tickerId)
+                      .build();
+                });
+
+    if (tick.equals(TickType.LAST) || tick.equals(TickType.CLOSE)) {
+      lastPriceLiveMarketDataDbo.setLastPrice(price);
+    } else if (tick.equals(TickType.BID)) {
+      lastPriceLiveMarketDataDbo.setBidPrice(price);
+    } else if (tick.equals(TickType.ASK)) {
+      lastPriceLiveMarketDataDbo.setAskPrice(price);
+    }
+    lastPriceLiveMarketDataDbo.setCreateDate(new Date(Instant.now().toEpochMilli()));
+
     return lastPriceLiveMarketDataRepository.save(lastPriceLiveMarketDataDbo);
   }
 }

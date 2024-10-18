@@ -17,6 +17,7 @@ import de.segoy.springboottradingdata.model.data.kafka.*;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
 import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
 import de.segoy.springboottradingdata.repository.ConnectionRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
@@ -59,6 +60,7 @@ public class IBKRConnection implements EWrapper {
   private final Map<Integer, MktDepth> m_mapRequestToSmartDepthModel = new HashMap<>();
 
   private final Map<Integer, String> faMap = new HashMap<>();
+  private final LastTradeDateBuilder lastTradeDateBuilder;
 
   private boolean faError;
 
@@ -70,9 +72,13 @@ public class IBKRConnection implements EWrapper {
   @Transactional
   public void tickPrice(int tickerId, int field, double price, TickAttrib attrib) {
     //        TickType.getField( field);
-    if ((TickType.getField(field).equals("lastPrice") || TickType.getField(field).equals("close"))
-        && tickerId == propertiesConfig.getSpxTickerId()) {
-      lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price);
+    if ((TickType.get(field).equals(TickType.LAST) || TickType.get(field).equals(TickType.CLOSE))
+        && (tickerId == propertiesConfig.getSpxTickerId())) {
+      lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
+    }
+    if (((TickType.get(field).equals(TickType.ASK)||TickType.get(field).equals(TickType.BID))
+        && tickerId == lastTradeDateBuilder.getDateIntFromToday())) {
+      lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
     }
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC(),
@@ -174,7 +180,9 @@ public class IBKRConnection implements EWrapper {
     // received order status
     OrderDbo orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
     kafkaEntityTemplate.send(
-        kafkaConstantsConfig.getORDER_TOPIC(), Integer.toString(orderId), orderData.toKafkaOrderData());
+        kafkaConstantsConfig.getORDER_TOPIC(),
+        Integer.toString(orderId),
+        orderData.toKafkaOrderData());
 
     nextValidId(orderId + 1);
   }
@@ -461,7 +469,9 @@ public class IBKRConnection implements EWrapper {
             ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
             : kafkaConstantsConfig.getPOSITION_TOPIC();
     kafkaEntityTemplate.send(
-        topic, Integer.toString(position.getContractDBO().getContractId()), position.toKafkaPositionData());
+        topic,
+        Integer.toString(position.getContractDBO().getContractId()),
+        position.toKafkaPositionData());
   }
 
   @Override

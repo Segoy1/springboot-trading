@@ -22,6 +22,8 @@ public class LastPriceLiveMarketDataDbo extends IBKRDataType {
     private ContractDbo contractDBO;
 
     private double lastPrice;
+    private double bidPrice;
+    private double askPrice;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

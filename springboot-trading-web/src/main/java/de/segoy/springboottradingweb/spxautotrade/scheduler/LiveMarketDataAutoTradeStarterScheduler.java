@@ -33,13 +33,15 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   }
 
   private LastPriceLiveMarketDataDbo getLiveData() {
-    return lastPriceLiveMarketDataRepository
+    LastPriceLiveMarketDataDbo liveData = lastPriceLiveMarketDataRepository
         .findById((long) propertiesConfig.getSpxTickerId())
-        .orElseGet(
-            () -> {
-              spxLiveDataActivator.getLiveMarketDataSPX();
-              repositoryRefreshService.clearCacheAndWait(lastPriceLiveMarketDataRepository);
-                return getLiveData();
-            });
+        .orElseGet(this::repeatWithRefresh);
+    return liveData.getLastPrice()!=0.0?liveData:repeatWithRefresh();
   }
+
+    private LastPriceLiveMarketDataDbo repeatWithRefresh() {
+        spxLiveDataActivator.getLiveMarketDataSPX();
+        repositoryRefreshService.clearCacheAndWait(lastPriceLiveMarketDataRepository);
+        return getLiveData();
+    }
 }
