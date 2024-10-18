@@ -12,7 +12,7 @@ public class OrderPlacementService {
     private final OrderValidateAndPlacementService orderValidateAndPlacementService;
     private final PropertiesConfig propertiesConfig;
 
-    public void setIdAndPlaceOrder(OrderDbo orderData) {
+    public void placeOrderAndSetIdIfNull(OrderDbo orderData) {
         if (orderData.getId() == null) {
             orderData.setId(propertiesConfig.getNextValidOrderId());
         }
