@@ -6,7 +6,6 @@ import de.segoy.springboottradingdata.model.Leg;
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.repository.ComboLegRepository;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class StrategyBuilderService {
 
   private final UniqueContractDataProvider uniqueContractDataProvider;
-  private final ComboLegRepository comboLegRepository;
 
   @Transactional
   public Optional<ContractDbo> getComboLegContractData(StrategyContractData strategyContractData) {

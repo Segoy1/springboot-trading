@@ -12,6 +12,7 @@ import lombok.*;
 public class OptionMarketData extends KafkaDataType {
 
 
+    //For AutoDayTrading always encodes the date strike etc.
     private int tickerId;
     private double strike;
     private Types.Right right;

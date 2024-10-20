@@ -33,13 +33,13 @@ public class OrderController {
     //    curl -i -X POST 'http://localhost:8080/login' --data 'username=john&password=john'
     @PostMapping("/place-order")
     public void orderWithOrderObject(@RequestBody OrderDbo orderData) {
-        orderPlacementService.placeOrderAndSetIdIfNull(orderData);
+        orderPlacementService.placeOrderWithAutoIdIfNotSet(orderData);
     }
 
     @PostMapping("/place-strategy-order")
     public void orderWithStrategyOrderObject(@RequestBody StrategyOrderData strategyOrderData) {
         strategyOrderDataBuilder.buildOrderWithStrategyData(strategyOrderData).ifPresent(
-                orderPlacementService::placeOrderAndSetIdIfNull
+                orderPlacementService::placeOrderWithAutoIdIfNotSet
         );
     }
 

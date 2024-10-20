@@ -6,6 +6,7 @@ import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.modelconverter.DboToOptionChainData;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
+import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,13 @@ public class AutoTradeStrategyMarketDataRequestService {
   private final AutoTradeChainDataStopLiveDataService autoTradeChainDataStopLiveDataService;
   private final OptionChainRepository optionChainRepository;
   private final DboToOptionChainData dboToOptionChainData;
-
+  private final RepositoryRefreshService repositoryRefreshService;
 
   @Transactional
   public void createStrategyFromOptionChain() {
     OptionChainData chainData = dboToOptionChainData.toOptionChainData(findFromRepo());
 
-    ContractDbo contractDBO =
-        strategyFromChainDataCreator.createIronCondorContractData(chainData);
+    ContractDbo contractDBO = strategyFromChainDataCreator.createIronCondorContractData(chainData);
     autoTradeMarketDataService.requestLiveMarketDataForContractData(
         Integer.parseInt(contractDBO.getLastTradeDate()), contractDBO);
     log.info("Requested MarketData for: " + contractDBO.getComboLegsDescription());
@@ -42,11 +42,7 @@ public class AutoTradeStrategyMarketDataRequestService {
         .findById(lastTradeDateBuilder.getDateLongFromToday())
         .orElseGet(
             () -> {
-              try {
-                Thread.sleep(20L);
-              } catch (InterruptedException e) {
-                log.error("Thread.sleep() failed", e);
-              }
+              repositoryRefreshService.clearCacheAndWait(optionChainRepository);
               return findFromRepo();
             });
   }
