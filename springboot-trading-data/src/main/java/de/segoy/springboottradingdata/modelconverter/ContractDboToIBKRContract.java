@@ -11,6 +11,8 @@ import java.util.List;
 @Component
 public class ContractDboToIBKRContract {
 
+    private static final String EMPTY = "";
+
     public Contract convertContractData(ContractDbo contractDBO) {
         Contract contract = new Contract();
 
@@ -27,16 +29,16 @@ public class ContractDboToIBKRContract {
 
         //Null Values translating to emptyString making things nullsafe
         contract.comboLegsDescrip(contractDBO.getComboLegsDescription());
-        contract.right(contractDBO.getRight()==null?"": contractDBO.getRight().toString());
-        contract.lastTradeDateOrContractMonth(contractDBO.getLastTradeDate()==null?"": contractDBO.getLastTradeDate());
-        contract.multiplier(contractDBO.getMultiplier()==null?"": contractDBO.getMultiplier());
-        contract.localSymbol(contractDBO.getLocalSymbol()==null?"": contractDBO.getLocalSymbol());
-        contract.tradingClass(contractDBO.getTradingClass()==null?"": contractDBO.getTradingClass());
+        contract.right(contractDBO.getRight()==null?EMPTY: contractDBO.getRight().toString());
+        contract.lastTradeDateOrContractMonth(contractDBO.getLastTradeDate()==null?EMPTY: contractDBO.getLastTradeDate());
+        contract.multiplier(contractDBO.getMultiplier()==null?EMPTY: contractDBO.getMultiplier());
+        contract.localSymbol(contractDBO.getLocalSymbol()==null?EMPTY: contractDBO.getLocalSymbol());
+        contract.tradingClass(contractDBO.getTradingClass()==null?EMPTY: contractDBO.getTradingClass());
 
-        contract.secIdType("");
-        contract.secId("");
-        contract.issuerId("");
-        contract.primaryExch("");
+        contract.secIdType(EMPTY);
+        contract.secId(EMPTY);
+        contract.issuerId(EMPTY);
+        contract.primaryExch(EMPTY);
 
 
         List<ComboLeg> comboLegs = new ArrayList<>();
