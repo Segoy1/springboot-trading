@@ -28,6 +28,7 @@ public class ContractDbo extends IBKRDataType {
 
     private Integer contractId; //ContractId From Call to IBKR Api
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Symbol symbol; //SPX
 
