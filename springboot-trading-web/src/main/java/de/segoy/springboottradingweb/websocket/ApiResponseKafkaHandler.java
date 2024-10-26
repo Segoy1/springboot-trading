@@ -49,7 +49,7 @@ public class ApiResponseKafkaHandler {
     }
 
     @KafkaListener(groupId = "${kafka.consumer.group.id}", topics = "${kafka.names.topic.accountSummary}")
-    public void consumeSummaryMessage(AccountSummaryData message) {
+    public void consumeMarketDataMessage(AccountSummaryData message) {
         String summaryTopic = kafkaConstantsConfig.getACCOUNT_SUMMARY_TOPIC();
         log.info("Message received: " + summaryTopic + "-" + message.getTag());
         messagingTemplate.convertAndSend("/topic/" + summaryTopic, message);
@@ -62,7 +62,7 @@ public class ApiResponseKafkaHandler {
     }
 
     @KafkaListener(groupId = "${kafka.consumer.group.id}", topics = "${kafka.names.topic.standardMarketData}")
-    public void consumeSummaryMessage(StandardMarketData message) {
+    public void consumeMarketDataMessage(StandardMarketData message) {
         String standardMarketTopic = kafkaConstantsConfig.getSTANDARD_MARKET_DATA_TOPIC();
         messagingTemplate.convertAndSend("/topic/" + standardMarketTopic, message);
     }
