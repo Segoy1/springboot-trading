@@ -9,7 +9,7 @@ import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
 import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
-import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
+import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

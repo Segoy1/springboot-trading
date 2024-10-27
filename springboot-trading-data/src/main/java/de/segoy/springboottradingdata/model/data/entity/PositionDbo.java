@@ -25,6 +25,7 @@ public class PositionDbo extends IBKRDataType {
   @OneToOne(cascade = CascadeType.ALL)
   private ContractDbo contractDBO;
 
+  //total amount
   private BigDecimal position;
   private double averageCost;
 

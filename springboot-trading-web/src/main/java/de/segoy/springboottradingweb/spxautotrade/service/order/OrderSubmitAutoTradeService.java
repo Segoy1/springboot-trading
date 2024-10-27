@@ -8,7 +8,7 @@ import de.segoy.springboottradingdata.service.RepositoryRefreshService;
 import de.segoy.springboottradingibkr.client.service.order.OrderPlacementService;
 import de.segoy.springboottradingweb.spxautotrade.service.StrategyStrikesUpdateService;
 import de.segoy.springboottradingweb.spxautotrade.service.UpdatedStrategyMarketDataRequestService;
-import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
+import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

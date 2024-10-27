@@ -1,13 +1,13 @@
 package de.segoy.springboottradingweb.spxautotrade.service;
 
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import de.segoy.springboottradingdata.dataobject.ContractDataTemplates;
 import de.segoy.springboottradingdata.model.Leg;
 import de.segoy.springboottradingdata.model.data.StrategyContractData;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingibkr.client.strategybuilder.StrategyBuilderService;
-import de.segoy.springboottradingweb.spxautotrade.settings.TradeRuleSettingsConfig;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
