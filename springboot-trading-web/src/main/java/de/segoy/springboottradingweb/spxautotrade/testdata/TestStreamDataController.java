@@ -47,8 +47,14 @@ public class TestStreamDataController {
 
   private OptionMarketData createTestData(String date, Types.Right right, double strike) {
     return OptionMarketData.builder()
-        .tickerId(tickerIdEncoder.encodeOptionTickerId(new OptionTickerIdResolver.OptionDetails(date,Symbol.SPX,
-                strike,right)))
+        .tickerId(
+            tickerIdEncoder.encodeOptionTickerId(
+                OptionTickerIdResolver.OptionDetails.builder()
+                    .date(date)
+                    .symbol(Symbol.SPX)
+                    .strike(strike)
+                    .right(right)
+                    .build()))
         .lastTradeDate(date)
         .symbol(Symbol.SPX)
         .field(AutoDayTradeConstants.CHAIN_SAVE_FIELD)

@@ -6,6 +6,7 @@ import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.service.IBKRTimeStampFormatter;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OptionTickerIdResolver {
 
+  @Builder
   public record OptionDetails(String date, Symbol symbol, Double strike, Types.Right right) {
     @Override
     public String toString() {
@@ -39,7 +41,7 @@ public class OptionTickerIdResolver {
 
     Symbol symbol = resolveSymbol(tickerId);
 
-    return new OptionDetails(lastTradeDate, symbol, strike, right);
+    return OptionDetails.builder().date(lastTradeDate).symbol(symbol).strike(strike).right(right).build();
   }
 
   private String resolveDate(int tickerId) {
