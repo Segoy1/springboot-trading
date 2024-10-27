@@ -1,38 +1,41 @@
 package de.segoy.springboottradingdata.kafkastreams;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
-import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
+import de.segoy.springboottradingdata.model.data.kafka.ContractData;
+import de.segoy.springboottradingdata.model.data.kafka.PositionData;
+import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-class StreamOptionsContractDboCombineServiceTest {
+class StreamOptionsContractDataCombineServiceTest {
 
 
     @Mock
     private RatioHelper ratioHelper;
+    @Mock
+    private StrategyComboLegsDescriptionCreator strategyComboLegsDescriptionCreator;
     @InjectMocks
     private StreamOptionsContractDataCombineService streamOptionsContractDataCombineService;
 
-    private PositionDbo buildTwo(){
-        return PositionDbo.builder()
+    private PositionData buildTwo(){
+        return PositionData.builder()
                 .position(BigDecimal.valueOf(1))
                 .account("DU508")
                 .averageCost(10)
                 .totalCost(10)
-                .contractDBO(
-                        ContractDbo.builder()
+                .contractData(
+                        ContractData.builder()
                                 .contractId(11)
                                 .currency("USD")
                                 .lastTradeDate("20240216")
@@ -44,8 +47,8 @@ class StreamOptionsContractDboCombineServiceTest {
                 ).build();
     }
 
-    private PositionDbo buildOne(){
-        ContractDbo contractDbo1 = ContractDbo.builder()
+    private PositionData buildOne(){
+        ContractData contractData1 = ContractData.builder()
                 .contractId(12)
                 .currency("USD")
                 .lastTradeDate("20240216")
@@ -57,14 +60,14 @@ class StreamOptionsContractDboCombineServiceTest {
                 .tradingClass("SPXW")
                 .build();
 
-        return PositionDbo.builder().position(BigDecimal.valueOf(2))
+        return PositionData.builder().position(BigDecimal.valueOf(2))
                 .account("DU508")
                 .averageCost(20)
                 .totalCost(40)
-                .contractDBO(contractDbo1).build();
+                .contractData(contractData1).build();
     }
-    private PositionDbo buildThirdContract(){
-        ContractDbo contractDBO = ContractDbo.builder().contractId(13)
+    private PositionData buildThirdContract(){
+        ContractData contractData = ContractData.builder().contractId(13)
                .right(Types.Right.Put)
                .currency("USD")
                .exchange("SMART")
@@ -74,12 +77,12 @@ class StreamOptionsContractDboCombineServiceTest {
                .strike(BigDecimal.valueOf(90))
                .securityType(Types.SecType.OPT).build();
 
-        return PositionDbo.builder()
+        return PositionData.builder()
                 .position(BigDecimal.valueOf(-3))
                 .averageCost(-10)
                 .totalCost(-30)
                 .account("DU508")
-                .contractDBO(contractDBO).build();
+                .contractData(contractData).build();
 
 
     }
@@ -88,10 +91,10 @@ class StreamOptionsContractDboCombineServiceTest {
     @Test
     void combineAggregatedEmptyAndNewTestData() {
 
-        PositionDbo position = buildTwo();
+        PositionData position = buildTwo();
 
-                PositionDbo aggregate = streamOptionsContractDataCombineService.combinePositions(position,
-                PositionDbo.builder().build());
+                PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(position,
+                PositionData.builder().build());
 
 
         assertEquals(aggregate, position);
@@ -99,42 +102,43 @@ class StreamOptionsContractDboCombineServiceTest {
     @Test
     void testWithSamePositionUpdatedValues(){
 
-        PositionDbo positionDBO = buildTwo();
-        PositionDbo positionDbo2 = buildTwo();
-        positionDbo2.setPosition(BigDecimal.valueOf(2));
+        PositionData positionData = buildTwo();
+        PositionData positionData2 = buildTwo();
+        positionData2.setPosition(BigDecimal.valueOf(2));
 
-        PositionDbo aggregate = streamOptionsContractDataCombineService.combinePositions(positionDbo2,
-                positionDBO);
+        PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(positionData2,
+                positionData);
 
-        assertEquals(aggregate, positionDbo2);
+        assertEquals(aggregate, positionData2);
     }
     @Test
     void testWithNewPositionAndNoExistingCombo(){
         when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
+        when(strategyComboLegsDescriptionCreator.generateComboLegsDescription(any())).thenReturn("");
 
-        PositionDbo positionDboAgg = buildOne();
-        PositionDbo positionDboRec = buildTwo();
+        PositionData positionDataAgg = buildOne();
+        PositionData positionDataRec = buildTwo();
 
-        PositionDbo aggregate = streamOptionsContractDataCombineService.combinePositions(positionDboRec,
-                positionDboAgg);
+        PositionData aggregate = streamOptionsContractDataCombineService.combinePositions(positionDataRec,
+                positionDataAgg);
 
-        assertEquals(2, aggregate.getContractDBO().getComboLegs().size());
-        assertEquals(23,aggregate.getContractDBO().getContractId());
-        assertEquals(Types.Right.None, aggregate.getContractDBO().getRight());
-        assertEquals("SMART", aggregate.getContractDBO().getExchange());
-        assertNull(aggregate.getContractDBO().getStrike());
+        assertEquals(2, aggregate.getContractData().getComboLegs().size());
+        assertEquals(23,aggregate.getContractData().getContractId());
+        assertEquals(Types.Right.None, aggregate.getContractData().getRight());
+        assertEquals("SMART", aggregate.getContractData().getExchange());
+        assertNull(aggregate.getContractData().getStrike());
         assertEquals(50, aggregate.getAverageCost());
-        assertEquals(Types.SecType.BAG, aggregate.getContractDBO().getSecurityType());
+        assertEquals(Types.SecType.BAG, aggregate.getContractData().getSecurityType());
         assertEquals(BigDecimal.ONE, aggregate.getPosition());
-        assertEquals(12, aggregate.getContractDBO().getComboLegs().get(0).getContractId());
-        assertEquals(2, aggregate.getContractDBO().getComboLegs().get(0).getRatio());
-        assertEquals("SMART", aggregate.getContractDBO().getComboLegs().get(0).getExchange());
-        assertEquals(Types.Action.BUY, aggregate.getContractDBO().getComboLegs().get(0).getAction());
+        assertEquals(12, aggregate.getContractData().getComboLegs().get(0).getContractId());
+        assertEquals(2, aggregate.getContractData().getComboLegs().get(0).getRatio());
+        assertEquals("SMART", aggregate.getContractData().getComboLegs().get(0).getExchange());
+        assertEquals(Types.Action.BUY, aggregate.getContractData().getComboLegs().get(0).getAction());
 
-        assertEquals(11, aggregate.getContractDBO().getComboLegs().get(1).getContractId());
-        assertEquals(1, aggregate.getContractDBO().getComboLegs().get(1).getRatio());
-        assertEquals("SMART", aggregate.getContractDBO().getComboLegs().get(1).getExchange());
-        assertEquals(Types.Action.BUY, aggregate.getContractDBO().getComboLegs().get(1).getAction());
+        assertEquals(11, aggregate.getContractData().getComboLegs().get(1).getContractId());
+        assertEquals(1, aggregate.getContractData().getComboLegs().get(1).getRatio());
+        assertEquals("SMART", aggregate.getContractData().getComboLegs().get(1).getExchange());
+        assertEquals(Types.Action.BUY, aggregate.getContractData().getComboLegs().get(1).getAction());
     }
 
     @Test
@@ -142,26 +146,27 @@ class StreamOptionsContractDboCombineServiceTest {
         when(ratioHelper.getRatio(1,3)).thenReturn(new RatioHelper.Ratios(1,1,3));
         when(ratioHelper.getRatio(2,1)).thenReturn(new RatioHelper.Ratios(1,2,1));
         when(ratioHelper.getRatio(1,1)).thenReturn(new RatioHelper.Ratios(1,1,1));
+        when(strategyComboLegsDescriptionCreator.generateComboLegsDescription(any())).thenReturn("");
 
-        PositionDbo positionDbo1 = buildOne();
-        PositionDbo positionDbo2 = buildTwo();
-        PositionDbo positionDbo3 = buildThirdContract();
+        PositionData positionData1 = buildOne();
+        PositionData positionData2 = buildTwo();
+        PositionData positionData3 = buildThirdContract();
 
-        PositionDbo aggregate1 = streamOptionsContractDataCombineService.combinePositions(positionDbo3,
-                streamOptionsContractDataCombineService.combinePositions(positionDbo2,
-                        positionDbo1));
+        PositionData aggregate1 = streamOptionsContractDataCombineService.combinePositions(positionData3,
+                streamOptionsContractDataCombineService.combinePositions(positionData2,
+                        positionData1));
 
         assertEquals(20,aggregate1.getAverageCost());
 
 
-        PositionDbo aggregate2 =
-                streamOptionsContractDataCombineService.combinePositions(positionDbo1,
-                streamOptionsContractDataCombineService.combinePositions(positionDbo3,
-                        streamOptionsContractDataCombineService.combinePositions(positionDbo1,
-                        streamOptionsContractDataCombineService.combinePositions(positionDbo2, aggregate1))));
+        PositionData aggregate2 =
+                streamOptionsContractDataCombineService.combinePositions(positionData1,
+                streamOptionsContractDataCombineService.combinePositions(positionData3,
+                        streamOptionsContractDataCombineService.combinePositions(positionData1,
+                        streamOptionsContractDataCombineService.combinePositions(positionData2, aggregate1))));
 
 
-        assertEquals(3, aggregate2.getContractDBO().getComboLegs().size());
+        assertEquals(3, aggregate2.getContractData().getComboLegs().size());
         assertEquals(20, aggregate2.getAverageCost());
 
     }

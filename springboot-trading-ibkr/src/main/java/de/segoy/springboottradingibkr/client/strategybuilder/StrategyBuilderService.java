@@ -10,6 +10,7 @@ import de.segoy.springboottradingibkr.client.service.contract.UniqueContractData
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,10 @@ public class StrategyBuilderService {
       contractDBO.setComboLegsDescription(
           strategyComboLegsDescriptionCreator.generateComboLegsDescription(
               StrategyComboLegsDescriptionCreator.StrategyDetails.builder()
-                  .comboLegs(contractDBO.getComboLegs())
+                  .comboLegContractIds(
+                      contractDBO.getComboLegs().stream()
+                          .map(ComboLegDbo::getContractId)
+                          .collect(Collectors.toCollection(ArrayList::new)))
                   .lastTradeDate(contractDBO.getLastTradeDate())
                   .symbol(contractDBO.getSymbol())
                   .build()));

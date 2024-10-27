@@ -1,7 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import java.util.List;
 import lombok.Builder;
@@ -13,7 +12,7 @@ public class StrategyComboLegsDescriptionCreator {
     private static final String SEPERATOR = " | ";
 
     @Builder
-    public record StrategyDetails(String lastTradeDate, Symbol symbol, List<ComboLegDbo> comboLegs){};
+    public record StrategyDetails(String lastTradeDate, Symbol symbol, List<Integer> comboLegContractIds){};
 
 
     public String generateComboLegsDescription(StrategyDetails details) {
@@ -23,8 +22,8 @@ public class StrategyComboLegsDescriptionCreator {
                 .append(AutoDayTradeConstants.DELIMITER)
                 .append(details.symbol().name())
                 .append(SEPERATOR);
-        for (ComboLegDbo leg : details.comboLegs()) {
-            description.append(leg.getContractId()).append(" | ");
+        for (Integer contractId : details.comboLegContractIds) {
+            description.append(contractId).append(" | ");
         }
         return description.toString();
     }

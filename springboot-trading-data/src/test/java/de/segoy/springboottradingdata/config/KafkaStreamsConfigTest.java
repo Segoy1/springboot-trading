@@ -8,13 +8,9 @@ import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionChainDataCreator;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
-import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
-import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
-import de.segoy.springboottradingdata.model.data.kafka.OptionListData;
-import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.*;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
+import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -38,7 +34,6 @@ class KafkaStreamsConfigTest {
   public static final String IBKR_OPTION_POSITIONS = "ibkr_option_positions";
 
   @Mock private KafkaConstantsConfig kafkaConstantsConfig;
-  @Mock private StreamOptionsContractDataCombineService dataCombineService;
 
   private KafkaStreamsConfig streamsConfig;
 
@@ -68,36 +63,36 @@ class KafkaStreamsConfigTest {
   @Test
   void testPositionData() {
 
-    PositionDbo p1 =
-        PositionDbo.builder()
-            .contractDBO(
-                ContractDbo.builder()
+    PositionData p1 =
+        PositionData.builder()
+            .contractData(
+                ContractData.builder()
                     .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(1)
                     .build())
             .build();
-    PositionDbo p2 =
-        PositionDbo.builder()
-            .contractDBO(
-                ContractDbo.builder()
+    PositionData p2 =
+        PositionData.builder()
+            .contractData(
+                ContractData.builder()
                     .symbol(Symbol.SPX)
                     .lastTradeDate("20241004")
                     .tradingClass("OPT")
                     .contractId(2)
                     .build())
             .build();
-    PositionDbo p3 =
-            PositionDbo.builder()
-                    .contractDBO(
-                            ContractDbo.builder()
-                                    .symbol(Symbol.SPX)
-                                    .lastTradeDate("20241004")
-                                    .tradingClass("OPT")
-                                    .contractId(3)
-                                    .build())
-                    .build();
+    PositionData p3 =
+        PositionData.builder()
+            .contractData(
+                ContractData.builder()
+                    .symbol(Symbol.SPX)
+                    .lastTradeDate("20241004")
+                    .tradingClass("OPT")
+                    .contractId(3)
+                    .build())
+            .build();
 
     when(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()).thenReturn(IBKR_OPTION_POSITIONS);
     when(kafkaConstantsConfig.getPOSITION_TOPIC()).thenReturn(IBKR_POSITIONS);
@@ -106,19 +101,19 @@ class KafkaStreamsConfigTest {
     Topology topology = streamsConfig.processOptionsContractData(new StreamsBuilder());
 
     testDriver = new TopologyTestDriver(topology, props);
-    TestInputTopic<String, PositionDbo> inputTopic = getInputPositionTopic();
-    TestOutputTopic<String, PositionDbo> outputTopic = getOutputPositionTopic();
-    List<PositionDbo> positions = List.of(p1, p2, p3);
+    TestInputTopic<String, PositionData> inputTopic = getInputPositionTopic();
+    TestOutputTopic<String, PositionData> outputTopic = getOutputPositionTopic();
+    List<PositionData> positions = List.of(p1, p2, p3);
     positions.forEach(
         position ->
-            inputTopic.pipeInput(position.getContractDBO().getContractId() + "", position));
+            inputTopic.pipeInput(position.getContractData().getContractId() + "", position));
 
     long queue = outputTopic.getQueueSize();
-    List<PositionDbo> actual = outputTopic.readValuesToList();
+    List<PositionData> actual = outputTopic.readValuesToList();
     assertThat(queue).isEqualTo(3);
     assertThat(actual).isNotNull();
     assertThat(actual).hasSize(3);
-    assertThat(actual.get(2).getContractDBO().getComboLegs()).hasSize(3);
+    assertThat(actual.get(2).getContractData().getComboLegs()).hasSize(3);
   }
 
   @Test
@@ -164,16 +159,16 @@ class KafkaStreamsConfigTest {
     return options;
   }
 
-  private TestOutputTopic<String, PositionDbo> getOutputPositionTopic() {
+  private TestOutputTopic<String, PositionData> getOutputPositionTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<PositionDbo> positionSerde = new JsonSerde<>(PositionDbo.class, mapper);
+    Serde<PositionData> positionSerde = new JsonSerde<>(PositionData.class, mapper);
     return testDriver.createOutputTopic(
         IBKR_POSITIONS, Serdes.String().deserializer(), positionSerde.deserializer());
   }
 
-  private TestInputTopic<String, PositionDbo> getInputPositionTopic() {
+  private TestInputTopic<String, PositionData> getInputPositionTopic() {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<PositionDbo> positionSerde = new JsonSerde<>(PositionDbo.class, mapper);
+    Serde<PositionData> positionSerde = new JsonSerde<>(PositionData.class, mapper);
     return testDriver.createInputTopic(
         IBKR_OPTION_POSITIONS, Serdes.String().serializer(), positionSerde.serializer());
   }
@@ -196,7 +191,7 @@ class KafkaStreamsConfigTest {
     return new StreamOptionChainDataCreator() {
       @Override
       public OptionChainData buildChain(
-              OptionMarketData marketData, OptionChainData aggregatedChain) {
+          OptionMarketData marketData, OptionChainData aggregatedChain) {
         if (aggregatedChain.getCalls() == null) {
           aggregatedChain.setCalls(new OptionListData());
           aggregatedChain.setSymbol(marketData.getSymbol());
@@ -208,23 +203,24 @@ class KafkaStreamsConfigTest {
   }
 
   private StreamOptionsContractDataCombineService mockStreamOptionChainDataCombineService() {
-    return new StreamOptionsContractDataCombineService(new RatioHelper()) {
+    return new StreamOptionsContractDataCombineService(
+        new RatioHelper(), new StrategyComboLegsDescriptionCreator()) {
       @Override
-      public PositionDbo combinePositions(
-              PositionDbo receivedPosition, PositionDbo aggregatedPosition) {
-        if (aggregatedPosition.getContractDBO() == null) {
-          aggregatedPosition.setContractDBO(
-              ContractDbo.builder()
-                  .symbol(receivedPosition.getContractDBO().getSymbol())
+      public PositionData combinePositions(
+          PositionData receivedPosition, PositionData aggregatedPosition) {
+        if (aggregatedPosition.getContractData() == null) {
+          aggregatedPosition.setContractData(
+              ContractData.builder()
+                  .symbol(receivedPosition.getContractData().getSymbol())
                   .comboLegs(new ArrayList<>())
                   .build());
         }
         aggregatedPosition
-            .getContractDBO()
+            .getContractData()
             .getComboLegs()
             .add(
-                ComboLegDbo.builder()
-                    .contractId(receivedPosition.getContractDBO().getContractId())
+                ComboLegData.builder()
+                    .contractId(receivedPosition.getContractData().getContractId())
                     .build());
         return aggregatedPosition;
       }

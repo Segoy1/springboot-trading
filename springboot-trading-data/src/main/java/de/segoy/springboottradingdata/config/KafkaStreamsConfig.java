@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionChainDataCreator;
 import de.segoy.springboottradingdata.kafkastreams.StreamOptionsContractDataCombineService;
-import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
+import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.Serde;
@@ -57,26 +57,26 @@ public class KafkaStreamsConfig {
   @Bean
   public Topology processOptionsContractData(StreamsBuilder streamsBuilder) {
     ObjectMapper mapper = new ObjectMapper();
-    Serde<PositionDbo> positionDataSerde = new JsonSerde<>(PositionDbo.class, mapper);
+    Serde<PositionData> positionDataSerde = new JsonSerde<>(PositionData.class, mapper);
 
-    final Consumed<String, PositionDbo> consumed =
+    final Consumed<String, PositionData> consumed =
         Consumed.with(Serdes.String(), positionDataSerde);
-    final KStream<String, PositionDbo> positions =
+    final KStream<String, PositionData> positions =
         streamsBuilder.stream(kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC(), consumed);
 
-    KTable<String, PositionDbo> sortByTradingClassAndLastTradeDate =
+    KTable<String, PositionData> sortByTradingClassAndLastTradeDate =
         positions
             .selectKey(
                 (key, value) ->
-                    value.getContractDBO().getLastTradeDate()
+                    value.getContractData().getLastTradeDate()
                         + " "
-                        + value.getContractDBO().getTradingClass())
+                        + value.getContractData().getTradingClass())
             .groupByKey()
             .aggregate(
-                () -> PositionDbo.builder().build(),
+                () -> PositionData.builder().build(),
                 (key, newPos, aggregatedPos) ->
                     streamOptionsContractDataCombineService.combinePositions(newPos, aggregatedPos),
-                Materialized.<String, PositionDbo, KeyValueStore<Bytes, byte[]>>as(
+                Materialized.<String, PositionData, KeyValueStore<Bytes, byte[]>>as(
                         kafkaConstantsConfig.getPOSITIONS_AGGREGATE_TOPIC())
                     .withKeySerde(Serdes.String())
                     .withValueSerde(positionDataSerde));

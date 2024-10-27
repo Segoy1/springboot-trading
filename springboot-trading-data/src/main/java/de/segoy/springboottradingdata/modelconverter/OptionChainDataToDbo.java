@@ -25,7 +25,7 @@ public class OptionChainDataToDbo {
   private final OptionChainRepository optionChainRepository;
 
   @Transactional
-  public OptionChainDbo convert(OptionChainData optionChainData) {
+  public OptionChainDbo convertAndSave(OptionChainData optionChainData) {
     List<OptionMarketDataDbo> callList = mapToList(optionChainData.getCalls().getOptions());
     List<OptionMarketDataDbo> putList = mapToList(optionChainData.getPuts().getOptions());
     OptionListDbo callsDBO =

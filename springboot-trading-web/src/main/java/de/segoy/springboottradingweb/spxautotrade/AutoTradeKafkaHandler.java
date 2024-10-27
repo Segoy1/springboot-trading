@@ -25,7 +25,7 @@ public class AutoTradeKafkaHandler {
   public void processChainData(OptionChainData message) {
     if (message.getLastTradeDate().equals(lastTradeDateBuilder.getDateLongFromToday())
         && message.getSymbol().equals(Symbol.SPX)) {
-      optionChainDataToDBO.convert(message);
+      optionChainDataToDBO.convertAndSave(message);
     }
   }
   @KafkaListener(

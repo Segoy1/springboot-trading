@@ -2,17 +2,17 @@ package de.segoy.springboottradingdata.kafkastreams;
 
 import com.ib.client.Types;
 import de.segoy.springboottradingdata.kafkastreams.util.RatioHelper;
-import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
-import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
-import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
+import de.segoy.springboottradingdata.model.data.kafka.ComboLegData;
+import de.segoy.springboottradingdata.model.data.kafka.ContractData;
+import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -28,21 +28,21 @@ public class StreamOptionsContractDataCombineService {
    * @param receivedPosition the Event fetched from the topic being processed.
    * @param aggregatedPosition the already aggregated and to be aggregated Combo Position
    */
-  public PositionDbo combinePositions(
-      PositionDbo receivedPosition, PositionDbo aggregatedPosition) {
+  public PositionData combinePositions(
+      PositionData receivedPosition, PositionData aggregatedPosition) {
     if (aggregatedPosition.getAccount() == null) {
       return receivedPosition;
     } else {
       if (receivedPosition
-          .getContractDBO()
+          .getContractData()
           .getContractId()
-          .equals(aggregatedPosition.getContractDBO().getContractId())) {
+          .equals(aggregatedPosition.getContractData().getContractId())) {
         return receivedPosition;
 
       } else {
-        List<ComboLegDbo> updatedComboLegs = new ArrayList<>();
+        List<ComboLegData> updatedComboLegs = new ArrayList<>();
 
-        ContractDbo aggContract = aggregatedPosition.getContractDBO();
+        ContractData aggContract = aggregatedPosition.getContractData();
 
         if (aggContract.getComboLegs() == null || aggContract.getComboLegs().isEmpty()) {
           transformContractDataOnFirstAggregation(aggregatedPosition, updatedComboLegs);
@@ -73,7 +73,7 @@ public class StreamOptionsContractDataCombineService {
             aggregatedPosition, receivedPosition, updatedComboLegs, ratios);
 
         // Set Contract Id to added up Contract Data Ids to be unique
-        setNewContractId(receivedPosition.getContractDBO(), aggregatedPosition.getContractDBO());
+        setNewContractId(receivedPosition.getContractData(), aggregatedPosition.getContractData());
 
         // Set updated ComboLegs
         aggContract.setComboLegs(updatedComboLegs);
@@ -83,36 +83,35 @@ public class StreamOptionsContractDataCombineService {
     }
   }
 
-  private void setNewContractId(ContractDbo receivedContract, ContractDbo aggregatedContract) {
+  private void setNewContractId(ContractData receivedContract, ContractData aggregatedContract) {
     aggregatedContract.setContractId(
         aggregatedContract.getContractId() + receivedContract.getContractId());
   }
 
   private void transformContractDataOnFirstAggregation(
-      PositionDbo aggregatedPosition, List<ComboLegDbo> updatedComboLegs) {
+      PositionData aggregatedPosition, List<ComboLegData> updatedComboLegs) {
 
-    ContractDbo aggContract = aggregatedPosition.getContractDBO();
+    ContractData aggContract = aggregatedPosition.getContractData();
     updatedComboLegs.add(
-        ComboLegDbo.builder()
+        ComboLegData.builder()
             .contractId(aggContract.getContractId())
             .exchange(aggContract.getExchange())
             .action(sellOrBuy(aggregatedPosition.getPosition()))
             .ratio(1)
             .build());
     // Remove Values for single Option data
-    aggContract.setId(null);
     aggContract.setRight(Types.Right.None);
     aggContract.setStrike(null);
     aggContract.setSecurityType(Types.SecType.BAG);
   }
 
   private void setOrUpdateComboLegDataAndCost(
-      PositionDbo aggregatedPosition,
-      PositionDbo receivedPosition,
-      List<ComboLegDbo> comboLegs,
+      PositionData aggregatedPosition,
+      PositionData receivedPosition,
+      List<ComboLegData> comboLegs,
       RatioHelper.Ratios ratios) {
-    ContractDbo receivedContract = receivedPosition.getContractDBO();
-    Optional<ComboLegDbo> legOptional =
+    ContractData receivedContract = receivedPosition.getContractData();
+    Optional<ComboLegData> legOptional =
         comboLegs.stream()
             .filter(
                 (comboLegData) ->
@@ -128,7 +127,7 @@ public class StreamOptionsContractDataCombineService {
           aggregatedPosition.getTotalCost() / aggregatedPosition.getPosition().doubleValue());
     }
     comboLegs.add(
-        ComboLegDbo.builder()
+        ComboLegData.builder()
             .contractId(receivedContract.getContractId())
             .exchange(receivedContract.getExchange())
             .action(sellOrBuy(receivedPosition.getPosition()))
@@ -136,17 +135,20 @@ public class StreamOptionsContractDataCombineService {
             .build());
 
     aggregatedPosition
-        .getContractDBO()
+        .getContractData()
         .setComboLegsDescription(
             strategyComboLegsDescriptionCreator.generateComboLegsDescription(
                 StrategyComboLegsDescriptionCreator.StrategyDetails.builder()
-                    .comboLegs(comboLegs)
-                    .lastTradeDate(aggregatedPosition.getContractDBO().getLastTradeDate())
-                    .symbol(aggregatedPosition.getContractDBO().getSymbol())
+                    .comboLegContractIds(
+                        comboLegs.stream()
+                            .map(ComboLegData::getContractId)
+                            .collect(Collectors.toCollection(ArrayList::new)))
+                    .lastTradeDate(aggregatedPosition.getContractData().getLastTradeDate())
+                    .symbol(aggregatedPosition.getContractData().getSymbol())
                     .build()));
   }
 
-  private void updateRatiosOnComboLegs(List<ComboLegDbo> legs, RatioHelper.Ratios ratios) {
+  private void updateRatiosOnComboLegs(List<ComboLegData> legs, RatioHelper.Ratios ratios) {
     legs.forEach((comboLeg) -> comboLeg.setRatio(comboLeg.getRatio() * ratios.aggregated()));
   }
 
