@@ -2,6 +2,7 @@ package de.segoy.springboottradingdata.model.data.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import lombok.*;
 
 @Getter
@@ -32,15 +33,15 @@ public class OptionListData extends KafkaDataType {
     public int size(){
         return options.size();
     }
-    public Map.Entry<Double, OptionMarketData> findClosestToDelta(double delta){
+    
+    public Optional<Map.Entry<Double, OptionMarketData>> findClosestToDelta(double delta){
         return options.entrySet()
                 .stream()
                 .min((entry1, entry2) -> {
                     double deltaDiff1 = Math.abs(entry1.getValue().getDelta() - delta);
                     double deltaDiff2 = Math.abs(entry2.getValue().getDelta() - delta);
                     return Double.compare(deltaDiff1, deltaDiff2);
-                })
-                .orElse(null); // Return null if the map is empty
+                });
     }
 
 }

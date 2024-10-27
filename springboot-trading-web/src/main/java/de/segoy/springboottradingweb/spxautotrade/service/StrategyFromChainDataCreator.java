@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StrategyFromChainDataCreator {
 
+  private static final String DELTA_NOT_FOUND_TEXT =
+      "No Data with specified Delta found. Can happen outside of "
+          + "Trading hours or with bad start Parameters for Program.";
   private final TradeRuleSettingsConfig tradeRuleSettingsConfig;
   private final StrategyBuilderService strategyBuilderService;
 
@@ -32,6 +35,7 @@ public class StrategyFromChainDataCreator {
         optionChainData
             .getCalls()
             .findClosestToDelta(tradeRuleSettingsConfig.getDelta())
+            .orElseThrow(this::throwDeltaRuntimeException)
             .getKey();
     legs.add(createLeg(Types.Right.Call, Types.Action.SELL, callShortStrike));
 
@@ -42,6 +46,7 @@ public class StrategyFromChainDataCreator {
         optionChainData
             .getPuts()
             .findClosestToDelta(tradeRuleSettingsConfig.getDelta())
+            .orElseThrow(this::throwDeltaRuntimeException)
             .getKey();
     legs.add(createLeg(Types.Right.Put, Types.Action.SELL, putShortStrike));
 
@@ -53,6 +58,10 @@ public class StrategyFromChainDataCreator {
     StrategyContractData strategyContractData =
         StrategyContractData.builder().contractDBO(contract).strategyLegs(legs).build();
     return strategyBuilderService.getComboLegContractData(strategyContractData).orElseThrow();
+  }
+
+  private RuntimeException throwDeltaRuntimeException() {
+    return new RuntimeException(DELTA_NOT_FOUND_TEXT);
   }
 
   private Leg createLeg(Types.Right put, Types.Action buy, double putLongStrike) {
