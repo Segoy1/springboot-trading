@@ -7,6 +7,7 @@ autotrade:
   delta: ${AUTOTRADE_DELTA_VALUE}
   orderLimitValue: ${AUTOTRADE_ORDER_LIMIT_VALUE}
   spreadSize: ${AUTOTRADE_SPREAD_SIZE}
+  quantityOfStrategies: ${AUTOTRADE_QUANTITY_OF_STRATEGIES}}
 kafka:
   names:
     topic:

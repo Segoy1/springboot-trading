@@ -1,11 +1,13 @@
 package de.segoy.springboottradingweb.spxautotrade;
 
+import com.ib.client.TickType;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.model.data.kafka.StandardMarketData;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import de.segoy.springboottradingdata.modelconverter.OptionChainDataToDbo;
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.repository.PositionRepository;
+import de.segoy.springboottradingweb.spxautotrade.service.order.SellOrderAutoTradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,6 +20,7 @@ public class AutoTradeKafkaHandler {
   private final LastTradeDateBuilder lastTradeDateBuilder;
   private final OptionChainDataToDbo optionChainDataToDBO;
   private final PositionRepository positionRepository;
+  private final SellOrderAutoTradeService sellOrderAutoTradeService;
 
   @KafkaListener(
       groupId = "${kafka.consumer.auto.group.id}",
@@ -36,7 +39,9 @@ public class AutoTradeKafkaHandler {
     if(message.getTickerId()== lastTradeDateBuilder.getDateIntFromToday()){
       positionRepository.findById(lastTradeDateBuilder.getDateLongFromToday()).ifPresent((position)->
       {
-
+        if( message.getField().equals(TickType.ASK.field())){
+          sellOrderAutoTradeService.sellPostionWhenPriceExceedsLimit(message.getPrice(), position);
+        }
       });
     }
   }

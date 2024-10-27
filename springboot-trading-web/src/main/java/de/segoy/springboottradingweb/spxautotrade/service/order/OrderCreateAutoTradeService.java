@@ -25,7 +25,7 @@ public class OrderCreateAutoTradeService {
         .id(lastTradeDateBuilder.getDateLongFromToday())
         .contractDBO(lastPriceLiveMarketDataDbo.getContractDBO())
         .action(Types.Action.BUY)
-        .totalQuantity(tradeRuleSettingsConfig.getQuantity())
+        .totalQuantity(BigDecimal.valueOf(tradeRuleSettingsConfig.getQuantity()))
         .limitPrice(BigDecimal.valueOf(limitPrice))
         .orderType(OrderType.LMT)
         .usePriceManagementAlgorithm(false)
