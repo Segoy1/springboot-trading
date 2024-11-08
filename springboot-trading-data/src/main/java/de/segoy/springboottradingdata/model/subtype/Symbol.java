@@ -1,5 +1,6 @@
 package de.segoy.springboottradingdata.model.subtype;
 
+
 public enum Symbol {
   SPX(1,5),
   AAPL(2, 2.5),
@@ -21,6 +22,9 @@ public enum Symbol {
     this.optionInterval = optionInterval;
   }
 
+  /**
+   * @return numberValue must remain smaller than 100 or it will break some generating logic
+   */
   public int numberValue() {
     return numberValue;
   }
