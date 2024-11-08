@@ -28,6 +28,7 @@ public class StreamsAggregatedPositionHandler {
             .getExistingContractDataOrCallApi(positionDbo.getContractDBO())
             .orElseThrow();
     positionDbo.setContractDBO(persistedContract);
+    setIdIfAutoTrade(persistedContract, positionDbo);
     return positionDataDatabaseSynchronizer.updateInDbOrSave(positionDbo).toKafkaPositionData();
   }
 
