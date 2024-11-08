@@ -4,6 +4,7 @@ import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
+import de.segoy.springboottradingdata.model.subtype.Strategy;
 import de.segoy.springboottradingdata.modelconverter.DboToOptionChainData;
 import de.segoy.springboottradingdata.optionstradingservice.AutotradeDbAndTickerIdEncoder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
@@ -29,12 +30,12 @@ public class AutoTradeStrategyMarketDataRequestService {
   private final AutotradeDbAndTickerIdEncoder autotradeDbAndTickerIdEncoder;
 
   @Transactional
-  public void createStrategyFromOptionChain() {
+  public void createStrategyFromOptionChain(Strategy strategy) {
     OptionChainData chainData = dboToOptionChainData.toOptionChainData(findFromRepo());
 
     ContractDbo contractDBO = strategyFromChainDataCreator.createIronCondorContractData(chainData);
     autoTradeMarketDataService.requestLiveMarketDataForContractData(
-        Integer.parseInt(contractDBO.getLastTradeDate()), contractDBO);
+        createIdForContractWithIronCondor(contractDBO, strategy), contractDBO);
     log.info("Requested MarketData for: " + contractDBO.getComboLegsDescription());
     autoTradeChainDataStopLiveDataService.stopMarketData(chainData);
   }
@@ -49,5 +50,12 @@ public class AutoTradeStrategyMarketDataRequestService {
               repositoryRefreshService.clearCacheAndWait(optionChainRepository);
               return findFromRepo();
             });
+  }
+
+  private int createIdForContractWithIronCondor(ContractDbo contractDBO, Strategy strategy) {
+    return autotradeDbAndTickerIdEncoder.generateIntForLastTradeDateBySymbolAndStrategy(
+        Long.valueOf(contractDBO.getLastTradeDate()),
+        contractDBO.getSymbol(),
+        strategy);
   }
 }

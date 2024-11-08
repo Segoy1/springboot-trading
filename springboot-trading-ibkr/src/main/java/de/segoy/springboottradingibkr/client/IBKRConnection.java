@@ -76,8 +76,8 @@ public class IBKRConnection implements EWrapper {
         && (tickerId == propertiesConfig.getSpxTickerId())) {
       lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
     }
-    if (((TickType.get(field).equals(TickType.ASK)||TickType.get(field).equals(TickType.BID))
-        && tickerId == lastTradeDateBuilder.getDateIntFromToday())) {
+    if (((TickType.get(field).equals(TickType.ASK) || TickType.get(field).equals(TickType.BID))
+        && Integer.toString(tickerId).endsWith(lastTradeDateBuilder.getShortenedDateStringFromToday()))) {
       lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
     }
     kafkaEntityTemplate.send(

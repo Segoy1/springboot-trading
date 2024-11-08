@@ -24,6 +24,9 @@ public class LastTradeDateBuilder {
           Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
     }
   }
+  public String getShortenedDateStringFromToday() {
+    return getDateStringFromToday().substring(2);
+  }
 
   public String getDateStringFromTomorrow() {
     return ibkrTimeStampFormatter.formatTimestampToDate(
