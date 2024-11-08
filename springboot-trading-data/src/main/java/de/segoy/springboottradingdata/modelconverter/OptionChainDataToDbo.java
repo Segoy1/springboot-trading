@@ -5,6 +5,7 @@ import de.segoy.springboottradingdata.model.data.entity.OptionListDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionMarketDataDbo;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
 import de.segoy.springboottradingdata.model.data.kafka.OptionMarketData;
+import de.segoy.springboottradingdata.optionstradingservice.AutotradeDbAndTickerIdEncoder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
 import de.segoy.springboottradingdata.repository.OptionListRepository;
 import de.segoy.springboottradingdata.repository.OptionMarketDataRepository;
@@ -23,6 +24,7 @@ public class OptionChainDataToDbo {
   private final OptionMarketDataRepository optionMarketDataRepository;
   private final OptionListRepository optionListRepository;
   private final OptionChainRepository optionChainRepository;
+  private final AutotradeDbAndTickerIdEncoder autotradeDbAndTickerIdEncoder;
 
   @Transactional
   public OptionChainDbo convertAndSave(OptionChainData optionChainData) {
@@ -37,11 +39,14 @@ public class OptionChainDataToDbo {
     OptionListDbo putsDBO =
         optionListRepository.save(
             OptionListDbo.builder()
-                .id(optionChainData.getLastTradeDate() * -1)
+                .id(optionChainData.getLastTradeDate() * NEGATIVE_FOR_PUTS)
                 .optionList(putList)
                 .build());
     return optionChainRepository.save(
         OptionChainDbo.builder()
+            .id(
+                autotradeDbAndTickerIdEncoder.generateLongIdForLastTradeDateAndSymbold(
+                    optionChainData.getLastTradeDate(), optionChainData.getSymbol()))
             .lastTradeDate(optionChainData.getLastTradeDate())
             .symbol(optionChainData.getSymbol())
             .calls(callsDBO)

@@ -16,7 +16,8 @@ import lombok.*;
 @NoArgsConstructor
 public class OptionChainDbo extends IBKRDataType {
 
-  @Id private Long lastTradeDate;
+  @Id private Long id;
+  @NotNull private Long lastTradeDate;
   @NotNull private Symbol symbol;
   @OneToOne private OptionListDbo calls;
   @OneToOne private OptionListDbo puts;
