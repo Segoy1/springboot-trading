@@ -1,10 +1,11 @@
 package de.segoy.springboottradingweb.spxautotrade.scheduler;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataDbo;
-import de.segoy.springboottradingdata.model.subtype.Strategy;
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import de.segoy.springboottradingdata.service.StrategyNameService;
 import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeCallAndPutDataRequestService;
 import de.segoy.springboottradingweb.spxautotrade.service.AutoTradeStrategyMarketDataRequestService;
 import de.segoy.springboottradingweb.spxautotrade.service.SpxLiveDataActivator;
@@ -26,15 +27,17 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   private final RepositoryRefreshService repositoryRefreshService;
   private final AutoTradeStrategyMarketDataRequestService autoTradeStrategyMarketDataRequestService;
   private final OrderSubmitAutoTradeService orderSubmitAutoTradeService;
+  private final StrategyNameService strategyNameService;
 
   @Scheduled(cron = "0 30 15 * * 1-5")
   //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
     LastPriceLiveMarketDataDbo liveData = getLiveData();
     autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
-    Strategy strategy = Strategy.IRON_CONDOR;
-    autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain(strategy);
-    orderSubmitAutoTradeService.placeOrderAndIfNecessaryUpdateStrategy(strategy);
+    ContractDbo strategyContract =
+        autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain();
+    orderSubmitAutoTradeService.placeOrderAndIfNecessaryUpdateStrategy(
+        strategyNameService.resolveStrategyFromComboLegs(strategyContract.getComboLegs()));
   }
 
   private LastPriceLiveMarketDataDbo getLiveData() {
