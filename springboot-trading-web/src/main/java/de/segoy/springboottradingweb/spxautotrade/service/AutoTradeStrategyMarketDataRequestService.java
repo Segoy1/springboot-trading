@@ -37,7 +37,7 @@ public class AutoTradeStrategyMarketDataRequestService {
 
     ContractDbo contractDBO = strategyFromChainDataCreator.createIronCondorContractData(chainData);
     autoTradeMarketDataService.requestLiveMarketDataForContractData(
-        createIdForContractWithIronCondor(contractDBO, strategyNameService.resolveStrategyFromComboLegs(contractDBO.getComboLegs())), contractDBO);
+        createIdForContractWithsStrategy(contractDBO, strategyNameService.resolveStrategyFromComboLegs(contractDBO.getComboLegs())), contractDBO);
     log.info("Requested MarketData for: " + contractDBO.getComboLegsDescription());
     autoTradeChainDataStopLiveDataService.stopMarketData(chainData);
     return contractDBO;
@@ -55,7 +55,7 @@ public class AutoTradeStrategyMarketDataRequestService {
             });
   }
 
-  private int createIdForContractWithIronCondor(ContractDbo contractDBO, Strategy strategy) {
+  private int createIdForContractWithsStrategy(ContractDbo contractDBO, Strategy strategy) {
     return autotradeDbAndTickerIdEncoder.generateIntForLastTradeDateBySymbolAndStrategy(
         Long.valueOf(contractDBO.getLastTradeDate()),
         contractDBO.getSymbol(),

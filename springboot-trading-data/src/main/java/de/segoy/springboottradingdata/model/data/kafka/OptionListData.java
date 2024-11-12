@@ -38,8 +38,8 @@ public class OptionListData extends KafkaDataType {
         return options.entrySet()
                 .stream()
                 .min((entry1, entry2) -> {
-                    double deltaDiff1 = Math.abs(entry1.getValue().getDelta() - delta);
-                    double deltaDiff2 = Math.abs(entry2.getValue().getDelta() - delta);
+                    double deltaDiff1 = Math.abs(entry1.getValue().getDelta()) - delta;
+                    double deltaDiff2 = Math.abs(entry2.getValue().getDelta()) - delta;
                     return Double.compare(deltaDiff1, deltaDiff2);
                 });
     }

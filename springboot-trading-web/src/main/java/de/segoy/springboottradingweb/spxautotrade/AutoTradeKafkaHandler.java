@@ -37,9 +37,8 @@ public class AutoTradeKafkaHandler {
           topics = "${kafka.names.topic.standardMarketData}"
   )
   public void processLiveMarketData(StandardMarketData message) {
-    //TODO
     if(message.getTickerId()== lastTradeDateBuilder.getDateIntFromToday()){
-      positionRepository.findById(lastTradeDateBuilder.getDateLongFromToday()).ifPresent((position)->
+      positionRepository.findById((long)message.getTickerId()).ifPresent((position)->
       {
         if( message.getField().equals(TickType.ASK.field())){
           sellOrderAutoTradeService.sellPostionWhenPriceExceedsLimit(message.getPrice(), position);
