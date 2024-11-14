@@ -29,8 +29,7 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   private final OrderSubmitAutoTradeService orderSubmitAutoTradeService;
   private final StrategyNameService strategyNameService;
 
-  @Scheduled(cron = "0 30 15 * * 1-5")
-  //  @Scheduled(cron = "*/30 * * * * *")
+  @Scheduled(cron = "5 30 15 * * 1-5")
   public void getOptionDataForDayTradeStrategy() {
     LastPriceLiveMarketDataDbo liveData = getLiveData(true);
     autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
