@@ -57,7 +57,7 @@ app:
   ibkr:
     spx:
       ticker:
-        id: 3214
+        id: 3215
     connectionId: '1'
     #7496 for live 7467 for paper
     tradingPort: 7497

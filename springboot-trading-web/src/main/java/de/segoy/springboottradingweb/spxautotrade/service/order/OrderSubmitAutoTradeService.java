@@ -42,7 +42,7 @@ public class OrderSubmitAutoTradeService {
             - tradeRuleSettingsConfig.getToleranceForOrderFill();
 
     if (Math.abs(liveData.getBidPrice()) <= limitMinusTolerance) {
-      return orderCreateAutoTradeService.setupOrderWithLmtPriceEqualToBidPricePlusTolerance(
+      return orderCreateAutoTradeService.setupOrderWithLmtPriceHalfwayBetweenBidAndAsk(
           liveData, strategy);
     } else {
       // build new Strategy and get live Data from it then make order
@@ -62,7 +62,8 @@ public class OrderSubmitAutoTradeService {
                   return getLiveDataOrRefresh(id);
                 });
     // Ensure Bid Price is not null
-    if (liveData.getBidPrice() == null) {
+    if (liveData.getBidPrice() == null || liveData.getAskPrice() == null) {
+      repositoryRefreshService.clearCacheAndWait(lastPriceLiveMarketDataRepository);
       return getLiveDataOrRefresh(id);
     } else {
       return liveData;

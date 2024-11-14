@@ -37,7 +37,7 @@ public class AutoTradeKafkaHandler {
           topics = "${kafka.names.topic.standardMarketData}"
   )
   public void processLiveMarketData(StandardMarketData message) {
-    if(message.getTickerId()== lastTradeDateBuilder.getDateIntFromToday()){
+    if(String.valueOf(message.getTickerId()).endsWith(lastTradeDateBuilder.getShortenedDateStringFromToday())){
       positionRepository.findById((long)message.getTickerId()).ifPresent((position)->
       {
         if( message.getField().equals(TickType.ASK.field())){

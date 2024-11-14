@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 public class OrderCreateAutoTradeService {
   private final TradeRuleSettingsConfig tradeRuleSettingsConfig;
 
-  public OrderDbo setupOrderWithLmtPriceEqualToBidPricePlusTolerance(
+  public OrderDbo setupOrderWithLmtPriceHalfwayBetweenBidAndAsk(
       LastPriceLiveMarketDataDbo lastPriceLiveMarketDataDbo, Strategy strategy) {
     double limitPrice =
-        lastPriceLiveMarketDataDbo.getBidPrice()
-            + tradeRuleSettingsConfig.getToleranceForOrderFill();
+            (lastPriceLiveMarketDataDbo.getBidPrice()
+            + lastPriceLiveMarketDataDbo.getAskPrice()) / 2;
     return OrderDbo.builder()
         .contractDBO(lastPriceLiveMarketDataDbo.getContractDBO())
         .action(Types.Action.BUY)

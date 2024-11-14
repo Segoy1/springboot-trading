@@ -32,7 +32,7 @@ public class LiveMarketDataAutoTradeStarterScheduler {
   @Scheduled(cron = "0 30 15 * * 1-5")
   //  @Scheduled(cron = "*/30 * * * * *")
   public void getOptionDataForDayTradeStrategy() {
-    LastPriceLiveMarketDataDbo liveData = getLiveData();
+    LastPriceLiveMarketDataDbo liveData = getLiveData(true);
     autoTradeOptionDataService.getOptionContractsAndCallAPI(liveData.getLastPrice());
     ContractDbo strategyContract =
         autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain();
@@ -40,17 +40,19 @@ public class LiveMarketDataAutoTradeStarterScheduler {
         strategyNameService.resolveStrategyFromComboLegs(strategyContract.getComboLegs()));
   }
 
-  private LastPriceLiveMarketDataDbo getLiveData() {
+  private LastPriceLiveMarketDataDbo getLiveData(boolean isFirst) {
     LastPriceLiveMarketDataDbo liveData =
         lastPriceLiveMarketDataRepository
             .findById((long) propertiesConfig.getSpxTickerId())
-            .orElseGet(this::repeatWithRefresh);
-    return liveData.getLastPrice() != null ? liveData : repeatWithRefresh();
+            .orElseGet(() -> repeatWithRefresh(isFirst));
+    return liveData.getLastPrice() != null ? liveData : repeatWithRefresh(false);
   }
 
-  private LastPriceLiveMarketDataDbo repeatWithRefresh() {
-    spxLiveDataActivator.getLiveMarketDataSPX();
+  private LastPriceLiveMarketDataDbo repeatWithRefresh(boolean isFirst) {
+    if (isFirst) {
+      spxLiveDataActivator.getLiveMarketDataSPX();
+    }
     repositoryRefreshService.clearCacheAndWait(lastPriceLiveMarketDataRepository);
-    return getLiveData();
+    return getLiveData(false);
   }
 }

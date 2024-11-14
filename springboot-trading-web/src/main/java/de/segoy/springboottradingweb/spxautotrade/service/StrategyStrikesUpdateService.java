@@ -1,16 +1,17 @@
 package de.segoy.springboottradingweb.spxautotrade.service;
 
 import com.ib.client.Types;
+import de.segoy.springboottradingdata.config.TradingConstants;
 import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.repository.ContractRepository;
+import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
 import de.segoy.springboottradingibkr.client.service.contract.UniqueContractDataProvider;
-import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
-import de.segoy.springboottradingibkr.client.service.marketdata.StopMarketDataService;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,7 @@ import org.springframework.stereotype.Service;
 public class StrategyStrikesUpdateService {
   private final ContractRepository contractRepository;
   private final UniqueContractDataProvider uniqueContractDataProvider;
-  private final AutoTradeMarketDataService autoTradeMarketDataService;
-  private final StopMarketDataService stopMarketDataService;
+  private final StrategyComboLegsDescriptionCreator comboLegsDescriptionCreator;
 
   @Transactional
   public ContractDbo updateStrategyStrikes(ContractDbo strategyContract) {
@@ -45,6 +45,16 @@ public class StrategyStrikesUpdateService {
                       });
             });
     strategyContract.setComboLegs(updatedLegs);
+    strategyContract.setComboLegsDescription(
+        comboLegsDescriptionCreator.generateComboLegsDescription(
+            StrategyComboLegsDescriptionCreator.StrategyDetails.builder()
+                .comboLegContractIds(
+                    updatedLegs.stream()
+                        .map(ComboLegDbo::getContractId)
+                        .collect(Collectors.toCollection(ArrayList::new)))
+                .lastTradeDate(strategyContract.getLastTradeDate())
+                .symbol(strategyContract.getSymbol())
+                .build()));
     log.info("Update Strategy Legs: {}", strategyContract.getComboLegs());
     return contractRepository.save(strategyContract);
   }
@@ -67,6 +77,8 @@ public class StrategyStrikesUpdateService {
             ContractDbo.builder()
                 .lastTradeDate(legContract.getLastTradeDate())
                 .strike(updatedStrike)
+                .securityType(Types.SecType.OPT)
+                .currency(TradingConstants.USD)
                 .symbol(legContract.getSymbol())
                 .right(legContract.getRight())
                 .build())

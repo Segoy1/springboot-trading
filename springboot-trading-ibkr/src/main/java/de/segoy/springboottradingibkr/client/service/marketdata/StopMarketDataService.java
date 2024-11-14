@@ -15,25 +15,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StopMarketDataService {
 
-    private final PropertiesConfig propertiesConfig;
-    private final @Qualifier("StopMarketDataApiCaller") ApiCallerWithId stopMarketDataApiCaller;
-    private final ContractRepository contractRepository;
+  private final PropertiesConfig propertiesConfig;
+  private final @Qualifier("StopMarketDataApiCaller") ApiCallerWithId stopMarketDataApiCaller;
+  private final ContractRepository contractRepository;
 
-    public void stopMarketDataForTickerId(int id) {
-        contractRepository.findById((long) id).ifPresent((contractData) -> {
-                    stopMarketDataApiCaller.callApi(id);
-                }
-        );
+  public void stopMarketDataForTickerId(int id) {
+    stopMarketDataApiCaller.callApi(id);
+  }
 
-    }
-
-    //TODO does not work this way anymore maybe
-    public List<ContractDbo> stopAllMarketData() {
-        List<ContractDbo> active = new ArrayList<>();
-        propertiesConfig.getActiveMarketData().forEach((id) -> {
-            stopMarketDataApiCaller.callApi(id);
-            active.addAll(contractRepository.findAllByContractId(id));
-        });
-        return active;
-    }
+  // TODO does not work this way anymore maybe
+  public List<ContractDbo> stopAllMarketData() {
+    List<ContractDbo> active = new ArrayList<>();
+    propertiesConfig
+        .getActiveMarketData()
+        .forEach(
+            (id) -> {
+              stopMarketDataApiCaller.callApi(id);
+              active.addAll(contractRepository.findAllByContractId(id));
+            });
+    return active;
+  }
 }
