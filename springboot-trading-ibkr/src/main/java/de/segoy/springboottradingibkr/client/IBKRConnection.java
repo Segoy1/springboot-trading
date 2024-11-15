@@ -11,7 +11,9 @@ import de.segoy.springboottradingdata.model.adopted.Groups;
 import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.data.entity.ConnectionDbo;
+import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
+import de.segoy.springboottradingdata.model.data.entity.TradingHoursDbo;
 import de.segoy.springboottradingdata.model.data.kafka.*;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
@@ -19,6 +21,7 @@ import de.segoy.springboottradingdata.modelsynchronize.HistoricalDataDatabaseSyn
 import de.segoy.springboottradingdata.optionstradingservice.LastTradeDateBuilder;
 import de.segoy.springboottradingdata.optionstradingservice.OptionTickerIdResolver;
 import de.segoy.springboottradingdata.repository.ConnectionRepository;
+import de.segoy.springboottradingdata.repository.TradingHoursRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
 import de.segoy.springboottradingibkr.client.responsehandler.PositionResponseHandler;
@@ -60,6 +63,7 @@ public class IBKRConnection implements EWrapper {
 
   private final Map<Integer, String> faMap = new HashMap<>();
   private final LastTradeDateBuilder lastTradeDateBuilder;
+  private final TradingHoursRepository tradingHoursRepository;
 
   private boolean faError;
 
@@ -206,8 +210,17 @@ public class IBKRConnection implements EWrapper {
   @Override
   @Transactional
   public void contractDetails(int reqId, ContractDetails contractDetails) {
-    contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
-        OptionalLong.of(reqId), contractDetails.contract());
+    ContractDbo contractDbo =
+        contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(
+            OptionalLong.of(reqId), contractDetails.contract());
+    if (contractDbo.getSecurityType().equals(Types.SecType.IND)
+        || contractDbo.getSecurityType().equals(Types.SecType.STK)) {
+      tradingHoursRepository.save(
+          TradingHoursDbo.builder()
+              .symbol(contractDbo.getSymbol())
+              .tradingHours(contractDetails.tradingHours())
+              .build());
+    }
   }
 
   @Override
