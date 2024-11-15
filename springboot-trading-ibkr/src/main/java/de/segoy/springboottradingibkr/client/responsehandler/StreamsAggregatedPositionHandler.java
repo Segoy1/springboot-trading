@@ -13,6 +13,8 @@ import de.segoy.springboottradingibkr.client.service.contract.UniqueContractData
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class StreamsAggregatedPositionHandler {
@@ -25,7 +27,7 @@ public class StreamsAggregatedPositionHandler {
   private final TradeRuleSettingsConfig tradeRuleSettingsConfig;
   private final StrategyNameService strategyNameService;
 
-  public PositionData persistContractAndPositionData(PositionData positionData) {
+  public Optional<PositionData> persistContractAndPositionData(PositionData positionData) {
     PositionDbo positionDbo = positionDataToDbo.convert(positionData);
     ContractDbo persistedContract =
         uniqueContractDataProvider
@@ -33,7 +35,10 @@ public class StreamsAggregatedPositionHandler {
             .orElseThrow();
     positionDbo.setContractDBO(persistedContract);
     setIdIfAutoTrade(persistedContract, positionDbo);
-    return positionDataDatabaseSynchronizer.updateInDbOrSave(positionDbo).toKafkaPositionData();
+    return positionDataDatabaseSynchronizer
+        .updateInDbOrSave(positionDbo)
+        .map(PositionDbo::toKafkaPositionData)
+        .or(Optional::empty);
   }
 
   /** if LastTradeDate is today and Symbol is SPX it is Auto Trade */

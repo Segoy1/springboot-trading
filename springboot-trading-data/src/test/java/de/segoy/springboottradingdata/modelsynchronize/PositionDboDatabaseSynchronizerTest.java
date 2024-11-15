@@ -31,7 +31,7 @@ class PositionDboDatabaseSynchronizerTest {
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.of(positionDBO));
         when(positionRepository.save(positionDBO)).thenReturn(positionDBO);
 
-        PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO);
+        PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO).get();
 
         assertEquals(BigDecimal.ONE, result.getPosition());
         assertEquals(1.0, result.getAverageCost());
@@ -50,7 +50,7 @@ class PositionDboDatabaseSynchronizerTest {
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.empty());
         when(positionRepository.save(positionDBO)).thenReturn(positionDBO);
 
-        PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO);
+        PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO).get();
 
         assertEquals(BigDecimal.ONE, result.getPosition());
         assertEquals(1.0, result.getAverageCost());
@@ -68,11 +68,9 @@ class PositionDboDatabaseSynchronizerTest {
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.of(positionDBO));
 
 
-        PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO);
+        Optional<PositionDbo> result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO);
 
-        assertEquals(BigDecimal.ZERO, result.getPosition());
-        assertEquals(1.0, result.getAverageCost());
-        assertEquals(1, result.getContractDBO().getContractId());
+        assertEquals(result, Optional.empty());
 
         verify(positionRepository, times(1)).delete(positionDBO);
         verify(positionRepository, times(1)).findFirstByContractDBO(contract);
