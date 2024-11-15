@@ -1,6 +1,7 @@
 package de.segoy.springboottradingweb;
 
 import de.segoy.springboottradingdata.config.PropertiesConfig;
+import de.segoy.springboottradingibkr.client.service.position.PositionService;
 import de.segoy.springboottradingweb.spxautotrade.scheduler.LiveMarketDataAutoTradeStarterScheduler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,16 +22,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 public class SpringbootTradingApplication {
 
-	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
+  public static void main(String[] args) {
+    ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
 
-		PropertiesConfig propertiesConfig = context.getBean(PropertiesConfig.class);
-		ConnectionInitiator connection = context.getBean(ConnectionInitiator.class);
-		connection.connect(propertiesConfig.getTradingPort());
+    PropertiesConfig propertiesConfig = context.getBean(PropertiesConfig.class);
+    ConnectionInitiator connection = context.getBean(ConnectionInitiator.class);
+    connection.connect(propertiesConfig.getTradingPort());
 
-		//Test only
-		LiveMarketDataAutoTradeStarterScheduler liveMarketDataAutoTradeStarterScheduler = context.getBean(LiveMarketDataAutoTradeStarterScheduler.class);
-		liveMarketDataAutoTradeStarterScheduler.getOptionDataForDayTradeStrategy();
-	}
+    PositionService positionService = context.getBean(PositionService.class);
+    positionService.callPortfolio();
 
+    // Test only
+    LiveMarketDataAutoTradeStarterScheduler liveMarketDataAutoTradeStarterScheduler =
+        context.getBean(LiveMarketDataAutoTradeStarterScheduler.class);
+    liveMarketDataAutoTradeStarterScheduler.getOptionDataForDayTradeStrategy();
+  }
 }

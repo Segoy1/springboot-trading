@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,18 +27,18 @@ class PositionResponseHandlerTest {
     private PositionResponseHandler positionResponseHandler;
 
     @Test
-    void transformAndSynch(){
+    void transformAndSync(){
         Contract contract = new Contract();
         PositionDbo data = PositionDbo.builder().build();
         when(ibkrToPositionDbo.convertAndPersistContract("A1", contract, BigDecimal.ONE, 1.1))
                 .thenReturn(data);
-        when(positionDataDatabaseSynchronizer.updateInDbOrSave(data)).thenReturn(data);
+        when(positionDataDatabaseSynchronizer.updateInDbOrSave(data)).thenReturn(Optional.of(data));
 
-        PositionDbo result =
+        Optional<PositionDbo> result =
                 positionResponseHandler
                         .transformResponseAndSynchronizeDB("A1",contract,BigDecimal.ONE, 1.1);
 
-        assertThat(result).isEqualTo(data);
+        assertThat(result.get()).isEqualTo(data);
     }
 
 }
