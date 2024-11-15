@@ -12,7 +12,6 @@ import de.segoy.springboottradingdata.model.adopted.MktDepth;
 import de.segoy.springboottradingdata.model.adopted.NewsArticle;
 import de.segoy.springboottradingdata.model.data.entity.ConnectionDbo;
 import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
-import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.model.data.kafka.*;
 import de.segoy.springboottradingdata.model.data.message.ErrorMessage;
 import de.segoy.springboottradingdata.modelsynchronize.ContractDataDatabaseSynchronizer;
@@ -77,7 +76,8 @@ public class IBKRConnection implements EWrapper {
       lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
     }
     if (((TickType.get(field).equals(TickType.ASK) || TickType.get(field).equals(TickType.BID))
-        && Integer.toString(tickerId).endsWith(lastTradeDateBuilder.getShortenedDateStringFromToday()))) {
+        && Integer.toString(tickerId)
+            .endsWith(lastTradeDateBuilder.getShortenedDateStringFromToday()))) {
       lastPriceLiveMarketDataCreateService.createLiveData(tickerId, price, TickType.get(field));
     }
     kafkaEntityTemplate.send(
@@ -461,17 +461,19 @@ public class IBKRConnection implements EWrapper {
   @Override
   @Transactional
   public void position(String account, Contract contract, Decimal pos, double avgCost) {
-    PositionDbo position =
-        positionResponseHandler.transformResponseAndSynchronizeDB(
-            account, contract, pos.value(), avgCost);
-    String topic =
-        position.getContractDBO().getSecurityType().equals(Types.SecType.OPT)
-            ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
-            : kafkaConstantsConfig.getPOSITION_TOPIC();
-    kafkaEntityTemplate.send(
-        topic,
-        Integer.toString(position.getContractDBO().getContractId()),
-        position.toKafkaPositionData());
+    positionResponseHandler
+        .transformResponseAndSynchronizeDB(account, contract, pos.value(), avgCost)
+        .ifPresent(
+            (position) -> {
+              String topic =
+                  position.getContractDBO().getSecurityType().equals(Types.SecType.OPT)
+                      ? kafkaConstantsConfig.getOPTION_POSITIONS_TOPIC()
+                      : kafkaConstantsConfig.getPOSITION_TOPIC();
+              kafkaEntityTemplate.send(
+                  topic,
+                  Integer.toString(position.getContractDBO().getContractId()),
+                  position.toKafkaPositionData());
+            });
   }
 
   @Override

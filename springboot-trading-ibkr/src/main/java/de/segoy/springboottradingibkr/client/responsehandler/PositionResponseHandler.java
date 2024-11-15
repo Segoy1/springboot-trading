@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +17,8 @@ public class PositionResponseHandler {
     private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
     private final IBKRToPositionDbo ibkrToPositionDbo;
 
-    public PositionDbo transformResponseAndSynchronizeDB(String account, Contract contract, BigDecimal position, double avgCost){
+    public Optional<PositionDbo> transformResponseAndSynchronizeDB(String account, Contract contract,
+                                                                   BigDecimal position, double avgCost){
         PositionDbo positionDBO = ibkrToPositionDbo.convertAndPersistContract(account, contract, position,
                 avgCost);
         return positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO);
