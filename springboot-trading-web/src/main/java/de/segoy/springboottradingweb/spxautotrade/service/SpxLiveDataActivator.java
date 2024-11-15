@@ -13,14 +13,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SpxLiveDataActivator {
 
-    private final PropertiesConfig propertiesConfig;
-    private final AutoTradeMarketDataService autoTradeMarketDataService;
+  private final PropertiesConfig propertiesConfig;
+  private final AutoTradeMarketDataService autoTradeMarketDataService;
 
-
-    public void getLiveMarketDataSPX() {
-        ContractDbo spx = ContractDataTemplates.SpxData();
-        autoTradeMarketDataService.requestLiveMarketDataForContractData(propertiesConfig.getSpxTickerId(), spx);
-
-    }
-
+  public void getLiveMarketDataSPX() {
+    ContractDbo spx = ContractDataTemplates.SpxData();
+    autoTradeMarketDataService.requestLiveMarketDataForContractData(
+        propertiesConfig.getSpxTickerId(), spx);
+  }
 }
