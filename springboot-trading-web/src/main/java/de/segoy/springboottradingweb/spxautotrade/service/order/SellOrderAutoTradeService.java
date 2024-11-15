@@ -21,6 +21,7 @@ public class SellOrderAutoTradeService {
         > positionDbo.getAverageCost() * tradeRuleSettingsConfig.getSellThreshold()) {
       orderPlacementService.placeOrderWithAutoIdIfNotSet(
           OrderDbo.builder()
+              .id(positionDbo.getId())
               .orderType(OrderType.MKT)
               .contractDBO(positionDbo.getContractDBO())
               .totalQuantity(positionDbo.getPosition())
