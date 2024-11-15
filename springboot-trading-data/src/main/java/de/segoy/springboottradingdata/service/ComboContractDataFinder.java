@@ -24,13 +24,13 @@ public class ComboContractDataFinder {
                 contracts.add(contractData.getId());
             });
             if(contracts.isEmpty()){
-                //if none are found on any Given ComboLeg there is no existing Order
+                //if none are found on any Given ComboLeg there is no existing Contract
                 return OptionalLong.empty();
             }else if(oldContracts.isEmpty()){
-                //populate List of existing Orders with first iteration
+                //populate List of existing Contracts with first iteration
                 oldContracts.addAll(contracts);
             }else{
-                //remove all existing Orders that are not in latest iteration
+                //remove all existing Contracts that are not in latest iteration
                 oldContracts.removeIf(contract -> !contracts.contains(contract));
 
                 if(oldContracts.isEmpty()){
