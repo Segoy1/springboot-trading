@@ -41,6 +41,12 @@ kafka:
 logging:
   file:
     path: ../logs
+  level:
+    org.springframework.kafka.*: WARN
+    org.springframework.kafka.listener.[KafkaMessageListenerContainer$ListenerConsumer]: WARN
+    org.apache.kafka.*: WARN
+    kafka.*: WARN
+    org.apache.zookeeper.*: WARN
 app:
   constants:
     positions:
