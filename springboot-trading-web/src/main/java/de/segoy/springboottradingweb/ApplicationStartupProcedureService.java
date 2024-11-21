@@ -20,6 +20,12 @@ public class ApplicationStartupProcedureService {
     public void onStartUp(){
 
         connection.connect(propertiesConfig.getTradingPort());
+        try {
+            //stupid shit because the API needs time or it will close the connection in the next step
+            Thread.sleep(500L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         positionService.callPortfolio();
         contractDataCallAndResponseHandler.callContractDetailsFromAPI(ContractDataTemplates.SpxData());
     }
