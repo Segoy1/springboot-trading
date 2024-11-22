@@ -23,7 +23,7 @@ public class StrategyComboLegsDescriptionCreator {
                 .append(details.symbol().name())
                 .append(SEPERATOR);
         for (Integer contractId : details.comboLegContractIds) {
-            description.append(contractId).append(" | ");
+            description.append(contractId).append(SEPERATOR);
         }
         return description.toString();
     }
