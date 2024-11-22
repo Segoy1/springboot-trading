@@ -102,6 +102,7 @@ public class StreamOptionsContractDataCombineService {
     // Remove Values for single Option data
     aggContract.setRight(Types.Right.None);
     aggContract.setStrike(null);
+    aggContract.setLocalSymbol(null);
     aggContract.setSecurityType(Types.SecType.BAG);
   }
 
