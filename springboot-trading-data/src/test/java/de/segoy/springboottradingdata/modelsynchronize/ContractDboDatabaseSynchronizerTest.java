@@ -163,7 +163,7 @@ class ContractDboDatabaseSynchronizerTest {
         when(comboLegRepository.findFirstByContractIdAndActionAndRatioAndExchange(leg2.getContractId(),
                 leg2.getAction(), leg2.getRatio(), leg2.getExchange())).thenReturn(Optional.of(leg2));
         when(comboLegRepository.save(leg1)).thenReturn(leg1);
-        when(comboContractDataFinder.checkContractWithComboLegs(comboLegs)).thenReturn(OptionalLong.empty());
+        when(comboContractDataFinder.findIdOfContractWithComboLegs(comboLegs)).thenReturn(OptionalLong.empty());
 
         ContractDbo result =
                 contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(),
@@ -208,7 +208,7 @@ class ContractDboDatabaseSynchronizerTest {
         when(comboLegRepository.findFirstByContractIdAndActionAndRatioAndExchange(leg2.getContractId(),
                 leg2.getAction(), leg2.getRatio(), leg2.getExchange())).thenReturn(Optional.of(leg2));
         when(comboLegRepository.save(leg1)).thenReturn(leg1);
-        when(comboContractDataFinder.checkContractWithComboLegs(comboLegs)).thenReturn(OptionalLong.of(1234));
+        when(comboContractDataFinder.findIdOfContractWithComboLegs(comboLegs)).thenReturn(OptionalLong.of(1234));
 
         ContractDbo result =
                 contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(),

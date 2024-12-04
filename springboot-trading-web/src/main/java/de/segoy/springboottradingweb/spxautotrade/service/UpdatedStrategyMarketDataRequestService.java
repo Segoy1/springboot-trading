@@ -21,14 +21,16 @@ public class UpdatedStrategyMarketDataRequestService {
   private final RepositoryRefreshService repositoryRefreshService;
 
   public void stopOldAndRequestNewLiveData(ContractDbo contractDbo) {
-    int tickerId =
+    Integer tickerId =
         autotradeDbAndTickerIdEncoder.generateIntForLastTradeDateBySymbolAndStrategy(
             Long.valueOf(contractDbo.getLastTradeDate()),
             contractDbo.getSymbol(),
             strategyNameService.resolveStrategyFromComboLegs(contractDbo.getComboLegs()));
-    stopMarketDataService.stopMarketDataForTickerId(tickerId);
-    waitUntilOldDataStopped(tickerId);
-    autoTradeMarketDataService.requestLiveMarketDataForContractData(tickerId, contractDbo);
+    if (tickerId != null) {
+      stopMarketDataService.stopMarketDataForTickerId(tickerId);
+      waitUntilOldDataStopped(tickerId);
+      autoTradeMarketDataService.requestLiveMarketDataForContractData(tickerId, contractDbo);
+    }
   }
 
   private void waitUntilOldDataStopped(long tickerId) {

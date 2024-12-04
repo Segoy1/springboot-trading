@@ -4,10 +4,12 @@ import de.segoy.springboottradingdata.constants.AutoDayTradeConstants;
 import de.segoy.springboottradingdata.model.subtype.Strategy;
 import de.segoy.springboottradingdata.model.subtype.Symbol;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AutotradeDbAndTickerIdEncoder {
 
   private final LastTradeDateBuilder lastTradeDateBuilder;
@@ -26,20 +28,21 @@ public class AutotradeDbAndTickerIdEncoder {
         + ((long) symbol.numberValue() * AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER);
   }
 
-  public int generateIntForLastTradeDateBySymbolAndStrategy(
+  public Integer generateIntForLastTradeDateBySymbolAndStrategy(
       Long lastTradeDate, Symbol symbol, Strategy strategy) {
     if (strategy.equals(Strategy.IRON_CONDOR)) {
       return generateLongIdForLastTradeDateAndSymbold(lastTradeDate, symbol).intValue()
           + (strategy.numberValue() * AutoDayTradeConstants.STRATEGY_TICKER_MULTIPLIER);
     } else {
-      throw new IllegalArgumentException(
-          "Strategy should be IRON_CONDOR or Implement Logic for others");
+     log.error("Strategy should be IRON_CONDOR or Implement Logic for others");
+     //Todo better return value
+     return null;
     }
   }
 
   public Long generateLongForTodayBySymbolAndStrategy(Symbol symbol, Strategy strategy) {
-    return (long)
+    return Long.valueOf(
         generateIntForLastTradeDateBySymbolAndStrategy(
-            lastTradeDateBuilder.getDateLongFromToday(), symbol, strategy);
+            lastTradeDateBuilder.getDateLongFromToday(), symbol, strategy));
   }
 }

@@ -87,7 +87,7 @@ public class ApiResponseKafkaHandler {
     if (message.getContractData().getSecurityType().equals(Types.SecType.BAG)) {
       log.info("Streamed Message received: " + message);
       streamsAggregatedPositionHandler
-          .persistContractAndPositionData(message)
+          .persistPositionDataIfContractExists(message)
           .ifPresent(
               (updatedPosition) ->
                   messagingTemplate.convertAndSend(

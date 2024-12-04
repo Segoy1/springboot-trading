@@ -39,7 +39,7 @@ class ComboContractDboFinderTest {
     void testNoExistingContractsForAllLegs() {
         when(contractRepository.findByComboLegsDescriptionContains("1")).thenReturn(new ArrayList<>());
 
-        OptionalLong result = comboContractDataFinder.checkContractWithComboLegs(buildLegList());
+        OptionalLong result = comboContractDataFinder.findIdOfContractWithComboLegs(buildLegList());
 
         assertEquals(OptionalLong.empty(), result);
 
@@ -56,7 +56,7 @@ class ComboContractDboFinderTest {
                 contractDBO)));
         when(contractRepository.findByComboLegsDescriptionContains("4")).thenReturn(new ArrayList<>());
 
-        OptionalLong result = comboContractDataFinder.checkContractWithComboLegs(buildLegList());
+        OptionalLong result = comboContractDataFinder.findIdOfContractWithComboLegs(buildLegList());
 
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("1");
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("2");
@@ -80,7 +80,7 @@ class ComboContractDboFinderTest {
         when(contractRepository.findByComboLegsDescriptionContains("4")).thenReturn(new ArrayList<>(List.of(
                 contractDbo4, contractDbo3, contractDbo2, contractDBO)));
 
-        OptionalLong result = comboContractDataFinder.checkContractWithComboLegs(buildLegList());
+        OptionalLong result = comboContractDataFinder.findIdOfContractWithComboLegs(buildLegList());
 
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("1");
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("2");
@@ -104,7 +104,7 @@ class ComboContractDboFinderTest {
         when(contractRepository.findByComboLegsDescriptionContains("4")).thenReturn(new ArrayList<>(List.of(
                 contractDbo4, contractDbo2, contractDBO)));
 
-        OptionalLong result = comboContractDataFinder.checkContractWithComboLegs(buildLegList());
+        OptionalLong result = comboContractDataFinder.findIdOfContractWithComboLegs(buildLegList());
 
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("1");
         verify(contractRepository,times(1)).findByComboLegsDescriptionContains("2");
