@@ -65,7 +65,7 @@ app:
       ticker:
         id: 3215
     connectionId: '1'
-    #7496 for live 7467 for paper
+    #7496: live -- ; -- 7467: paper
     tradingPort: 7497
     isReaderStarted: 'false'
     accountSummary:

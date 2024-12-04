@@ -73,13 +73,13 @@ class UniqueContractDboProviderTest {
                 ContractDbo.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
-        when(comboContractDataFinder.checkContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.of(1L));
+        when(comboContractDataFinder.findIdOfContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.of(1L));
         when(contractRepository.findById(1L)).thenReturn(Optional.of(returnData));
 
         Optional<ContractDbo> result = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDBO);
 
         assertEquals(1L, result.get().getId());
-        verify(comboContractDataFinder, times(1)).checkContractWithComboLegs(contractDBO.getComboLegs());
+        verify(comboContractDataFinder, times(1)).findIdOfContractWithComboLegs(contractDBO.getComboLegs());
         verify(contractRepository, times(1)).findById(1L);
     }
     @Test
@@ -93,14 +93,14 @@ class UniqueContractDboProviderTest {
                 ContractDbo.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
-        when(comboContractDataFinder.checkContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.of(1L));
+        when(comboContractDataFinder.findIdOfContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.of(1L));
         when(contractRepository.findById(2L)).thenReturn(Optional.empty());
         when(contractRepository.findById(1L)).thenReturn(Optional.of(returnData));
 
         Optional<ContractDbo> result = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDBO);
 
         assertEquals(1L, result.get().getId());
-        verify(comboContractDataFinder, times(1)).checkContractWithComboLegs(contractDBO.getComboLegs());
+        verify(comboContractDataFinder, times(1)).findIdOfContractWithComboLegs(contractDBO.getComboLegs());
         verify(contractRepository, times(1)).findById(1L);
     }
     @Test
@@ -129,13 +129,13 @@ class UniqueContractDboProviderTest {
                 ContractDbo.builder().id(1L).lastTradeDate("20240405").symbol(Symbol.SPX).strike(BigDecimal.valueOf(5170)).right(
                         Types.Right.Call).securityType(Types.SecType.BAG).comboLegs(List.of(cl1,cl2)).build();
 
-        when(comboContractDataFinder.checkContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.empty());
+        when(comboContractDataFinder.findIdOfContractWithComboLegs(contractDBO.getComboLegs())).thenReturn(OptionalLong.empty());
         when(contractRepository.save(contractDBO)).thenReturn(contractDBO);
 
         Optional<ContractDbo> result = uniqueContractDataProvider.getExistingContractDataOrCallApi(contractDBO);
 
         assertEquals(true, result.isPresent());
-        verify(comboContractDataFinder, times(1)).checkContractWithComboLegs(contractDBO.getComboLegs());
+        verify(comboContractDataFinder, times(1)).findIdOfContractWithComboLegs(contractDBO.getComboLegs());
         verify(contractRepository,times(1)).save(contractDBO);
     }
     @Test

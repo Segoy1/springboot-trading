@@ -36,7 +36,7 @@ public class UniqueContractDataProvider {
       return contractRepository.findById(contractDBO.getId());
     }
     OptionalLong id =
-        comboContractDataFinder.checkContractWithComboLegs(contractDBO.getComboLegs());
+        comboContractDataFinder.findIdOfContractWithComboLegs(contractDBO.getComboLegs());
     if (id.isPresent()) {
       return contractRepository.findById(id.getAsLong());
     } else {
