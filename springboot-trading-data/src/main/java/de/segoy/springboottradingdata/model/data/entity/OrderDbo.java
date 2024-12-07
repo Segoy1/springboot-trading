@@ -31,6 +31,7 @@ public class OrderDbo extends IBKRDataType {
     private OrderType orderType;
     private BigDecimal limitPrice;
     private BigDecimal auctionPrice;
+    private BigDecimal avgFillPrice;
     @Enumerated(EnumType.STRING)
     private Types.TimeInForce timeInForce; // "Time in Force" - DAY, GTC, etc.
     // native cash quantity
@@ -52,6 +53,7 @@ public class OrderDbo extends IBKRDataType {
                 .orderType(orderType)
                 .limitPrice(limitPrice)
                 .auctionPrice(auctionPrice)
+                .avgFillPrice(avgFillPrice)
                 .timeInForce(timeInForce)
                 .cashQuantity(cashQuantity)
                 .usePriceManagementAlgorithm(usePriceManagementAlgorithm)

@@ -23,6 +23,7 @@ public class OrderData extends KafkaDataType{
     private OrderType orderType;
     private BigDecimal limitPrice;
     private BigDecimal auctionPrice;
+    private BigDecimal avgFillPrice;
     private Types.TimeInForce timeInForce; // "Time in Force" - DAY, GTC, etc.
     // native cash quantity
     private BigDecimal cashQuantity;
