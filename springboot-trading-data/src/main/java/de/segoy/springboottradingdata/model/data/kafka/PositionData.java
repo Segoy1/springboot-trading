@@ -14,7 +14,7 @@ public class PositionData extends KafkaDataType{
 
     private ContractData contractData;
     private BigDecimal position;
-    private double averageCost;
+    private BigDecimal averageCost;
 
-    private double totalCost;
+    private BigDecimal totalCost;
 }

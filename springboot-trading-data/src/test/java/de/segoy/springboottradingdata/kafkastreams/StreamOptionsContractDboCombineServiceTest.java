@@ -32,8 +32,8 @@ class StreamOptionsContractDataCombineServiceTest {
         return PositionData.builder()
                 .position(BigDecimal.valueOf(1))
                 .account("DU508")
-                .averageCost(10)
-                .totalCost(10)
+                .averageCost(BigDecimal.TEN)
+                .totalCost(BigDecimal.TEN)
                 .contractData(
                         ContractData.builder()
                                 .contractId(11)
@@ -62,8 +62,8 @@ class StreamOptionsContractDataCombineServiceTest {
 
         return PositionData.builder().position(BigDecimal.valueOf(2))
                 .account("DU508")
-                .averageCost(20)
-                .totalCost(40)
+                .averageCost(BigDecimal.valueOf(20))
+                .totalCost(BigDecimal.valueOf(40))
                 .contractData(contractData1).build();
     }
     private PositionData buildThirdContract(){
@@ -79,8 +79,8 @@ class StreamOptionsContractDataCombineServiceTest {
 
         return PositionData.builder()
                 .position(BigDecimal.valueOf(-3))
-                .averageCost(-10)
-                .totalCost(-30)
+                .averageCost(BigDecimal.valueOf(-10))
+                .totalCost(BigDecimal.valueOf(-30))
                 .account("DU508")
                 .contractData(contractData).build();
 

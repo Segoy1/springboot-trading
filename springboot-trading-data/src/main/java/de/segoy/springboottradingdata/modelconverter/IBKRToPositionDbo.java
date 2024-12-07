@@ -21,10 +21,11 @@ public class IBKRToPositionDbo {
         ContractDbo contractDBO =
                 contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(),
                 contract);
+        BigDecimal averageCost = BigDecimal.valueOf(avgCost * position.signum());
         return PositionDbo.builder().account(account)
                 .position(position)
                 .contractDBO(contractDBO)
-                .averageCost(avgCost)
-                .totalCost(avgCost * position.doubleValue()).build();
+                .averageCost(averageCost)
+                .totalCost(averageCost.multiply(position)).build();
     }
 }

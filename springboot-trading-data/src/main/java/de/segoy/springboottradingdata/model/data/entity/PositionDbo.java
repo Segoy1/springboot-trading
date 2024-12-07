@@ -4,9 +4,8 @@ import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import de.segoy.springboottradingdata.model.data.kafka.ContractData;
 import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Entity
 @Getter
@@ -27,9 +26,9 @@ public class PositionDbo extends IBKRDataType {
 
   //total amount
   private BigDecimal position;
-  private double averageCost;
+  private BigDecimal averageCost;
 
-  private double totalCost;
+  private BigDecimal totalCost;
 
   public PositionData toKafkaPositionData() {
     ContractData contractData = contractDBO.toKafkaContractData();

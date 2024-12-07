@@ -37,7 +37,7 @@ public class ContractDataDatabaseSynchronizer {
                     comboLegs.add(saveComboLegIfNotExistent(comboLeg));
                     });
             newContractDbo.setComboLegs(comboLegs);
-            id = id.isPresent()?id:comboContractDataFinder.checkContractWithComboLegs(comboLegs);
+            id = id.isPresent()?id:comboContractDataFinder.findIdOfContractWithComboLegs(comboLegs);
             }
             id.ifPresent(newContractDbo::setId);
             return contractRepository.save(newContractDbo);

@@ -51,7 +51,7 @@ class StreamsAggregatedPositionHandlerTest {
         assertThrows(
             RuntimeException.class,
             () -> {
-              streamsAggregatedPositionHandler.persistContractAndPositionData(
+              streamsAggregatedPositionHandler.persistPositionDataIfContractExists(
                   positionDBO.toKafkaPositionData());
             });
 
@@ -79,7 +79,7 @@ class StreamsAggregatedPositionHandlerTest {
         .thenReturn(31241115L);
 
     Optional<PositionData> result =
-        streamsAggregatedPositionHandler.persistContractAndPositionData(
+        streamsAggregatedPositionHandler.persistPositionDataIfContractExists(
             positionDBO.toKafkaPositionData());
 
     assertThat(result.get().getContractData().getContractId()).isEqualTo(2);
@@ -101,7 +101,7 @@ class StreamsAggregatedPositionHandlerTest {
     when(lastTradeDateBuilder.getDateStringFromToday()).thenReturn("20241115");
 
     Optional<PositionData> result =
-        streamsAggregatedPositionHandler.persistContractAndPositionData(
+        streamsAggregatedPositionHandler.persistPositionDataIfContractExists(
             positionDBO.toKafkaPositionData());
 
     assertThat(result.get().getContractData().getContractId()).isEqualTo(2);

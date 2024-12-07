@@ -26,7 +26,7 @@ class PositionDboDatabaseSynchronizerTest {
     void testUpdateInDB(){
         ContractDbo contract = ContractDbo.builder().contractId(1).build();
         PositionDbo positionDBO =
-                PositionDbo.builder().contractDBO(contract).position(BigDecimal.valueOf(1)).averageCost(1.0).build();
+                PositionDbo.builder().contractDBO(contract).position(BigDecimal.ONE).averageCost(BigDecimal.ONE).build();
 
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.of(positionDBO));
         when(positionRepository.save(positionDBO)).thenReturn(positionDBO);
@@ -34,7 +34,7 @@ class PositionDboDatabaseSynchronizerTest {
         PositionDbo result = positionDataDatabaseSynchronizer.updateInDbOrSave(positionDBO).get();
 
         assertEquals(BigDecimal.ONE, result.getPosition());
-        assertEquals(1.0, result.getAverageCost());
+        assertEquals(BigDecimal.ONE, result.getAverageCost());
         assertEquals(1, result.getContractDBO().getContractId());
 
         verify(positionRepository, times(1)).findFirstByContractDBO(contract);
@@ -45,7 +45,7 @@ class PositionDboDatabaseSynchronizerTest {
     void testSaveToDB(){
         ContractDbo contract = ContractDbo.builder().contractId(1).build();
         PositionDbo positionDBO =
-                PositionDbo.builder().contractDBO(contract).position(BigDecimal.valueOf(1)).averageCost(1.0).build();
+                PositionDbo.builder().contractDBO(contract).position(BigDecimal.valueOf(1)).averageCost(BigDecimal.ONE).build();
 
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.empty());
         when(positionRepository.save(positionDBO)).thenReturn(positionDBO);
@@ -63,7 +63,7 @@ class PositionDboDatabaseSynchronizerTest {
     void testDeleteFromDB(){
         ContractDbo contract = ContractDbo.builder().contractId(1).build();
         PositionDbo positionDBO =
-                PositionDbo.builder().contractDBO(contract).position(BigDecimal.valueOf(0)).averageCost(1.0).build();
+                PositionDbo.builder().contractDBO(contract).position(BigDecimal.valueOf(0)).averageCost(BigDecimal.ONE).build();
 
         when(positionRepository.findFirstByContractDBO(contract)).thenReturn(Optional.of(positionDBO));
 

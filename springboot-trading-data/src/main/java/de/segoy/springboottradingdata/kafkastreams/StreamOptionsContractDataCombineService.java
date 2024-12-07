@@ -7,6 +7,7 @@ import de.segoy.springboottradingdata.model.data.kafka.ContractData;
 import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -123,9 +124,9 @@ public class StreamOptionsContractDataCombineService {
     } else {
       // Setting Costs and Position
       aggregatedPosition.setTotalCost(
-          aggregatedPosition.getTotalCost() + receivedPosition.getTotalCost());
+          aggregatedPosition.getTotalCost().add(receivedPosition.getTotalCost()));
       aggregatedPosition.setAverageCost(
-          aggregatedPosition.getTotalCost() / aggregatedPosition.getPosition().doubleValue());
+          aggregatedPosition.getTotalCost().divide(aggregatedPosition.getPosition(), 2, RoundingMode.HALF_UP));
     }
     comboLegs.add(
         ComboLegData.builder()
