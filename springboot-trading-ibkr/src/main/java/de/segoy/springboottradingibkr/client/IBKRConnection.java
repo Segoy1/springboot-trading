@@ -182,7 +182,7 @@ public class IBKRConnection implements EWrapper {
       String whyHeld,
       double mktCapPrice) {
     // received order status
-    OrderDbo orderData = orderStatusUpdateService.updateOrderStatus(orderId, status);
+    OrderDbo orderData = orderStatusUpdateService.updateOrderStatusWithAvgFillPrice(orderId, status, avgFillPrice);
     kafkaEntityTemplate.send(
         kafkaConstantsConfig.getORDER_TOPIC(),
         Integer.toString(orderId),

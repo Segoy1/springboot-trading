@@ -6,6 +6,8 @@ import de.segoy.springboottradingdata.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class OrderStatusUpdateService {
@@ -13,14 +15,23 @@ public class OrderStatusUpdateService {
     private final OrderRepository orderRepository;
 
     public OrderDbo updateOrderStatus(int orderId, String status) {
-        OrderDbo orderData = orderRepository.findById((long) orderId).orElseThrow();
+        return orderRepository.save(updateWithoutSave(orderId, status));
+    }
+
+    private OrderDbo updateWithoutSave(long orderId, String status) {
+        OrderDbo orderData = orderRepository.findById(orderId).orElseThrow();
         if (OrderStatus.get(status).equals(OrderStatus.Cancelled) ||
                 OrderStatus.get(status).equals(OrderStatus.ApiCancelled)) {
             orderRepository.delete(orderData);
-            return orderData;
         } else {
             orderData.setStatus(OrderStatus.get(status));
-            return orderRepository.save(orderData);
         }
+        return orderData;
+    }
+
+    public OrderDbo updateOrderStatusWithAvgFillPrice(int orderId, String status, double avgFillPrice) {
+        OrderDbo orderData = updateWithoutSave(orderId, status);
+        orderData.setAvgFillPrice(BigDecimal.valueOf(avgFillPrice));
+        return orderRepository.save(orderData);
     }
 }
