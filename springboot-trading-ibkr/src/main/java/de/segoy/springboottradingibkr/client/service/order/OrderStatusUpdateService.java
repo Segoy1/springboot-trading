@@ -25,6 +25,7 @@ public class OrderStatusUpdateService {
             orderRepository.delete(orderData);
         } else {
             orderData.setStatus(OrderStatus.get(status));
+            orderData.setLastModifiedBeforeSave();
         }
         return orderData;
     }
@@ -32,6 +33,7 @@ public class OrderStatusUpdateService {
     public OrderDbo updateOrderStatusWithAvgFillPrice(int orderId, String status, double avgFillPrice) {
         OrderDbo orderData = updateWithoutSave(orderId, status);
         orderData.setAvgFillPrice(BigDecimal.valueOf(avgFillPrice));
+        orderData.setLastModifiedBeforeSave();
         return orderRepository.save(orderData);
     }
 }

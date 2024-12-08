@@ -29,6 +29,7 @@ public class OrderWriteToDBService {
         OrderDbo orderData = ibkrToOrderDbo.convertOrder(order);
         orderData.setStatus(OrderStatus.get(orderStatus));
         orderData.setContractDBO(contractDBO);
+        orderData.setLastModifiedBeforeSave();
         return orderRepository.save(orderData);
     }
 }

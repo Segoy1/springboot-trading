@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -43,6 +44,13 @@ public class OrderDbo extends IBKRDataType {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    private LocalDateTime lastModified;
+
+    public void setLastModifiedBeforeSave(){
+        this.lastModified = LocalDateTime.now();
+    }
+
 
     public OrderData toKafkaOrderData(){
         ContractData contract = contractDBO.toKafkaContractData();
