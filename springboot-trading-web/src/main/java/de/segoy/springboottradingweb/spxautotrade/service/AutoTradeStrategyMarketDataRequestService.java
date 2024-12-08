@@ -4,12 +4,11 @@ import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OptionChainDbo;
 import de.segoy.springboottradingdata.model.data.kafka.OptionChainData;
-import de.segoy.springboottradingdata.model.subtype.Strategy;
 import de.segoy.springboottradingdata.modelconverter.DboToOptionChainData;
+import de.segoy.springboottradingdata.optionstradingservice.AutoTradeIdService;
 import de.segoy.springboottradingdata.optionstradingservice.AutotradeDbAndTickerIdEncoder;
 import de.segoy.springboottradingdata.repository.OptionChainRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
-import de.segoy.springboottradingdata.service.StrategyNameService;
 import de.segoy.springboottradingibkr.client.service.marketdata.AutoTradeMarketDataService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class AutoTradeStrategyMarketDataRequestService {
   private final DboToOptionChainData dboToOptionChainData;
   private final RepositoryRefreshService repositoryRefreshService;
   private final AutotradeDbAndTickerIdEncoder autotradeDbAndTickerIdEncoder;
-  private final StrategyNameService strategyNameService;
+  private final AutoTradeIdService autoTradeIdService;
 
   @Transactional
   public ContractDbo createStrategyFromOptionChain() {
@@ -37,7 +36,7 @@ public class AutoTradeStrategyMarketDataRequestService {
 
     ContractDbo contractDBO = strategyFromChainDataCreator.createIronCondorContractData(chainData);
     autoTradeMarketDataService.requestLiveMarketDataForContractData(
-        createIdForContractWithsStrategy(contractDBO, strategyNameService.resolveStrategyFromComboLegs(contractDBO.getComboLegs())), contractDBO);
+        autoTradeIdService.setIdForAutoTrade(contractDBO).intValue(), contractDBO);
     log.info("Requested MarketData for: " + contractDBO.getComboLegsDescription());
     autoTradeChainDataStopLiveDataService.stopMarketData(chainData);
     return contractDBO;
@@ -53,12 +52,5 @@ public class AutoTradeStrategyMarketDataRequestService {
               repositoryRefreshService.clearCacheAndWait(optionChainRepository);
               return findFromRepo();
             });
-  }
-
-  private int createIdForContractWithsStrategy(ContractDbo contractDBO, Strategy strategy) {
-    return autotradeDbAndTickerIdEncoder.generateIntForLastTradeDateBySymbolAndStrategy(
-        Long.valueOf(contractDBO.getLastTradeDate()),
-        contractDBO.getSymbol(),
-        strategy);
   }
 }
