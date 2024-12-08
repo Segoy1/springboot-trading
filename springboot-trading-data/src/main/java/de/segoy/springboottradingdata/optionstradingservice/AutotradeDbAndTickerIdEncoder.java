@@ -34,10 +34,16 @@ public class AutotradeDbAndTickerIdEncoder {
       return generateLongIdForLastTradeDateAndSymbold(lastTradeDate, symbol).intValue()
           + (strategy.numberValue() * AutoDayTradeConstants.STRATEGY_TICKER_MULTIPLIER);
     } else {
-     log.error("Strategy should be IRON_CONDOR or Implement Logic for others");
-     //Todo better return value
-     return null;
+      log.error("Strategy should be IRON_CONDOR or Implement Logic for others");
+      // Todo better return value
+      return null;
     }
+  }
+
+  public Long generateLongForLastTradeDateBySymbolAndStrategy(
+      Long lastTradeDate, Symbol symbol, Strategy strategy) {
+    return Long.valueOf(
+        generateIntForLastTradeDateBySymbolAndStrategy(lastTradeDate, symbol, strategy));
   }
 
   public Long generateLongForTodayBySymbolAndStrategy(Symbol symbol, Strategy strategy) {
