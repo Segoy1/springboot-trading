@@ -5,7 +5,8 @@ import de.segoy.springboottradingdata.model.data.entity.ComboLegDbo;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
 import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
-import de.segoy.springboottradingdata.repository.PositionRepository;
+import de.segoy.springboottradingdata.modelsynchronize.PositionDataDatabaseSynchronizer;
+import de.segoy.springboottradingdata.optionstradingservice.AutoTradeIdService;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -21,10 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class PositionSplitService {
 
-  private final PositionRepository positionRepository;
   private final StrategyComboLegsDescriptionCreator strategyComboLegsDescriptionCreator;
+  private final AutoTradeIdService autoTradeIdService;
+  private final PositionDataDatabaseSynchronizer positionDataDatabaseSynchronizer;
 
-  //Maybe here will be an issue with some jdbc combolegs stuff.. will see
+  // Maybe here will be an issue with some jdbc combolegs stuff.. will see
   @Transactional
   public List<PositionDbo> splitGivenContractsFromPosition(
       List<OrderDbo> filledOrders, PositionDbo accumulatedPosition) {
@@ -34,7 +36,8 @@ public class PositionSplitService {
             accumulatedPosition.getContractDBO().getComboLegs(),
             accumulatedPosition.getPosition().intValue());
 
-    for (OrderDbo order : filledOrders) {
+    for (OrderDbo order :
+        filledOrders.stream().sorted(Comparator.comparing(OrderDbo::getLastModified)).toList()) {
       organizePosition(order, updatedPositions, newAccumulatedPositionLegs);
     }
     // If there is anything leftover we aggregate it into a new position here
@@ -44,7 +47,9 @@ public class PositionSplitService {
       positions.add(
           getLeftOverPositionAndSaveIt(accumulatedPosition, newAccumulatedPositionLegs, positions));
     }
-    return positions;
+    return positions.stream()
+        .map(position -> positionDataDatabaseSynchronizer.updateInDbOrSave(position).orElseThrow())
+        .toList();
   }
 
   private PositionDbo getLeftOverPositionAndSaveIt(
@@ -57,7 +62,7 @@ public class PositionSplitService {
         getDifferenceInTotal(accumulatedPosition, positions).setScale(2, RoundingMode.HALF_UP));
     leftovers.setAverageCost(
         leftovers.getTotalCost().divide(leftovers.getPosition(), 2, RoundingMode.HALF_UP));
-    return positionRepository.save(leftovers);
+    return leftovers;
   }
 
   private BigDecimal getDifferenceInTotal(
@@ -85,6 +90,10 @@ public class PositionSplitService {
       PositionDbo existingPos = updatedPositions.get(orderContract);
       if (order.getAction().equals(Types.Action.SELL)) {
         existingPos.setPosition(existingPos.getPosition().subtract(order.getTotalQuantity()));
+        existingPos.setTotalCost(
+            existingPos
+                .getTotalCost()
+                .subtract(existingPos.getAverageCost().multiply(order.getTotalQuantity())));
       } else {
         existingPos.setPosition(existingPos.getPosition().add(order.getTotalQuantity()));
         existingPos.setTotalCost(
@@ -95,18 +104,13 @@ public class PositionSplitService {
       updatedPositions.put(existingPos.getContractDBO(), existingPos);
     } else {
       if (order.getAction().equals(Types.Action.SELL)) {
-        updatedPositions.put(
-            orderContract,
-            PositionDbo.builder()
-                .contractDBO(orderContract)
-                .position(order.getTotalQuantity().negate())
-                .totalCost(BigDecimal.ZERO)
-                .averageCost(BigDecimal.ZERO)
-                .build());
+        throw new IllegalStateException(
+            "Short Selling a strategy should never happen as first Order");
       } else {
         updatedPositions.put(
             orderContract,
             PositionDbo.builder()
+                .id(autoTradeIdService.setIdForAutoTrade(orderContract))
                 .contractDBO(orderContract)
                 .position(order.getTotalQuantity())
                 .totalCost(total)

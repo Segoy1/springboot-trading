@@ -1,7 +1,6 @@
 package de.segoy.springboottradingdata.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.ib.client.OrderStatus;
@@ -21,11 +20,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PartialComboContractFinderTest {
+class PartialComboOrderFinderTest {
 
   @Mock private ContractRepository contractRepository;
   @Mock private OrderRepository orderRepository;
-  @InjectMocks private PartialComboContractFinder partialComboContractFinder;
+  @InjectMocks private PartialComboOrderFinder partialComboOrderFinder;
 
   @Test
   void findMostExpectedCase_WithNoOverlappingStrategiesAndSingleOrders() {
@@ -77,7 +76,7 @@ class PartialComboContractFinderTest {
     when(orderRepository.findByContractDBO(strategy1)).thenReturn(List.of(order1));
 
     List<OrderDbo> instanceUnderTest =
-        partialComboContractFinder.findExistingStrategyContractsInCombo(totalPosition);
+        partialComboOrderFinder.findExistingStrategyContractsInCombo(totalPosition);
 
     assertThat(instanceUnderTest).isEqualTo(List.of(order1, order2));
   }
@@ -134,7 +133,7 @@ class PartialComboContractFinderTest {
     when(orderRepository.findByContractDBO(strategy2)).thenReturn(List.of(order2));
 
     List<OrderDbo> instanceUnderTest =
-        partialComboContractFinder.findExistingStrategyContractsInCombo(totalPosition);
+        partialComboOrderFinder.findExistingStrategyContractsInCombo(totalPosition);
 
     assertThat(instanceUnderTest).isEqualTo(List.of(order1, order2));
   }
@@ -207,7 +206,7 @@ class PartialComboContractFinderTest {
     when(orderRepository.findByContractDBO(strategy2)).thenReturn(List.of(order2, order3, order4));
 
     List<OrderDbo> instanceUnderTest =
-            partialComboContractFinder.findExistingStrategyContractsInCombo(totalPosition);
+            partialComboOrderFinder.findExistingStrategyContractsInCombo(totalPosition);
 
     assertThat(instanceUnderTest).isEqualTo(List.of(order1, order2));
   }
@@ -279,7 +278,7 @@ class PartialComboContractFinderTest {
     when(orderRepository.findByContractDBO(strategy2)).thenReturn(List.of(order2, order3, order4));
 
     List<OrderDbo> instanceUnderTest =
-            partialComboContractFinder.findExistingStrategyContractsInCombo(totalPosition);
+            partialComboOrderFinder.findExistingStrategyContractsInCombo(totalPosition);
 
     assertThat(instanceUnderTest).isEqualTo(List.of(order1, order2, order3, order4));
   }

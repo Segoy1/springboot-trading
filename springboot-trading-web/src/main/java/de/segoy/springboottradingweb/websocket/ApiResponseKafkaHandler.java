@@ -87,8 +87,8 @@ public class ApiResponseKafkaHandler {
     if (message.getContractData().getSecurityType().equals(Types.SecType.BAG)) {
       log.info("Streamed Message received: " + message);
       streamsAggregatedPositionHandler
-          .persistPositionDataIfContractExists(message)
-          .ifPresent(
+          .persistPositionsAccordingToExistingOrders(message)
+          .forEach(
               (updatedPosition) ->
                   messagingTemplate.convertAndSend(
                       "/topic/" + kafkaConstantsConfig.getPOSITION_TOPIC(), updatedPosition));

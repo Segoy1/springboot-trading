@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PartialComboContractFinder {
+public class PartialComboOrderFinder {
 
   private final ContractRepository contractRepository;
   private final OrderRepository orderRepository;
