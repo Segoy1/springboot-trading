@@ -45,7 +45,7 @@ public class OptionChainDataToDbo {
     return optionChainRepository.save(
         OptionChainDbo.builder()
             .id(
-                autotradeDbAndTickerIdEncoder.generateLongIdForLastTradeDateAndSymbold(
+                autotradeDbAndTickerIdEncoder.generateLongIdForLastTradeDateAndSymbol(
                     optionChainData.getLastTradeDate(), optionChainData.getSymbol()))
             .lastTradeDate(optionChainData.getLastTradeDate())
             .symbol(optionChainData.getSymbol())

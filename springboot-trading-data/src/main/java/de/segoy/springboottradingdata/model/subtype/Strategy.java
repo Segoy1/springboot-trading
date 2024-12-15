@@ -8,7 +8,9 @@ public enum Strategy {
   SHORT_IRON_CONDOR(5),
   STRANGLE(6),
   SHORT_STRANGLE(7),
-  CUSTOM_STRATEGY(8);
+  IRON_BUTTERFLY(8),
+  SHORT_IRON_BUTTERFLY(9),
+  CUSTOM_STRATEGY(10);
 
   final int numberValue;
 

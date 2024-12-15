@@ -19,25 +19,19 @@ public class AutotradeDbAndTickerIdEncoder {
   }
 
   public Long generateLongIdIdForTodayBySymbol(Symbol symbol) {
-    return generateLongIdForLastTradeDateAndSymbold(
+    return generateLongIdForLastTradeDateAndSymbol(
         lastTradeDateBuilder.getDateLongFromToday(), symbol);
   }
 
-  public Long generateLongIdForLastTradeDateAndSymbold(Long lastTradeDate, Symbol symbol) {
+  public Long generateLongIdForLastTradeDateAndSymbol(Long lastTradeDate, Symbol symbol) {
     return lastTradeDate
         + ((long) symbol.numberValue() * AutoDayTradeConstants.SYMBOL_TICKER_MULTIPLIER);
   }
 
   public Integer generateIntForLastTradeDateBySymbolAndStrategy(
       Long lastTradeDate, Symbol symbol, Strategy strategy) {
-    if (strategy.equals(Strategy.IRON_CONDOR)) {
-      return generateLongIdForLastTradeDateAndSymbold(lastTradeDate, symbol).intValue()
+      return generateLongIdForLastTradeDateAndSymbol(lastTradeDate, symbol).intValue()
           + (strategy.numberValue() * AutoDayTradeConstants.STRATEGY_TICKER_MULTIPLIER);
-    } else {
-      log.error("Strategy should be IRON_CONDOR or Implement Logic for others");
-      // Todo better return value
-      return null;
-    }
   }
 
   public Long generateLongForLastTradeDateBySymbolAndStrategy(
