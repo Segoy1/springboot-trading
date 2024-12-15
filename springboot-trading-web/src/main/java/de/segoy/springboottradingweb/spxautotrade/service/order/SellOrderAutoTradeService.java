@@ -18,7 +18,7 @@ public class SellOrderAutoTradeService {
 
   public void sellPostionWhenPriceExceedsLimit(Double price, PositionDbo positionDbo) {
     if (price - tradeRuleSettingsConfig.getToleranceForOrderFill()
-        > positionDbo.getAverageCost() * tradeRuleSettingsConfig.getSellThreshold()) {
+        > positionDbo.getAverageCost().doubleValue() * tradeRuleSettingsConfig.getSellThreshold()) {
       orderPlacementService.placeOrderWithAutoIdIfNotSet(
           OrderDbo.builder()
               .id(positionDbo.getId())
