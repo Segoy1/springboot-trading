@@ -11,6 +11,7 @@ import de.segoy.springboottradingdata.model.data.kafka.ContractData;
 import de.segoy.springboottradingdata.model.data.kafka.PositionData;
 import de.segoy.springboottradingdata.service.StrategyComboLegsDescriptionCreator;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -127,7 +128,7 @@ class StreamOptionsContractDataCombineServiceTest {
         assertEquals(Types.Right.None, aggregate.getContractData().getRight());
         assertEquals("SMART", aggregate.getContractData().getExchange());
         assertNull(aggregate.getContractData().getStrike());
-        assertEquals(50, aggregate.getAverageCost());
+        assertEquals(BigDecimal.valueOf(50.00).setScale(2, RoundingMode.UNNECESSARY), aggregate.getAverageCost());
         assertEquals(Types.SecType.BAG, aggregate.getContractData().getSecurityType());
         assertEquals(BigDecimal.ONE, aggregate.getPosition());
         assertEquals(12, aggregate.getContractData().getComboLegs().get(0).getContractId());
@@ -156,7 +157,7 @@ class StreamOptionsContractDataCombineServiceTest {
                 streamOptionsContractDataCombineService.combinePositions(positionData2,
                         positionData1));
 
-        assertEquals(20,aggregate1.getAverageCost());
+        assertEquals(BigDecimal.valueOf(20.00).setScale(2, RoundingMode.UNNECESSARY),aggregate1.getAverageCost());
 
 
         PositionData aggregate2 =
@@ -167,7 +168,7 @@ class StreamOptionsContractDataCombineServiceTest {
 
 
         assertEquals(3, aggregate2.getContractData().getComboLegs().size());
-        assertEquals(20, aggregate2.getAverageCost());
+        assertEquals(BigDecimal.valueOf(20.00).setScale(2, RoundingMode.UNNECESSARY), aggregate2.getAverageCost());
 
     }
 }
