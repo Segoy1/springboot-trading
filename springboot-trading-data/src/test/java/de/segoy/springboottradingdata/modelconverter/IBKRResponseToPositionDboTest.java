@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.OptionalLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,12 +36,12 @@ class IBKRResponseToPositionDboTest {
                 contract)).thenReturn(contractDBO);
 
         PositionDbo position = ibkrToPositionDbo.convertAndPersistContract("Account",contract,
-                BigDecimal.TEN, 1.0);
+                BigDecimal.TEN, 1);
 
         assertEquals("Account", position.getAccount());
         assertEquals(BigDecimal.TEN, position.getPosition());
-        assertEquals(1.0, position.getAverageCost());
-        assertEquals(10, position.getTotalCost());
+        assertEquals(BigDecimal.ONE.setScale(2, RoundingMode.UNNECESSARY), position.getAverageCost());
+        assertEquals(BigDecimal.TEN.setScale(2, RoundingMode.UNNECESSARY), position.getTotalCost());
 
         verify(contractDataDatabaseSynchronizer, times(1)).findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(), contract);
     }

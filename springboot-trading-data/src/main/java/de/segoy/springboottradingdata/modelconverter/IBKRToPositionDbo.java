@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.OptionalLong;
 
 @Component
@@ -21,7 +22,7 @@ public class IBKRToPositionDbo {
         ContractDbo contractDBO =
                 contractDataDatabaseSynchronizer.findInDBOrConvertAndSaveOrUpdateIfIdIsProvided(OptionalLong.empty(),
                 contract);
-        BigDecimal averageCost = BigDecimal.valueOf(avgCost * position.signum());
+        BigDecimal averageCost = BigDecimal.valueOf(avgCost * position.signum()).setScale(2, RoundingMode.UNNECESSARY);
         return PositionDbo.builder().account(account)
                 .position(position)
                 .contractDBO(contractDBO)
