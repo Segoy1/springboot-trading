@@ -12,7 +12,8 @@ public enum Symbol {
   CL(8, 0.25),
   NDX(9, 10),
   XOI(10, 0),
-  SPXW(11,5);
+  SPXW(11,5),
+  SPY(12,1);
 
   final int numberValue;
   final double optionInterval;
