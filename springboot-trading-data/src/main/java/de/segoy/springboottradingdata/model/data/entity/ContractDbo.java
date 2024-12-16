@@ -19,6 +19,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "contract_dbo", schema = "trading")
 public class ContractDbo extends IBKRDataType {
 
     @Id

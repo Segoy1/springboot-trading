@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "order_dbo", schema = "trading")
 public class OrderDbo extends IBKRDataType {
 
     @Id

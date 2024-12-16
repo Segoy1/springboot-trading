@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "combo_leg_dbo", schema = "trading")
 public class ComboLegDbo {
 
     @Id

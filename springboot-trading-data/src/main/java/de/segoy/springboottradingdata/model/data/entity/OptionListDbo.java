@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "option_list_dbo", schema = "trading")
 public class OptionListDbo extends IBKRDataType {
 
     @Id

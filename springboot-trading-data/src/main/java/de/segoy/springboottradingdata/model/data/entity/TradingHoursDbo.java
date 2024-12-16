@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "trading_hours_dbo", schema = "trading")
 public class TradingHoursDbo extends IBKRDataType {
 
     @Enumerated(EnumType.STRING)

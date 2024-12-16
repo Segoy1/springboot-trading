@@ -13,6 +13,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "position_dbo", schema = "trading")
 public class PositionDbo extends IBKRDataType {
 
   @Id

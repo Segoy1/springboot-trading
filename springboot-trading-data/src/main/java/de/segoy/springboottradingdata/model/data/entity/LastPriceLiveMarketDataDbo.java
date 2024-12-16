@@ -13,6 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "last_price_live_market_data_dbo", schema = "trading")
 public class LastPriceLiveMarketDataDbo extends IBKRDataType {
 
     @Id

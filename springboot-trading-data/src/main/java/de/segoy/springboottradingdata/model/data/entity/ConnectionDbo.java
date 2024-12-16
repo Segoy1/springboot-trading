@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "connection_dbo", schema = "trading")
 public class ConnectionDbo extends BaseEntity {
 
     @Id

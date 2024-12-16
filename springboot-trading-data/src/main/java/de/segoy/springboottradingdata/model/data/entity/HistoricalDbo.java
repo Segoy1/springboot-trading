@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "historical_dbo", schema = "trading")
 public class HistoricalDbo extends IBKRDataType {
 
     @Id

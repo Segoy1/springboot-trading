@@ -5,6 +5,7 @@ import de.segoy.springboottradingdata.model.subtype.Symbol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "option_chain_dbo", schema = "trading")
 public class OptionChainDbo extends IBKRDataType {
 
   @Id private Long id;

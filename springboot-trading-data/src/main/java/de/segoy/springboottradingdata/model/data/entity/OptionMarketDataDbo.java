@@ -12,6 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "option_market_data_dbo", schema = "trading")
 public class OptionMarketDataDbo extends IBKRDataType {
 
     @Id

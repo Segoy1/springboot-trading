@@ -83,8 +83,17 @@ app:
 spring:
   kafka:
     bootstrap-servers: 127.0.0.1:9092
+  datasource:
+    url: jdbc:postgresql://localhost:5432/trading_db_dev
+    username: postgres
+    password: ${POSTGRES_PW}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10  # You can adjust the pool size as per your requirements
   jpa:
     defer-datasource-initialization: 'true'
+    hibernate:
+      ddl-auto: update  # or 'validate', 'create', etc., depending on your use case
 server:
   address: 0.0.0.0
 ---
