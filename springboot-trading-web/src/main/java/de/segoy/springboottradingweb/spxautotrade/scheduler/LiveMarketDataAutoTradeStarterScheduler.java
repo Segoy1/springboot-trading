@@ -41,6 +41,7 @@ public class LiveMarketDataAutoTradeStarterScheduler {
           autoTradeStrategyMarketDataRequestService.createStrategyFromOptionChain();
       orderSubmitAutoTradeService.placeOrderAndIfNecessaryUpdateStrategy(
           strategyNameService.resolveStrategyFromComboLegs(strategyContract.getComboLegs()));
+      log.info("Strategy successfully ordered: {}", strategyContract.getComboLegsDescription());
     }
   }
 

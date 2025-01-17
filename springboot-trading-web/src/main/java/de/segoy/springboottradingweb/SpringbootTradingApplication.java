@@ -1,5 +1,6 @@
 package de.segoy.springboottradingweb;
 
+import de.segoy.springboottradingibkr.client.exception.TWSConnectionException;
 import de.segoy.springboottradingweb.spxautotrade.scheduler.LiveMarketDataAutoTradeStarterScheduler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,11 +25,18 @@ public class SpringbootTradingApplication {
     ApplicationContext context = SpringApplication.run(SpringbootTradingApplication.class, args);
 
     ApplicationStartupProcedureService applicationStartupProcedureService = context.getBean(ApplicationStartupProcedureService.class);
-    applicationStartupProcedureService.onStartUp();
+    try{
+      applicationStartupProcedureService.onStartUp();
 
-    // Test only
+      // Test only
     LiveMarketDataAutoTradeStarterScheduler liveMarketDataAutoTradeStarterScheduler =
         context.getBean(LiveMarketDataAutoTradeStarterScheduler.class);
     liveMarketDataAutoTradeStarterScheduler.getOptionDataForDayTradeStrategy();
+    }catch(TWSConnectionException e){
+      System.err.println("Application failed to start: " + e.getMessage());
+      e.printStackTrace();
+
+      System.exit(1);
+    }
   }
 }

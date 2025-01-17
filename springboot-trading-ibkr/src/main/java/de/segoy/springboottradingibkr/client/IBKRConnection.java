@@ -24,6 +24,7 @@ import de.segoy.springboottradingdata.repository.ConnectionRepository;
 import de.segoy.springboottradingdata.repository.TradingHoursRepository;
 import de.segoy.springboottradingdata.service.NextValidOrderIdGenerator;
 import de.segoy.springboottradingdata.service.OrderWriteToDBService;
+import de.segoy.springboottradingibkr.client.exception.TWSConnectionException;
 import de.segoy.springboottradingibkr.client.responsehandler.PositionResponseHandler;
 import de.segoy.springboottradingibkr.client.service.livemarketdata.LastPriceLiveMarketDataCreateService;
 import de.segoy.springboottradingibkr.client.service.order.OrderStatusUpdateService;
@@ -64,12 +65,14 @@ public class IBKRConnection implements EWrapper {
   private final Map<Integer, String> faMap = new HashMap<>();
   private final LastTradeDateBuilder lastTradeDateBuilder;
   private final TradingHoursRepository tradingHoursRepository;
+  private final Object connectionLock = new Object();
 
   private boolean faError;
 
   private Account m_account;
   private Groups m_groupsDlg;
   private NewsArticle m_newsArticle;
+
 
   @Override
   @Transactional
@@ -298,7 +301,7 @@ public class IBKRConnection implements EWrapper {
   }
 
   @Override
-  public void nextValidId(int orderId) {
+  public synchronized void nextValidId(int orderId) {
     nextValidOrderIdGenerator.generateAndSaveNextOrderId(orderId);
   }
 
@@ -566,9 +569,27 @@ public class IBKRConnection implements EWrapper {
   }
 
   @Override
-  public void connectAck() {
-    //        if (m_client.isAsyncEConnect())
-    //            m_client.startAPI();
+  public void connectAck() {}
+
+  public void ensureIsConnected(){
+    synchronized (connectionLock) {
+      connectionRepository.findById(propertiesConfig.getConnectionId()).ifPresentOrElse(
+              (connection)->{
+                if(!connection.getConnected()){
+                  waitForConnection();
+                }
+              },
+              this::waitForConnection
+      );
+    }
+  }
+  private void waitForConnection(){
+    try{
+    connectionLock.wait();
+    }catch(InterruptedException e){
+      log.error("Could not connect to TWS!", e);
+      throw new TWSConnectionException(e.getMessage(),e);
+    }
   }
 
   @Override

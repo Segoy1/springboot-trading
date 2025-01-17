@@ -11,23 +11,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ApplicationStartupProcedureService {
 
+  private final PropertiesConfig propertiesConfig;
+  private final ConnectionInitiator connection;
+  private final PositionService positionService;
+  private final ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
 
-    private final PropertiesConfig propertiesConfig;
-    private final  ConnectionInitiator connection;
-    private final PositionService positionService;
-    private final ContractDataCallAndResponseHandler contractDataCallAndResponseHandler;
+  public void onStartUp() {
 
-    public void onStartUp(){
-
-        connection.connect(propertiesConfig.getTradingPort());
-        try {
-            //stupid shit because the API needs time or it will close the connection in the next step
-            Thread.sleep(500L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        positionService.callPortfolio();
-        contractDataCallAndResponseHandler.callContractDetailsFromAPI(ContractDataTemplates.SpxData());
-    }
-
+    connection.connect(propertiesConfig.getTradingPort());
+    positionService.callPortfolio();
+    contractDataCallAndResponseHandler.callContractDetailsFromAPI(ContractDataTemplates.SpxData());
+  }
 }
