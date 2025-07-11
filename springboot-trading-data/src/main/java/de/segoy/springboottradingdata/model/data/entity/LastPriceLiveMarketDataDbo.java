@@ -2,10 +2,9 @@ package de.segoy.springboottradingdata.model.data.entity;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.util.Date;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -26,7 +25,6 @@ public class LastPriceLiveMarketDataDbo extends IBKRDataType {
     private Double bidPrice;
     private Double askPrice;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    @UpdateTimestamp
+    private LocalDateTime lastModifiedDate;
 }

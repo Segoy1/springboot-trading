@@ -5,8 +5,6 @@ import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.LastPriceLiveMarketDataDbo;
 import de.segoy.springboottradingdata.repository.LastPriceLiveMarketDataRepository;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +36,6 @@ public class LastPriceLiveMarketDataCreateService {
     } else if (tick.equals(TickType.ASK)) {
       lastPriceLiveMarketDataDbo.setAskPrice(price);
     }
-    lastPriceLiveMarketDataDbo.setCreateDate(new Date(Instant.now().toEpochMilli()));
 
     return lastPriceLiveMarketDataRepository.save(lastPriceLiveMarketDataDbo);
   }

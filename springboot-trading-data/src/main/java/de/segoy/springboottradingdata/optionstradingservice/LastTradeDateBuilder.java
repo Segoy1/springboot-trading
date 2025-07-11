@@ -25,7 +25,7 @@ public class LastTradeDateBuilder {
     }
   }
   public String getShortenedDateStringFromToday() {
-    return getDateStringFromToday().substring(2);
+    return getDateStringFromToday().substring(3);
   }
 
   public String getDateStringFromTomorrow() {

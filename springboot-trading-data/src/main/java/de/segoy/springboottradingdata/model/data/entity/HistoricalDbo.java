@@ -2,12 +2,11 @@ package de.segoy.springboottradingdata.model.data.entity;
 
 import de.segoy.springboottradingdata.model.data.IBKRDataType;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.math.BigDecimal;
-import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -37,8 +36,6 @@ public class HistoricalDbo extends IBKRDataType {
     //weighted average price
     private BigDecimal wap;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date")
-    private Date createDate;
+    @UpdateTimestamp
+    private LocalDateTime lastModifiedDate;
 }

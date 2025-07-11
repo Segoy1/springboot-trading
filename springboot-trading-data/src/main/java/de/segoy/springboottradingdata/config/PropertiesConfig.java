@@ -1,12 +1,11 @@
 package de.segoy.springboottradingdata.config;
 
+import java.time.LocalDateTime;
+import java.util.*;
 import lombok.Getter;
 import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Instant;
-import java.util.*;
 
 @Configuration
 public class PropertiesConfig {
@@ -96,7 +95,7 @@ public class PropertiesConfig {
     }
 
 
-    public Date getFiveSecondsAgo(){
-        return Date.from(Instant.now().minusSeconds(5L));
+    public LocalDateTime getFiveSecondsAgo(){
+        return LocalDateTime.now().minusSeconds(5L);
     }
 }

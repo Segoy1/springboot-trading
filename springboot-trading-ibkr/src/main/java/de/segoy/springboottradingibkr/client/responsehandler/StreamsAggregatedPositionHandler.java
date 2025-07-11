@@ -1,5 +1,6 @@
 package de.segoy.springboottradingibkr.client.responsehandler;
 
+import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
 import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
 import de.segoy.springboottradingdata.model.data.kafka.PositionData;
@@ -20,6 +21,7 @@ public class StreamsAggregatedPositionHandler {
   private final PartialComboOrderFinder partialComboOrderFinder;
   private final PositionSplitService positionSplitService;
   private final AutoTradeMarketDataService autoTradeMarketDataService;
+  private final TradeRuleSettingsConfig tradeRuleSettingsConfig;
 
   @Transactional
   public List<PositionData> persistPositionsAccordingToExistingOrders(PositionData positionData) {
@@ -32,7 +34,8 @@ public class StreamsAggregatedPositionHandler {
 
     splitPositions.forEach(
         (position) -> {
-          if (position.getId() != null) {
+          if (position.getId() != null
+              && position.getContractDBO().getSymbol().equals(tradeRuleSettingsConfig.getTradeSymbol())) {
             autoTradeMarketDataService.requestLiveMarketDataForContractData(
                 position.getId().intValue(), position.getContractDBO());
           }

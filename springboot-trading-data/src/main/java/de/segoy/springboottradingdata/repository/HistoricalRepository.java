@@ -1,9 +1,8 @@
 package de.segoy.springboottradingdata.repository;
 
 import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
-
-import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,5 +12,5 @@ List<HistoricalDbo> findAllByContractId(Integer id);
 
 Optional<HistoricalDbo>findFirstByContractIdAndTimeAndCount(int id, Timestamp time, int count);
 
-List<HistoricalDbo> findAllByContractIdAndCreateDateAfter(int id, Date date);
+List<HistoricalDbo> findAllByContractIdAndLastModifiedDate(int id, LocalDateTime date);
 }

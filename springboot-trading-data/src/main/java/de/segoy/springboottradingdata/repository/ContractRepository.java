@@ -24,6 +24,8 @@ public interface ContractRepository extends IBKRDataTypeRepository<ContractDbo> 
 
     List<ContractDbo> findAllBySecurityType(Types.SecType type);
 
+    List<ContractDbo> findAllBySecurityTypeAndSymbol(Types.SecType type, Symbol symbol);
+
     //Todo: find cleaner solution wich does not increment the sequence
     @Query(value="select nextval('contract_id_sequence')", nativeQuery = true)
     int nextValidId();

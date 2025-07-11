@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import de.segoy.springboottradingdata.config.TradeRuleSettingsConfig;
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.model.data.entity.OrderDbo;
 import de.segoy.springboottradingdata.model.data.entity.PositionDbo;
@@ -28,6 +29,7 @@ class StreamsAggregatedPositionHandlerTest {
   @Mock private PartialComboOrderFinder partialComboOrderFinder;
   @Mock private PositionSplitService positionSplitService;
   @Mock private AutoTradeMarketDataService autoTradeMarketDataService;
+  @Mock private TradeRuleSettingsConfig tradeRuleSettingsConfig;
   @InjectMocks private StreamsAggregatedPositionHandler streamsAggregatedPositionHandler;
 
   @Test
@@ -38,6 +40,7 @@ class StreamsAggregatedPositionHandlerTest {
     OrderDbo orderDbo = OrderDbo.builder().contractDBO(contractDbo).build();
 
     when(positionDataToDbo.convert(any())).thenReturn(positionDbo);
+    when(tradeRuleSettingsConfig.getTradeSymbol()).thenReturn(Symbol.SPX);
 
     when(partialComboOrderFinder.findExistingStrategyContractsInCombo(positionDbo.getContractDBO()))
         .thenReturn(List.of(orderDbo));
@@ -71,7 +74,7 @@ class StreamsAggregatedPositionHandlerTest {
     List<OrderDbo> orderList = List.of(orderDbo3, orderDbo2);
 
     when(positionDataToDbo.convert(any())).thenReturn(positionDbo);
-
+    when(tradeRuleSettingsConfig.getTradeSymbol()).thenReturn(Symbol.SPX);
     when(partialComboOrderFinder.findExistingStrategyContractsInCombo(positionDbo.getContractDBO()))
         .thenReturn(orderList);
     when(positionSplitService.splitGivenContractsFromPosition(orderList, positionDbo))

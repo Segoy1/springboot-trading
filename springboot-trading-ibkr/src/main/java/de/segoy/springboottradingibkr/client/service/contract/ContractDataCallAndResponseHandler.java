@@ -2,13 +2,11 @@ package de.segoy.springboottradingibkr.client.service.contract;
 
 import de.segoy.springboottradingdata.model.data.entity.ContractDbo;
 import de.segoy.springboottradingdata.repository.ContractRepository;
-import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
 import de.segoy.springboottradingibkr.client.service.ApiCaller;
+import de.segoy.springboottradingibkr.client.service.OptionalApiResponseChecker;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-
 
 @Component
 @RequiredArgsConstructor

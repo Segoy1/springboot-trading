@@ -66,12 +66,18 @@ public class UniqueContractDataProvider {
   }
 
   private Optional<ContractDbo> getOptionContractData(ContractDbo contractDBO) {
-    Optional<ContractDbo> contractOpt =
-        contractRepository.findFirstByLastTradeDateAndSymbolAndStrikeAndRight(
-            contractDBO.getLastTradeDate(),
-            contractDBO.getSymbol(),
-            contractDBO.getStrike(),
-            contractDBO.getRight());
+    Optional<ContractDbo> contractOpt = Optional.empty();
+    if (contractDBO.getContractId() != null) {
+      contractOpt = contractRepository.findFirstByContractId(contractDBO.getContractId());
+    }
+    if (contractOpt.isEmpty()) {
+      contractOpt =
+          contractRepository.findFirstByLastTradeDateAndSymbolAndStrikeAndRight(
+              contractDBO.getLastTradeDate(),
+              contractDBO.getSymbol(),
+              contractDBO.getStrike(),
+              contractDBO.getRight());
+    }
     return contractOpt.isPresent()
         ? contractOpt
         : contractDataCallAndResponseHandler.callContractDetailsFromAPI(contractDBO);

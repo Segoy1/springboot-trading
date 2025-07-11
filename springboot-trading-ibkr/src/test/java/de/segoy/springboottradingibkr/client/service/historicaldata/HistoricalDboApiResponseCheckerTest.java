@@ -1,21 +1,20 @@
 package de.segoy.springboottradingibkr.client.service.historicaldata;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
 import de.segoy.springboottradingdata.config.PropertiesConfig;
 import de.segoy.springboottradingdata.model.data.entity.HistoricalDbo;
 import de.segoy.springboottradingdata.repository.HistoricalRepository;
 import de.segoy.springboottradingdata.service.RepositoryRefreshService;
+import java.time.LocalDateTime;
+import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.Instant;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class HistoricalDboApiResponseCheckerTest {
@@ -36,14 +35,14 @@ class HistoricalDboApiResponseCheckerTest {
         data.add(historicalDbo2);
         data.add(historicalDbo);
 
-        Date date = Date.from(Instant.now());
+        LocalDateTime date = LocalDateTime.now();
         Set<Integer> callSet = new HashSet<>();
         callSet.add(5);
         callSet.add(3);
 
         when(propertiesConfig.getFiveSecondsAgo()).thenReturn(date);
         when(repository.findAllByContractId(6)).thenReturn(data);
-        when(repository.findAllByContractIdAndCreateDateAfter(6, date)).thenReturn(data);
+        when(repository.findAllByContractIdAndLastModifiedDate(6, date)).thenReturn(data);
 
 
         List<HistoricalDbo> returnList = historicalDataApiResponseChecker.checkForApiResponseAndUpdate(6);
